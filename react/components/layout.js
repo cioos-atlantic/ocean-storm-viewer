@@ -190,16 +190,9 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
             />
           ) : historical_storms ? ( <HistoricalStormList onHarvestData={handleHarvestHistoricalData}
           />) : (
-            <StormSearch
-              onSearch={updateStormList}
-              onPopulateStormDetails={populateStormDetails}
-              onPopulateTimeline={populateTimeline}
-              active_storm_data={active_storm_data}
-              storms={storms}
-              selected_storm={selected_storm}
-              selected_forecast={selected_forecast}
-              storm_timeline={storm_timeline}
-            />
+            <>
+              <div>Placeholder for Home Page</div>
+            </>
           )}
         </Drawer>
         {active_storms && (

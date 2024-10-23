@@ -162,40 +162,37 @@ function RecentStationData(data) {
 function PointDetails(point) {
   // If properties has no items, it's an empty point object and should return
   // immediately
-  if (Object.keys(point.properties).length == 0) {
-    return (<></>);
-  }
-
-  // ECCC and IBTRACS have multiple ways to define a storm type, some overlap and others are unique
   const [isVisible, setIsVisible] = useState(true);
   const [hoverTimer, setHoverTimer] = useState(null); // Timer state
+  /*if (Object.keys(point.properties).length == 0) {
+    return (<></>);
+  }*/
+  
+
+  // ECCC and IBTRACS have multiple ways to define a storm type, some overlap and others are unique
+  
   useEffect(() => {
+    if (Object.keys(point.properties).length === 0) return; // Skip if empty
+
+    setIsVisible(true);
+
     if (hoverTimer) {
       clearTimeout(hoverTimer);
     }
-    
-    if (point !== empty_point_obj) {
-      setIsVisible(true); // Show the info pane when point changes
 
-      // Clear any existing timer
-      
-      
-      // Set a new timer for 10 seconds
-      const timer = setTimeout(() => {
-        setIsVisible(false); // Hide info pane after 10 seconds
-      }, 10000);
-      setHoverTimer(timer); // Store the timer ID
-    }
-    
+    const timer = setTimeout(() => {
+      setIsVisible(false); // Hide after 10 seconds
+    }, 10000);
+
+    setHoverTimer(timer);
+
     return () => {
-      if (hoverTimer) {
-        clearTimeout(hoverTimer); // Cleanup timer on unmount or change
-      }
+      clearTimeout(timer); // Cleanup on unmount
     };
   }, [point]);
 
-  if (point === empty_point_obj) {
-    return null; // Don't render anything if point is empty
+  if (Object.keys(point.properties).length === 0 || !isVisible) {
+    return null;
   }
   const storm_types = {
     "MX": "Mixture",
@@ -218,7 +215,7 @@ function PointDetails(point) {
   const STORMFORCE = fetch_value(point, ["STORMFORCE", "USA_SSHS"]);
   const MAXWIND = fetch_value(point, ["MAXWIND", "WMO_WIND", "USA_WIND"]);
   const MINPRESS = fetch_value(point, ["MSLP", "WMO_PRES", "USA_PRES"]);
-
+  
 
   return (isVisible &&(
     <div className="info_pane">
@@ -304,6 +301,8 @@ export default function Map({ children, storm_data, station_data, source_type })
     handleStormHoveredData(point);
     setHoverMarker(point); // Set the hovered marker
   };
+  // Function to handle when the mouse moves out of the marker
+  
 
 
   //console.log(source_type)
