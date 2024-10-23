@@ -96,7 +96,9 @@ export function parseData(fullStationData) {
   Object.entries(fullStationData).forEach(([station_name, station_details]) => {
     //console.log(`Station_name: ${station_name}`);
     //console.log(`station_details: ${station_details.properties.station_data}`);
-    const stationEntries= station_details.properties.station_data
+    const stationBbox = station_details.bbox;
+    //console.log(stationBbox)
+    const stationEntries= station_details.properties.station_data;
 
     const station_data = JSON.parse(stationEntries);
     //console.log(station_data)
@@ -129,7 +131,9 @@ export function parseData(fullStationData) {
           
           if (attributes_of_interest.includes(field_obj.std_name)){
             if (!stationDataTable[station_name]) {
-              stationDataTable[station_name] = { data: {} };}  // Initialize the station entry if not found
+              stationDataTable[station_name] = { 
+                bbox: stationBbox,
+                data: {} };}  // Initialize the station entry if not found
             
             const station = stationDataTable[station_name];
             // Check if the std_name field already exists in the station data

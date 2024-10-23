@@ -17,6 +17,7 @@ import { useRouter } from 'next/router';
 import {handleStormHoveredData} from './handle_storm_hovered_data'
 import {formatCioosStations, formatCioosDateTime, parseData} from './station_formats'
 import RenderChart from './station_graph.js'
+//import { stat } from "fs/promises";
 
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
@@ -169,13 +170,15 @@ function PointDetails(point) {
   const [isVisible, setIsVisible] = useState(true);
   const [hoverTimer, setHoverTimer] = useState(null); // Timer state
   useEffect(() => {
+    if (hoverTimer) {
+      clearTimeout(hoverTimer);
+    }
+    
     if (point !== empty_point_obj) {
       setIsVisible(true); // Show the info pane when point changes
 
       // Clear any existing timer
-      if (hoverTimer) {
-        clearTimeout(hoverTimer);
-      }
+      
       
       // Set a new timer for 10 seconds
       const timer = setTimeout(() => {
@@ -296,7 +299,7 @@ export default function Map({ children, storm_data, station_data, source_type })
   const router = useRouter();
   //console.log(storm_data)
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
-  
+
   function handleMouseOver(point) {
     handleStormHoveredData(point);
     setHoverMarker(point); // Set the hovered marker
@@ -325,7 +328,7 @@ export default function Map({ children, storm_data, station_data, source_type })
 
   if (source_type === "historical"){
     storm_data = parseHistoricalData(storm_data)
-    console.log(station_data)
+    //console.log(station_data)
     //console.log(station_data)
 
     
@@ -374,6 +377,8 @@ export default function Map({ children, storm_data, station_data, source_type })
   }
 
   const parsedStationData = parseData(station_data);
+  console.log(station_data)
+  console.log(parsedStationData)
 
   // console.log("hurricane_icon: ", HurricaneIcon.src)
   // console.log("hurricon_div: ", hurricon_div)
