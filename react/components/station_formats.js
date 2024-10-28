@@ -149,16 +149,16 @@ export function parseData(fullStationData) {
               existingField.value.push(field_obj.value);};
       }});});
       });
-    console.log(stationDataTable) 
+    //console.log(stationDataTable) 
     stationDataTable= dataConversion(stationDataTable);
-    console.log(stationDataTable) 
+    //console.log(stationDataTable) 
 
 
     return stationDataTable 
 }
 
 function dataConversion(stationDataTable){
-  console.log(stationDataTable);
+  //console.log(stationDataTable);
   Object.entries(stationDataTable).forEach(([stationName, stationData]) => {
     const station = stationData.data
     Object.entries(station).forEach(([key, variable]) => {
@@ -195,6 +195,12 @@ function dataConversion(stationDataTable){
   })
   console.log(stationDataTable);
   return stationDataTable
+
+}
+export function getStormBbox (storm_data){
+  const bbox = storm_data["pts"]["features"]['0'].bbox;
+  console.log(bbox);
+  return bbox;;
 
 }
     

@@ -72,7 +72,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
   useEffect(() => {
     // Check if stormData is an empty array
 
-    if (historicalStormData?.ib_data?.features?.length === 0) {
+    if (!historicalStormData) {
       console.log("Empty array, redirecting to 404...");
       // Redirect to the 404 page
       router.replace('/404'); 
@@ -81,7 +81,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
     }
   }, [historicalStormData]);
 
-  if (historicalStormData?.ib_data?.features?.length === 0) {
+  if (!historicalStormData) {
     return null;
   }
 

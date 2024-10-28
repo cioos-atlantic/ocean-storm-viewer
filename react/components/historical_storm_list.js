@@ -77,7 +77,10 @@ export async function handleClick(storm, onHarvestData)  {
   try {
   const resource = await fetch(`/api/historical_storms?${query}`);
   
-  const historical_storm_data = await resource.json();
+  const storm_data = await resource.json();
+  console.log(storm_data);
+  const historical_storm_data= parseHistoricalData(storm_data);
+  console.log(historical_storm_data);
   //const [min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time] = getStationQueryParams (historical_storm_data)
 
   //console.log(min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time);
@@ -143,3 +146,61 @@ function getStationQueryParams (historical_storm_data){
   return [min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time]
 
 }
+function parseHistoricalData(storm_data){
+
+  if (storm_data?.ib_data?.features?.length === 0) {
+    return null
+    //TODO 
+    // fix 404
+  }
+  //console.log(storm_data)
+  let storm_features = {
+    // create an empty object to store the storm_points
+    pts:{features:[]},
+    err:{features:[]},
+    lin:{features:[]},
+    rad:{features:[]},
+  };
+  
+
+  let storm_details = {}
+  let ib_storm_list = []
+  //console.log("storm_data")
+  //console.log(storm_data.ib_data.features)
+  storm_data.ib_data.features.map(storm_point => {
+    if (!ib_storm_list.includes(storm_point.properties.NAME)) {
+      ib_storm_list.push(storm_point.properties.NAME)
+      storm_details[storm_point.properties.NAME] = {
+        source: "ibtracs", 
+        year: storm_point.properties.SEASON, 
+        data: []
+      }
+    }
+    storm_details[storm_point.properties.NAME].data.push(storm_point)
+});
+
+  //console.log(storm_details)
+  // Extract the storm key dynamically
+  let stormName = Object.keys(storm_details)[0];
+
+  // Extract the storm data using the key
+  let storm_info = storm_details[stormName];
+
+  for(let i in storm_info.data){
+    
+    switch(storm_info.data[i].geometry.type){
+      case "Point":
+        storm_features.pts.features.push(storm_info.data[i])
+        break;
+      // case "LineString":
+      //   break;
+      // case "Polygon":
+      //   break;
+    }
+  }
+
+  
+  //console.log(storm_features);
+  return storm_features;
+};
+

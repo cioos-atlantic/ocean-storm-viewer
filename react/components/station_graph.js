@@ -82,6 +82,7 @@ function RenderChart({ chartData, stationName }) {
       };
 
       // Destroy the previous chart if it exists
+      console.log(chartRef.current.chart);
       if (chartRef.current.chart) {
         chartRef.current.chart.destroy();
       }
