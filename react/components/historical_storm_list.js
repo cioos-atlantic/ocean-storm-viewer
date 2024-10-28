@@ -78,9 +78,9 @@ export async function handleClick(storm, onHarvestData)  {
   const resource = await fetch(`/api/historical_storms?${query}`);
   
   const storm_data = await resource.json();
-  console.log(storm_data);
-  const historical_storm_data= parseHistoricalData(storm_data);
-  console.log(historical_storm_data);
+  //console.log(storm_data);
+  
+  //console.log(historical_storm_data);
   //const [min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time] = getStationQueryParams (historical_storm_data)
 
   //console.log(min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time);
@@ -90,6 +90,8 @@ export async function handleClick(storm, onHarvestData)  {
   //console.log(historical_station_data)
   const station_resource = await fetch(`/api/query_stations_historical?${query}`);
   const historical_station_data = await station_resource.json();
+
+  const historical_storm_data= parseHistoricalData(storm_data);
 
    // Trigger the callback to send data back to the parent
    if (onHarvestData) {
