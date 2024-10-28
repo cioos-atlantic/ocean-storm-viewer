@@ -53,3 +53,12 @@ export function station_data_format(features, filter_station) {
         return "oops"
     }
 }
+
+//Station data should be formatted from station_data_format util
+//Takes input from the station_data list field, not the whole station data itself
+export function get_station_data_field(station_data, field_name){
+    const arrayColumn = (arr, n) => arr.map(x => x[n]);
+    //Use column_names or column_std_names
+    const field_position = station_data["column_std_names"].indexOf(field_name)
+    return arrayColumn(station_data['rows'], field_position)
+}
