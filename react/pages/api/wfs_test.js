@@ -169,7 +169,7 @@ export async function wfs_query(storm_name, season, source, source_type, filters
         const erddap_features_url = build_wfs_query("cioos-atlantic:" + erddap_source, erddap_filters, source_type)
 
         console.debug("ERDDAP URL: ", erddap_features_url)
-        responses["erddap_data"] = await fetch_wfs_data(erddap_features_url)
+        responses["erddap_data"] = await fetch_wfs_data(erddap_features_url);
     }
 
     return responses;

@@ -7,11 +7,11 @@ import { addDays, subDays, lightFormat } from "date-fns";
 //import {forecastDataDir, getStormData} from '../../lib/storms.js';
 
 const storm_list = [
-  { "name": "FIONA", "year": 2022, "source":"eccc" },
-  { "name": "ERNESTO", "year": 2018, "source":"eccc" },
-  { "name": "EARL", "year": 2022, "source":"eccc" },
-  { "name": "LEE", "year": 2017, "source":"eccc" },
-  { "name": "IRMA", "year": 2017, "source":"eccc" },
+  { "name": "FIONA", "year": 2022, "source":"ibtracs" },
+  { "name": "ERNESTO", "year": 2018, "source":"ibtracs" },
+  { "name": "EARL", "year": 2022, "source":"ibtracs" },
+  { "name": "LEE", "year": 2017, "source":"ibtracs" },
+  { "name": "IRMA", "year": 2017, "source":"ibtracs" },
   { "name": "BLAMMO", "year": 1999, "source":"ibtracs" },
   { "name": "CLAUDETTE", "year": 2015, "source":"ibtracs" },
   
@@ -91,7 +91,10 @@ export async function handleClick(storm, onHarvestData)  {
   const station_resource = await fetch(`/api/query_stations_historical?${query}`);
   const historical_station_data = await station_resource.json();
 
-  const historical_storm_data= parseHistoricalData(storm_data);
+  const historical_storm_data= parseStormData(storm_data);
+  console.log(historical_station_data);
+
+
 
    // Trigger the callback to send data back to the parent
    if (onHarvestData) {
@@ -148,7 +151,7 @@ function getStationQueryParams (historical_storm_data){
   return [min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time]
 
 }
-function parseHistoricalData(storm_data){
+function parseStormData(storm_data){
 
   if (storm_data?.ib_data?.features?.length === 0) {
     return null
@@ -205,4 +208,5 @@ function parseHistoricalData(storm_data){
   //console.log(storm_features);
   return storm_features;
 };
+
 
