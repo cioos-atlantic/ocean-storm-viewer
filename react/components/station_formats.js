@@ -86,12 +86,9 @@ export function formatCioosDateTime(date_str){
 
 
 export function parseData(fullStationData) {
+  console.log(fullStationData);
   //console.log(JSON.parse(chartData));
   let stationDataTable = {}; 
-
-
-  const attributes_of_interest = ['sea_surface_wave_significant_height',
-    'sea_surface_wave_maximum_height', "wind_speed_of_gust", "air_temperature", "time", "sea_surface_temperature", "wind_speed", "air_pressure"]
 
   Object.entries(fullStationData).forEach(([station_name, station_details]) => {
     //console.log(`Station_name: ${station_name}`);
@@ -99,67 +96,49 @@ export function parseData(fullStationData) {
     const stationBbox = station_details.bbox;
     //console.log(stationBbox)
     const stationEntries= station_details.properties.station_data;
+    //console.log(stationEntries);
+    if (!stationDataTable[station_name]) {
+      stationDataTable[station_name] = { 
+        bbox: stationBbox,
+        data: {} };}  // Initialize the station entry if not found
 
-    const station_data = JSON.parse(stationEntries);
-    //console.log(station_data)
+
+    const station_data = stationDataTable[station_name].data;
+
+    stationEntries.column_std_names.forEach((variable) =>{
+
+      let index = stationEntries.column_std_names.indexOf(variable);
+      station_data[variable]= {
+        column_long_names: stationEntries.column_long_names[index],
+        column_std_names: stationEntries.column_std_names[index],
+        column_names: stationEntries.column_names[index],
+        column_units: stationEntries.column_units[index],
+        value:[]
+
+      };
 
 
-    const re_match = /(?<var_name>[\w_]+)\s\((?<standard_name>[\w_]+)\|(?<units>[\w\s\/()-]+)\|(?<long_name>[\w\s\d\/()]+)\)/g; 
-
- 
-    //let field_value = undefined;
-    let field_obj = undefined;
-        
-    station_data.forEach((row) => {
-    //console.log("Row:", row);
-
-      Object.keys(row).forEach((field) => {
-        //console.log(field)
-        
-        //field_value = row[field]
-        //console.log(field);
-        const names = [...field.matchAll(re_match)];
-        if (names.length > 0) {
-          field_obj = {};
-          //console.log(names[0])
-
-          field_obj.var_name = names[0].groups["var_name"];
-          field_obj.std_name = names[0].groups["standard_name"];
-          field_obj.units = names[0].groups["units"];
-          field_obj.long_name = names[0].groups["long_name"];
-          field_obj.value = row[field];}
-          
-          if (attributes_of_interest.includes(field_obj.std_name)){
-            if (!stationDataTable[station_name]) {
-              stationDataTable[station_name] = { 
-                bbox: stationBbox,
-                data: {} };}  // Initialize the station entry if not found
-            
-            const station = stationDataTable[station_name];
-            // Check if the std_name field already exists in the station data
-            if (!station.data[field_obj.std_name]) {
-                // Create a new entry for this field
-              station.data[field_obj.std_name] = field_obj;}
-            else {
-              // If the field already exists, append the value
-              const existingField = station.data[field_obj.std_name];
-          
-              if (!Array.isArray(existingField.value)) {
-                existingField.value = [existingField.value];}
-              existingField.value.push(field_obj.value);};
-      }});});
+      stationEntries.rows.forEach((list) =>{
+        station_data[variable].value.push(list[index])
       });
-    //console.log(stationDataTable) 
-    stationDataTable= dataConversion(stationDataTable);
-    //console.log(stationDataTable) 
+    })
 
+    console.log(stationDataTable);
 
-    return stationDataTable 
+  
+  });
+  console.log(stationDataTable);
+  const convertedStationData= dataConversion(stationDataTable);
+
+  
+  return convertedStationData 
 }
 
 function dataConversion(stationDataTable){
+  let rawStationData = { ...stationDataTable }; // make deep copy
+
   //console.log(stationDataTable);
-  Object.entries(stationDataTable).forEach(([stationName, stationData]) => {
+  Object.entries(rawStationData).forEach(([stationName, stationData]) => {
     const station = stationData.data
     Object.entries(station).forEach(([key, variable]) => {
       if (!Array.isArray(variable.value)) {
@@ -193,8 +172,8 @@ function dataConversion(stationDataTable){
     })
 
   })
-  console.log(stationDataTable);
-  return stationDataTable
+  console.log(rawStationData);
+  return rawStationData
 
 }
 export function getStormBbox (storm_data){
@@ -204,3 +183,7 @@ export function getStormBbox (storm_data){
 
 }
     
+function filter_stations(stationData){
+  const attributes_of_interest = ['sea_surface_wave_significant_height',
+    'sea_surface_wave_maximum_height', "wind_speed_of_gust", "air_temperature", "time", "sea_surface_temperature", "wind_speed", "air_pressure"];
+}
