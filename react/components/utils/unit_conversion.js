@@ -14,14 +14,14 @@ export function windSpeedToKnots(value_str){
 
 
 export function tempToDegreeF(value_str){
-  const unit = 'degree_F';
+  const unit = '°F';
   const value= parseFloat(value_str); // Convert string to float
   const converted_value = Math.round((value * (9 / 5)) + 32); 
   return {converted_value, unit};
 };
 
 export function tempToDegreeC(value_str){
-  const unit = 'degree_C';
+  const unit = '°C';
   //const value= parseFloat(value_str); // Convert string to float
   const converted_value = Math.round(parseFloat(value_str)); 
   return {converted_value, unit};

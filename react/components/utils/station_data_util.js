@@ -56,9 +56,38 @@ export function station_data_format(features, filter_station) {
 
 //Station data should be formatted from station_data_format util
 //Takes input from the station_data list field, not the whole station data itself
-export function get_station_field_data(station_data, field_name, name_type='column_std_names'){
+export function get_station_field_data(station_data, field_name, name_type='column_names'){
     const arrayColumn = (arr, n) => arr.map(x => x[n]);
-    //Use column_names or column_std_names
+    const field_position = get_station_field_position(station_data,field_name,name_type)
+    const field_data = arrayColumn(station_data['rows'], field_position)
+    return field_data
+}
+
+export function get_recent_row_position(station_info, time){
+    const station_data = station_info['properties']['station_data']
+    let position = -1 // Errors out if not set
+    //No time provided, get most recent data
+    if(!time){
+        position = station_data['rows'].length - 1
+    }
+    //Time provided and within bounds (historical)
+    else if(time <= station_info['properties']['max_time'] && time >= station_info['properties']['min_time']){
+        //Worry about this later
+    }
+    // Other case, time provided but out of bounds, returns initialization error
+    return position
+}
+
+export function get_station_field_units(station_data, field_name, name_type='column_names'){
+    const field_position = get_station_field_position(station_data,field_name,name_type)
+    return station_data['column_units'][field_position]
+}
+
+export function get_station_field_position(station_data, field_name, name_type='column_names'){
     const field_position = station_data[name_type].indexOf(field_name)
-    return arrayColumn(station_data['rows'], field_position)
+    return field_position
+}
+
+//Gets the most recent station data before a given time, if no time given, most recent data
+export function get_station_row_data(station_info, time){
 }

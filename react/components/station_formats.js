@@ -3,70 +3,83 @@ import Image from "next/image";
 //TODO: Clean up
 
 
-export function formatCioosStations(data_obj, children){
-  const attributes_of_interest = {
-    'sea_surface_wave_significant_height':'Wave Height (Avg)',
-    'sea_surface_wave_maximum_height':'Wave Height (Max)'
+export function formatCioosStations(data_obj, children, row_position){
+  let data_value = (column_name) => {
+    const col_index = column_data.indexOf(column_name)
+    return col_index > -1 ? row_data[row_position][col_index] : null
   }
+
+  // Conversion handling, but just in case
+  let column_units = (column_name) => {
+    const col_index = column_data.indexOf(column_name)
+    return col_index > 0 ? unit_data[col_index] : null
+  }
+
+  const column_data = data_obj['column_std_names']
+  const unit_data = data_obj['column_units']
+  const row_data = data_obj['rows']
+
   // Separate section for wind since the arrows need to be drawn
-  if(data_obj['wind_from_direction']){
-    const wind_direction = (180 + parseInt(data_obj['wind_from_direction'].value)) % 360
+  //Possible to do this in a loop?
+
+  const datetime = data_value('time')
+  children.push(<strong>{formatCioosDateTime(datetime)}</strong>)
+  children.push(<br></br>)
+  children.push(<br></br>)
+
+  const wind_from_direction = data_value('wind_from_direction')
+  if(wind_from_direction){
+    const wind_direction = (180 + parseInt(wind_from_direction)) % 360
     children.push(<strong>Wind:  </strong>)
     children.push(<Image class="wind_arrow" alt={wind_direction} src="arrow.svg" height={20} width={20} 
       style={{ transform: 'rotate(' + (wind_direction) + 'deg)' }}></Image>)
   }
-  if(data_obj['wind_speed']){
-    //console.log(data_obj['wind_speed']);
-    const resultKmh = windSpeedToKmh(data_obj['wind_speed'].value)
-    const resultKnots = windSpeedToKnots(data_obj['wind_speed'].value)
+  
+  const wind_speed = data_value('wind_speed')
+  if(wind_speed){
+    wind_from_direction ? null : children.push(<strong>Wind:  </strong>)
+    const resultKmh = windSpeedToKmh(wind_speed)
+    const resultKnots = windSpeedToKnots(wind_speed)
     children.push(<span>    {resultKnots.converted_value} {resultKnots.unit} ({resultKmh.converted_value} {resultKmh.unit})</span>)}
-
-
-  if(data_obj['air_temperature']){
-    //console.log(data_obj['wind_speed']);
-    const resultDegreeF = tempToDegreeF(data_obj['air_temperature'].value)
-    const resultDegreeC = tempToDegreeC(data_obj['air_temperature'].value)
+  
+  const air_temperature = data_value('air_temperature')
+  if(air_temperature){
+    const resultDegreeF = tempToDegreeF(air_temperature)
+    //Should already be in Celsius may not need? Maybe good for formatting though
+    const resultDegreeC = tempToDegreeC(air_temperature)
     children.push(<p><strong>Temperature (Air):</strong> {resultDegreeC.converted_value} {resultDegreeC.unit}   ({resultDegreeF.converted_value} {resultDegreeF.unit})</p>)}
 
-
-  if(data_obj['sea_surface_temperature']){
+  const sea_surface_temperature = data_value('sea_surface_temperature')
+  if(sea_surface_temperature){
     //console.log(data_obj['wind_speed']);
-    const resultDegreeF = tempToDegreeF(data_obj['sea_surface_temperature'].value)
-    const resultDegreeC = tempToDegreeC(data_obj['sea_surface_temperature'].value)
-    children.push(<p><strong>Temperature (Sea Surface):</strong> {resultDegreeC.converted_value} {resultDegreeC.unit} ({resultDegreeF.converted_value} {resultDegreeF.unit})</p>)}
+    const resultDegreeF = tempToDegreeF(sea_surface_temperature)
+    const resultDegreeC = tempToDegreeC(sea_surface_temperature)
+    children.push(<p><strong>Temperature (Sea Surface):</strong> {resultDegreeC.value} {resultDegreeC.unit} ({resultDegreeF.converted_value} {resultDegreeF.unit})</p>)}
 
+  const relative_humidity = data_value('relative_humidity')
   if(data_obj['relative_humidity']){
-    //console.log(data_obj['wind_speed']);
+    children.push(<p><strong>Humidity:</strong> {parseInt(relative_humidity)}%</p>)}
 
-    children.push(<p><strong>Humidity:</strong> {parseInt(data_obj['relative_humidity'].value)}%</p>)}
-
-  if(data_obj['air_pressure']){
+  const air_pressure = data_value('air_pressure')
+  if(air_pressure){
     //console.log(data_obj['wind_speed']);
-    const resultKPa = pressureToKPa(data_obj['air_pressure'].value)
-    const resultInHg = pressureToInHg(data_obj['air_pressure'].value)
+    const resultKPa = pressureToKPa(air_pressure)
+    const resultInHg = pressureToInHg(air_pressure)
     children.push(<p><strong>Air Pressure:</strong> {resultKPa.converted_value} {resultKPa.unit} ({resultInHg.converted_value} {resultInHg.unit})</p>)}
 
-  if(data_obj['sea_surface_wave_maximum_height']){
+  const sea_surface_wave_maximum_height = data_value('sea_surface_wave_maximum_height')
+  if(sea_surface_wave_maximum_height){
     //console.log(data_obj['wind_speed']);
-    const resultM = windHeightToM(data_obj['sea_surface_wave_maximum_height'].value)
-    const resultFt = windHeightToFt(data_obj['sea_surface_wave_maximum_height'].value)
+    const resultM = windHeightToM(sea_surface_wave_maximum_height)
+    const resultFt = windHeightToFt(sea_surface_wave_maximum_height)
     children.push(<p><strong>Wave Height (Max):</strong> {resultM.converted_value} {resultM.unit} ({resultFt.converted_value} {resultFt.unit})</p>)}
 
-  if(data_obj['sea_surface_wave_significant_height']){
+  const sea_surface_wave_significant_height = data_value('sea_surface_wave_significant_height')
+  if(sea_surface_wave_significant_height){
     //console.log(data_obj['wind_speed']);
-    const resultM = windHeightToM(data_obj['sea_surface_wave_significant_height'].value)
-    const resultFt = windHeightToFt(data_obj['sea_surface_wave_significant_height'].value)
+    const resultM = windHeightToM(sea_surface_wave_significant_height)
+    const resultFt = windHeightToFt(sea_surface_wave_significant_height)
     children.push(<p><strong>Wave Height (Avg):</strong> {resultM.converted_value} {resultM.unit} ({resultFt.converted_value} {resultFt.unit})</p>)}
-
-    
-
-  /*Object.entries(attributes_of_interest).forEach(entry =>{
-    const key = entry[0]
-    const val = entry[1]
-    if(data_obj[key] && data_obj[key].value){
-        children.push(<p><strong>{val}:</strong> {(parseFloat(data_obj[key].value).toFixed(1))} {data_obj[key].units}</p>)}
-  })
-  //return children*/
 }
 
 export function formatCioosDateTime(date_str){
@@ -93,13 +106,13 @@ export function parseData(fullStationData) {
   const attributes_of_interest = ['sea_surface_wave_significant_height',
     'sea_surface_wave_maximum_height', "wind_speed_of_gust", "air_temperature", "time", "sea_surface_temperature", "wind_speed", "air_pressure"]
 
+  // For each value in the dict
   Object.entries(fullStationData).forEach(([station_name, station_details]) => {
     //console.log(`Station_name: ${station_name}`);
     //console.log(`station_details: ${station_details.properties.station_data}`);
     const stationEntries= station_details.properties.station_data
 
-    const station_data = JSON.parse(stationEntries);
-    //console.log(station_data)
+    //const station_data = JSON.parse(stationEntries);
 
 
     const re_match = /(?<var_name>[\w_]+)\s\((?<standard_name>[\w_]+)\|(?<units>[\w\s\/()-]+)\|(?<long_name>[\w\s\d\/()]+)\)/g; 
@@ -127,6 +140,7 @@ export function parseData(fullStationData) {
           field_obj.long_name = names[0].groups["long_name"];
           field_obj.value = row[field];}
           
+          // See if attribute of interest includes std name
           if (attributes_of_interest.includes(field_obj.std_name)){
             if (!stationDataTable[station_name]) {
               stationDataTable[station_name] = { data: {} };}  // Initialize the station entry if not found

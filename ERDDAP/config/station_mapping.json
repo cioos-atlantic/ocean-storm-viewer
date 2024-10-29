@@ -1,0 +1,24 @@
+{
+    "sma_negl_cartwright_junction_nlqu0004":{
+        "display":"Cartwright Junction",
+        "organization":"Smart Atlantic"},
+    "sma_negl_red_bay_nlqu0005":"Red Bay",
+    "sma_negl_north_west_river_nlqu0007":"North West River",
+    "sma_negl_postville_nlqu0001":"Postville",
+    "sma_negl_rigolet_nlqu0002":"Rigolet",
+    "sma_negl_black_tickle_nlqu0003":"Black Tide",
+    "DFO_Sutron_NHARB":"Placentia Bay: North Harbour",
+    "DFO_Sutron_KLUMI":"Placentia Bay: Ragged Islands",
+    "SMA_red_island_shoal":"Red Island Shoal",
+    "SMA_Holyrood_Buoy2":"Holyrood (Buoy 2)",
+    "SMA_st_johns":"St. John's",
+    "SMA_halifax":"Herring Cove",
+    "SMA_halifax_anemometer1":"Halifax (Anemometer 1)",
+    "SMA_halifax_pier9c":"Halifax (Pier 9c)",
+    "SMA_halifax_fairview":"Halifax (Fairview)",
+    "force_meteorological_tower":"FORCE Meteorological Tower",
+    "SMA_saint_john":"Saint John",
+    "SMA_saint_john_cruise_terminal":"Saint John (Cruise Terminal)",
+    "SPOT-1431_202204":"Sable Island South (SPOT 1431)",
+    "SPOT-1461_202204":"Sable Island South (SPOT 1461)"
+}

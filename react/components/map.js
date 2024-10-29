@@ -15,6 +15,7 @@ import HurricaneIcon from '../public/hurricane.svg'
 import TropicalStormIcon from '../public/tropical-storm.svg'
 import {formatCioosStations, formatCioosDateTime, parseData} from './station_formats'
 import RenderChart from './station_graph.js'
+import {get_recent_row_position} from './utils/station_data_util'
 
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
@@ -115,35 +116,13 @@ function Station_Variable(name, std_name, value, units) {
 }
 
 function RecentStationData(data) {
-  const station_data = JSON.parse(data)
-  const len = Object.keys(station_data).length
-  let data_obj = {}
+  let station_data = data['properties']['station_data']
   let children = []
-  // Will always be most recently added
-  Object.keys(station_data[len - 1]).forEach(element => {
-    const value = station_data[len - 1][element]
-    if (element.includes('(time|')) {
-      //console.log(value)
-      //const datetime = new Date(value * 1).toLocaleString()
-      data_obj['datetime'] = formatCioosDateTime(value)
-      //console.log(data_obj['datetime'])
-    }
-    else {
-      //WARNING: Ugly regex ahead
-      //Name (standard_name | units | long_name)
-      const standard_name = element.match("\\((.*?)\\|")[1];
-      const units = element.match("\\|(.*?)\\|")[1];
-      const long_name = element.match("[^\\|]*\\|[^\\|]*\\|(.*?)\\)")[1];
-      data_obj[standard_name] = new Station_Variable(long_name, standard_name, value, units);
-    }
-  })
-
-
- formatCioosStations(data_obj, children)
+  const row_position = get_recent_row_position(data)
+  formatCioosStations(station_data, children, row_position)
 
   let station_info = (
     <div className="station_pane">
-      <p>{data_obj['datetime']}</p>
       {children}
     </div>
   );
@@ -209,6 +188,7 @@ export default function Map({ children, storm_data, station_data }) {
   // Points always there, even not in storm seasons
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
 
+
   // console.debug("Hover Marker: ", hover_marker.id, hover_marker.properties.TIMESTAMP);
 
   // console.log("Data");
@@ -251,8 +231,7 @@ export default function Map({ children, storm_data, station_data }) {
   if (storm_data.rad.features.length > 0) {
     storm_radius = remap_coord_array(storm_data.rad.features[0].geometry.coordinates);
   }
-
-  const parsedStationData = parseData(station_data);
+  // const parsedStationData = (station_data);
 
   // console.log("hurricane_icon: ", HurricaneIcon.src)
   // console.log("hurricon_div: ", hurricon_div)
@@ -321,11 +300,11 @@ export default function Map({ children, storm_data, station_data }) {
               <LayerGroup>
                 { 
                   
-
                   Object.entries(station_data).map((element) => {
-                    const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + element[0] + ".html"
-                    const data = RecentStationData(element[1].properties.station_data)
-                    const station_name = element[1].properties.station
+                    const station_name = element[0]
+                    const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + station_name + ".html"
+    
+                    const data = RecentStationData(element[1])
                     const display_name = (station_name in station_names) ? station_names[station_name]['display']:station_name
 
                     //console.log("Station Name:", station_name);
@@ -336,21 +315,22 @@ export default function Map({ children, storm_data, station_data }) {
                         key={element.station} 
                         position={flip_coords(element[1].geometry.coordinates)}
                         //eventHandlers={{click : )}}
+                        /*
+                          Move back under display_name
+                            <div>
+                              <RenderChart  
+                              chartData={station_data[station_name].properties.station_data}
+                              stationName={station_name}
+                              />
+                            </div>
+                        */
                         >
                           <Popup 
                             contentStyle={{
                               width: 'auto', // Adjust width based on content (chart)
                               padding: '20px', // Optional padding around chart
                               }}> 
-                            
-                            <div>
-                              <h4>{display_name}</h4>
-                              
-                              <RenderChart  
-                              chartData={parsedStationData[station_name]}
-                              stationName={station_name}
-                              />
-                            </div>
+                            <h4>{display_name}</h4>
                             {data}
                             <a href={data_link} target="_blank">Full data</a>
                           </Popup>
