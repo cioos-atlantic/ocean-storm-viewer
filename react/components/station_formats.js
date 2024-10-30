@@ -12,7 +12,7 @@ export function formatCioosStations(data_obj, children, row_position){
   // Conversion handling, but just in case
   let column_units = (column_name) => {
     const col_index = column_data.indexOf(column_name)
-    return col_index > 0 ? unit_data[col_index] : null
+    return col_index > -1 ? unit_data[col_index] : null
   }
 
   const column_data = data_obj['column_std_names']
@@ -40,21 +40,21 @@ export function formatCioosStations(data_obj, children, row_position){
     wind_from_direction ? null : children.push(<strong>Wind:  </strong>)
     const resultKmh = windSpeedToKmh(wind_speed)
     const resultKnots = windSpeedToKnots(wind_speed)
-    children.push(<span>    {resultKnots.converted_value} {resultKnots.unit} ({resultKmh.converted_value} {resultKmh.unit})</span>)}
+    children.push(<span>    {resultKnots.value} {resultKnots.unit} ({resultKmh.value} {resultKmh.unit})</span>)}
   
   const air_temperature = data_value('air_temperature')
   if(air_temperature){
     const resultDegreeF = tempToDegreeF(air_temperature)
     //Should already be in Celsius may not need? Maybe good for formatting though
     const resultDegreeC = tempToDegreeC(air_temperature)
-    children.push(<p><strong>Temperature (Air):</strong> {resultDegreeC.converted_value} {resultDegreeC.unit}   ({resultDegreeF.converted_value} {resultDegreeF.unit})</p>)}
+    children.push(<p><strong>Temperature (Air):</strong> {resultDegreeC.value} {resultDegreeC.unit}   ({resultDegreeF.value} {resultDegreeF.unit})</p>)}
 
   const sea_surface_temperature = data_value('sea_surface_temperature')
   if(sea_surface_temperature){
     //console.log(data_obj['wind_speed']);
     const resultDegreeF = tempToDegreeF(sea_surface_temperature)
     const resultDegreeC = tempToDegreeC(sea_surface_temperature)
-    children.push(<p><strong>Temperature (Sea Surface):</strong> {resultDegreeC.value} {resultDegreeC.unit} ({resultDegreeF.converted_value} {resultDegreeF.unit})</p>)}
+    children.push(<p><strong>Temperature (Sea Surface):</strong> {resultDegreeC.value} {resultDegreeC.unit} ({resultDegreeF.value} {resultDegreeF.unit})</p>)}
 
   const relative_humidity = data_value('relative_humidity')
   if(data_obj['relative_humidity']){
@@ -65,21 +65,21 @@ export function formatCioosStations(data_obj, children, row_position){
     //console.log(data_obj['wind_speed']);
     const resultKPa = pressureToKPa(air_pressure)
     const resultInHg = pressureToInHg(air_pressure)
-    children.push(<p><strong>Air Pressure:</strong> {resultKPa.converted_value} {resultKPa.unit} ({resultInHg.converted_value} {resultInHg.unit})</p>)}
+    children.push(<p><strong>Air Pressure:</strong> {resultKPa.value} {resultKPa.unit} ({resultInHg.value} {resultInHg.unit})</p>)}
 
   const sea_surface_wave_maximum_height = data_value('sea_surface_wave_maximum_height')
   if(sea_surface_wave_maximum_height){
     //console.log(data_obj['wind_speed']);
     const resultM = windHeightToM(sea_surface_wave_maximum_height)
     const resultFt = windHeightToFt(sea_surface_wave_maximum_height)
-    children.push(<p><strong>Wave Height (Max):</strong> {resultM.converted_value} {resultM.unit} ({resultFt.converted_value} {resultFt.unit})</p>)}
+    children.push(<p><strong>Wave Height (Max):</strong> {resultM.value} {resultM.unit} ({resultFt.value} {resultFt.unit})</p>)}
 
   const sea_surface_wave_significant_height = data_value('sea_surface_wave_significant_height')
   if(sea_surface_wave_significant_height){
     //console.log(data_obj['wind_speed']);
     const resultM = windHeightToM(sea_surface_wave_significant_height)
     const resultFt = windHeightToFt(sea_surface_wave_significant_height)
-    children.push(<p><strong>Wave Height (Avg):</strong> {resultM.converted_value} {resultM.unit} ({resultFt.converted_value} {resultFt.unit})</p>)}
+    children.push(<p><strong>Wave Height (Avg):</strong> {resultM.value} {resultM.unit} ({resultFt.value} {resultFt.unit})</p>)}
 }
 
 export function formatCioosDateTime(date_str){
@@ -179,23 +179,23 @@ function dataConversion(stationDataTable){
         variable.units = 'kPa';
         variable.value = variable.value.map(v => {
           const resultKPa = pressureToKPa(v);
-          //console.log(`Value: ${v}, Converted: ${resultKPa.converted_value}`);
-          return resultKPa.converted_value}); 
+          //console.log(`Value: ${v}, Converted: ${resultKPa.value}`);
+          return resultKPa.value}); 
       }
       if (key === 'wind_speed'){
         variable.units = 'Kmh';
         variable.value = variable.value.map(v => {
           const resultKmh = windSpeedToKmh(v);
-          //console.log(`Value: ${v}, Converted: ${resultKmh.converted_value}`);
-          return resultKmh.converted_value}); 
+          //console.log(`Value: ${v}, Converted: ${resultKmh.value}`);
+          return resultKmh.value}); 
       }
 
       if (key === 'wind_speed_of_gust'){
         variable.units = 'Kmh';
         variable.value = variable.value.map(v => {
           const resultKmh = windSpeedToKmh(v);
-          //console.log(`Value: ${v}, Converted: ${resultKmh.converted_value}`);
-          return resultKmh.converted_value}); 
+          //console.log(`Value: ${v}, Converted: ${resultKmh.value}`);
+          return resultKmh.value}); 
       }
       
       

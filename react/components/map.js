@@ -299,13 +299,15 @@ export default function Map({ children, storm_data, station_data }) {
             <LayersControl.Overlay checked name="Stations">
               <LayerGroup>
                 { 
-                  
                   Object.entries(station_data).map((element) => {
                     const station_name = element[0]
+                    const station_values = element[1] // Data for the individual station
                     const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + station_name + ".html"
-    
-                    const data = RecentStationData(element[1])
+                    const data_popup = RecentStationData(station_values)
                     const display_name = (station_name in station_names) ? station_names[station_name]['display']:station_name
+
+                    // Option to toggle units
+                    // If unit toggle changes table to have markers for unit conversion
 
                     //console.log("Station Name:", station_name);
                     //console.log(parsedStationData[station_name])
@@ -313,16 +315,10 @@ export default function Map({ children, storm_data, station_data }) {
                     return (
                       <Marker 
                         key={element.station} 
-                        position={flip_coords(element[1].geometry.coordinates)}
+                        position={flip_coords(station_values.geometry.coordinates)}
                         //eventHandlers={{click : )}}
                         /*
                           Move back under display_name
-                            <div>
-                              <RenderChart  
-                              chartData={station_data[station_name].properties.station_data}
-                              stationName={station_name}
-                              />
-                            </div>
                         */
                         >
                           <Popup 
@@ -331,7 +327,13 @@ export default function Map({ children, storm_data, station_data }) {
                               padding: '20px', // Optional padding around chart
                               }}> 
                             <h4>{display_name}</h4>
-                            {data}
+                            <div>
+                              <RenderChart  
+                              chartData={station_values.properties.station_data}
+                              stationName={station_name}
+                              />
+                            </div>
+                            {data_popup}
                             <a href={data_link} target="_blank">Full data</a>
                           </Popup>
                         </Marker>
