@@ -243,14 +243,19 @@ export default function Map({ children, storm_data, station_data }) {
   }
 
   let line_track = [];
-  if (storm_data.err.features.length > 0) {
-    line_track = remap_coord_array(storm_data.lin.features[0].geometry.coordinates);
+  if (storm_data.lin.features.length > 0) {
+    // line_track = remap_coord_array(storm_data.lin.features[0].geometry.coordinates);
+    // line_track = storm_data.lin.features[0].geometry.coordinates;
+
   }
 
   let storm_radius = [];
   if (storm_data.rad.features.length > 0) {
-    storm_radius = remap_coord_array(storm_data.rad.features[0].geometry.coordinates);
+    // console.log("Wind Radii Features: ", storm_data.rad.features)
+    // storm_radius = remap_coord_array(storm_data.rad.features[0].geometry.coordinates);
   }
+
+  console.debug("STORM DATA: ", storm_data);
 
   const parsedStationData = parseData(station_data);
 
@@ -300,7 +305,7 @@ export default function Map({ children, storm_data, station_data }) {
                   storm_data.pts.features.map(point => {
                     const position = flip_coords(point.geometry.coordinates);
 
-                    console.log(point);
+                    // console.log(point);
 
                     return (
                       <Marker
@@ -363,8 +368,17 @@ export default function Map({ children, storm_data, station_data }) {
             <LayersControl.Overlay checked name="Track Line">
               <LayerGroup>
                 {
-                  line_track.length > 0 &&
-                  <Polyline positions={line_track} />
+                  storm_data.lin.features.length > 0 &&
+                  storm_data.lin.features.map(line => {
+
+                    return (
+                      <GeoJSON 
+                        key={line.id}
+                        data={line} 
+                        style={{ className: 'line-of-travel' }}
+                      />
+                    )
+                  })
                 }
               </LayerGroup>
             </LayersControl.Overlay>

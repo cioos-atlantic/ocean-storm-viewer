@@ -83,6 +83,10 @@ footer {
   bottom: 50px;
 }
 
+.line-of-travel {
+  stroke: green;
+}
+
 .wind-rad-34 {
   stroke: yellow;
   fill: yellow;

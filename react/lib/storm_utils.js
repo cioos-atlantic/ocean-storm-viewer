@@ -102,7 +102,7 @@ export function build_wind_radii(storm_data_pt, speed, storm_center, ne_rad, se_
     return final_polygon;
 }
 
-export function flatten_nested_array(source_array){
+export function flatten_nested_array(source_array) {
     return [].concat.apply([], source_array);
 }
 
@@ -157,7 +157,41 @@ export function build_quadrant(storm_center, radius, quadrant) {
 }
 
 export function build_line_of_travel(storm_data) {
+    let line_of_travel = {
+        "type": "Feature",
+        "id": "line-of-travel-".concat(storm_data.data[0].properties.NAME, '-', storm_data.data[0].properties.SEASON),
+        "geometry": {
+            "type": "LineString",
+            "coordinates": [
+            ]
+        },
+        "properties": {
+            "SEASON": storm_data.data[0].properties.SEASON,
+            "STORMNAME": storm_data.data[0].properties.NAME,
+        }
+    };
 
+    storm_data.data.forEach((storm_pt, idx) => {
+        line_of_travel.geometry.coordinates.push([storm_pt.geometry.coordinates[0], storm_pt.geometry.coordinates[1]]);
+    });
+    
+    console.debug("Generated Line of Travel: ", line_of_travel);
+
+    return line_of_travel;
+}
+
+export function build_storm_points(storm_data){
+    let storm_points = [];
+
+    for (let i in storm_data.data) {
+        switch (storm_data.data[i].geometry.type) {
+            case "Point":
+                storm_points.push(storm_data.data[i])
+                break;
+        }
+    }
+
+    return storm_points;
 }
 
 /**
@@ -183,7 +217,7 @@ export function bounds_to_array(bounds_obj) {
     return [bounds_obj.maxLng, bounds_obj.maxLat, bounds_obj.minLng, bounds_obj.minLat];
 }
 
-function build_wind_radii_polygons(storm_data){
+function build_wind_radii_polygons(storm_data) {
     let wind_rad_polys = [],
         wind_spd_rad_dir = null,
         wind_rad_parts = {};
@@ -233,66 +267,69 @@ function build_wind_radii_polygons(storm_data){
     return wind_rad_polys;
 }
 
-
-export function populateStormDetails(event, storm_data, setSelectedStorm, setStormPoints, preserve_points = false) {
-    console.log("Set Selected storm to: " + storm_data.data[0].properties.NAME);
-
-    setSelectedStorm(storm_data.data[0].properties.NAME);
-
-    console.debug("Printing out storm properties");
-    console.debug(storm_data);
-    
-    console.debug(`preserve_points: ${preserve_points}: `);
-
+export function build_storm_features(storm_data){
     // Cannot set this directly from empty_storm_obj because it is a constant
-    // however, cloning its properites into a new variable will work as expected
+    // however, cloning its properties into a new variable will work as expected
     let storm_features = structuredClone(empty_storm_obj);
     
-    // if storm points are to be preserved, do not reset storm points
-    // otherwise, reset them to an empty storm object
-    if(!preserve_points){
-        console.debug("We should reset Storm Points...");
-    }
-
-    setStormPoints(empty_storm_obj);
-    
-    // console.debug(`storm_features:`, storm_features);
-    // console.debug(`map_storm_points:`);
-
     // Build wind radii polygons
     let wind_rad_polys = build_wind_radii_polygons(storm_data);
+    let line_of_travel = build_line_of_travel(storm_data);
+    let storm_points = build_storm_points(storm_data);
 
     // const filtered = forecasts.map(source => {
     //    return source.storm.filter(storm_part => storm_part.storm == storm_obj.name && storm_part.file_type == "pts") 
     // })[0];
 
-    for (var i in storm_data.data) {
-        switch (storm_data.data[i].geometry.type) {
-            case "Point":
-                storm_features.pts.features.push(storm_data.data[i])
-                break;
-            // case "LineString":
-            //   break;
-            // case "Polygon":
-            //   break;
-        }
+    if (storm_points) {
+        console.debug("Adding points to storm features");
+        storm_features.pts.features = storm_points;
     }
 
     if (wind_rad_polys) {
         console.debug("Adding polygons to storm features");
         storm_features.rad.features = wind_rad_polys;
     }
-    console.debug(`Final storm ${storm_data.data[0].properties.NAME} Points: ${storm_features.pts.features.length}, Wind Radii: ${storm_features.rad.features.length}`);
+
+    if (line_of_travel) {
+        console.debug("Adding line of travel to storm features");
+        storm_features.lin.features = [line_of_travel];
+    }
+
+    return storm_features;
+}
+
+export function populateStormDetails(event, storm_data, setSelectedStorm, setStormPoints) {
+    setStormPoints(empty_storm_obj);
+
+    console.log("Set Selected storm to: " + storm_data.data[0].properties.NAME);
+    setSelectedStorm(storm_data.data[0].properties.NAME);
+
+    let storm_features = build_storm_features(storm_data);
+
     setStormPoints(storm_features);
 }
 
 export function populateAllStormDetails(event, all_storm_data, setSelectedStorm, setStormPoints) {
-    console.debug("Clearing ALL STORM POINTS!");
-    console.debug(all_storm_data);
-
+    console.debug("ALL STORM DATA: ", all_storm_data);
+    
+    console.debug("Setting selected storm to ALL STORMS");
     setSelectedStorm(show_all_storms);
+
+    console.debug("Clearing ALL storm data from map!");
     setStormPoints(empty_storm_obj);
-    // for (let storm in all_storm_data) {
-    //     populateStormDetails(event, all_storm_data[storm], setSelectedStorm, setStormPoints, true);
-    // }
+
+    let final_storm_features = structuredClone(empty_storm_obj);
+    
+    for (let storm in all_storm_data) {
+        let storm_features = build_storm_features(all_storm_data[storm]);
+
+        final_storm_features.err.features = final_storm_features.err.features.concat(storm_features.err.features);
+        final_storm_features.lin.features = final_storm_features.lin.features.concat(storm_features.lin.features);
+        final_storm_features.pts.features = final_storm_features.pts.features.concat(storm_features.pts.features);
+        final_storm_features.rad.features = final_storm_features.rad.features.concat(storm_features.rad.features);
+    }
+
+    console.debug("Setting final storm features")
+    setStormPoints(final_storm_features);
 }
