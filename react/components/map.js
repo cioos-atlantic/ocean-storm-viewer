@@ -242,19 +242,6 @@ export default function Map({ children, storm_data, station_data }) {
     err_cone = remap_coord_array(storm_data.err.features[0].geometry.coordinates[0]);
   }
 
-  let line_track = [];
-  if (storm_data.lin.features.length > 0) {
-    // line_track = remap_coord_array(storm_data.lin.features[0].geometry.coordinates);
-    // line_track = storm_data.lin.features[0].geometry.coordinates;
-
-  }
-
-  let storm_radius = [];
-  if (storm_data.rad.features.length > 0) {
-    // console.log("Wind Radii Features: ", storm_data.rad.features)
-    // storm_radius = remap_coord_array(storm_data.rad.features[0].geometry.coordinates);
-  }
-
   console.debug("STORM DATA: ", storm_data);
 
   const parsedStationData = parseData(station_data);
