@@ -84,22 +84,32 @@ footer {
 }
 
 .line-of-travel {
+  position: relative;
   stroke: green;
 }
 
+.sea-height {
+  position: relative;
+  fill: navy;
+  stroke: none;
+}
+
 .wind-rad-34 {
-  stroke: yellow;
+  position: relative;
+  stroke: none;
   fill: yellow;
 }
 
 .wind-rad-48,
 .wind-rad-50 {
-  stroke: orange;
+  position: relative;
+  stroke: none;
   fill: orange;
 }
 
 .wind-rad-64 {
-  stroke: red;
+  position: relative;
+  stroke: none;
   fill: red;
 }
 

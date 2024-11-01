@@ -369,16 +369,16 @@ export default function Map({ children, storm_data, station_data }) {
                 }
               </LayerGroup>
             </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Storm Radius">
+            <LayersControl.Overlay checked name="Wind Speed Radius">
               <LayerGroup>
                 {
                   storm_data.rad.features.length > 0 &&
                   storm_data.rad.features.map(radii => {
                     // console.debug("Mapping radii...", radii);
 
-                    let display_radii = true;
+                    let display_wind_speed_radii = true;
                     if (hover_marker.properties.TIMESTAMP != radii.properties.TIMESTAMP) {
-                      display_radii = false;
+                      display_wind_speed_radii = false;
                     }
 
                     const path_options = { className: 'wind-rad-'.concat(radii.properties.WINDFORCE) };
@@ -399,7 +399,34 @@ export default function Map({ children, storm_data, station_data }) {
                       //     <p>Timestamp: {radii.properties.TIMESTAMP}</p>
                       //   </Popup>
                       // </Polygon>
-                      display_radii ? (                        
+                      display_wind_speed_radii ? (                        
+                        <GeoJSON 
+                          key={radii.id}
+                          data={radii} 
+                          style={path_options}
+                        />
+                      ):(
+                          <></>
+                      )
+                    );
+                  })
+                }
+              </LayerGroup>
+            </LayersControl.Overlay>
+            <LayersControl.Overlay checked name="Sea Height Radius">
+              <LayerGroup>
+                {
+                  storm_data.sea.features.length > 0 &&
+                  storm_data.sea.features.map(radii => {
+
+                    let display_sea_height_radii = true;
+                    if (hover_marker.properties.TIMESTAMP != radii.properties.TIMESTAMP) {
+                      display_sea_height_radii = false;
+                    }
+
+                    const path_options = { className: 'sea-height' };
+                    return (
+                      display_sea_height_radii ? (                        
                         <GeoJSON 
                           key={radii.id}
                           data={radii} 
