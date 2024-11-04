@@ -18,6 +18,9 @@ import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
 import { formatCioosStations, formatCioosDateTime, parseData } from './station_formats'
 import RenderChart from './station_graph.js'
 import StormMarker from "@/components/storm_point";
+import LineOfTravel from "@/components/line_of_travel";
+import WindSpeedRadius from "@/components/wind_radii";
+import SeaHeightRadius from "@/components/sea_height_radii";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
@@ -293,12 +296,10 @@ export default function Map({ children, storm_data, station_data }) {
                   storm_data.lin.features.map(line => {
 
                     return (
-                      <GeoJSON
-                        key={line.id}
-                        data={line}
-                        style={{ className: 'line-of-travel' }}
+                      <LineOfTravel
+                        storm_line_data={line}
                       />
-                    )
+                    );
                   })
                 }
               </LayerGroup>
@@ -308,40 +309,11 @@ export default function Map({ children, storm_data, station_data }) {
                 {
                   storm_data.rad.features.length > 0 &&
                   storm_data.rad.features.map(radii => {
-                    // console.debug("Mapping radii...", radii);
-
-                    let display_wind_speed_radii = true;
-                    if (hover_marker.properties.TIMESTAMP != radii.properties.TIMESTAMP) {
-                      display_wind_speed_radii = false;
-                    }
-
-                    const path_options = { className: 'wind-rad-'.concat(radii.properties.WINDFORCE) };
-                    // const positions = radii.geometry.coordinates.map((coord_array) => {return coord_array[0]});
-
-                    // console.debug("Multipolygon Positions: ", positions);
-
                     return (
-                      // <Polygon
-                      //   key={radii.properties.TIMESTAMP + radii.properties.WINDFORCE}
-                      //   positions={positions}
-                      //   pathOptions={path_options}
-
-                      // >
-                      //   <Popup>
-                      //     <h3>{radii.properties.STORMNAME}</h3>
-                      //     <p>Wind force: {radii.properties.WINDFORCE}</p>
-                      //     <p>Timestamp: {radii.properties.TIMESTAMP}</p>
-                      //   </Popup>
-                      // </Polygon>
-                      display_wind_speed_radii ? (
-                        <GeoJSON
-                          key={radii.id}
-                          data={radii}
-                          style={path_options}
-                        />
-                      ) : (
-                        <></>
-                      )
+                      <WindSpeedRadius
+                        storm_wind_radii_data={radii}
+                        hover_marker={hover_marker}
+                      />
                     );
                   })
                 }
@@ -353,22 +325,11 @@ export default function Map({ children, storm_data, station_data }) {
                   storm_data.sea.features.length > 0 &&
                   storm_data.sea.features.map(radii => {
 
-                    let display_sea_height_radii = true;
-                    if (hover_marker.properties.TIMESTAMP != radii.properties.TIMESTAMP) {
-                      display_sea_height_radii = false;
-                    }
-
-                    const path_options = { className: 'sea-height' };
                     return (
-                      display_sea_height_radii ? (
-                        <GeoJSON
-                          key={radii.id}
-                          data={radii}
-                          style={path_options}
-                        />
-                      ) : (
-                        <></>
-                      )
+                      <SeaHeightRadius
+                        storm_sea_height_data={radii}
+                        hover_marker={hover_marker}
+                      />
                     );
                   })
                 }

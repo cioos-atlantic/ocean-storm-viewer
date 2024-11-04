@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+// import React, { useState, useMemo } from "react";
 import { Marker, Popup } from 'react-leaflet'
 import { Icon, DivIcon, Point } from 'leaflet'
 import HurricaneIcon from '../public/hurricane.svg'
@@ -24,16 +24,14 @@ export default function StormMarker({ storm_point_data, setHoverMarker }) {
     const position = flip_coords(storm_point_data.geometry.coordinates);
 
     return (
-        <>
-            <Marker
-                key={storm_point_data.id}
-                position={position}
-                eventHandlers={{
-                    mouseover: (event) => setHoverMarker(storm_point_data),
-                }}
-                icon={hurricon}
-            >
-            </Marker>
-        </>
+        <Marker
+            key={storm_point_data.id}
+            position={position}
+            eventHandlers={{
+                mouseover: (event) => setHoverMarker(storm_point_data),
+            }}
+            icon={hurricon}
+        >
+        </Marker>
     );
 }
