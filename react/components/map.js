@@ -15,7 +15,7 @@ import HurricaneIcon from '../public/hurricane.svg'
 import TropicalStormIcon from '../public/tropical-storm.svg'
 import {formatCioosStations, formatCioosDateTime, parseData} from './station_formats'
 import RenderChart from './station_graph.js'
-import {get_recent_row_position} from './utils/station_data_util'
+import {RecentStationData} from './utils/station_data_util'
 
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
@@ -113,23 +113,6 @@ function Station_Variable(name, std_name, value, units) {
   this.standard_name = std_name;
   this.value = value;
   this.units = units;
-}
-
-function RecentStationData(data) {
-  let station_data = data['properties']['station_data']
-  let children = []
-  const row_position = get_recent_row_position(data)
-  formatCioosStations(station_data, children, row_position)
-
-  let station_info = (
-    <div className="station_pane">
-      {children}
-    </div>
-  );
-
-  //console.log(station_info)
-  return station_info;
-  
 }
 
 function PointDetails(point) {
@@ -303,8 +286,14 @@ export default function Map({ children, storm_data, station_data }) {
                     const station_name = element[0]
                     const station_values = element[1] // Data for the individual station
                     const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + station_name + ".html"
-                    const data_popup = RecentStationData(station_values)
+                    //Set or get time here somehow - command below can convert to unix timestamp
+                    const time = new Date() //  1730404370000 for testing purposes, oct 31
+                    const data_popup = RecentStationData(station_values, time)
                     const display_name = (station_name in station_names) ? station_names[station_name]['display']:station_name
+                    // Data for station doesn't exist at the provided time
+
+                    //const data_popup = null
+                    if(!data_popup) return
 
                     // Option to toggle units
                     // If unit toggle changes table to have markers for unit conversion

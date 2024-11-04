@@ -4,7 +4,9 @@ import Image from "next/image";
 
 
 export function formatCioosStations(data_obj, children, row_position){
+  // Get the data value in the specified column in the object's row
   let data_value = (column_name) => {
+    if(!row_data[row_position]) return null
     const col_index = column_data.indexOf(column_name)
     return col_index > -1 ? row_data[row_position][col_index] : null
   }
@@ -159,16 +161,13 @@ export function parseData(fullStationData) {
               existingField.value.push(field_obj.value);};
       }});});
       });
-    console.log(stationDataTable) 
     stationDataTable= dataConversion(stationDataTable);
-    console.log(stationDataTable) 
 
 
     return stationDataTable 
 }
 
 function dataConversion(stationDataTable){
-  console.log(stationDataTable);
   Object.entries(stationDataTable).forEach(([stationName, stationData]) => {
     const station = stationData.data
     Object.entries(station).forEach(([key, variable]) => {
@@ -203,7 +202,6 @@ function dataConversion(stationDataTable){
     })
 
   })
-  console.log(stationDataTable);
   return stationDataTable
 
 }
