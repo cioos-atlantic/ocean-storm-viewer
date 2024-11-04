@@ -67,7 +67,6 @@ export function get_station_field_data(station_data, field_name, name_type='colu
 }
 
 export function get_recent_row_position(station_info, time){
-    console.log(station_info)
     const station_data = station_info['properties']['station_data']
     let position = -1 // Errors out if not set
     const max_time = Date.parse(station_info['properties']['max_time'])
