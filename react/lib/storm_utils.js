@@ -13,6 +13,50 @@ export const empty_storm_obj = {
     sea: { features: [] },
 };
 
+/**
+ * Flips an array of coordinate arrays, simply flips the order of each 
+ * element of the larger list of coordinates
+ * @param {array} coordinates an array of coordinate arrays
+ * @returns 
+ */
+export function remap_coord_array(coordinates) {
+    return (coordinates.map(coord => { return (flip_coords(coord)) }));
+}
+
+/**
+ * Flips the order of a pair of coordinates from lat/lon to lon/lat and vice-
+ * versa, Leaflet sometimes requires coordinates in a different order than 
+ * other geospatial softwares.
+ * 
+ * @param {array} coordinates [lon,lat] or [lat,lon]
+ * @returns {array}
+ */
+export function flip_coords(coordinates) {
+    return ([coordinates[1], coordinates[0]]);
+}
+
+/**
+ * Because multiple sources are in play with different names for different 
+ * values a list of candidates need to be supplied to be iterated through to 
+ * return the one with an actual, usable value in it.
+ * 
+ * @param {object} point the storm point object
+ * @param {array} property_list list of properties that may have the appropriate value
+ */
+export function fetch_value(point, property_list) {
+    let return_value = null;
+
+    property_list.every(value => {
+        if (point.properties[value] !== undefined && point.properties[value] !== null) {
+            return_value = point.properties[value];
+            return false;
+        }
+
+        return true;
+    });
+
+    return return_value;
+}
 
 
 /**
