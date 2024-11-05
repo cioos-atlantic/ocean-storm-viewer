@@ -2,21 +2,23 @@
 import React, { useState, useMemo } from "react";
 import { parseISO, format } from 'date-fns';
 import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup, Marker, Popup, Polygon, Polyline, GeoJSON } from 'react-leaflet'
+
 import { useMap, useMapEvent, useMapEvents } from 'react-leaflet/hooks'
 import { Icon, DivIcon, Point } from 'leaflet'
 import Image from "next/image";
+
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
 import "leaflet-defaulticon-compatibility";
 
 import station_names from "../data/station/names.json"
 
-import HurricaneIcon from '../public/hurricane.svg'
-import TropicalStormIcon from '../public/tropical-storm.svg'
-import {formatCioosStations, formatCioosDateTime, parseData} from './station_formats'
-import RenderChart from './station_graph.js'
 import {RecentStationData} from './utils/station_data_util'
+import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
 
+import { formatCioosStations, formatCioosDateTime, parseData } from './station_formats'
+import RenderChart from './station_graph.js'
+import StormMarker from "@/components/storm_point";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
@@ -59,51 +61,6 @@ const hurricane_categories = {
   },
 }
 
-/**
- * Flips an array of coordinate arrays, simply flips the order of each 
- * element of the larger list of coordinates
- * @param {array} coordinates an array of coordinate arrays
- * @returns 
- */
-function remap_coord_array(coordinates) {
-  return (coordinates.map(coord => { return (flip_coords(coord)) }));
-}
-
-/**
- * Flips the order of a pair of coordinates from lat/lon to lon/lat and vice-
- * versa, Leaflet sometimes requires coordinates in a different order than 
- * other geospatial softwares.
- * 
- * @param {array} coordinates [lon,lat] or [lat,lon]
- * @returns {array}
- */
-function flip_coords(coordinates) {
-  return ([coordinates[1], coordinates[0]]);
-}
-
-/**
- * Because multiple sources are in play with different names for different 
- * values a list of candidates need to be supplied to be iterated through to 
- * return the one with an actual, usable value in it.
- * 
- * @param {object} point the storm point object
- * @param {array} property_list list of properties that may have the appropriate value
- */
-function fetch_value(point, property_list) {
-  let return_value = null;
-
-  property_list.every(value => {
-    if (point.properties[value] !== undefined && point.properties[value] !== null) {
-      return_value = point.properties[value];
-      return false;
-    }
-
-    return true;
-  });
-
-  return return_value;
-}
-
 
 const empty_point_obj = { properties: {}, geometry: {} }
 
@@ -114,6 +71,7 @@ function Station_Variable(name, std_name, value, units) {
   this.value = value;
   this.units = units;
 }
+
 
 function PointDetails(point) {
   // If properties has no items, it's an empty point object and should return
@@ -177,20 +135,6 @@ export default function Map({ children, storm_data, station_data }) {
   // console.log("Data");
   // console.log(Object.entries(station_data));
   // console.log(station_data);
-
-  const hurricon = new Icon({
-    iconUrl: HurricaneIcon.src,
-    iconRetinaUrl: HurricaneIcon.src,
-    iconSize: [28, 28],
-    iconAnchor: [14, 14],
-  });
-
-  const tropstrmicon = new Icon({
-    iconUrl: TropicalStormIcon.src,
-    iconRetinaUrl: TropicalStormIcon.src,
-    iconSize: [28, 28],
-    iconAnchor: [14, 14],
-  });
 
   //let station_markers = [];
   //station_data.forEach((element, i) => station_markers[i] = Marker([element.geometry.coordinates[0], element.geometry.coordinates[1]]));
@@ -260,20 +204,11 @@ export default function Map({ children, storm_data, station_data }) {
               <LayerGroup>
                 {
                   storm_data.pts.features.map(point => {
-                    const position = flip_coords(point.geometry.coordinates);
-
-                    console.log(point);
-
                     return (
-                      <Marker
-                        key={point.id}
-                        position={position}
-                        eventHandlers={{
-                          mouseover: (event) => setHoverMarker(point),
-                        }}
-                        icon={hurricon}
-                      >
-                      </Marker>
+                      <StormMarker
+                        storm_point_data={point}
+                        setHoverMarker={setHoverMarker}
+                      />
                     );
                   })
                 }
@@ -300,7 +235,7 @@ export default function Map({ children, storm_data, station_data }) {
 
                     //console.log("Station Name:", station_name);
                     //console.log(parsedStationData[station_name])
-                    
+
                     return (
                       <Marker 
                         key={element.station} 
@@ -326,6 +261,7 @@ export default function Map({ children, storm_data, station_data }) {
                             <a href={data_link} target="_blank">Full data</a>
                           </Popup>
                         </Marker>
+
                     )
                   })
                 }
@@ -334,26 +270,35 @@ export default function Map({ children, storm_data, station_data }) {
             <LayersControl.Overlay checked name="Track Line">
               <LayerGroup>
                 {
-                  line_track.length > 0 &&
-                  <Polyline positions={line_track} />
+                  storm_data.lin.features.length > 0 &&
+                  storm_data.lin.features.map(line => {
+
+                    return (
+                      <GeoJSON
+                        key={line.id}
+                        data={line}
+                        style={{ className: 'line-of-travel' }}
+                      />
+                    )
+                  })
                 }
               </LayerGroup>
             </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Storm Radius">
+            <LayersControl.Overlay checked name="Wind Speed Radius">
               <LayerGroup>
                 {
                   storm_data.rad.features.length > 0 &&
                   storm_data.rad.features.map(radii => {
                     // console.debug("Mapping radii...", radii);
 
-                    let display_radii = true;
+                    let display_wind_speed_radii = true;
                     if (hover_marker.properties.TIMESTAMP != radii.properties.TIMESTAMP) {
-                      display_radii = false;
+                      display_wind_speed_radii = false;
                     }
 
                     const path_options = { className: 'wind-rad-'.concat(radii.properties.WINDFORCE) };
                     // const positions = radii.geometry.coordinates.map((coord_array) => {return coord_array[0]});
-                    
+
                     // console.debug("Multipolygon Positions: ", positions);
 
                     return (
@@ -369,14 +314,41 @@ export default function Map({ children, storm_data, station_data }) {
                       //     <p>Timestamp: {radii.properties.TIMESTAMP}</p>
                       //   </Popup>
                       // </Polygon>
-                      display_radii ? (                        
-                        <GeoJSON 
+                      display_wind_speed_radii ? (
+                        <GeoJSON
                           key={radii.id}
-                          data={radii} 
+                          data={radii}
                           style={path_options}
                         />
-                      ):(
-                          <></>
+                      ) : (
+                        <></>
+                      )
+                    );
+                  })
+                }
+              </LayerGroup>
+            </LayersControl.Overlay>
+            <LayersControl.Overlay checked name="Sea Height Radius">
+              <LayerGroup>
+                {
+                  storm_data.sea.features.length > 0 &&
+                  storm_data.sea.features.map(radii => {
+
+                    let display_sea_height_radii = true;
+                    if (hover_marker.properties.TIMESTAMP != radii.properties.TIMESTAMP) {
+                      display_sea_height_radii = false;
+                    }
+
+                    const path_options = { className: 'sea-height' };
+                    return (
+                      display_sea_height_radii ? (
+                        <GeoJSON
+                          key={radii.id}
+                          data={radii}
+                          style={path_options}
+                        />
+                      ) : (
+                        <></>
                       )
                     );
                   })

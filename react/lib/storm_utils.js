@@ -3,14 +3,60 @@ import * as geolib from 'geolib';
 import { show_all_storms } from '../components/active_storm_list';
 
 export const nmi_to_m = 1852.216;
+export const ft_to_m = 0.3048;
 
 export const empty_storm_obj = {
     pts: { features: [] },
     err: { features: [] },
     lin: { features: [] },
     rad: { features: [] },
+    sea: { features: [] },
 };
 
+/**
+ * Flips an array of coordinate arrays, simply flips the order of each 
+ * element of the larger list of coordinates
+ * @param {array} coordinates an array of coordinate arrays
+ * @returns 
+ */
+export function remap_coord_array(coordinates) {
+    return (coordinates.map(coord => { return (flip_coords(coord)) }));
+}
+
+/**
+ * Flips the order of a pair of coordinates from lat/lon to lon/lat and vice-
+ * versa, Leaflet sometimes requires coordinates in a different order than 
+ * other geospatial softwares.
+ * 
+ * @param {array} coordinates [lon,lat] or [lat,lon]
+ * @returns {array}
+ */
+export function flip_coords(coordinates) {
+    return ([coordinates[1], coordinates[0]]);
+}
+
+/**
+ * Because multiple sources are in play with different names for different 
+ * values a list of candidates need to be supplied to be iterated through to 
+ * return the one with an actual, usable value in it.
+ * 
+ * @param {object} point the storm point object
+ * @param {array} property_list list of properties that may have the appropriate value
+ */
+export function fetch_value(point, property_list) {
+    let return_value = null;
+
+    property_list.every(value => {
+        if (point.properties[value] !== undefined && point.properties[value] !== null) {
+            return_value = point.properties[value];
+            return false;
+        }
+
+        return true;
+    });
+
+    return return_value;
+}
 
 
 /**
@@ -102,7 +148,96 @@ export function build_wind_radii(storm_data_pt, speed, storm_center, ne_rad, se_
     return final_polygon;
 }
 
-export function flatten_nested_array(source_array){
+/**
+ * Generates a polygon of sea height radius based on supplied values;
+ * 
+ * @param {int} height Number representing the height (in feet) of the wave radius to generate the polygon for
+ * @param {Array} storm_center The [lon, lat] position of the centre of the storm in decimal degrees
+ * @param {float} ne_rad North-East Quadrant, radius of wave height in nautical miles
+ * @param {float} se_rad South-East Quadrant, radius of wave height in nautical miles
+ * @param {float} sw_rad South-West Quadrant, radius of wave height in nautical miles
+ * @param {float} nw_rad North-West Quadrant, radius of wave height in nautical miles
+ */
+export function build_sea_height_radii(storm_data_pt, height, storm_center, ne_rad, se_rad, sw_rad, nw_rad) {
+    // console.debug(speed, storm_center, ne_rad, se_rad, sw_rad, nw_rad);
+
+    let final_polygon = {
+        "type": "Feature",
+        "id": "".concat(storm_data_pt.id, "-SH", height),
+        "geometry": {
+            "type": "MultiPolygon",
+            "coordinates": [
+            ]
+        },
+        "geometry_name": "geom",
+        "properties": {
+            "SEA_HEIGHT": parseInt(height) * ft_to_m,
+            "TIMESTAMP": storm_data_pt.id.match(/\d+-\d+-\d+[\sT]\d+:\d+:\d+/)[0].replace(" ", "T"),
+            "STORMNAME": storm_data_pt.properties.NAME,
+        },
+        "bbox": [
+        ]
+    };
+
+    // Calculate arc per quadrant
+    const quadrants = ['NE', 'SE', 'SW', 'NW'];
+
+    // Radii lengths are typically given in Nautical miles, convert to metres, 
+    // null values will be returned as NaN and skipped when calculating 
+    // quadrant arcs
+    const ne_rad_m = ne_rad * nmi_to_m;
+    const se_rad_m = se_rad * nmi_to_m;
+    const sw_rad_m = sw_rad * nmi_to_m;
+    const nw_rad_m = nw_rad * nmi_to_m;
+
+    // console.debug(`NE: ${ne_rad_m}m SE: ${se_rad_m}m SW: ${sw_rad_m}m NW: ${nw_rad_m}m`);
+
+    let radius = NaN;
+    let rad_coords = [];
+
+    quadrants.forEach((direction) => {
+        switch (direction) {
+            case "NE":
+                radius = ne_rad_m;
+                break;
+
+            case "SE":
+                radius = se_rad_m;
+                break;
+
+            case "SW":
+                radius = sw_rad_m;
+                break;
+
+            case "NW":
+                radius = nw_rad_m;
+                break;
+        }
+
+        if (radius) {
+            rad_coords.push(build_quadrant(storm_center, radius, direction))
+            final_polygon.properties.RADIUS = (radius / nmi_to_m) + " nmi";
+        }
+    });
+
+    // getBounds() requires a flat list of coordinates in order to generate a 
+    // bounding box, each quadrant is separated into it's own polygon array of
+    // coordinates so it must be reduced in order to generate the bounding box
+    const flat_coords = flatten_nested_array(rad_coords);
+    const final_bbox = geolib.getBounds(flat_coords);
+
+    // console.debug("Final geometry of quads: ", rad_coords);
+    // console.debug("Flattened coords for calculating bounding box: ", flat_coords);
+    // console.debug("Final Bounding Box: ", final_bbox);
+
+    final_polygon.geometry.coordinates = coords_to_array(rad_coords);
+
+    final_polygon.bbox = bounds_to_array(final_bbox);
+
+    return final_polygon;
+}
+
+export function flatten_nested_array(source_array) {
     return [].concat.apply([], source_array);
 }
 
@@ -115,7 +250,7 @@ export function flatten_nested_array(source_array){
  * @returns Array of GeoLibPoints
  */
 export function build_quadrant(storm_center, radius, quadrant) {
-    const angle_increment = 11.25;
+    const angle_increment = 5.625;
 
     let rad_start = undefined,
         rad_end = undefined,
@@ -150,14 +285,45 @@ export function build_quadrant(storm_center, radius, quadrant) {
     // of the last point to the end of the coordinate list
     quadrant_points.push(quadrant_points[0]);
 
-    // console.debug(`Original Coordinates: ${storm_center}`)
-    // console.debug(`Quadrant ${quadrant} arc points:`, quadrant_points);
-
     return quadrant_points;
 }
 
 export function build_line_of_travel(storm_data) {
+    let line_of_travel = {
+        "type": "Feature",
+        "id": "line-of-travel-".concat(storm_data.data[0].properties.NAME, '-', storm_data.data[0].properties.SEASON),
+        "geometry": {
+            "type": "LineString",
+            "coordinates": [
+            ]
+        },
+        "properties": {
+            "SEASON": storm_data.data[0].properties.SEASON,
+            "STORMNAME": storm_data.data[0].properties.NAME,
+        }
+    };
 
+    storm_data.data.forEach((storm_pt, idx) => {
+        line_of_travel.geometry.coordinates.push([storm_pt.geometry.coordinates[0], storm_pt.geometry.coordinates[1]]);
+    });
+
+    console.debug("Generated Line of Travel: ", line_of_travel);
+
+    return line_of_travel;
+}
+
+export function build_storm_points(storm_data) {
+    let storm_points = [];
+
+    for (let i in storm_data.data) {
+        switch (storm_data.data[i].geometry.type) {
+            case "Point":
+                storm_points.push(storm_data.data[i])
+                break;
+        }
+    }
+
+    return storm_points;
 }
 
 /**
@@ -183,13 +349,12 @@ export function bounds_to_array(bounds_obj) {
     return [bounds_obj.maxLng, bounds_obj.maxLat, bounds_obj.minLng, bounds_obj.minLat];
 }
 
-function build_wind_radii_polygons(storm_data){
+function build_wind_radii_polygons(storm_data) {
     let wind_rad_polys = [],
         wind_spd_rad_dir = null,
         wind_rad_parts = {};
 
     storm_data.data.forEach((storm_pt, idx) => {
-        // console.debug("Storm Point: ", idx, storm_pt);
         wind_rad_parts = {};
         for (let field in storm_pt.properties) {
             // Dropping null fields 
@@ -201,7 +366,6 @@ function build_wind_radii_polygons(storm_data){
                 wind_spd_rad_dir = field.match(/^\w+R(?<speed>\d+)\w+(?<direction>NE|SE|NW|SW)$/);
 
                 if (wind_spd_rad_dir) {
-                    // console.debug(wind_spd_rad_dir);
                     if (!wind_rad_parts[wind_spd_rad_dir.groups["speed"]]) {
                         wind_rad_parts[wind_spd_rad_dir.groups["speed"]] = {};
                     }
@@ -211,11 +375,7 @@ function build_wind_radii_polygons(storm_data){
             }
         }
 
-        // console.debug("Wind Radius Parts:", wind_rad_parts);
-
         for (let wind_speed in wind_rad_parts) {
-            // console.debug(`Building wind speed radii for: ${wind_speed}knots`);
-
             wind_rad_polys.push(build_wind_radii(
                 storm_pt,
                 parseInt(wind_speed),
@@ -226,73 +386,118 @@ function build_wind_radii_polygons(storm_data){
                 wind_rad_parts[wind_speed]['NW']
             ));
         }
-
-        // console.debug("Final Polygons: ", wind_rad_polys);
     });
 
     return wind_rad_polys;
 }
 
+function build_sea_height_radii_polygons(storm_data) {
+    let sea_height_rad_polys = [],
+        sea_height_rad_parts = {},
+        sea_height = NaN;
 
-export function populateStormDetails(event, storm_data, setSelectedStorm, setStormPoints, preserve_points = false) {
-    console.log("Set Selected storm to: " + storm_data.data[0].properties.NAME);
+    storm_data.data.forEach((storm_pt, idx) => {
+        sea_height_rad_parts = {};
+        for (let field in storm_pt.properties) {
+            // Dropping null fields 
+            if (!storm_pt.properties[field]) {
+                delete storm_data.data[idx].properties[field];
+            }
+        }
 
-    setSelectedStorm(storm_data.data[0].properties.NAME);
+        sea_height_rad_parts["NE"] = storm_pt.properties["USA_SEARAD_NE"];
+        sea_height_rad_parts["SE"] = storm_pt.properties["USA_SEARAD_SE"];
+        sea_height_rad_parts["NW"] = storm_pt.properties["USA_SEARAD_NW"];
+        sea_height_rad_parts["SW"] = storm_pt.properties["USA_SEARAD_SW"];
+        sea_height = storm_pt.properties["USA_SEAHGT"];
 
-    console.debug("Printing out storm properties");
-    console.debug(storm_data);
-    
-    console.debug(`preserve_points: ${preserve_points}: `);
+        // If sea height is defined then at least one quadrant has a defined radius
+        if (sea_height) {
+            sea_height_rad_polys.push(build_sea_height_radii(
+                storm_pt,
+                parseInt(sea_height),
+                storm_pt.geometry.coordinates,
+                sea_height_rad_parts['NE'],
+                sea_height_rad_parts['SE'],
+                sea_height_rad_parts['SW'],
+                sea_height_rad_parts['NW']
+            ));
+        }
+    });
 
+    return sea_height_rad_polys;
+}
+
+export function build_storm_features(storm_data) {
     // Cannot set this directly from empty_storm_obj because it is a constant
-    // however, cloning its properites into a new variable will work as expected
+    // however, cloning its properties into a new variable will work as expected
     let storm_features = structuredClone(empty_storm_obj);
-    
-    // if storm points are to be preserved, do not reset storm points
-    // otherwise, reset them to an empty storm object
-    if(!preserve_points){
-        console.debug("We should reset Storm Points...");
-    }
-
-    setStormPoints(empty_storm_obj);
-    
-    // console.debug(`storm_features:`, storm_features);
-    // console.debug(`map_storm_points:`);
 
     // Build wind radii polygons
+    let sea_height_rad_polys = build_sea_height_radii_polygons(storm_data);
     let wind_rad_polys = build_wind_radii_polygons(storm_data);
+    let line_of_travel = build_line_of_travel(storm_data);
+    let storm_points = build_storm_points(storm_data);
 
     // const filtered = forecasts.map(source => {
     //    return source.storm.filter(storm_part => storm_part.storm == storm_obj.name && storm_part.file_type == "pts") 
     // })[0];
 
-    for (var i in storm_data.data) {
-        switch (storm_data.data[i].geometry.type) {
-            case "Point":
-                storm_features.pts.features.push(storm_data.data[i])
-                break;
-            // case "LineString":
-            //   break;
-            // case "Polygon":
-            //   break;
-        }
+    if (storm_points) {
+        console.debug("Adding points to storm features");
+        storm_features.pts.features = storm_points;
     }
 
     if (wind_rad_polys) {
         console.debug("Adding polygons to storm features");
         storm_features.rad.features = wind_rad_polys;
     }
-    console.debug(`Final storm ${storm_data.data[0].properties.NAME} Points: ${storm_features.pts.features.length}, Wind Radii: ${storm_features.rad.features.length}`);
+
+    if (line_of_travel) {
+        console.debug("Adding line of travel to storm features");
+        storm_features.lin.features = [line_of_travel];
+    }
+
+    if (sea_height_rad_polys) {
+        console.debug("Adding sea height to storm features");
+        storm_features.sea.features = sea_height_rad_polys;
+    }
+
+    return storm_features;
+}
+
+export function populateStormDetails(event, storm_data, setSelectedStorm, setStormPoints) {
+    setStormPoints(empty_storm_obj);
+
+    console.log("Set Selected storm to: " + storm_data.data[0].properties.NAME);
+    setSelectedStorm(storm_data.data[0].properties.NAME);
+
+    let storm_features = build_storm_features(storm_data);
+
     setStormPoints(storm_features);
 }
 
 export function populateAllStormDetails(event, all_storm_data, setSelectedStorm, setStormPoints) {
-    console.debug("Clearing ALL STORM POINTS!");
-    console.debug(all_storm_data);
+    console.debug("ALL STORM DATA: ", all_storm_data);
 
+    console.debug("Setting selected storm to ALL STORMS");
     setSelectedStorm(show_all_storms);
+
+    console.debug("Clearing ALL storm data from map!");
     setStormPoints(empty_storm_obj);
-    // for (let storm in all_storm_data) {
-    //     populateStormDetails(event, all_storm_data[storm], setSelectedStorm, setStormPoints, true);
-    // }
+
+    let final_storm_features = structuredClone(empty_storm_obj);
+
+    for (let storm in all_storm_data) {
+        let storm_features = build_storm_features(all_storm_data[storm]);
+
+        final_storm_features.err.features = final_storm_features.err.features.concat(storm_features.err.features);
+        final_storm_features.lin.features = final_storm_features.lin.features.concat(storm_features.lin.features);
+        final_storm_features.pts.features = final_storm_features.pts.features.concat(storm_features.pts.features);
+        final_storm_features.rad.features = final_storm_features.rad.features.concat(storm_features.rad.features);
+        final_storm_features.sea.features = final_storm_features.sea.features.concat(storm_features.sea.features);
+    }
+
+    console.debug("Setting final storm features")
+    setStormPoints(final_storm_features);
 }
