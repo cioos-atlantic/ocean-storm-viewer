@@ -433,6 +433,8 @@ export function build_storm_features(storm_data) {
     // however, cloning its properties into a new variable will work as expected
     let storm_features = structuredClone(empty_storm_obj);
 
+    console.debug("build_storm_features -> storm_data: ", storm_data);
+
     // Build wind radii polygons
     let sea_height_rad_polys = build_sea_height_radii_polygons(storm_data);
     let wind_rad_polys = build_wind_radii_polygons(storm_data);

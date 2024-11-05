@@ -80,10 +80,10 @@ export async function wfs_query(storm_name, season, source, source_type, filters
     if(get_ibtracs){
         console.debug("Fetching IBTRACS active storm data...");
         let ib_filters = [];
-        let ib_source = "ibtracs_active_storms";
+        let ib_source = "ibtracs_active_storms&sortby=SID ASC, ISO_TIME ASC";
 
         if (source_type !== undefined && source_type.trim().toUpperCase() != "ACTIVE") {
-            ib_source = "ibtracs_historical_storms";
+            ib_source = "ibtracs_historical_storms&sortby=SID ASC, ISO_TIME ASC";
         }
 
         // Test if storm name is populated, if so add to array
@@ -198,14 +198,10 @@ export async function wfs_query(storm_name, season, source, source_type, filters
 }
 
 function build_wfs_query(source, filters, source_type, output_format="application/json", base_url="https://dev.cioosatlantic.ca/geoserver/ows?service=wfs&version=2.0.0", ){
-    console.debug();
-    
-
     output_format = "&outputFormat=" + encodeURI(output_format);
     //Filter causes issues for ERDDAP cache
     
     const final_filter = (source.includes("erddap") && source_type === "ACTIVE") ? (""):("&cql_filter=" + filters.join(" AND "))
-    console.log("HERE")
     
     const url = base_url + "&request=GetFeature&typeName=" + source + output_format + final_filter;
 

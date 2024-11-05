@@ -21,29 +21,6 @@ export default function HistoricalStormList({ onHarvestData }) {
   console.log("Historical Storms Loading...");
 
   // const [selected_storm, setSelectedStorm] = useState("");
-
-  let ib_storm_list = []
-  let storm_details = {}
-
-  // console.log("Selected Storm: " + selected_storm);
-  // console.debug("IBTRACS Storm List: " + onHarvestData.ib_data.features.length + " points");
-  // console.debug("ECCC Storm List: " + onHarvestData.eccc_data.features.length + " points");
-
-  console.debug("onHarvestData: ", onHarvestData);
-
-  // onHarvestData.ib_data.features.map(storm_point => {
-  //   if (!ib_storm_list.includes(storm_point.properties.NAME)) {
-  //     ib_storm_list.push(storm_point.properties.NAME)
-  //     storm_details[storm_point.properties.NAME] = {
-  //       source: "ibtracs", 
-  //       year: storm_point.properties.SEASON, 
-  //       data: []
-  //     }
-  //   }
-
-  //   storm_details[storm_point.properties.NAME].data.push(storm_point)
-  // })
-
   return (
     <>
       <h2>Historical Storms: </h2>
@@ -111,7 +88,7 @@ export async function handleClick(storm, onHarvestData) {
     const station_resource = await fetch(`/api/query_stations_historical?${query}`);
     const historical_station_data = await station_resource.json();
 
-    const historical_storm_data = parseStormData(storm_data);
+    const historical_storm_data = parseStormData(storm_data, storm.name);
     console.log(historical_station_data);
 
 
@@ -172,58 +149,34 @@ function getStationQueryParams(historical_storm_data) {
   return [min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time]
 
 }
-function parseStormData(storm_data) {
+function parseStormData(storm_data, storm_name) {
 
   if (storm_data?.ib_data?.features?.length === 0) {
+    console.warn("No IBTRACS Data features found for ", storm_name);
     return null
-    //TODO 
-    // fix 404
   }
+  
   console.log(storm_data)
 
-  // let storm_features = structuredClone(empty_storm_obj);
+  let storm_details = {}
+  let ib_storm_list = []
 
+  storm_data.ib_data.features.map(storm_point => {
+    if (!ib_storm_list.includes(storm_point.properties.NAME)) {
+      ib_storm_list.push(storm_point.properties.NAME)
+      storm_details[storm_point.properties.NAME] = {
+        source: "ibtracs",
+        year: storm_point.properties.SEASON,
+        data: []
+      }
+    }
+    storm_details[storm_point.properties.NAME].data.push(storm_point)
+  });
 
-  let storm_features = build_storm_features(storm_data.ib_data);
+  // console.log("parseStormData -> Storm Details: ", storm_details);
+  let storm_features = build_storm_features(storm_details[storm_name]);
 
-  //   let storm_details = {}
-  //   let ib_storm_list = []
-  //   //console.log("storm_data")
-  //   //console.log(storm_data.ib_data.features)
-  //   storm_data.ib_data.features.map(storm_point => {
-  //     if (!ib_storm_list.includes(storm_point.properties.NAME)) {
-  //       ib_storm_list.push(storm_point.properties.NAME)
-  //       storm_details[storm_point.properties.NAME] = {
-  //         source: "ibtracs", 
-  //         year: storm_point.properties.SEASON, 
-  //         data: []
-  //       }
-  //     }
-  //     storm_details[storm_point.properties.NAME].data.push(storm_point)
-  // });
-
-  //   //console.log(storm_details)
-  //   // Extract the storm key dynamically
-  //   let stormName = Object.keys(storm_details)[0];
-
-  //   // Extract the storm data using the key
-  //   let storm_info = storm_details[stormName];
-
-  //   for(let i in storm_info.data){
-
-  //     switch(storm_info.data[i].geometry.type){
-  //       case "Point":
-  //         storm_features.pts.features.push(storm_info.data[i])
-  //         break;
-  //       // case "LineString":
-  //       //   break;
-  //       // case "Polygon":
-  //       //   break;
-  //     }
-  //   }
-
-
-  //console.log(storm_features);
+  // console.log("parseStormData -> Final Storm Features: ", storm_features);
   return storm_features;
 };
 
