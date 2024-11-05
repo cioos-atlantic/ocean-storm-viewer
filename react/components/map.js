@@ -1,5 +1,5 @@
 // https://iconoir.com/ icon library that can be installed via npm
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { parseISO, format } from 'date-fns';
 import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup, Marker, Popup, Polygon, Polyline, GeoJSON } from 'react-leaflet'
 import { useMap, useMapEvent, useMapEvents } from 'react-leaflet/hooks'
@@ -13,8 +13,6 @@ import station_names from "../data/station/names.json"
 
 import HurricaneIcon from '../public/hurricane.svg'
 import TropicalStormIcon from '../public/tropical-storm.svg'
-import { useRouter } from 'next/router';
-import {handleStormHoveredData} from './handle_storm_hovered_data'
 import {formatCioosStations, formatCioosDateTime, parseData} from './station_formats'
 import RenderChart from './station_graph.js'
 import {RecentStationData} from './utils/station_data_util'
@@ -109,9 +107,6 @@ function fetch_value(point, property_list) {
 
 const empty_point_obj = { properties: {}, geometry: {} }
 
-
-
-
 // Have it as a dictionary with time as keys and values as values?
 function Station_Variable(name, std_name, value, units) {
   this.name = name;
@@ -123,38 +118,11 @@ function Station_Variable(name, std_name, value, units) {
 function PointDetails(point) {
   // If properties has no items, it's an empty point object and should return
   // immediately
-  const [isVisible, setIsVisible] = useState(true);
-  const [hoverTimer, setHoverTimer] = useState(null); // Timer state
-  /*if (Object.keys(point.properties).length == 0) {
+  if (Object.keys(point.properties).length == 0) {
     return (<></>);
-  }*/
-  
+  }
 
   // ECCC and IBTRACS have multiple ways to define a storm type, some overlap and others are unique
-  
-  useEffect(() => {
-    if (Object.keys(point.properties).length === 0) return; // Skip if empty
-
-    setIsVisible(true);
-
-    if (hoverTimer) {
-      clearTimeout(hoverTimer);
-    }
-
-    const timer = setTimeout(() => {
-      setIsVisible(false); // Hide after 10 seconds
-    }, 10000);
-
-    setHoverTimer(timer);
-
-    return () => {
-      clearTimeout(timer); // Cleanup on unmount
-    };
-  }, [point]);
-
-  if (Object.keys(point.properties).length === 0 || !isVisible) {
-    return null;
-  }
   const storm_types = {
     "MX": "Mixture",
     "NR": "Not Reported",
@@ -176,9 +144,9 @@ function PointDetails(point) {
   const STORMFORCE = fetch_value(point, ["STORMFORCE", "USA_SSHS"]);
   const MAXWIND = fetch_value(point, ["MAXWIND", "WMO_WIND", "USA_WIND"]);
   const MINPRESS = fetch_value(point, ["MSLP", "WMO_PRES", "USA_PRES"]);
-  
 
-  return (isVisible &&(
+
+  return (
     <div className="info_pane">
       <div>
         <h3>{STORMNAME}</h3>
@@ -195,33 +163,21 @@ function PointDetails(point) {
         }
       </div>
     </div>
-  ))
+  )
 }
 
-
-export default function Map({ children, storm_data, station_data, source_type }) {
+export default function Map({ children, storm_data, station_data }) {
   // Add parameter for points
   // Points always there, even not in storm seasons
-
-  const router = useRouter();
-  //console.log(storm_data)
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
 
-  function handleMouseOver(point) {
-    handleStormHoveredData(point);
-    setHoverMarker(point); // Set the hovered marker
-  };
-  // Function to handle when the mouse moves out of the marker
-  
 
+  // console.debug("Hover Marker: ", hover_marker.id, hover_marker.properties.TIMESTAMP);
 
-  //console.log(source_type)
-  //console.log(storm_data)
+  // console.log("Data");
+  // console.log(Object.entries(station_data));
+  // console.log(station_data);
 
-  
-  //console.log("Data");
-  //console.log(Object.entries(station_data));
-  //console.log(station_data);
   const hurricon = new Icon({
     iconUrl: HurricaneIcon.src,
     iconRetinaUrl: HurricaneIcon.src,
@@ -258,15 +214,7 @@ export default function Map({ children, storm_data, station_data, source_type })
   if (storm_data.rad.features.length > 0) {
     storm_radius = remap_coord_array(storm_data.rad.features[0].geometry.coordinates);
   }
-
-  const parsedStationData = parseData(station_data);
-  /* Expand functionality to create a bbox to compare to stoem points and pick stations around it
-  Object.entries(parsedStationData).forEach(([stat_name, stat_info]) => {
-    console.log(stat_info.bbox)
-  })*/
-
-  //console.log(storm_data)
-  //console.log(parsedStationData) 
+  // const parsedStationData = (station_data);
 
   // console.log("hurricane_icon: ", HurricaneIcon.src)
   // console.log("hurricon_div: ", hurricon_div)
@@ -314,15 +262,14 @@ export default function Map({ children, storm_data, station_data, source_type })
                   storm_data.pts.features.map(point => {
                     const position = flip_coords(point.geometry.coordinates);
 
-                    //console.log(point);
+                    console.log(point);
 
                     return (
                       <Marker
                         key={point.id}
                         position={position}
                         eventHandlers={{
-                          mouseover: (event) => handleMouseOver(point),
-                          mouseout: () => {}, // No action on mouse out; handled by the timer
+                          mouseover: (event) => setHoverMarker(point),
                         }}
                         icon={hurricon}
                       >
