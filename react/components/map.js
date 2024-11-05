@@ -17,7 +17,7 @@ import { useRouter } from 'next/router';
 import {handleStormHoveredData} from './handle_storm_hovered_data'
 import {formatCioosStations, formatCioosDateTime, parseData} from './station_formats'
 import RenderChart from './station_graph.js'
-//import { stat } from "fs/promises";
+import {RecentStationData} from './utils/station_data_util'
 
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
@@ -118,45 +118,6 @@ function Station_Variable(name, std_name, value, units) {
   this.standard_name = std_name;
   this.value = value;
   this.units = units;
-}
-
-function RecentStationData(data) {
-  const station_data = JSON.parse(data)
-  const len = Object.keys(station_data).length
-  let data_obj = {}
-  let children = []
-  // Will always be most recently added
-  Object.keys(station_data[len - 1]).forEach(element => {
-    const value = station_data[len - 1][element]
-    if (element.includes('(time|')) {
-      //console.log(value)
-      //const datetime = new Date(value * 1).toLocaleString()
-      data_obj['datetime'] = formatCioosDateTime(value)
-      //console.log(data_obj['datetime'])
-    }
-    else {
-      //WARNING: Ugly regex ahead
-      //Name (standard_name | units | long_name)
-      const standard_name = element.match("\\((.*?)\\|")[1];
-      const units = element.match("\\|(.*?)\\|")[1];
-      const long_name = element.match("[^\\|]*\\|[^\\|]*\\|(.*?)\\)")[1];
-      data_obj[standard_name] = new Station_Variable(long_name, standard_name, value, units);
-    }
-  })
-
-
- formatCioosStations(data_obj, children)
-
-  let station_info = (
-    <div className="station_pane">
-      <p>{data_obj['datetime']}</p>
-      {children}
-    </div>
-  );
-
-  //console.log(station_info)
-  return station_info;
-  
 }
 
 function PointDetails(point) {
@@ -374,13 +335,21 @@ export default function Map({ children, storm_data, station_data, source_type })
             <LayersControl.Overlay checked name="Stations">
               <LayerGroup>
                 { 
-                  
-
                   Object.entries(station_data).map((element) => {
-                    const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + element[0] + ".html"
-                    const data = RecentStationData(element[1].properties.station_data)
-                    const station_name = element[1].properties.station
+                    const station_name = element[0]
+                    const station_values = element[1] // Data for the individual station
+                    const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + station_name + ".html"
+                    //Set or get time here somehow - command below can convert to unix timestamp
+                    const time = new Date() //  1730404370000 for testing purposes, oct 31
+                    const data_popup = RecentStationData(station_values, time)
                     const display_name = (station_name in station_names) ? station_names[station_name]['display']:station_name
+                    // Data for station doesn't exist at the provided time
+
+                    //const data_popup = null
+                    if(!data_popup) return
+
+                    // Option to toggle units
+                    // If unit toggle changes table to have markers for unit conversion
 
                     //console.log("Station Name:", station_name);
                     //console.log(parsedStationData[station_name])
@@ -388,24 +357,25 @@ export default function Map({ children, storm_data, station_data, source_type })
                     return (
                       <Marker 
                         key={element.station} 
-                        position={flip_coords(element[1].geometry.coordinates)}
+                        position={flip_coords(station_values.geometry.coordinates)}
                         //eventHandlers={{click : )}}
+                        /*
+                          Move back under display_name
+                        */
                         >
                           <Popup 
                             contentStyle={{
                               width: 'auto', // Adjust width based on content (chart)
                               padding: '20px', // Optional padding around chart
                               }}> 
-                            
+                            <h4>{display_name}</h4>
                             <div>
-                              <h4>{display_name}</h4>
-                              
                               <RenderChart  
-                              chartData={parsedStationData[station_name]}
+                              chartData={station_values.properties.station_data}
                               stationName={station_name}
                               />
                             </div>
-                            {data}
+                            {data_popup}
                             <a href={data_link} target="_blank">Full data</a>
                           </Popup>
                         </Marker>

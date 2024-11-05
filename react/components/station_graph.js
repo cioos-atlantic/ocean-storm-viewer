@@ -1,27 +1,24 @@
 import React, { useEffect, useRef } from 'react';
 import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController } from 'chart.js';
-
+import { get_station_field_data, get_station_field_units } from './utils/station_data_util';
+import { convert_unit_data, windSpeedToKmh, windSpeedToKnots } from './utils/unit_conversion';
 
 // Register necessary components, including the Line controller
 Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend);
 
 function RenderChart({ chartData, stationName }) {
-  console.log(chartData.data)
+  console.log(chartData)
   const chartRef = useRef(null); // Reference to the canvas element
 
   useEffect(() => {
     // Check if chartData is available
-    if (chartData && chartData.data && Object.keys(chartData.data).length > 0) {
+    if (chartData && chartData.rows.length > 0) {
       const ctx = chartRef.current.getContext('2d'); // Get context for the canvas
+      // Make sure grabbing the most recent data
+      chartData.rows = chartData.rows.length > 10 ? chartData.rows.slice(Math.max(chartData.rows.length - 10, 0)) : chartData.rows
 
-      
-      //console.log(chartData.data.time.value)
-      if (!Array.isArray(chartData.data.time.value)) {
-        chartData.data.time.value= [chartData.data.time.value]}
-      
-
-        // Time data
-      const timeData = chartData.data.time.value.map((timestamp) => new Date(timestamp).toLocaleString('en-US', {
+      const station_timeData = get_station_field_data(chartData, "time", "column_std_names")
+      const timeData = station_timeData.map((timestamp) => new Date(timestamp).toLocaleString('en-US', {
                                 hour: '2-digit',
                                 minute: '2-digit',
                                 //day: '2-digit',
@@ -29,18 +26,18 @@ function RenderChart({ chartData, stationName }) {
                                 //year: 'numeric'
       }));
 
+      const exclude_var = ['time', 'latitude', 'longitude', 'wind_from_direction', 'air_pressure', 'relative_humidity',
+        'air_temperature', 'sea_surface_temperature', 'sea_surface_wave_from_direction'
+      ]
       // Prepare datasets for each variable, excluding 'time'
-      const datasets = Object.entries(chartData.data)
-        .filter(([key]) => key !== 'time') // Exclude 'time' from datasets
-        .map(([key, variable]) => {
-          //console.log(`Processing key: ${key}`); 
-          if (!Array.isArray(variable.value)) {
-            variable.value= [variable.value]}
-          
-          
+      const datasets = chartData.column_std_names.filter((variable) => !exclude_var.includes(variable)).map((variable, index) =>{
+         // Exclude 'time' from datasets
+          const unit = get_station_field_units(chartData, variable, "column_std_names")
+          const values = get_station_field_data(chartData, variable, "column_std_names")
+
           return{
-          label: `${variable.std_name} (${variable.units})` || key, //  std_name if available
-          data: variable.value || [], // Ensure that value exists
+          label: `${variable} (${convert_unit_data(values[0], unit).unit})` || key, //  std_name if available
+          data: values.map((value)=>convert_unit_data(value,unit).value) || [], // Ensure that value exists
           borderColor: getRandomColor(), // Generate random colors for each line
           backgroundColor: 'rgba(0, 0, 0, 0)',
           fill: false,
@@ -124,6 +121,7 @@ const getRandomColor = () => {
   }
   return color;
 };
+
 
 
 export default React.memo(RenderChart);
