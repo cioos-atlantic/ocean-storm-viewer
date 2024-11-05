@@ -13,6 +13,7 @@ import "leaflet-defaulticon-compatibility";
 
 import station_names from "../data/station/names.json"
 
+import {RecentStationData} from './utils/station_data_util'
 import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
 
 import { formatCioosStations, formatCioosDateTime, parseData } from './station_formats'
@@ -71,44 +72,6 @@ function Station_Variable(name, std_name, value, units) {
   this.units = units;
 }
 
-function RecentStationData(data) {
-  const station_data = JSON.parse(data)
-  const len = Object.keys(station_data).length
-  let data_obj = {}
-  let children = []
-  // Will always be most recently added
-  Object.keys(station_data[len - 1]).forEach(element => {
-    const value = station_data[len - 1][element]
-    if (element.includes('(time|')) {
-      //console.log(value)
-      //const datetime = new Date(value * 1).toLocaleString()
-      data_obj['datetime'] = formatCioosDateTime(value)
-      //console.log(data_obj['datetime'])
-    }
-    else {
-      //WARNING: Ugly regex ahead
-      //Name (standard_name | units | long_name)
-      const standard_name = element.match("\\((.*?)\\|")[1];
-      const units = element.match("\\|(.*?)\\|")[1];
-      const long_name = element.match("[^\\|]*\\|[^\\|]*\\|(.*?)\\)")[1];
-      data_obj[standard_name] = new Station_Variable(long_name, standard_name, value, units);
-    }
-  })
-
-
-  formatCioosStations(data_obj, children)
-
-  let station_info = (
-    <div className="station_pane">
-      <p>{data_obj['datetime']}</p>
-      {children}
-    </div>
-  );
-
-  //console.log(station_info)
-  return station_info;
-
-}
 
 function PointDetails(point) {
   // If properties has no items, it's an empty point object and should return
@@ -166,6 +129,7 @@ export default function Map({ children, storm_data, station_data }) {
   // Points always there, even not in storm seasons
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
 
+
   // console.debug("Hover Marker: ", hover_marker.id, hover_marker.properties.TIMESTAMP);
 
   // console.log("Data");
@@ -185,9 +149,16 @@ export default function Map({ children, storm_data, station_data }) {
     err_cone = remap_coord_array(storm_data.err.features[0].geometry.coordinates[0]);
   }
 
-  console.debug("STORM DATA: ", storm_data);
+  let line_track = [];
+  if (storm_data.err.features.length > 0) {
+    line_track = remap_coord_array(storm_data.lin.features[0].geometry.coordinates);
+  }
 
-  const parsedStationData = parseData(station_data);
+  let storm_radius = [];
+  if (storm_data.rad.features.length > 0) {
+    storm_radius = remap_coord_array(storm_data.rad.features[0].geometry.coordinates);
+  }
+  // const parsedStationData = (station_data);
 
   // console.log("hurricane_icon: ", HurricaneIcon.src)
   // console.log("hurricon_div: ", hurricon_div)
@@ -245,42 +216,52 @@ export default function Map({ children, storm_data, station_data }) {
             </LayersControl.Overlay>
             <LayersControl.Overlay checked name="Stations">
               <LayerGroup>
-                {
-
-
+                { 
                   Object.entries(station_data).map((element) => {
-                    const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + element[0] + ".html"
-                    const data = RecentStationData(element[1].properties.station_data)
-                    const station_name = element[1].properties.station
-                    const display_name = (station_name in station_names) ? station_names[station_name]['display'] : station_name
+                    const station_name = element[0]
+                    const station_values = element[1] // Data for the individual station
+                    const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + station_name + ".html"
+                    //Set or get time here somehow - command below can convert to unix timestamp
+                    const time = new Date() //  1730404370000 for testing purposes, oct 31
+                    const data_popup = RecentStationData(station_values, time)
+                    const display_name = (station_name in station_names) ? station_names[station_name]['display']:station_name
+                    // Data for station doesn't exist at the provided time
+
+                    //const data_popup = null
+                    if(!data_popup) return
+
+                    // Option to toggle units
+                    // If unit toggle changes table to have markers for unit conversion
 
                     //console.log("Station Name:", station_name);
                     //console.log(parsedStationData[station_name])
 
                     return (
-                      <Marker
-                        key={element.station}
-                        position={flip_coords(element[1].geometry.coordinates)}
-                      //eventHandlers={{click : )}}
-                      >
-                        <Popup
-                          contentStyle={{
-                            width: 'auto', // Adjust width based on content (chart)
-                            padding: '20px', // Optional padding around chart
-                          }}>
-
-                          <div>
+                      <Marker 
+                        key={element.station} 
+                        position={flip_coords(station_values.geometry.coordinates)}
+                        //eventHandlers={{click : )}}
+                        /*
+                          Move back under display_name
+                        */
+                        >
+                          <Popup 
+                            contentStyle={{
+                              width: 'auto', // Adjust width based on content (chart)
+                              padding: '20px', // Optional padding around chart
+                              }}> 
                             <h4>{display_name}</h4>
-
-                            <RenderChart
-                              chartData={parsedStationData[station_name]}
+                            <div>
+                              <RenderChart  
+                              chartData={station_values.properties.station_data}
                               stationName={station_name}
-                            />
-                          </div>
-                          {data}
-                          <a href={data_link} target="_blank">Full data</a>
-                        </Popup>
-                      </Marker>
+                              />
+                            </div>
+                            {data_popup}
+                            <a href={data_link} target="_blank">Full data</a>
+                          </Popup>
+                        </Marker>
+
                     )
                   })
                 }
