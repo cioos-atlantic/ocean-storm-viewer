@@ -49,23 +49,20 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
     [],
   );
 
-  <main><MapWithNoSSR station_data={station_data}></MapWithNoSSR></main>
-
-
-
-
   const DefaultMapWithNoSSR = useMemo(
     () => dynamic(() => import("../components/default_map"), { ssr: false }),
     []
   );
-   // Function to handle harvested historical storm data
-  function handleHarvestHistoricalData (data) {
+
+
+  // Function to handle harvested historical storm data
+  function handleHarvestHistoricalData(data) {
     console.log("Harvested Historical Storm Data:", data);
     //console.log(data.ib_data.features)
     //if(data.ib_data.features){}
     setHistoricalStormData(data.storm_data);  // Set the storm data
     setStationPoints(data.station_data);  // Set the station data
-     // Update the state with the harvested data
+    // Update the state with the harvested data
     //console.log("Historical Storm Data set:", data);
   };
 
@@ -75,7 +72,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
     if (!historicalStormData) {
       console.log("Empty array, redirecting to 404...");
       // Redirect to the 404 page
-      router.replace('/404'); 
+      router.replace('/404');
       //TODO 
       // fix 404
     }
@@ -86,14 +83,14 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
   }
 
 
-  
+
 
   // console.log(querystring.storms)
   // console.log(active_storm_data.season)
 
   // const data = get_forecast_sources();
 
-  function updateStormList(event) { 
+  function updateStormList(event) {
     const filtered_storms = event.target.value != "" ? storm_list.filter(storm => {
       const storm_index = storm.name + storm.year;
       return (
@@ -101,40 +98,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
     }) : [];
 
     setStorms(filtered_storms);
-    
-  }
 
-  function populateStormDetails(event, storm_data) {
-    console.log("Set Selected storm to: " + storm_data.data[0].properties.NAME);
-    setSelectedStorm(storm_data.data[0].properties.NAME);
-
-    // const filtered = forecasts.map(source => {
-    //    return source.storm.filter(storm_part => storm_part.storm == storm_obj.name && storm_part.file_type == "pts") 
-    // })[0];
-    setStormPoints(empty_storm_obj);
-    
-    // console.log(storm_obj);
-    let storm_features = {
-      pts:{features:[]},
-      err:{features:[]},
-      lin:{features:[]},
-      rad:{features:[]},
-    };
-    
-    for(var i in storm_data.data){
-      switch(storm_data.data[i].geometry.type){
-        case "Point":
-          storm_features.pts.features.push(storm_data.data[i])
-          break;
-        // case "LineString":
-        //   break;
-        // case "Polygon":
-        //   break;
-      }
-    }
-    
-    setStormPoints(storm_features);
-    //console.log(storm_points)
   }
 
   function populateTimeline(event, storm_obj) {
@@ -184,11 +148,11 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
       <main className="body">
         <Drawer element_id="left-side" classes="left">
           {active_storms ? (
-            <ActiveStormList 
+            <ActiveStormList
               active_storm_data={active_storm_data}
-              onPopulateStormDetails={populateStormDetails}
+              setStormPoints={setStormPoints}
             />
-          ) : historical_storms ? ( <HistoricalStormList onHarvestData={handleHarvestHistoricalData}
+          ) : historical_storms ? (<HistoricalStormList onHarvestData={handleHarvestHistoricalData}
           />) : (
             <>
               <div>Placeholder for Home Page</div>
@@ -196,7 +160,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
           )}
         </Drawer>
         {active_storms && (
-        <MapWithNoSSR storm_data={storm_points} station_data={station_data} source_type={"active"}></MapWithNoSSR>)}
+          <MapWithNoSSR storm_data={storm_points} station_data={station_data} source_type={"active"}></MapWithNoSSR>)}
         {historical_storms && (
           // Check if historicalStormData is empty
           Object.keys(historicalStormData).length === 0 ? (
