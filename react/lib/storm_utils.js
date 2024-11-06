@@ -13,6 +13,48 @@ export const empty_storm_obj = {
     sea: { features: [] },
 };
 
+
+const hurricane_categories = {
+    "5": {
+        "min": 157,
+        "max": null,
+        "name": { "en": "Category 5", "fr": "catégorie 5" }
+    },
+    "4": {
+        "min": 113,
+        "max": 136,
+        "name": { "en": "Category 4", "fr": "catégorie 4" }
+    },
+    "3": {
+        "min": 96,
+        "max": 112,
+        "name": { "en": "Category 3", "fr": "catégorie 3" }
+    },
+    "2": {
+        "min": 83,
+        "max": 95,
+        "name": { "en": "Category 2", "fr": "catégorie 2" }
+    },
+    "1": {
+        "min": 64,
+        "max": 82,
+        "name": { "en": "Category 1", "fr": "catégorie 1" }
+    },
+    "TS": {
+        "min": 34,
+        "max": 63,
+        "name": { "en": "Tropical Storm", "fr": "Tempête tropicale" }
+    },
+    "TD": {
+        "min": 33,
+        "max": null,
+        "name": { "en": "Tropical Depression", "fr": "Dépression tropicale" }
+    },
+}
+
+
+
+
 /**
  * Flips an array of coordinate arrays, simply flips the order of each 
  * element of the larger list of coordinates
