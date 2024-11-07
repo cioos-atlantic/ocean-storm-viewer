@@ -118,7 +118,7 @@ export function build_wind_radii(storm_data_pt, speed, storm_center, ne_rad, se_
         "type": "Feature",
         "id": "".concat(storm_data_pt.id, "-R", speed),
         "geometry": {
-            "type": "MultiPolygon",
+            "type": "Polygon",
             "coordinates": [
             ]
         },
@@ -147,6 +147,7 @@ export function build_wind_radii(storm_data_pt, speed, storm_center, ne_rad, se_
 
     let radius = NaN;
     let rad_coords = [];
+    let quad_count = 0;
 
     quadrants.forEach((direction) => {
         switch (direction) {
@@ -168,10 +169,25 @@ export function build_wind_radii(storm_data_pt, speed, storm_center, ne_rad, se_
         }
 
         if (radius) {
-            rad_coords.push(build_quadrant(storm_center, radius, direction))
+            let quad = build_quadrant(storm_center, radius, direction);
+            rad_coords = rad_coords.concat(quad);
             final_polygon.properties.RADIUS = (radius / nmi_to_m) + " nmi";
+            quad_count++;
         }
     });
+    
+    // Add starting coordinate to the end to finish the polygon...?
+    switch (quad_count) {
+        case 1:
+        case 3:
+            rad_coords.splice(0, 0, { longitude: storm_center[0], latitude: storm_center[1] });
+            rad_coords.push({ longitude: storm_center[0], latitude: storm_center[1] });
+            break;
+        case 4:
+        case 2:
+            rad_coords.push(rad_coords[0]);
+            break;
+    }
 
     // getBounds() requires a flat list of coordinates in order to generate a 
     // bounding box, each quadrant is separated into it's own polygon array of
@@ -179,11 +195,7 @@ export function build_wind_radii(storm_data_pt, speed, storm_center, ne_rad, se_
     const flat_coords = flatten_nested_array(rad_coords);
     const final_bbox = geolib.getBounds(flat_coords);
 
-    // console.debug("Final geometry of quads: ", rad_coords);
-    // console.debug("Flattened coords for calculating bounding box: ", flat_coords);
-    // console.debug("Final Bounding Box: ", final_bbox);
-
-    final_polygon.geometry.coordinates = coords_to_array(rad_coords);
+    final_polygon.geometry.coordinates = [coords_to_array(rad_coords)];
 
     final_polygon.bbox = bounds_to_array(final_bbox);
 
@@ -207,7 +219,7 @@ export function build_sea_height_radii(storm_data_pt, height, storm_center, ne_r
         "type": "Feature",
         "id": "".concat(storm_data_pt.id, "-SH", height),
         "geometry": {
-            "type": "MultiPolygon",
+            "type": "Polygon",
             "coordinates": [
             ]
         },
@@ -236,6 +248,7 @@ export function build_sea_height_radii(storm_data_pt, height, storm_center, ne_r
 
     let radius = NaN;
     let rad_coords = [];
+    let quad_count = 0;
 
     quadrants.forEach((direction) => {
         switch (direction) {
@@ -257,10 +270,25 @@ export function build_sea_height_radii(storm_data_pt, height, storm_center, ne_r
         }
 
         if (radius) {
-            rad_coords.push(build_quadrant(storm_center, radius, direction))
+            let quad = build_quadrant(storm_center, radius, direction);
+            rad_coords = rad_coords.concat(quad);
             final_polygon.properties.RADIUS = (radius / nmi_to_m) + " nmi";
+            quad_count++;
         }
     });
+    
+    // Add starting coordinate to the end to finish the polygon...?
+    switch (quad_count) {
+        case 1:
+        case 3:
+            rad_coords.splice(0, 0, { longitude: storm_center[0], latitude: storm_center[1] });
+            rad_coords.push({ longitude: storm_center[0], latitude: storm_center[1] });
+            break;
+        case 4:
+        case 2:
+            rad_coords.push(rad_coords[0]);
+            break;
+    }
 
     // getBounds() requires a flat list of coordinates in order to generate a 
     // bounding box, each quadrant is separated into it's own polygon array of
@@ -268,11 +296,7 @@ export function build_sea_height_radii(storm_data_pt, height, storm_center, ne_r
     const flat_coords = flatten_nested_array(rad_coords);
     const final_bbox = geolib.getBounds(flat_coords);
 
-    // console.debug("Final geometry of quads: ", rad_coords);
-    // console.debug("Flattened coords for calculating bounding box: ", flat_coords);
-    // console.debug("Final Bounding Box: ", final_bbox);
-
-    final_polygon.geometry.coordinates = coords_to_array(rad_coords);
+    final_polygon.geometry.coordinates = [coords_to_array(rad_coords)];
 
     final_polygon.bbox = bounds_to_array(final_bbox);
 
@@ -296,7 +320,8 @@ export function build_quadrant(storm_center, radius, quadrant) {
 
     let rad_start = undefined,
         rad_end = undefined,
-        quadrant_points = [{ "longitude": storm_center[0], "latitude": storm_center[1] }];
+        // quadrant_points = [{ "longitude": storm_center[0], "latitude": storm_center[1] }];
+        quadrant_points = [];
 
     switch (quadrant) {
         case "NE":
@@ -325,7 +350,7 @@ export function build_quadrant(storm_center, radius, quadrant) {
 
     // First and last point in a polygon need to be the same, so push a copy 
     // of the last point to the end of the coordinate list
-    quadrant_points.push(quadrant_points[0]);
+    // quadrant_points.push(quadrant_points[0]);
 
     return quadrant_points;
 }
@@ -376,9 +401,14 @@ export function build_storm_points(storm_data) {
  */
 export function coords_to_array(coord_array) {
     return coord_array.map((shape) => {
-        return [shape.map((coord_obj) => {
-            return [coord_obj.longitude, coord_obj.latitude];
-        })];
+        if (Array.isArray(shape)) {
+            return [shape.map((coord_obj) => {
+                return [coord_obj.longitude, coord_obj.latitude];
+            })];
+        }
+        else if (typeof shape === 'object') {
+            return [shape.longitude, shape.latitude];
+        }
     });
 }
 
