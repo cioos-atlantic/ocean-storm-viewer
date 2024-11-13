@@ -1,5 +1,5 @@
 import { wfs_query } from "./wfs_test";
-import { station_data_format, get_station_field_data } from "@/components/utils/station_data_util";
+import station_data_format from "@/components/utils/station_data_format";
 
 export default async function handler(req, res) {
     const filter_station = req.query["station"]
