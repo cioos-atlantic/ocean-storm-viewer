@@ -31,6 +31,8 @@ function Station_Variable(name, std_name, value, units) {
   this.units = units;
 }
 
+// A new comment.
+
 export default function Map({ children, storm_data, station_data }) {
   // Add parameter for points
   // Points always there, even not in storm seasons
