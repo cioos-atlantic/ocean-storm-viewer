@@ -1,11 +1,6 @@
 // https://iconoir.com/ icon library that can be installed via npm
-import React, { useState, useMemo } from "react";
-import { parseISO, format } from 'date-fns';
-import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup, Marker, Popup, Polygon, Polyline, GeoJSON } from 'react-leaflet'
-
-import { useMap, useMapEvent, useMapEvents } from 'react-leaflet/hooks'
-import { Icon, DivIcon, Point } from 'leaflet'
-import Image from "next/image";
+import React, { useState } from "react";
+import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup, Marker, Popup } from 'react-leaflet'
 
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
@@ -18,50 +13,12 @@ import WindSpeedRadius from "@/components/wind_radii";
 import SeaHeightRadius from "@/components/sea_height_radii";
 
 import StationMarker from "./station_marker";
+import ErrorCone from "@/components/error_cone";
+import StormPointDetails, { empty_point_obj } from "@/components/storm_point_details";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
 
-const hurricane_categories = {
-  "5": {
-    "min": 157,
-    "max": null,
-    "name": { "en": "Category 5", "fr": "catégorie 5" }
-  },
-  "4": {
-    "min": 113,
-    "max": 136,
-    "name": { "en": "Category 4", "fr": "catégorie 4" }
-  },
-  "3": {
-    "min": 96,
-    "max": 112,
-    "name": { "en": "Category 3", "fr": "catégorie 3" }
-  },
-  "2": {
-    "min": 83,
-    "max": 95,
-    "name": { "en": "Category 2", "fr": "catégorie 2" }
-  },
-  "1": {
-    "min": 64,
-    "max": 82,
-    "name": { "en": "Category 1", "fr": "catégorie 1" }
-  },
-  "TS": {
-    "min": 34,
-    "max": 63,
-    "name": { "en": "Tropical Storm", "fr": "Tempête tropicale" }
-  },
-  "TD": {
-    "min": 33,
-    "max": null,
-    "name": { "en": "Tropical Depression", "fr": "Dépression tropicale" }
-  },
-}
-
-
-const empty_point_obj = { properties: {}, geometry: {} }
 
 // Have it as a dictionary with time as keys and values as values?
 function Station_Variable(name, std_name, value, units) {
@@ -71,102 +28,20 @@ function Station_Variable(name, std_name, value, units) {
   this.units = units;
 }
 
-
-function PointDetails(point) {
-  // If properties has no items, it's an empty point object and should return
-  // immediately
-  if (Object.keys(point.properties).length == 0) {
-    return (<></>);
-  }
-
-  // ECCC and IBTRACS have multiple ways to define a storm type, some overlap and others are unique
-  const storm_types = {
-    "MX": "Mixture",
-    "NR": "Not Reported",
-    "SS": "Subtropical Storm",
-    "ET": "Extratropical Storm",
-    "DS": "Disturbance",
-    "TD": "Tropical Depression",
-    "TS": "Tropical Storm",
-    "HU": "Hurricane",
-    "HR": "Hurricane",
-    "PT": "Post-Tropical Storm",
-  };
-
-  // ECCC and IBTRACS use different names for the same kinds of information.  Sometimes, within IBTRACS, several different fields may possibly contain the appropriate value
-  // ECCC uses TIMESTAMP and IBTRACS uses ISO_TIME
-  const TIMESTAMP = format(parseISO(fetch_value(point, ["TIMESTAMP", "ISO_TIME"])), 'PP pp X');
-  const STORMNAME = fetch_value(point, ["STORMNAME", "NAME"]);
-  const STORMTYPE = fetch_value(point, ["STORMTYPE", "NATURE"]);
-  const STORMFORCE = fetch_value(point, ["STORMFORCE", "USA_SSHS"]);
-  const MAXWIND = fetch_value(point, ["MAXWIND", "WMO_WIND", "USA_WIND"]);
-  const MINPRESS = fetch_value(point, ["MSLP", "WMO_PRES", "USA_PRES"]);
-
-
-  return (
-    <div className="info_pane">
-      <div>
-        <h3>{STORMNAME}</h3>
-        <p><strong>Storm Type:</strong> {storm_types[STORMTYPE]}</p>
-        <p><strong>Storm Status:</strong> {point.properties.TCDVLP}</p>
-        <p><strong>Storm Category:</strong> {STORMFORCE}</p>
-        <p><strong>Timestamp:</strong> {TIMESTAMP}</p>
-        <p><strong>Lat/Long:</strong> {point.properties.LAT}&deg; N, {point.properties.LON}&deg; W</p>
-        <p><strong>Max Windspeed:</strong> {MAXWIND} knots ({(MAXWIND * 1.84).toFixed(2)} km/h)</p>
-        <p><strong>Pressure:</strong> {MINPRESS}mb</p>
-        {
-          point.properties.ERRCT &&
-          <p><strong>Error radius :</strong> {point.properties.ERRCT} nmi ({(point.properties.ERRCT * 1.852).toFixed(2)} km)</p>
-        }
-      </div>
-    </div>
-  )
-}
+// A new comment.
 
 export default function Map({ children, storm_data, station_data }) {
   // Add parameter for points
   // Points always there, even not in storm seasons
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
 
-
-  // console.debug("Hover Marker: ", hover_marker.id, hover_marker.properties.TIMESTAMP);
-
-  // console.log("Data");
-  // console.log(Object.entries(station_data));
-  // console.log(station_data);
-
-  //let station_markers = [];
-  //station_data.forEach((element, i) => station_markers[i] = Marker([element.geometry.coordinates[0], element.geometry.coordinates[1]]));
-
-  // Define error cone object and populate it if the appropriate object is 
-  // defined in storm_data, Leaflet requires the coordinates be flipped from 
-  // the way it is encoded in the ECCC data.
-  // 
-  // Same for line track and storm radius polygons
-  let err_cone = [];
-  if (storm_data.err.features.length > 0) {
-    err_cone = remap_coord_array(storm_data.err.features[0].geometry.coordinates[0]);
-  }
-
-  let line_track = [];
-  if (storm_data.err.features.length > 0) {
-    line_track = remap_coord_array(storm_data.lin.features[0].geometry.coordinates);
-  }
-
-  let storm_radius = [];
-  if (storm_data.rad.features.length > 0) {
-    storm_radius = remap_coord_array(storm_data.rad.features[0].geometry.coordinates);
-  }
-  // const parsedStationData = (station_data);
-
-  // console.log("hurricane_icon: ", HurricaneIcon.src)
-  // console.log("hurricon_div: ", hurricon_div)
-  // console.log("hurricon: ", hurricon)
-
   return (
     <div className="map_container">
       <div className='inner_container'>
-        {PointDetails(hover_marker)}
+        <StormPointDetails
+          storm_point_hover={hover_marker}
+        />
+        
         <MapContainer
           center={defaultPosition}
           zoom={defaultZoom}
@@ -194,8 +69,13 @@ export default function Map({ children, storm_data, station_data }) {
             <LayersControl.Overlay checked name="Error Cone">
               <LayerGroup>
                 {
-                  err_cone.length > 0 &&
-                  <Polygon positions={err_cone} />
+                  storm_data.err.features.map(err_cone => {
+                    return (
+                      <ErrorCone
+                        error_cone_data={err_cone}
+                      />
+                    );
+                  })
                 }
               </LayerGroup>
             </LayersControl.Overlay>
@@ -215,7 +95,7 @@ export default function Map({ children, storm_data, station_data }) {
             </LayersControl.Overlay>
             <LayersControl.Overlay checked name="Stations">
               <LayerGroup>
-                { 
+                {
                   Object.entries(station_data).map((element) => {
                     console.log(element)
                     return StationMarker(element)

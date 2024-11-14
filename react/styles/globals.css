@@ -90,26 +90,26 @@ footer {
 
 .sea-height {
   position: relative;
+  stroke: navy;
   fill: navy;
-  stroke: none;
 }
 
 .wind-rad-34 {
   position: relative;
-  stroke: none;
+  stroke: yellow;
   fill: yellow;
 }
 
 .wind-rad-48,
 .wind-rad-50 {
   position: relative;
-  stroke: none;
+  stroke: orange;
   fill: orange;
 }
 
 .wind-rad-64 {
   position: relative;
-  stroke: none;
+  stroke: red;
   fill: red;
 }
 

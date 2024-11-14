@@ -1,4 +1,4 @@
-import { wfs_query } from "./wfs_test"
+import { wfs_query } from "./wfs_query"
 
 export default async function handler(req, res) {
     // (cql_filter.length > 0) ? "&cql_filter=" + cql_filter.join(";") : "";

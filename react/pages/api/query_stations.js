@@ -1,4 +1,4 @@
-import { wfs_query } from "./wfs_test";
+import { wfs_query } from "./wfs_query";
 import station_data_format from "@/components/utils/station_data_format";
 
 export default async function handler(req, res) {
