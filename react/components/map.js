@@ -75,11 +75,12 @@ export default function Map({ children, storm_data, station_data }) {
                   storm_data.err.features.map(err_cone => {
                     return (
                       <ErrorCone
+                        key={err_cone.id}
                         error_cone_data={err_cone}
-                      />
-                    );
-                  })
-                }
+                        />
+                      );
+                    })
+                  }
               </LayerGroup>
             </LayersControl.Overlay>
             <LayersControl.Overlay checked name="Points">
@@ -88,6 +89,7 @@ export default function Map({ children, storm_data, station_data }) {
                   storm_data.pts.features.map(point => {
                     return (
                       <StormMarker
+                        key={point.id}
                         storm_point_data={point}
                         setHoverMarker={setHoverMarker}
                       />
@@ -157,6 +159,7 @@ export default function Map({ children, storm_data, station_data }) {
 
                     return (
                       <LineOfTravel
+                        key={line.id}
                         storm_line_data={line}
                       />
                     );
@@ -171,6 +174,7 @@ export default function Map({ children, storm_data, station_data }) {
                   storm_data.rad.features.map(radii => {
                     return (
                       <WindSpeedRadius
+                        key={radii.id}
                         storm_wind_radii_data={radii}
                         hover_marker={hover_marker}
                       />
@@ -187,6 +191,7 @@ export default function Map({ children, storm_data, station_data }) {
 
                     return (
                       <SeaHeightRadius
+                        key={radii.id}
                         storm_sea_height_data={radii}
                         hover_marker={hover_marker}
                       />
