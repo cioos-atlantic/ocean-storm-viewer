@@ -31,7 +31,7 @@ const logo = {
   href: "https://cioosatlantic.ca/"
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   // Get external data from the file system, API, DB, etc.
   // const forecast_sources = getAllStormData();
   let active_storm_data = {};
