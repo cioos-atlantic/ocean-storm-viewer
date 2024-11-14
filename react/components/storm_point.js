@@ -4,6 +4,8 @@ import { Icon, DivIcon, Point } from 'leaflet'
 import HurricaneIcon from '../public/hurricane.svg'
 import TropicalStormIcon from '../public/tropical-storm.svg'
 
+import {empty_point_obj} from "@/components/storm_point_details"
+
 import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
 
 export const hurricon = new Icon({
@@ -29,6 +31,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker }) {
             position={position}
             eventHandlers={{
                 mouseover: (event) => setHoverMarker(storm_point_data),
+                mouseout: (event) => setHoverMarker(empty_point_obj)
             }}
             icon={hurricon}
         >
