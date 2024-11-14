@@ -117,9 +117,8 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
       setStormPoints(data);
     });
   }
-  console.log(querystring)
-  //const active_storms = querystring.query.storms == "active"
-  //const historical_storms = querystring.query.storms == "historical"
+  //console.log(querystring)
+
 
 
   return (

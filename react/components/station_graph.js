@@ -79,7 +79,7 @@ function RenderChart({ chartData, stationName }) {
       };
 
       // Destroy the previous chart if it exists
-      console.log(chartRef.current.chart);
+      //console.log(chartRef.current.chart);
       if (chartRef.current.chart) {
         chartRef.current.chart.destroy();
       }
@@ -90,7 +90,7 @@ function RenderChart({ chartData, stationName }) {
 
     // Cleanup function to destroy the chart on unmount
     return () => {
-      if (chartRef.current.chart) {
+      if (chartRef?.current?.chart) {
         chartRef.current.chart.destroy();
       }
     };

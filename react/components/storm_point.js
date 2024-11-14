@@ -5,6 +5,7 @@ import HurricaneIcon from '../public/hurricane.svg'
 import TropicalStormIcon from '../public/tropical-storm.svg'
 
 import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
+import {empty_point_obj} from "@/components/storm_point_details"
 
 export const hurricon = new Icon({
     iconUrl: HurricaneIcon.src,
@@ -29,6 +30,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker }) {
             position={position}
             eventHandlers={{
                 mouseover: (event) => setHoverMarker(storm_point_data),
+                mouseout: (event) => setHoverMarker(empty_point_obj)
             }}
             icon={hurricon}
         >

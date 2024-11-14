@@ -33,7 +33,7 @@ export function formatCioosStations(data_obj, children, row_position){
   if(wind_from_direction){
     const wind_direction = (180 + parseInt(wind_from_direction)) % 360
     children.push(<strong>Wind:  </strong>)
-    children.push(<Image class="wind_arrow" alt={wind_direction} src="arrow.svg" height={20} width={20} 
+    children.push(<Image className="wind_arrow" alt={wind_direction} src="arrow.svg" height={20} width={20} 
       style={{ transform: 'rotate(' + (wind_direction) + 'deg)' }}></Image>)
   }
   
