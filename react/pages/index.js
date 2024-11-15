@@ -14,7 +14,7 @@
 // import Head from 'next/head'
 import { useRouter } from 'next/router'
 import queryString from 'query-string';
-import Layout, { siteTitle } from '../components/layout'
+import Layout from '../components/layout'
 // import utilStyles from '../styles/utils.module.css'
 // import { getAllStormData } from '../lib/storms'
 
@@ -31,15 +31,28 @@ const logo = {
   href: "https://cioosatlantic.ca/"
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   // Get external data from the file system, API, DB, etc.
   // const forecast_sources = getAllStormData();
-  const resource = await fetch(process.env.BASE_URL + '/api/active_storms')
-  const active_storm_data = await resource.json()
+  let active_storm_data = {};
+  let station_data = {};
 
-  const station_resource = await fetch(process.env.BASE_URL + '/api/query_stations')
-  const station_data = await station_resource.json()
+  try{
+    const resource = await fetch(process.env.BASE_URL + '/api/active_storms')
+    active_storm_data = await resource.json();
+  }
+  catch (fetch_err) {
+    console.log("Could not fetch storm data on load.");
+  }
   
+  try{
+    const station_resource = await fetch(process.env.BASE_URL + '/api/query_stations')
+    station_data = await station_resource.json();
+  }
+  catch (fetch_err) {
+    console.log("Could not fetch station data on load.");
+  }
+
   // The value of the `props` key will be
   //  passed to the `Home` component
   return {

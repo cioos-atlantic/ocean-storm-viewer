@@ -7,6 +7,7 @@ import TropicalStormIcon from '../public/tropical-storm.svg'
 import {empty_point_obj} from "@/components/storm_point_details"
 
 import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
+import {empty_point_obj} from "@/components/storm_point_details"
 
 export const hurricon = new Icon({
     iconUrl: HurricaneIcon.src,
