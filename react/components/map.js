@@ -33,7 +33,7 @@ function Station_Variable(name, std_name, value, units) {
 
 // A new comment.
 
-export default function Map({ children, storm_data, station_data }) {
+export default function Map({ children, storm_data, station_data, source_type, station_name_dict }) {
   // Add parameter for points
   // Points always there, even not in storm seasons
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
