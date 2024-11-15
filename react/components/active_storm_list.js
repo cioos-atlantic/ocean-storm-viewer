@@ -1,10 +1,32 @@
 import React, { useState, useMemo } from "react";
 import { populateStormDetails, populateAllStormDetails } from '../lib/storm_utils';
-
+import StormListItem from "./storm_list_item";
 import styles from './active_storm_list.module.css'
 import { parse, format } from 'date-fns';
 
 export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
+
+// export async function fetchAllDatasets() {
+//   const erddapUrl = "https://cioosatlantic.ca/erddap/tabledap/allDatasets.json?datasetID,title";
+// 
+//   try {
+//     // Fetch the data from the ERDDAP server
+//     const response = await fetch(erddapUrl);
+// 
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! Status: ${response.status}`);
+//     }
+//     // Parse the response as JSON
+//     const data = await response.json();
+//     return data;
+//   }
+//   catch(err){
+//     console.log("Cannot Fetch Data!", err);
+//     return({});
+//   }
+// }
+
+
 
 export default function ActiveStormList({ active_storm_data, setStormPoints }) {
   const [selected_storm, setSelectedStorm] = useState("");
@@ -55,6 +77,21 @@ export default function ActiveStormList({ active_storm_data, setStormPoints }) {
             )
           })}
         </ul>
+        
+        <div>
+          {ib_storm_list.map(storm_name => {
+            return (
+              <StormListItem 
+                key={storm_name + storm_details[storm_name].year}
+                storm_name={storm_name}
+                storm_data={storm_details[storm_name]}
+                setSelectedStorm={setSelectedStorm}
+                setStormPoints={setStormPoints}
+                className={(storm_name == selected_storm ? styles.selected_storm : '')}
+              />
+            )
+          })}
+        </div>
       </div>
     </>
   )
