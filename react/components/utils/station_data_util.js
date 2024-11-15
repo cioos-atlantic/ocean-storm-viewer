@@ -67,10 +67,14 @@ export function get_station_field_data(station_data, field_name, name_type='colu
 }
 
 export function get_recent_row_position(station_info, time){
-    const station_data = station_info['properties']['station_data']
+    //const station_data = station_info['properties']['station_data']
+    const station_data = station_info?.properties?.station_data;
+
     let position = -1 // Errors out if not set
-    const max_time = Date.parse(station_info['properties']['max_time'])
-    const min_time = Date.parse(station_info['properties']['min_time'])
+    //const max_time = Date.parse(station_info['properties']['max_time'])
+    //const min_time = Date.parse(station_info['properties']['min_time'])
+    const max_time = Date.parse(station_info?.properties?.max_time)
+    const min_time = Date.parse(station_info?.properties?.min_time)
     //No time provided or is more recent than the max time, get most recent data
     if(!time || time >= max_time){
         position = station_data['rows'].length - 1
@@ -109,7 +113,8 @@ export function get_station_data_value(station_data, row_position, column_name, 
 // If provided a time (as JS timestamp), it will return the 
 // most recent row from the data before that time
 export function RecentStationData(data, time) {
-    let station_data = data['properties']['station_data']
+    //let station_data = data['properties']['station_data']
+    let station_data = data?.properties?.station_data;
     let children = []
 
     const row_position = get_recent_row_position(data,time)
