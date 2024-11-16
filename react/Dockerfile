@@ -1,4 +1,6 @@
+# Example sources for dockerizing react and next.js applications
 # https://www.howtogeek.com/devops/how-to-dockerise-a-react-app/
+# https://dev.to/vorillaz/how-to-dockerize-a-nextjs-app-4e4h
 
 FROM node:20-alpine AS base
 
