@@ -5,6 +5,7 @@ import RenderChart from './station_graph.js'
 import { flip_coords } from "@/lib/storm_utils";
 
 import { Marker, Popup } from "react-leaflet";
+import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
 
 /**
  * 
@@ -13,7 +14,8 @@ import { Marker, Popup } from "react-leaflet";
  * @param {Date} time Time of the station data to retrieve. Defaults to most recent data if not provided
  * @returns StationMarker JavaScript snippet
  */
-export default function StationMarker(station_data, time = new Date()) {
+export default function StationMarker(station_data, station_descriptions, time = new Date(), ) {
+    
     const station_name = station_data[0]
     const station_values = station_data[1]
     console.log(station_values)
@@ -21,7 +23,21 @@ export default function StationMarker(station_data, time = new Date()) {
     const data_text = RecentStationData(station_values, time)
 
     // Change to call from ERDDAP
-    const display_name = (station_name in station_names) ? station_names[station_name]['display']:station_name
+    let display_name;
+
+    const matchedDataset = station_descriptions?.find(station_description => station_description.id === station_name);
+    
+    if (matchedDataset) {
+      display_name = matchedDataset.title;
+      console.log(`Match found! Dataset title is: ${display_name}`);
+    } else {
+      console.log("No match found.");
+      display_name = station_name
+    }
+
+    
+
+    //const display_name = (station_name in station_names) ? station_names[station_name]['display']:station_name
 
     // Data for station doesn't exist at the provided time
     if(!data_text) return

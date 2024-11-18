@@ -43,8 +43,8 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
   const active_storms = querystring.query.storms == "active";
   const historical_storms = querystring.query.storms == "historical";
 
-  const allDatasetDescriptions = useDatasetDescriptions();
-  console.log(allDatasetDescriptions);
+  //const allDatasetDescriptions = useDatasetDescriptions();
+  //console.log(allDatasetDescriptions);
   
 
   // useMemo() tells React to "memorize" the map component.
