@@ -168,13 +168,13 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
           )}
         </Drawer>
         {active_storms && (
-          <MapWithNoSSR storm_data={storm_points} station_data={station_data} source_type={"active"} station_name_dict={allDatasetDescriptions}></MapWithNoSSR>)}
+          <MapWithNoSSR storm_data={storm_points} station_data={station_data} source_type={"active"} ></MapWithNoSSR>)}
         {historical_storms && (
           // Check if historicalStormData is empty
           Object.keys(historicalStormData).length === 0 ? (
             <DefaultMapWithNoSSR station_data={station_data} />
           ) : (
-            <MapWithNoSSR storm_data={historicalStormData} station_data={station_points} source_type={"historical"} station_name_dict={allDatasetDescriptions} />
+            <MapWithNoSSR storm_data={historicalStormData} station_data={station_points} source_type={"historical"}  />
           )
         )}
       </main>
