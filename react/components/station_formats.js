@@ -92,7 +92,7 @@ export function formatCioosDateTime(date_str){
     day: 'numeric', 
     hour: '2-digit', 
     minute: '2-digit',
-    timeZoneName: 'short'
+    timeZoneName: 'long'
 };
 
   const timestamp = date.toLocaleString('en-US', options);
