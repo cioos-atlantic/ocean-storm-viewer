@@ -5,17 +5,14 @@ import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, Lay
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
 import "leaflet-defaulticon-compatibility";
+import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
 
-import station_names from "../data/station/names.json"
-
-import { RecentStationData } from './utils/station_data_util'
-import { flip_coords } from "@/lib/storm_utils";
-
-import RenderChart from './station_graph.js'
 import StormMarker from "@/components/storm_point";
 import LineOfTravel from "@/components/line_of_travel";
 import WindSpeedRadius from "@/components/wind_radii";
 import SeaHeightRadius from "@/components/sea_height_radii";
+
+import StationMarker from "./station_marker";
 import ErrorCone from "@/components/error_cone";
 import StormPointDetails, { empty_point_obj } from "@/components/storm_point_details";
 
@@ -102,51 +99,8 @@ export default function Map({ children, storm_data, station_data }) {
               <LayerGroup>
                 {
                   Object.entries(station_data).map((element) => {
-                    const station_name = element[0]
-                    const station_values = element[1] // Data for the individual station
-                    const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + station_name + ".html"
-                    //Set or get time here somehow - command below can convert to unix timestamp
-                    const time = new Date() //  1730404370000 for testing purposes, oct 31
-                    const data_popup = RecentStationData(station_values, time)
-                    const display_name = (station_name in station_names) ? station_names[station_name]['display'] : station_name
-                    // Data for station doesn't exist at the provided time
-
-                    //const data_popup = null
-                    if (!data_popup) return
-
-                    // Option to toggle units
-                    // If unit toggle changes table to have markers for unit conversion
-
-                    //console.log("Station Name:", station_name);
-                    //console.log(parsedStationData[station_name])
-
-                    return (
-                      <Marker
-                        key={element.station}
-                        position={flip_coords(station_values.geometry.coordinates)}
-                      //eventHandlers={{click : )}}
-                      /*
-                        Move back under display_name
-                      */
-                      >
-                        <Popup
-                          contentStyle={{
-                            width: 'auto', // Adjust width based on content (chart)
-                            padding: '20px', // Optional padding around chart
-                          }}>
-                          <h4>{display_name}</h4>
-                          <div>
-                            <RenderChart
-                              chartData={station_values.properties.station_data}
-                              stationName={station_name}
-                            />
-                          </div>
-                          {data_popup}
-                          <a href={data_link} target="_blank">Full data</a>
-                        </Popup>
-                      </Marker>
-
-                    )
+                    console.log(element)
+                    return StationMarker(element)
                   })
                 }
               </LayerGroup>

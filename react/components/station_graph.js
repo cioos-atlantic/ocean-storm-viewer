@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController } from 'chart.js';
-import { get_station_field_data, get_station_field_units } from './utils/station_data_util';
+import { get_station_field_data, get_station_field_units } from './utils/station_data_format_util';
 import { convert_unit_data, windSpeedToKmh, windSpeedToKnots } from './utils/unit_conversion';
 
 // Register necessary components, including the Line controller
