@@ -147,3 +147,20 @@ footer {
 #storm_timeline ul li.selected::after {
   
 }
+
+.selected_storm a {
+  font-weight: bold;
+}
+
+.storm_card {
+  margin-bottom: 1.5rem;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  font-size: 0.9rem;
+}
+
+.storm_card.selected_storm {
+  background-color: #EEE;
+  padding-left: 0.5rem;
+  font-size: 1.1rem;
+}

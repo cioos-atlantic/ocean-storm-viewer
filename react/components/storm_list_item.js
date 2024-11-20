@@ -1,4 +1,6 @@
 import { parseISO , format } from 'date-fns';
+import {populateStormDetails, get_storm_basin} from '@/lib/storm_utils'
+import styles from './active_storm_list.module.css'
 
 function formatCoordinates(coordinates){
     const lat_dir = coordinates[1] > 0 ? "N" : "S";
@@ -9,20 +11,29 @@ function formatCoordinates(coordinates){
     );
 }
 
-export default function StormListItem({ storm_name, storm_data }) {
+export default function StormListItem({ storm_name, storm_data, setSelectedStorm, setStormPoints, is_selected }) {
+    const date_time_format_min = "MMMM do, yyyy";
+    const date_time_format_full = "MMM do, yyyy h:mm a X";
     const first_point = storm_data.data[0];
     const last_point = storm_data.data.slice(-1)[0];
-
+    const first_report = format(parseISO(first_point.properties.ISO_TIME), date_time_format_min);
+    const last_report = format(parseISO(last_point.properties.ISO_TIME), date_time_format_min)
+    const first_report_full = format(parseISO(first_point.properties.ISO_TIME), date_time_format_full);
+    const last_report_full = format(parseISO(last_point.properties.ISO_TIME), date_time_format_full)
     
-    console.log(storm_name, first_point, last_point);
-
+    // console.log(storm_name, typeof is_selected, first_point, last_point);
+    const selected = (is_selected) ? "selected_storm" : "";
+    const storm_basin = get_storm_basin(last_point);
     return (
-        <div>
-            <h3><a onClick={(e) => { populateStormDetails(e, storm_data, setSelectedStorm, setStormPoints) }}>{storm_name}</a></h3>
+        <div 
+            className={"storm_card " + selected }
+            onClick={(e) => { populateStormDetails(e, storm_data, setSelectedStorm, setStormPoints) }}
+        >
+            <h3>{storm_name}</h3>
             <div><strong>Current Position:</strong> {formatCoordinates(last_point.geometry.coordinates)}</div>
-            <div><strong>Basin:</strong> {first_point.properties.BASIN}</div>
-            <div><strong>First Report:</strong> {parseISO(first_point.properties.ISO_TIME).toISOString()}</div>
-            <div><strong>Last Report:</strong> {parseISO(last_point.properties.ISO_TIME).toISOString()}</div>
+            <div><strong>Basin:</strong> {storm_basin.BASIN} {storm_basin.SUBBASIN}</div>
+            <div><strong>First Report:</strong> <span title={first_report_full}>{first_report}</span></div>
+            <div><strong>Last Report:</strong> <span title={last_report_full}>{last_report}</span></div>
         </div>
     );
 }

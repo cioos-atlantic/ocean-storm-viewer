@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { populateStormDetails, populateAllStormDetails } from '../lib/storm_utils';
 import StormListItem from "./storm_list_item";
-import styles from './active_storm_list.module.css'
 import { parse, format } from 'date-fns';
 
 export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
@@ -62,20 +61,12 @@ export default function ActiveStormList({ active_storm_data, setStormPoints }) {
       <div id="storm_search_result">
         <ul className="results">
           {active_storms ? (
-            <li key={"show_all_storms"} className={(selected_storm == show_all_storms ? styles.selected_storm : '')}>
+            <li key={"show_all_storms"} className={(selected_storm == show_all_storms)}>
               <a onClick={(e) => { populateAllStormDetails(e, storm_details, setSelectedStorm, setStormPoints) }}>Show All</a>
             </li>
           ):(
             <></>
           )}
-
-          {ib_storm_list.map(storm_name => {
-            return (
-              <li key={storm_name + storm_details[storm_name].year} className={(storm_name == selected_storm ? styles.selected_storm : '')}>
-                <a onClick={(e) => { populateStormDetails(e, storm_details[storm_name], setSelectedStorm, setStormPoints) }}>{storm_name}</a>
-              </li>
-            )
-          })}
         </ul>
         
         <div>
@@ -87,7 +78,7 @@ export default function ActiveStormList({ active_storm_data, setStormPoints }) {
                 storm_data={storm_details[storm_name]}
                 setSelectedStorm={setSelectedStorm}
                 setStormPoints={setStormPoints}
-                className={(storm_name == selected_storm ? styles.selected_storm : '')}
+                is_selected={(storm_name == selected_storm)}
               />
             )
           })}

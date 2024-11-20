@@ -175,7 +175,7 @@ export function build_wind_radii(storm_data_pt, speed, storm_center, ne_rad, se_
             quad_count++;
         }
     });
-    
+
     // Add starting coordinate to the end to finish the polygon...?
     switch (quad_count) {
         case 1:
@@ -276,7 +276,7 @@ export function build_sea_height_radii(storm_data_pt, height, storm_center, ne_r
             quad_count++;
         }
     });
-    
+
     // Add starting coordinate to the end to finish the polygon...?
     switch (quad_count) {
         case 1:
@@ -575,3 +575,37 @@ export function populateAllStormDetails(event, all_storm_data, setSelectedStorm,
     console.debug("Setting final storm features")
     setStormPoints(final_storm_features);
 }
+
+export function get_storm_basin(storm_point) {
+    const basins = {
+        "NA": "North Atlantic",
+        "EP": "Eastern North Pacific",
+        "WP": "Western North Pacific",
+        "NI": "North Indian",
+        "SI": "South Indian",
+        "SP": "Southern Pacific",
+        "SA": "South Atlantic",
+        "MM": "Missing"
+    };
+
+    const sub_basins = {
+        "CS": "Caribbean Sea",
+        "GM": "Gulf of Mexico",
+        "CP": "Central Pacific",
+        "BB": "Bay of Bengal",
+        "AS": "Arabian Sea",
+        "WA": "Western Australia",
+        "EA": "Eastern Australia",
+        "MM": ""
+    }
+
+    return {
+        "BASIN": basins[storm_point.properties.BASIN],
+        "SUBBASIN": sub_basins[storm_point.properties.SUBBASIN]
+    };
+}
+
+export function get_storm_class(storm_point) {
+
+}
+

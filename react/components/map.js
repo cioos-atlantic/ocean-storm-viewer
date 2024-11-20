@@ -46,6 +46,7 @@ export default function Map({ children, storm_data, station_data }) {
           center={defaultPosition}
           zoom={defaultZoom}
           style={{ height: "100%", width: "100%" }}
+          worldCopyJump={true}
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
