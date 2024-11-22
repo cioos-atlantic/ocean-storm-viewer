@@ -48,6 +48,7 @@ export default function Map({ children, storm_data, station_data }) {
           style={{ height: "100%", width: "100%" }}
           worldCopyJump={true}
         >
+          { children }
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"

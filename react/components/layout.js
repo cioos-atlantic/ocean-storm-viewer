@@ -145,21 +145,22 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
         <HeaderNav navItems={topNav}></HeaderNav>
       </header>
       <main className="body">
-        <Drawer element_id="left-side" classes="left">
-          {active_storms ? (
-            <ActiveStormList
-              active_storm_data={active_storm_data}
-              setStormPoints={setStormPoints}
-            />
-          ) : historical_storms ? (<HistoricalStormList onHarvestData={handleHarvestHistoricalData}
-          />) : (
-            <>
-              <div>Placeholder for Home Page</div>
-            </>
-          )}
-        </Drawer>
         {active_storms && (
-          <MapWithNoSSR storm_data={storm_points} station_data={station_data} source_type={"active"}></MapWithNoSSR>)}
+          <MapWithNoSSR storm_data={storm_points} station_data={station_data} source_type={"active"}>
+            <Drawer element_id="left-side" classes="left">
+              {active_storms ? (
+                <ActiveStormList
+                  active_storm_data={active_storm_data}
+                  setStormPoints={setStormPoints}
+                />
+              ) : historical_storms ? (<HistoricalStormList onHarvestData={handleHarvestHistoricalData}
+              />) : (
+                <>
+                  <div>Placeholder for Home Page</div>
+                </>
+              )}
+            </Drawer>
+          </MapWithNoSSR>)}
         {historical_storms && (
           // Check if historicalStormData is empty
           Object.keys(historicalStormData).length === 0 ? (
