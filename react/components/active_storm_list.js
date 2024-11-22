@@ -27,12 +27,12 @@ export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
 
 
 
-export default function ActiveStormList({ active_storm_data, setStormPoints }) {
+export default function ActiveStormList({ active_storm_data, setStormPoints, map, Leaflet }) {
   const [selected_storm, setSelectedStorm] = useState("");
 
   let ib_storm_list = []
   let storm_details = {}
-  
+
   console.log("Selected Storm: " + selected_storm);
   console.debug("IBTRACS Storm List: " + active_storm_data.ib_data.features.length + " points");
   console.debug("ECCC Storm List: " + active_storm_data.eccc_data.features.length + " points");
@@ -61,7 +61,7 @@ export default function ActiveStormList({ active_storm_data, setStormPoints }) {
       <div id="storm_search_result">
         <ul className="results">
           {active_storms ? (
-            <li key={"show_all_storms"} className={(selected_storm == show_all_storms)}>
+            <li key={"show_all_storms"} >
               <a onClick={(e) => { populateAllStormDetails(e, storm_details, setSelectedStorm, setStormPoints) }}>Show All</a>
             </li>
           ):(
@@ -79,6 +79,8 @@ export default function ActiveStormList({ active_storm_data, setStormPoints }) {
                 setSelectedStorm={setSelectedStorm}
                 setStormPoints={setStormPoints}
                 is_selected={(storm_name == selected_storm)}
+                map={map}
+                Leaflet={Leaflet}
               />
             )
           })}
