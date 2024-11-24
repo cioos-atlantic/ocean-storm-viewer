@@ -23,6 +23,8 @@ export const tropstrmicon = new Icon({
 
 export default function StormMarker({ storm_point_data, setHoverMarker }) {
     const position = flip_coords(storm_point_data.geometry.coordinates);
+    let clicked = false
+    // Keep track of previously clicked marker to default back to?
 
     return (
         <Marker
@@ -30,7 +32,12 @@ export default function StormMarker({ storm_point_data, setHoverMarker }) {
             position={position}
             eventHandlers={{
                 mouseover: (event) => setHoverMarker(storm_point_data),
-                mouseout: (event) => setHoverMarker(empty_point_obj)
+                click: (event) => {
+                    setHoverMarker(storm_point_data)
+                    clicked = true},
+                mouseout: (event) => {
+                    if(!clicked)
+                        setHoverMarker(empty_point_obj)}
             }}
             icon={hurricon}
         >

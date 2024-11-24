@@ -7,7 +7,6 @@ import { convert_unit_data, windSpeedToKmh, windSpeedToKnots } from './utils/uni
 Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend);
 
 function RenderChart({ chartData, stationName }) {
-  console.log(chartData)
   const chartRef = useRef(null); // Reference to the canvas element
 
   useEffect(() => {
