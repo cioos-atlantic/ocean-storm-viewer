@@ -6,12 +6,8 @@ import utilStyles from '../styles/utils.module.css'
 import Link from 'next/link'
 import HeaderNav from './header_nav'
 import FooterNav from './footer_nav'
-import Drawer from '../components/drawer'
 import StormSearch from "@/components/storm_search";
-import ActiveStormList from "@/components/active_storm_list";
-import HistoricalStormList from "./historical_storm_list";
 import { useRouter } from 'next/router';
-
 
 import { empty_storm_obj } from '../lib/storm_utils';
 import dynamic from "next/dynamic";
@@ -31,7 +27,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
   const [storm_timeline, setStormTimeline] = useState([]);
   const [storm_points, setStormPoints] = useState(empty_storm_obj);
   const [station_points, setStationPoints] = useState([empty_station_obj]);
-  const [historicalStormData, setHistoricalStormData] = useState({}); // State for storing historical storm data
+  const [historicalStormData, setHistoricalStormData] = useState(empty_storm_obj); // State for storing historical storm data
 
   const router = useRouter();
 
@@ -49,77 +45,21 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
     [],
   );
 
-  const DefaultMapWithNoSSR = useMemo(
-    () => dynamic(() => import("../components/default_map"), { ssr: false }),
-    []
-  );
+  let storm_data_pass = {};
+  let source_type = "";
 
-
-  // Function to handle harvested historical storm data
-  function handleHarvestHistoricalData(data) {
-    console.log("Harvested Historical Storm Data:", data);
-    //console.log(data.ib_data.features)
-    //if(data.ib_data.features){}
-    setHistoricalStormData(data.storm_data);  // Set the storm data
-    setStationPoints(data.station_data);  // Set the station data
-    // Update the state with the harvested data
-    //console.log("Historical Storm Data set:", data);
-  };
-
-  useEffect(() => {
-    // Check if stormData is an empty array
-
-    if (!historicalStormData) {
-      console.log("Empty array, redirecting to 404...");
-      // Redirect to the 404 page
-      router.replace('/404');
-      //TODO 
-      // fix 404
-    }
-  }, [historicalStormData]);
-
-  if (!historicalStormData) {
-    return null;
+  if (active_storms) {
+    storm_data_pass = active_storm_data;
+    source_type = "active";
   }
 
-
-
-
-  // console.log(querystring.storms)
-  // console.log(active_storm_data.season)
-
-  // const data = get_forecast_sources();
-
-  function updateStormList(event) {
-    const filtered_storms = event.target.value != "" ? storm_list.filter(storm => {
-      const storm_index = storm.name + storm.year;
-      return (
-        storm_index.toLowerCase().indexOf(event.target.value.toLowerCase()) > -1)
-    }) : [];
-
-    setStorms(filtered_storms);
-
+  if (historical_storms) {
+    storm_data_pass = historicalStormData;
+    source_type = "historical";
+    console.debug("Historical Storm Data in Layout.js: ", historicalStormData);
   }
-
-  function populateTimeline(event, storm_obj) {
-    // console.log(event.target.style)
-    const url = `/api/forecast_info?path=${storm_obj.path}`
-    setSelectedForecast(storm_obj);
-    setStormPoints(empty_storm_obj);
-
-    fetch(url).then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      throw res;
-    }).then(data => {
-      console.log("Storm Data: ", data);
-      setStormPoints(data);
-    });
-  }
-  //console.log(querystring)
-
-
+  
+  console.debug("Storm_data_pass in Layout.js: ", storm_data_pass);
 
   return (
     <div className={styles.body}>
@@ -145,29 +85,14 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
         <HeaderNav navItems={topNav}></HeaderNav>
       </header>
       <main className="body">
-        <Drawer element_id="left-side" classes="left">
-          {active_storms ? (
-            <ActiveStormList
-              active_storm_data={active_storm_data}
-              setStormPoints={setStormPoints}
-            />
-          ) : historical_storms ? (<HistoricalStormList onHarvestData={handleHarvestHistoricalData}
-          />) : (
-            <>
-              <div>Placeholder for Home Page</div>
-            </>
-          )}
-        </Drawer>
-        {active_storms && (
-          <MapWithNoSSR storm_data={storm_points} station_data={station_data} source_type={"active"}></MapWithNoSSR>)}
-        {historical_storms && (
-          // Check if historicalStormData is empty
-          Object.keys(historicalStormData).length === 0 ? (
-            <DefaultMapWithNoSSR station_data={station_data} />
-          ) : (
-            <MapWithNoSSR storm_data={historicalStormData} station_data={station_points} source_type={"historical"} />
-          )
-        )}
+        <MapWithNoSSR
+          storm_points={storm_points}
+          storm_data={storm_data_pass}
+          station_data={station_data}
+          source_type={source_type}
+          setStormPoints={setStormPoints}
+          setStationPoints={setStationPoints}
+        />
       </main>
       <footer>
         <FooterNav></FooterNav>

@@ -1,17 +1,38 @@
 import React, { useState, useMemo } from "react";
 import { populateStormDetails, populateAllStormDetails } from '../lib/storm_utils';
-
-import styles from './active_storm_list.module.css'
+import StormListItem from "./storm_list_item";
 import { parse, format } from 'date-fns';
 
 export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
 
-export default function ActiveStormList({ active_storm_data, setStormPoints }) {
+// export async function fetchAllDatasets() {
+//   const erddapUrl = "https://cioosatlantic.ca/erddap/tabledap/allDatasets.json?datasetID,title";
+// 
+//   try {
+//     // Fetch the data from the ERDDAP server
+//     const response = await fetch(erddapUrl);
+// 
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! Status: ${response.status}`);
+//     }
+//     // Parse the response as JSON
+//     const data = await response.json();
+//     return data;
+//   }
+//   catch(err){
+//     console.log("Cannot Fetch Data!", err);
+//     return({});
+//   }
+// }
+
+
+
+export default function ActiveStormList({ active_storm_data, setStormPoints, map, Leaflet }) {
   const [selected_storm, setSelectedStorm] = useState("");
 
   let ib_storm_list = []
   let storm_details = {}
-  
+
   console.log("Selected Storm: " + selected_storm);
   console.debug("IBTRACS Storm List: " + active_storm_data.ib_data.features.length + " points");
   console.debug("ECCC Storm List: " + active_storm_data.eccc_data.features.length + " points");
@@ -40,21 +61,30 @@ export default function ActiveStormList({ active_storm_data, setStormPoints }) {
       <div id="storm_search_result">
         <ul className="results">
           {active_storms ? (
-            <li key={"show_all_storms"} className={(selected_storm == show_all_storms ? styles.selected_storm : '')}>
+            <li key={"show_all_storms"} >
               <a onClick={(e) => { populateAllStormDetails(e, storm_details, setSelectedStorm, setStormPoints) }}>Show All</a>
             </li>
           ):(
             <></>
           )}
-
+        </ul>
+        
+        <div>
           {ib_storm_list.map(storm_name => {
             return (
-              <li key={storm_name + storm_details[storm_name].year} className={(storm_name == selected_storm ? styles.selected_storm : '')}>
-                <a onClick={(e) => { populateStormDetails(e, storm_details[storm_name], setSelectedStorm, setStormPoints) }}>{storm_name}</a>
-              </li>
+              <StormListItem 
+                key={storm_name + storm_details[storm_name].year}
+                storm_name={storm_name}
+                storm_data={storm_details[storm_name]}
+                setSelectedStorm={setSelectedStorm}
+                setStormPoints={setStormPoints}
+                is_selected={(storm_name == selected_storm)}
+                map={map}
+                Leaflet={Leaflet}
+              />
             )
           })}
-        </ul>
+        </div>
       </div>
     </>
   )
