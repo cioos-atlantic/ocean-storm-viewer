@@ -22,7 +22,8 @@ function RenderChart({ sourceData, position, stationName }) {
       // Make sure grabbing the most recent data
       chartData.units = sourceData.units
       chartData.column_std_names = sourceData.column_std_names
-      chartData.rows = position > 30 ? sourceData.rows.slice(position-30, position) : sourceData.rows.slice(0, position)
+      // Plus one since end is not included
+      chartData.rows = position > 30 ? sourceData.rows.slice(position-30, position+1) : sourceData.rows.slice(0, position+1)
       //chartData.rows = chartData.rows.length > 10 ? Data.rows.slice(Math.max(chartData.rows.length - 10, 0)) : chartData.rows
 
       const station_timeData = get_station_field_data(chartData,"time", "column_std_names")
@@ -35,7 +36,7 @@ function RenderChart({ sourceData, position, stationName }) {
       }));
 
       const exclude_var = ['time', 'latitude', 'longitude', 'wind_from_direction', 'air_pressure', 'relative_humidity',
-        'air_temperature', 'sea_surface_temperature', 'sea_surface_wave_from_direction'
+        'air_temperature', 'sea_surface_temperature', 'sea_surface_wave_from_direction', 'sea_surface_maximum_wave_period'
       ]
       // Prepare datasets for each variable, excluding 'time'
       const datasets = chartData.column_std_names.filter((variable) => !exclude_var.includes(variable)).map((variable, index) =>{
