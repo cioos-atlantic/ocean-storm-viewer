@@ -1,5 +1,7 @@
 import { parseISO, format } from 'date-fns';
 import { fetch_value } from "@/lib/storm_utils";
+import { storm_type_info } from '@/lib/storm_class';
+import Image from "next/image";
 
 export const empty_point_obj = { properties: {}, geometry: {} }
 
@@ -24,6 +26,8 @@ export default function StormPointDetails({ storm_point_hover }) {
         "PT": "Post-Tropical Storm",
     };
 
+
+
     // ECCC and IBTRACS use different names for the same kinds of information.  Sometimes, within IBTRACS, several different fields may possibly contain the appropriate value
     // ECCC uses TIMESTAMP and IBTRACS uses ISO_TIME
     const TIMESTAMP = format(parseISO(fetch_value(storm_point_hover, ["TIMESTAMP", "ISO_TIME"])), 'PP pp X');
@@ -38,7 +42,14 @@ export default function StormPointDetails({ storm_point_hover }) {
         <div className="info_pane">
             <div>
                 <h3>{STORMNAME}</h3>
-                <p><strong>Storm Type:</strong> {storm_types[STORMTYPE]}</p>
+                <p><strong>Storm Type:</strong> 
+                {storm_type_info[STORMTYPE]["name"]["en"]} 
+                {" "}
+                <Image 
+                src={storm_type_info[STORMTYPE]['img']} 
+                alt={storm_type_info[STORMTYPE]['name']['en']}
+                height={40} width={20} /> 
+                </p>
                 <p><strong>Storm Status:</strong> {storm_point_hover.properties.TCDVLP}</p>
                 <p><strong>Storm Category:</strong> {STORMFORCE}</p>
                 <p><strong>Timestamp:</strong> {TIMESTAMP}</p>
