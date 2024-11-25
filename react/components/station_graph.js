@@ -23,15 +23,15 @@ function RenderChart({ sourceData, position, stationName }) {
       chartData.units = sourceData.units
       chartData.column_std_names = sourceData.column_std_names
       // Plus one since end is not included
-      chartData.rows = position > 30 ? sourceData.rows.slice(position-30, position+1) : sourceData.rows.slice(0, position+1)
+      chartData.rows = sourceData.rows //position > 30 ? sourceData.rows.slice(position-30, position+1) : sourceData.rows.slice(0, position+1)
       //chartData.rows = chartData.rows.length > 10 ? Data.rows.slice(Math.max(chartData.rows.length - 10, 0)) : chartData.rows
 
       const station_timeData = get_station_field_data(chartData,"time", "column_std_names")
       const timeData = station_timeData.map((timestamp) => new Date(timestamp).toLocaleString('en-US', {
                                 hour: '2-digit',
-                                minute: '2-digit',
-                                //day: '2-digit',
-                                //month: '2-digit',
+                                //minute: '2-digit',
+                                day: '2-digit',
+                                month: '2-digit',
                                 //year: 'numeric'
       }));
 
@@ -103,7 +103,7 @@ function RenderChart({ sourceData, position, stationName }) {
         chartRef.current.chart.destroy();
       }
     };
-  }, [sourceData, stationName, position]); // Re-run effect if chartData or stationName changes
+  }, [sourceData, stationName]); // Re-run effect if chartData or stationName changes
 
   return (
     
