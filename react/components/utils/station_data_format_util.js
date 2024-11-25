@@ -80,3 +80,18 @@ export function RecentStationData(data, time) {
     return station_info;
     
   }
+
+export function getDisplayName(station_descriptions, station_name){
+    let display_name;
+
+    const matchedDataset = station_descriptions?.find(station_description => station_description.id === station_name);
+    
+    if (matchedDataset) {
+      display_name = matchedDataset.title;
+      console.log(`Match found! Dataset title is: ${display_name}`);
+    } else {
+      console.log("No match found.");
+      display_name = station_name
+    }
+    return display_name;
+}

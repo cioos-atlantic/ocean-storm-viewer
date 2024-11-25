@@ -14,9 +14,16 @@ import dynamic from "next/dynamic";
 
 import ErddapHandler from "../pages/api/query_stations";
 
+
+
 export const siteTitle = 'Atlantic Hurricane Dashboard'
 
-export const empty_station_obj = {pts:[]};
+
+export const empty_station_obj = {
+  pts: { features: [] }
+};
+
+// export const empty_station_obj = {pts:[]};
 
 export default function Layout({ children, home, topNav, logo, active_storm_data, station_data, querystring }) {
 
@@ -31,6 +38,10 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
 
   const active_storms = querystring.query.storms == "active";
   const historical_storms = querystring.query.storms == "historical";
+
+  //const allDatasetDescriptions = useDatasetDescriptions();
+  //console.log(allDatasetDescriptions);
+  
 
   // useMemo() tells React to "memorize" the map component.
   // Wthout this, the map will get redrawn by many interactions 
