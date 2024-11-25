@@ -6,6 +6,9 @@ import { flip_coords } from "@/lib/storm_utils";
 
 import { Marker, Popup } from "react-leaflet";
 
+
+const empty_data_text = {}
+
 /**
  * 
  * @param {[Object]} station_data Station Data object after being retrieved from WFS and processed. 
@@ -38,12 +41,6 @@ export default function StationMarker(station_data, time = new Date()) {
               padding: '20px', // Optional padding around chart
               }}> 
             <h4>{display_name}</h4>
-            <div>
-              <RenderChart  
-              chartData={station_values.properties.station_data}
-              stationName={station_name}
-              />
-            </div>
             {data_text}
             <a href={data_link} target="_blank">Full data</a>
           </Popup>

@@ -1,4 +1,5 @@
 import { formatCioosStations } from "../station_formats";
+import RenderChart from '../station_graph.js'
 
 //Station data should be formatted from station_data_format util
 //Takes input from the station_data list field, not the whole station data itself
@@ -56,16 +57,22 @@ export function get_station_data_value(station_data, row_position, column_name, 
 // If provided a time (as JS timestamp), it will return the 
 // most recent row from the data before that time
 export function RecentStationData(data, time) {
-    //let station_data = data['properties']['station_data']
     let station_data = data?.properties?.station_data;
-    let children = []
 
     const row_position = get_recent_row_position(data,time)
     if(row_position < 0) return 
+    let children = []
     formatCioosStations(station_data, children, row_position)
   
     let station_info = (
       <div className="station_pane">
+        <div className="station_chart">
+              <RenderChart  
+              sourceData={station_data}
+              position={row_position}
+              stationName={data?.properties?.station}
+              />
+        </div>
         {children}
       </div>
     );

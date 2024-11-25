@@ -1,22 +1,31 @@
 import React, { useEffect, useRef } from 'react';
 import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController } from 'chart.js';
-import { get_station_field_data, get_station_field_units } from './utils/station_data_format_util';
+import { get_station_field_data, get_station_field_units, get_station_field_position } from './utils/station_data_format_util';
 import { convert_unit_data, windSpeedToKmh, windSpeedToKnots } from './utils/unit_conversion';
 
 // Register necessary components, including the Line controller
 Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend);
 
-function RenderChart({ chartData, stationName }) {
+const chartData ={
+  column_std_names:{},
+  units:{},
+  rows:{}
+}
+
+function RenderChart({ sourceData, position, stationName }) {
   const chartRef = useRef(null); // Reference to the canvas element
 
   useEffect(() => {
     // Check if chartData is available
-    if (chartData && chartData.rows.length > 0) {
+    if (sourceData && sourceData.rows.length > 0) {
       const ctx = chartRef.current.getContext('2d'); // Get context for the canvas
       // Make sure grabbing the most recent data
-      chartData.rows = chartData.rows.length > 10 ? chartData.rows.slice(Math.max(chartData.rows.length - 10, 0)) : chartData.rows
+      chartData.units = sourceData.units
+      chartData.column_std_names = sourceData.column_std_names
+      chartData.rows = position > 30 ? sourceData.rows.slice(position-30, position) : sourceData.rows.slice(0, position)
+      //chartData.rows = chartData.rows.length > 10 ? Data.rows.slice(Math.max(chartData.rows.length - 10, 0)) : chartData.rows
 
-      const station_timeData = get_station_field_data(chartData, "time", "column_std_names")
+      const station_timeData = get_station_field_data(chartData,"time", "column_std_names")
       const timeData = station_timeData.map((timestamp) => new Date(timestamp).toLocaleString('en-US', {
                                 hour: '2-digit',
                                 minute: '2-digit',
@@ -31,7 +40,7 @@ function RenderChart({ chartData, stationName }) {
       // Prepare datasets for each variable, excluding 'time'
       const datasets = chartData.column_std_names.filter((variable) => !exclude_var.includes(variable)).map((variable, index) =>{
          // Exclude 'time' from datasets
-          const unit = get_station_field_units(chartData, variable, "column_std_names")
+          const unit = get_station_field_units(sourceData, variable, "column_std_names")
           const values = get_station_field_data(chartData, variable, "column_std_names")
 
           return{
@@ -93,7 +102,7 @@ function RenderChart({ chartData, stationName }) {
         chartRef.current.chart.destroy();
       }
     };
-  }, [chartData, stationName]); // Re-run effect if chartData or stationName changes
+  }, [sourceData, stationName, position]); // Re-run effect if chartData or stationName changes
 
   return (
     
