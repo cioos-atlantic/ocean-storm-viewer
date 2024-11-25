@@ -16,9 +16,7 @@ import ErddapHandler from "../pages/api/query_stations";
 
 export const siteTitle = 'Atlantic Hurricane Dashboard'
 
-export const empty_station_obj = {
-  pts: { features: [] }
-};
+export const empty_station_obj = {pts:[]};
 
 export default function Layout({ children, home, topNav, logo, active_storm_data, station_data, querystring }) {
 
@@ -26,7 +24,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
   const [selected_forecast, setSelectedForecast] = useState({});
   const [storm_timeline, setStormTimeline] = useState([]);
   const [storm_points, setStormPoints] = useState(empty_storm_obj);
-  const [station_points, setStationPoints] = useState([empty_station_obj]);
+  const [station_points, setStationPoints] = useState(station_data);
   const [historicalStormData, setHistoricalStormData] = useState(empty_storm_obj); // State for storing historical storm data
 
   const router = useRouter();
@@ -88,7 +86,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
         <MapWithNoSSR
           storm_points={storm_points}
           storm_data={storm_data_pass}
-          station_data={station_data}
+          station_data={station_points}
           source_type={source_type}
           setStormPoints={setStormPoints}
           setStationPoints={setStationPoints}
