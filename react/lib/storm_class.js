@@ -52,6 +52,8 @@ export const storm_type_info = {
     "max": 63,        
   "name": { "en": "Tropical Depression", "fr": "Dépression tropicale" },
   "img" : "storm_types/TD_icon.svg",
+  "img_height":20,
+  "img_width":20,
   "info": "This is when tropical disturbance acquires a spin, and winds of at least 20 knots (38 km/h)",
   "source":"https://www.canada.ca/en/environment-climate-change/services/hurricane-forecasts-facts/glossary.html",
   "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
@@ -62,6 +64,8 @@ export const storm_type_info = {
     "max": 118,   
       "name": { "en": "Tropical Storm", "fr": "Tempête tropicale" },
       "img" : "storm_types/TS_icon.svg",
+      "img_height":38,
+      "img_width":20,
     "info": "This is when tropical depression winds increase to at least 35 knots (64 km/h)",
     "source":"https://www.canada.ca/en/environment-climate-change/services/hurricane-forecasts-facts/glossary.html",
     "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
@@ -69,6 +73,8 @@ export const storm_type_info = {
   "HR": {
     "min": 119,
     "max": null,  
+    "img_height":38,
+    "img_width":20,
       "name": { "en": "Hurricane", "fr": "Tempête" },
       "img" : "storm_types/HR_icon.svg",
     "info": "A hurricane is formed when sustained winds reach a minimum of 64 knots (119 km/h). There are 5 classes of hurricane intensity as outlined by the Saffir-Simpson Scale.",
@@ -79,6 +85,8 @@ export const storm_type_info = {
   "HU": {
     "min": 119,
     "max": null,  
+    "img_height":38,
+    "img_width":20,
       "name": { "en": "Hurricane", "fr": "Tempête" },
       "img" : "storm_types/HR_icon.svg",
     "info": "A hurricane is formed when sustained winds reach a minimum of 64 knots (119 km/h). There are 5 classes of hurricane intensity as outlined by the Saffir-Simpson Scale.",
@@ -91,6 +99,8 @@ export const storm_type_info = {
     "max": 37,  
       "name": { "en": "Tropical Disturbance", "fr": "Perturbation tropicale" },
       "img" : "storm_types/DI_icon.svg",
+      "img_height":20,
+      "img_width":20,
         "info": "This is an organized region of showers and thunderstorms in the tropics - generally 200 to 600 kilometres in diameter - that maintains its identity for at least 24 hours but does not have a closed wind circulation. ",
         "source":"https://www.canada.ca/en/environment-climate-change/services/hurricane-forecasts-facts/glossary.html",
         "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
@@ -98,6 +108,8 @@ export const storm_type_info = {
   "ET": {
       "name": { "en": "Extratropical", "fr": "Tempête extratropicale" },
       "img" : "storm_types/ET_icon.svg",
+      "img_height":38,
+      "img_width":20,
     "info": "It is a generic term for the class of frontal low pressure systems. They are unlike tropical cyclones in that they are not symmetric in their temperature, precipitation or wind patterns.",
     "source":"https://www.canada.ca/en/environment-climate-change/services/hurricane-forecasts-facts/glossary.html",
     "more_info_link": "https://www.weather.gov/source/zhu/ZHU_Training_Page/tropical_stuff/sub_extra_tropical/subtropical.htm"
@@ -106,6 +118,8 @@ export const storm_type_info = {
   "SS": {
     "name": { "en": "Subtropical Storm", "fr": "Tempête subtropicale" },
     "img" : "storm_types/SS_icon.svg",
+    "img_height":38,
+    "img_width":20,
   "info": "A subtropical storm is a cyclone that has characteristics of both a tropical storm and an extratropical cyclone. Subtropical cyclones can form in waters normally too cool for tropical cyclones.",
   "source":"https://www.canada.ca/en/environment-climate-change/services/hurricane-forecasts-facts/glossary.html",
   "more_info_link": "https://www.weather.gov/source/zhu/ZHU_Training_Page/tropical_stuff/sub_extra_tropical/subtropical.htm"
@@ -114,11 +128,15 @@ export const storm_type_info = {
   "MX": {
       "name": { "en": "Mixture", "fr": "Un Mélange" },
       "img" : "../data/img/storm_types/MX_icon.svg",
+      "img_height":20,
+      "img_width":20,
     "info": " There are contradicting nature reports from different agencies"
   },
   "PT": {
       "name": { "en": "Post tropical", "fr": "Tempête post-tropicale" },
       "img" : "storm_types/PT_icon.svg",
+      "img_height":20,
+      "img_width":20,
     "info": "A storm system that used to be tropical but has since lost most of its tropical characteristics. ",
     "source":"https://www.canada.ca/en/environment-climate-change/services/hurricane-forecasts-facts/glossary.html",
   "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/hurricane-forecasts-facts/learn/post-tropical-cyclones.html"
@@ -126,6 +144,8 @@ export const storm_type_info = {
   "NR": {
       "name": { "en": "Not Reported", "fr": "Non signalé" },
       "img" : "storm_types/NR_icon.svg",
+      "img_height":20,
+      "img_width":20,
     "info": "Storm type not yet reported"
   },
 

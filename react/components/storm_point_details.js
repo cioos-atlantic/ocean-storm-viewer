@@ -48,7 +48,7 @@ export default function StormPointDetails({ storm_point_hover }) {
                 <Image 
                 src={storm_type_info[STORMTYPE]['img']} 
                 alt={storm_type_info[STORMTYPE]['name']['en']}
-                height={40} width={20} /> 
+                height={storm_type_info[STORMTYPE]['img_height']} width={storm_type_info[STORMTYPE]['img_width']} /> 
                 </p>
                 <p><strong>Storm Status:</strong> {storm_point_hover.properties.TCDVLP}</p>
                 <p><strong>Storm Category:</strong> {STORMFORCE}</p>
