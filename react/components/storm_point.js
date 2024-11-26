@@ -11,7 +11,7 @@ import PostTropicalIcon from '../public/storm_types/PT_icon.svg'
 import SubTropicalIcon from '../public/storm_types/SS_icon.svg'
 import TropicalDepressionIcon from '../public/storm_types/TD_icon.svg'
 import TropicalStormIcon2 from '../public/storm_types/TS_icon.svg'
-
+import { storm_categories, storm_type_info } from '@/lib/storm_class'
 
 
 import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
@@ -104,7 +104,14 @@ const storm_types = {
 
 export default function StormMarker({ storm_point_data, setHoverMarker }) {
     const position = flip_coords(storm_point_data.geometry.coordinates);
-    const storm_type= storm_point_data.properties["NATURE"]
+    const storm_type= storm_point_data.properties["NATURE"];
+    const storm_category = storm_point_data.properties["USA_SSHS"].toString()
+    const svgPath = "storm_types/experimental/ET_icon.svg"   //storm_type_info[storm_type]["img"]
+    const arcColor= storm_categories[storm_category]["arcColor"];
+    const ellipseColor= storm_categories[storm_category]["ellipseColor"];
+    const textColor= storm_categories[storm_category]["textColor"];
+    const icon=storm_types[storm_type];
+    change_icon_url(extratropicon, svgPath, arcColor, ellipseColor, textColor);
 
     return (
         <Marker
@@ -114,8 +121,47 @@ export default function StormMarker({ storm_point_data, setHoverMarker }) {
                 mouseover: (event) => setHoverMarker(storm_point_data),
                 mouseout: (event) => setHoverMarker(empty_point_obj)
             }}
-            icon={storm_types[storm_type]}
+            icon={extratropicon}
         >
         </Marker>
     );
+}
+//icon={storm_types[storm_type]}
+
+async function change_icon_url(icon, svgPath, arcColor, arcStroke, ellipseColor, textColor) {
+    try {
+        // Fetch the external SVG file
+        const response = await fetch(svgPath);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch SVG: ${response.statusText}`);
+        }
+
+        // Get the SVG content as text
+        let svgContent = await response.text();
+
+        // Replace placeholder values with the provided colors
+        svgContent = svgContent
+            .replace(/var\(--arc-fill\)/g, arcColor)
+            .replace(/var\(--ellipse-stroke\)/g, ellipseColor)
+            .replace(/var\(--text-color\)/g, textColor)
+            .replace(/var\(--arc-stroke\)/g, arcStroke);
+
+        // Encode the updated SVG as a Data URL
+        const updatedIconUrl = `data:image/svg+xml;utf8,${encodeURIComponent(svgContent)}`;
+
+        // Update the existing Leaflet icon
+        icon.options.iconUrl = updatedIconUrl;
+        icon.options.iconRetinaUrl = updatedIconUrl;
+
+        // Trigger Leaflet to refresh the icon
+        if (icon._map) {
+            icon._map.eachLayer((layer) => {
+                if (layer instanceof L.Marker && layer.options.icon === icon) {
+                    layer.setIcon(icon);
+                }
+            });
+        }
+    } catch (error) {
+        console.error("Error updating SVG icon:", error);
+    }
 }
