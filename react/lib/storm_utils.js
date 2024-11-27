@@ -148,6 +148,9 @@ export function build_wind_radii(storm_data_pt, speed, storm_center, ne_rad, se_
     let radius = NaN;
     let rad_coords = [];
     let quad_count = 0;
+    let empty_quads = [];
+
+    const storm_center_point = { longitude: storm_center[0], latitude: storm_center[1] };
 
     quadrants.forEach((direction) => {
         switch (direction) {
@@ -174,20 +177,11 @@ export function build_wind_radii(storm_data_pt, speed, storm_center, ne_rad, se_
             final_polygon.properties.RADIUS = (radius / nmi_to_m) + " nmi";
             quad_count++;
         }
+        else {
+            empty_quads.push(direction);
+            rad_coords = rad_coords.concat(storm_center_point);
+        }
     });
-
-    // Add starting coordinate to the end to finish the polygon...?
-    switch (quad_count) {
-        case 1:
-        case 3:
-            rad_coords.splice(0, 0, { longitude: storm_center[0], latitude: storm_center[1] });
-            rad_coords.push({ longitude: storm_center[0], latitude: storm_center[1] });
-            break;
-        case 4:
-        case 2:
-            rad_coords.push(rad_coords[0]);
-            break;
-    }
 
     // getBounds() requires a flat list of coordinates in order to generate a 
     // bounding box, each quadrant is separated into it's own polygon array of
@@ -249,6 +243,9 @@ export function build_sea_height_radii(storm_data_pt, height, storm_center, ne_r
     let radius = NaN;
     let rad_coords = [];
     let quad_count = 0;
+    let empty_quads = [];
+
+    const storm_center_point = { longitude: storm_center[0], latitude: storm_center[1] };
 
     quadrants.forEach((direction) => {
         switch (direction) {
@@ -275,20 +272,11 @@ export function build_sea_height_radii(storm_data_pt, height, storm_center, ne_r
             final_polygon.properties.RADIUS = (radius / nmi_to_m) + " nmi";
             quad_count++;
         }
+        else {
+            empty_quads.push(direction);
+            rad_coords = rad_coords.concat(storm_center_point);
+        }
     });
-
-    // Add starting coordinate to the end to finish the polygon...?
-    switch (quad_count) {
-        case 1:
-        case 3:
-            rad_coords.splice(0, 0, { longitude: storm_center[0], latitude: storm_center[1] });
-            rad_coords.push({ longitude: storm_center[0], latitude: storm_center[1] });
-            break;
-        case 4:
-        case 2:
-            rad_coords.push(rad_coords[0]);
-            break;
-    }
 
     // getBounds() requires a flat list of coordinates in order to generate a 
     // bounding box, each quadrant is separated into it's own polygon array of
