@@ -10,7 +10,7 @@
 // cioos-atlantic:ibtracs_active_storms
 // cioos-atlantic:ibtracs_historical_storms
 
-import { el } from "date-fns/locale";
+// import { el } from "date-fns/locale";
 
 // https://dev.cioosatlantic.ca/geoserver/ows?service=wfs&version=2.0.0&request=GetCapabilities
 
