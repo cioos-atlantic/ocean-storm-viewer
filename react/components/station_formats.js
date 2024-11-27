@@ -92,7 +92,7 @@ export function formatCioosDateTime(date_str){
     day: 'numeric', 
     hour: '2-digit', 
     minute: '2-digit',
-    timeZoneName: 'short'
+    timeZoneName: 'long'
 };
 
   const timestamp = date.toLocaleString('en-US', options);
@@ -198,7 +198,3 @@ export function getStormBbox (storm_data){
 
 }
     
-function filter_stations(stationData){
-  const attributes_of_interest = ['sea_surface_wave_significant_height',
-    'sea_surface_wave_maximum_height', "wind_speed_of_gust", "air_temperature", "time", "sea_surface_temperature", "wind_speed", "air_pressure"];
-}

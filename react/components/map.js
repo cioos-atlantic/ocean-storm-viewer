@@ -15,6 +15,7 @@ import SeaHeightRadius from "@/components/sea_height_radii";
 import StationMarker from "./station_marker";
 import ErrorCone from "@/components/error_cone";
 import StormPointDetails, { empty_point_obj } from "@/components/storm_point_details";
+import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
@@ -32,6 +33,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   // Add parameter for points
   // Points always there, even not in storm seasons
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
+  const allDatasetDescriptions = useDatasetDescriptions();
+  console.log(allDatasetDescriptions)
   
   console.debug("Storm Points in map.js: ", storm_points);
 
@@ -110,7 +113,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                 {
                   Object.entries(station_data).map((element) => {
                     console.log(element)
-                    return StationMarker(element)
+                    return StationMarker(element, allDatasetDescriptions)
                   })
                 }
               </LayerGroup>
