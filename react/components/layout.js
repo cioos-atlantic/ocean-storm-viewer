@@ -23,7 +23,7 @@ export const empty_station_obj = {
   pts: { features: [] }
 };
 
-export const empty_station_obj = {pts:[]};
+// export const empty_station_obj = {pts:[]};
 
 export default function Layout({ children, home, topNav, logo, active_storm_data, station_data, querystring }) {
 
