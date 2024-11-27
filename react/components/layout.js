@@ -18,11 +18,15 @@ import dynamic from "next/dynamic";
 
 import ErddapHandler from "../pages/api/query_stations";
 
+
+
 export const siteTitle = 'Atlantic Hurricane Dashboard'
+
 
 export const empty_station_obj = {
   pts: { features: [] }
 };
+
 
 export default function Layout({ children, home, topNav, logo, active_storm_data, station_data, querystring }) {
 
@@ -32,11 +36,16 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
   const [storm_points, setStormPoints] = useState(empty_storm_obj);
   const [station_points, setStationPoints] = useState([empty_station_obj]);
   const [historicalStormData, setHistoricalStormData] = useState({}); // State for storing historical storm data
+ 
 
   const router = useRouter();
 
   const active_storms = querystring.query.storms == "active";
   const historical_storms = querystring.query.storms == "historical";
+
+  //const allDatasetDescriptions = useDatasetDescriptions();
+  //console.log(allDatasetDescriptions);
+  
 
   // useMemo() tells React to "memorize" the map component.
   // Wthout this, the map will get redrawn by many interactions 
@@ -159,13 +168,13 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
           )}
         </Drawer>
         {active_storms && (
-          <MapWithNoSSR storm_data={storm_points} station_data={station_data} source_type={"active"}></MapWithNoSSR>)}
+          <MapWithNoSSR storm_data={storm_points} station_data={station_data} source_type={"active"} ></MapWithNoSSR>)}
         {historical_storms && (
           // Check if historicalStormData is empty
           Object.keys(historicalStormData).length === 0 ? (
             <DefaultMapWithNoSSR station_data={station_data} />
           ) : (
-            <MapWithNoSSR storm_data={historicalStormData} station_data={station_points} source_type={"historical"} />
+            <MapWithNoSSR storm_data={historicalStormData} station_data={station_points} source_type={"historical"}  />
           )
         )}
       </main>
