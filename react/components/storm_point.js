@@ -105,13 +105,29 @@ const storm_types = {
 export default function StormMarker({ storm_point_data, setHoverMarker }) {
     const position = flip_coords(storm_point_data.geometry.coordinates);
     const storm_type= storm_point_data.properties["NATURE"];
-    const storm_category = storm_point_data.properties["USA_SSHS"].toString()
+    const storm_category = String(storm_point_data.properties["USA_SSHS"])
+    let arcColor, ellipseColor, textColor, arcStroke;
+
+    if (!storm_category){
+        arcColor = "#000000";
+        ellipseColor= "#000000";
+        textColor = "#000000";
+        arcStroke = "#000000";
+
+    }
+
+    
+
+
+    console.log(storm_point_data.properties)
+    console.log(String(storm_point_data.properties["USA_SSHS"]))
+    
     const svgPath = "storm_types/experimental/ET_icon.svg"   //storm_type_info[storm_type]["img"]
-    const arcColor= storm_categories[storm_category]["arcColor"];
-    const ellipseColor= storm_categories[storm_category]["ellipseColor"];
-    const textColor= storm_categories[storm_category]["textColor"];
-    const icon=storm_types[storm_type];
-    change_icon_url(extratropicon, svgPath, arcColor, ellipseColor, textColor);
+    //const arcColor= storm_categories[storm_category]["arcColor"];
+    //const ellipseColor= storm_categories[storm_category]["ellipseColor"];
+    //const textColor= storm_categories[storm_category]["textColor"];
+    //const icon=storm_types[storm_type];
+    //change_icon_url(extratropicon, svgPath, arcColor, ellipseColor, textColor);
 
     return (
         <Marker

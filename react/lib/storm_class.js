@@ -303,3 +303,157 @@ export const storm_type_info = {
 
 // consider adding for not reported or mixture
 // more info from NOAA or ECCC
+
+// hurricane is in km/hr
+
+export const storm_info_obj = {
+  "5": {
+        "min": 252,
+        "max": null,
+      "name": { "en": "Category 5", "fr": "catégorie 5" },
+      "arcColor" :'#A188FC',
+      "arcStroke" :'#A188FC',
+      "ellipseColor" :'#A188FC',
+      "textColor" :'#A188FC',
+      
+      "img" : "../data/img/storm_categories/Category_5_hurricane_icon.svg",
+        "info": "A hurricane with sustained winds of a minimum of 136 knots (252 km/h)",
+    "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
+
+  },
+  "4": {
+        "min": 210,
+        "max": 251,
+      "name": { "en": "Category 4", "fr": "catégorie 4" },
+      "arcColor" :'#FF738A',
+      "arcStroke" :'#FF738A',
+      "ellipseColor" :'#FF738A',
+      "textColor" :'#FF738A',
+      
+      "img" : "../data/img/storm_categories/Category_4_hurricane_icon.svg",
+        "info": "A hurricane with sustained winds of a minimum of 113 knots (210 km/h)",
+    "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
+  },
+  "3": {
+    "min": 177,
+    "max": 209,
+      "name": { "en": "Category 3", "fr": "catégorie 3" },
+      "arcColor" :'#FF9E59',
+      "arcStroke" :'#FF9E59',
+      "ellipseColor" :'#FF9E59',
+      "textColor" :'#FF9E59',
+      
+      "img" : "../data/img/storm_categories/Category_3_hurricane_icon.svg",
+       "info": "A hurricane with sustained winds of a minimum of 96 knots (177 km/h)",
+    "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
+  },
+  "2": {
+    "min": 153,
+    "max": 176,
+      "name": { "en": "Category 2", "fr": "catégorie 2" },
+      "arcColor" :'#FFD98C',
+      "arcStroke" :'#FFD98C',
+      "ellipseColor" :'#FFD98C',
+      "textColor" :'#FFD98C',
+      
+      "img" : "../data/img/storm_categories/Category_2_hurricane_icon.svg",
+       "info": "A hurricane with sustained winds of a minimum of 83 knots (153 km/h)",
+    "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
+  },
+  "1": {
+    "min": 119,
+    "max": 152,      
+      "name": { "en": "Category 1", "fr": "catégorie 1" },
+      "arcColor" :'#FFFFD9',
+      "arcStroke" :'#FFFFD9',
+      "ellipseColor" :'#FFFFD9',
+      "textColor" :'#FFFFD9',
+      
+      "img" : "../data/img/storm_categories/Category_1_hurricane_icon.svg",
+      "info": "A hurricane with sustained winds of a minimum of 64 knots (119 km/h)",
+    "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
+  },
+  "0": {
+        "min": 252,
+        "max": null,
+      "name": { "en": "Category 0", "fr": "catégorie 0" },
+      "arcColor" :'#4DFFFF',
+      "arcStroke" :'#4DFFFF',
+      "ellipseColor" :'#4DFFFF',
+      "textColor" :'#4DFFFF',
+      
+      "img" : "../data/img/storm_categories/Category_5_hurricane_icon.svg",
+        "info": "A hurricane with sustained winds of a minimum of 136 knots (252 km/h)",
+    "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
+
+  },
+  "-1": {
+        "min": 252,
+        "max": null,
+      "name": { "en": "Category -1", "fr": "catégorie -1" },
+      "arcColor" :'#6EC1EA',
+      "arcStroke" :'#6EC1EA',
+      "ellipseColor" :'#6EC1EA',
+      "textColor" :'#6EC1EA',
+      
+      "img" : "../data/img/storm_categories/Category_5_hurricane_icon.svg",
+        "info": "A hurricane with sustained winds of a minimum of 136 knots (252 km/h)",
+    "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
+
+  },
+  "-2": {
+        "min": 210,
+        "max": 251,
+      "name": { "en": "Category -2", "fr": "catégorie -2" },
+      "arcColor" :'#6EC1EA',
+      "arcStroke" :'#6EC1EA',
+      "ellipseColor" :'#1591DE',
+      "textColor" :'#1591DE',
+      
+      "img" : "../data/img/storm_categories/Category_4_hurricane_icon.svg",
+        "info": "A hurricane with sustained winds of a minimum of 113 knots (210 km/h)",
+    "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
+  },
+  "-3": {
+    "min": 177,
+    "max": 209,
+      "name": { "en": "Category -3", "fr": "catégorie -3" },
+      "arcColor" :'#5DA7F0',
+      "arcStroke" :'#5DA7F0',
+      "ellipseColor" :'#5DA7F0',
+      "textColor" :'#5DA7F0',
+      
+      "img" : "../data/img/storm_categories/Category_3_hurricane_icon.svg",
+       "info": "A hurricane with sustained winds of a minimum of 96 knots (177 km/h)",
+    "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
+  },
+  "-4": {
+    "min": 153,
+    "max": 176,
+      "name": { "en": "Category -4", "fr": "catégorie -4" },
+      "arcColor" :'#2081D9',
+      "arcStroke" :'#2081D9',
+      "ellipseColor" :'#2081D9',
+      "textColor" :'#2081D9',
+      
+      "img" : "../data/img/storm_categories/Category_2_hurricane_icon.svg",
+       "info": "A hurricane with sustained winds of a minimum of 83 knots (153 km/h)",
+    "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
+  },
+  "-5": {
+    "min": 119,
+    "max": 152,      
+      "name": { "en": "Category -5", "fr": "catégorie -5" },
+      "arcColor" :'#1659B8',
+      "arcStroke" :'#1659B8',
+      "ellipseColor" :'#1659B8',
+      "textColor" :'#1659B8',
+      
+      "img" : "../data/img/storm_categories/Category_1_hurricane_icon.svg",
+      "info": "A hurricane with sustained winds of a minimum of 64 knots (119 km/h)",
+    "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
+  },
+  
+ 
+}
+
