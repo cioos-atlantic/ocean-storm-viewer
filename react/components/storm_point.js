@@ -1,4 +1,4 @@
-// import React, { useState, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Marker, Popup } from 'react-leaflet'
 import { Icon, DivIcon, Point } from 'leaflet'
 import HurricaneIcon from '../public/hurricane.svg'
@@ -17,74 +17,75 @@ import { storm_categories, storm_type_info } from '@/lib/storm_class'
 import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
 import {empty_point_obj} from "@/components/storm_point_details"
 
+
 export const hurricon = new Icon({
     iconUrl: HurricaneIcon.src,
     iconRetinaUrl: HurricaneIcon.src,
-    iconSize: [25, 25],
-    iconAnchor: [14, 14],
+    iconSize: [70, 70],
+    iconAnchor: [35, 70],
 });
 
 export const tropstrmicon = new Icon({
     iconUrl: TropicalStormIcon.src,
     iconRetinaUrl: TropicalStormIcon.src,
-    iconSize: [25, 25],
-    iconAnchor: [14, 14],
+    iconSize: [70, 70],
+    iconAnchor: [35, 35],
 });
 
 export const disticon = new Icon({
     iconUrl: TropicalDisturbanceIcon.src,
     iconRetinaUrl: TropicalDisturbanceIcon.src,
-    iconSize: [25, 25],
-    iconAnchor: [14, 14],
+    iconSize: [70, 70],
+    iconAnchor: [35, 35],
 });
 
 export const extratropicon = new Icon({
     iconUrl: ExtratropicalIcon.src,
     iconRetinaUrl: ExtratropicalIcon.src,
-    iconSize: [23, 38],
-    iconAnchor: [14, 14],
+    iconSize: [42, 70],
+    iconAnchor: [21, 35],
 });
 
 export const mixicon = new Icon({
     iconUrl: MixtureIcon.src,
     iconRetinaUrl: MixtureIcon.src,
-    iconSize: [25, 25],
-    iconAnchor: [14, 14],
+    iconSize: [70, 70],
+    iconAnchor: [35, 35],
 });
 
 export const notreportedicon = new Icon({
     iconUrl: NotReportedIcon.src,
     iconRetinaUrl: NotReportedIcon.src,
-    iconSize: [25, 25],
-    iconAnchor: [14, 14],
+    iconSize: [70, 70],
+    iconAnchor: [35, 35],
 });
 
 export const posttropicon = new Icon({
     iconUrl: PostTropicalIcon.src,
     iconRetinaUrl: PostTropicalIcon.src,
-    iconSize: [25, 25],
-    iconAnchor: [14, 14],
+    iconSize: [70, 70],
+    iconAnchor: [35, 35],
 });
 
 export const subtropicon = new Icon({
     iconUrl: SubTropicalIcon.src,
     iconRetinaUrl: SubTropicalIcon.src,
-    iconSize: [23, 38],
-    iconAnchor: [14, 14],
+    iconSize: [42, 70],
+    iconAnchor: [21, 35],
 });
 
 export const tropdepricon = new Icon({
     iconUrl: TropicalDepressionIcon.src,
     iconRetinaUrl: TropicalDepressionIcon.src,
-    iconSize: [25, 25],
-    iconAnchor: [14, 14],
+    iconSize: [70, 70],
+    iconAnchor: [35, 35],
 });
 
 export const tropstrmicon2 = new Icon({
     iconUrl: TropicalStormIcon2.src,
     iconRetinaUrl: TropicalStormIcon2.src,
-    iconSize: [23, 38],
-    iconAnchor: [14, 14],
+    iconSize: [42, 70],
+    iconAnchor: [21, 35],
 });
 
 
@@ -103,31 +104,62 @@ const storm_types = {
 
 
 export default function StormMarker({ storm_point_data, setHoverMarker }) {
+
     const position = flip_coords(storm_point_data.geometry.coordinates);
     const storm_type= storm_point_data.properties["NATURE"];
+    const storm_icon= storm_types[storm_type]
     const storm_category = String(storm_point_data.properties["USA_SSHS"])
     let arcColor, ellipseColor, textColor, arcStroke;
 
-    if (!storm_category){
+    const [customIcon, setCustomIcon] = useState(storm_icon);
+
+    if (storm_category === "undefined"){
         arcColor = "#000000";
         ellipseColor= "#000000";
         textColor = "#000000";
         arcStroke = "#000000";
 
     }
+    else{
+        //console.log(storm_categories[storm_category])
+        arcColor= storm_categories[storm_category]["arcColor"];
+        arcStroke= storm_categories[storm_category]["arcStroke"];
+        ellipseColor= storm_categories[storm_category]["ellipseColor"];
+        textColor= storm_categories[storm_category]["textColor"];
+    }
 
     
 
 
-    console.log(storm_point_data.properties)
-    console.log(String(storm_point_data.properties["USA_SSHS"]))
+    //console.log(storm_point_data.properties)
+   // console.log(String(storm_point_data.properties["USA_SSHS"]));
     
-    const svgPath = "storm_types/experimental/ET_icon.svg"   //storm_type_info[storm_type]["img"]
+    const svgPath = storm_type_info[storm_type]["exp_img"];
+    //console.log(storm_type_info[storm_type])
+    //storm_type_info[storm_type]["img"]
     //const arcColor= storm_categories[storm_category]["arcColor"];
     //const ellipseColor= storm_categories[storm_category]["ellipseColor"];
     //const textColor= storm_categories[storm_category]["textColor"];
     //const icon=storm_types[storm_type];
-    //change_icon_url(extratropicon, svgPath, arcColor, ellipseColor, textColor);
+    
+    useEffect(() => {
+        (async () => {
+            const arcColor = storm_categories[storm_category]?.arcColor || "#000000";
+            const arcStroke = storm_categories[storm_category]?.arcStroke || "#000000";
+            const ellipseColor = storm_categories[storm_category]?.ellipseColor || "#000000";
+            const textColor = storm_categories[storm_category]?.textColor || "#000000";
+
+            const updatedIcon = await change_icon_url(
+                storm_icon,
+                svgPath,
+                arcColor,
+                arcStroke,
+                ellipseColor,
+                textColor
+            );
+            setCustomIcon(updatedIcon);
+        })();
+    }, [storm_category, svgPath]);
 
     return (
         <Marker
@@ -137,7 +169,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker }) {
                 mouseover: (event) => setHoverMarker(storm_point_data),
                 mouseout: (event) => setHoverMarker(empty_point_obj)
             }}
-            icon={extratropicon}
+            icon={customIcon}
         >
         </Marker>
     );
@@ -146,38 +178,26 @@ export default function StormMarker({ storm_point_data, setHoverMarker }) {
 
 async function change_icon_url(icon, svgPath, arcColor, arcStroke, ellipseColor, textColor) {
     try {
-        // Fetch the external SVG file
         const response = await fetch(svgPath);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch SVG: ${response.statusText}`);
-        }
-
-        // Get the SVG content as text
+        if (!response.ok) throw new Error(`Failed to fetch SVG: ${response.statusText}`);
+        
         let svgContent = await response.text();
-
-        // Replace placeholder values with the provided colors
         svgContent = svgContent
             .replace(/var\(--arc-fill\)/g, arcColor)
             .replace(/var\(--ellipse-stroke\)/g, ellipseColor)
             .replace(/var\(--text-color\)/g, textColor)
             .replace(/var\(--arc-stroke\)/g, arcStroke);
-
-        // Encode the updated SVG as a Data URL
+        
         const updatedIconUrl = `data:image/svg+xml;utf8,${encodeURIComponent(svgContent)}`;
 
-        // Update the existing Leaflet icon
-        icon.options.iconUrl = updatedIconUrl;
-        icon.options.iconRetinaUrl = updatedIconUrl;
-
-        // Trigger Leaflet to refresh the icon
-        if (icon._map) {
-            icon._map.eachLayer((layer) => {
-                if (layer instanceof L.Marker && layer.options.icon === icon) {
-                    layer.setIcon(icon);
-                }
-            });
-        }
+        return new Icon({
+            ...icon.options, // Preserve existing options
+            iconUrl: updatedIconUrl,
+            iconRetinaUrl: updatedIconUrl,
+        });
     } catch (error) {
         console.error("Error updating SVG icon:", error);
+        return icon; // Return the original icon as a fallback
     }
 }
+
