@@ -21,38 +21,38 @@ export function windSpeedToKnots(value_in){
   return {value, unit};
 };
 
-export function tempToDegreeF(value_in){
+export function tempToDegreeF(value_in){// unit originally in °C
   const unit = '°F';
   const value = Math.round((value_in * (9 / 5)) + 32); 
   return {value, unit};
 };
 
-export function tempToDegreeC(value_in){
+export function tempToDegreeC(value_in){// unit originally in °C
   const unit = '°C';
   //const value= parseFloat(value_in); // Convert string to float
   const value = Math.round(parseFloat(value_in)); 
   return {value, unit};
 };
 
-export function pressureToKPa(value_in){
+export function pressureToKPa(value_in){// unit originally in mbar
   const unit = 'kPa';
   const value = (value_in * 0.1).toFixed(1); 
   return {value, unit};
 };
 
-export function pressureToInHg(value_in){
+export function pressureToInHg(value_in){// unit originally in mbar
   const unit = 'inHg';
   const value = (value_in * 0.02953).toFixed(1); 
   return {value, unit};
 };
 
-export function windHeightToFt(value_in){
+export function windHeightToFt(value_in){// unit originally in metres
   const unit = 'ft';
   const value = (value_in * 3.28084).toFixed(1); 
   return {value, unit};
 };
 
-export function windHeightToM(value_in){
+export function windHeightToM(value_in){ // unit originally in metres
   const unit = 'm';
   const value = parseFloat(value_in).toFixed(1); 
   return {value, unit};

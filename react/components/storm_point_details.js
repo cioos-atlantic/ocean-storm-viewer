@@ -3,6 +3,7 @@ import { fetch_value } from "@/lib/storm_utils";
 import React, {useState} from "react";
 import StormType from './Storm_popup/Storm_type';
 import StormCategory from './Storm_popup/storm_category';
+import StormPressure from './Storm_popup/storm_pressure';
 
 export const empty_point_obj = { properties: {}, geometry: {} }
 
@@ -45,7 +46,7 @@ export default function StormPointDetails({ storm_point_hover, onClose }) {
                 <p><strong>Timestamp:</strong> {TIMESTAMP}</p>
                 <p><strong>Lat/Long:</strong> {storm_point_hover.properties.LAT}&deg; N, {storm_point_hover.properties.LON}&deg; W</p>
                 <p><strong>Max Windspeed:</strong> {MAXWIND} knots ({(MAXWIND * 1.84).toFixed(2)} km/h)</p>
-                <p><strong>Pressure:</strong> {MINPRESS}mb</p>
+                <StormPressure STORMPRESSURE={MINPRESS} />
                 {
                     storm_point_hover.properties.ERRCT &&
                     <p><strong>Error radius :</strong> {storm_point_hover.properties.ERRCT} nmi ({(storm_point_hover.properties.ERRCT * 1.852).toFixed(2)} km)</p>
