@@ -168,7 +168,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setShowP
             position={position}
             eventHandlers={{
                 mouseover: (event) => {
-                    setShowPopup(true)
+                    
                     setHoverMarker(storm_point_data)},
                 /* mouseout: (event) => setHoverMarker(empty_point_obj) */
                 

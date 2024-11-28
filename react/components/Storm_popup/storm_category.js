@@ -12,7 +12,7 @@ export default function StormCategory({ STORMFORCE }) {
     const hasStormForce = Boolean(STORMFORCE);
     const stormCategoryInfo = hasStormForce
         ? storm_categories[stormCategory]?.info
-        : "There is currently no information on the storm category. Please check back later.";
+        : "There is currently no information on the storm category.";
     const stormCategoryLink = hasStormForce
         ? storm_categories[stormCategory]?.more_info_link
         : "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html";

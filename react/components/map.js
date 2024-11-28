@@ -37,19 +37,19 @@ export default function Map({ children, storm_data, station_data, source_type}) 
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
   const allDatasetDescriptions = useDatasetDescriptions();
   console.log(allDatasetDescriptions)
-  const [showPopup, setShowPopup] = useState(true); // Initially set to false
+
 
 
 
   return (
     <div className="map_container">
       <div className='inner_container'>
-      {showPopup && (
-          <StormPointDetails
-            storm_point_hover={hover_marker}
-            onClose={() => setShowPopup(false)}
-          />
-        )}
+      {hover_marker !== empty_point_obj && (
+  <StormPointDetails
+    storm_point_hover={hover_marker}
+    onClose={() => setHoverMarker(empty_point_obj)} // Close popup when the marker is reset
+  />
+)}
         
         <MapContainer
           center={defaultPosition}
@@ -99,7 +99,7 @@ export default function Map({ children, storm_data, station_data, source_type}) 
                         key={point.id}
                         storm_point_data={point}
                         setHoverMarker={setHoverMarker}
-                        setShowPopup= {setShowPopup}
+                       
                       />
                     );
                   })
