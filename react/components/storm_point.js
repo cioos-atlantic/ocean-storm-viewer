@@ -104,7 +104,7 @@ const storm_types = {
 };
 
 
-export default function StormMarker({ storm_point_data, setHoverMarker }) {
+export default function StormMarker({ storm_point_data, setHoverMarker, setShowPopup }) {
 
     const position = flip_coords(storm_point_data.geometry.coordinates);
     const storm_type= storm_point_data.properties["NATURE"];
@@ -167,7 +167,9 @@ export default function StormMarker({ storm_point_data, setHoverMarker }) {
             key={storm_point_data.id}
             position={position}
             eventHandlers={{
-                mouseover: (event) => setHoverMarker(storm_point_data),
+                mouseover: (event) => {
+                    setShowPopup(true)
+                    setHoverMarker(storm_point_data)},
                 /* mouseout: (event) => setHoverMarker(empty_point_obj) */
                 
             }}
