@@ -12,6 +12,7 @@ import SubTropicalIcon from '../public/storm_types/SS_icon.svg'
 import TropicalDepressionIcon from '../public/storm_types/TD_icon.svg'
 import TropicalStormIcon2 from '../public/storm_types/TS_icon.svg'
 import { storm_categories, storm_type_info } from '@/lib/storm_class'
+import { change_icon_url } from "./utils/storm_display_utils";
 
 
 import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
@@ -167,7 +168,8 @@ export default function StormMarker({ storm_point_data, setHoverMarker }) {
             position={position}
             eventHandlers={{
                 mouseover: (event) => setHoverMarker(storm_point_data),
-                mouseout: (event) => setHoverMarker(empty_point_obj)
+                /* mouseout: (event) => setHoverMarker(empty_point_obj) */
+                
             }}
             icon={customIcon}
         >
@@ -176,28 +178,5 @@ export default function StormMarker({ storm_point_data, setHoverMarker }) {
 }
 //icon={storm_types[storm_type]}
 
-async function change_icon_url(icon, svgPath, arcColor, arcStroke, ellipseColor, textColor) {
-    try {
-        const response = await fetch(svgPath);
-        if (!response.ok) throw new Error(`Failed to fetch SVG: ${response.statusText}`);
-        
-        let svgContent = await response.text();
-        svgContent = svgContent
-            .replace(/var\(--arc-fill\)/g, arcColor)
-            .replace(/var\(--ellipse-stroke\)/g, ellipseColor)
-            .replace(/var\(--text-color\)/g, textColor)
-            .replace(/var\(--arc-stroke\)/g, arcStroke);
-        
-        const updatedIconUrl = `data:image/svg+xml;utf8,${encodeURIComponent(svgContent)}`;
 
-        return new Icon({
-            ...icon.options, // Preserve existing options
-            iconUrl: updatedIconUrl,
-            iconRetinaUrl: updatedIconUrl,
-        });
-    } catch (error) {
-        console.error("Error updating SVG icon:", error);
-        return icon; // Return the original icon as a fallback
-    }
-}
 
