@@ -17,7 +17,7 @@ const storm_list = [
 
 ]
 
-export default function HistoricalStormList({ onHarvestData }) {
+export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet }) {
   console.log("Historical Storms Loading...");
 
   // const [selected_storm, setSelectedStorm] = useState("");
@@ -30,7 +30,7 @@ export default function HistoricalStormList({ onHarvestData }) {
           {storm_list.map((storm, index) => {
             return (
               <li key={storm.name + storm.year} className={(storm.name)}>
-                <a onClick={(e) => { handleClick(storm, onHarvestData) }}>{`${storm.name}-${storm.year}`}</a>
+                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints) }}>{`${storm.name}-${storm.year}`}</a>
               </li>
             )
           })}
@@ -42,7 +42,7 @@ export default function HistoricalStormList({ onHarvestData }) {
 
 }
 
-export async function handleClick(storm, onHarvestData) {
+export async function handleClick(storm, setStationPoints, setStormPoints) {
   console.log('Button clicked for', storm.name);
   const storm_name = storm.name;
   const storm_year = storm.year;
@@ -73,7 +73,6 @@ export async function handleClick(storm, onHarvestData) {
   //console.log(process)
   try {
     const resource = await fetch(`/api/historical_storms?${query}`);
-
     const storm_data = await resource.json();
     //console.log(storm_data);
 
@@ -89,23 +88,38 @@ export async function handleClick(storm, onHarvestData) {
     const historical_station_data = await station_resource.json();
 
     const historical_storm_data = parseStormData(storm_data, storm.name);
-    console.log(historical_station_data);
+    // console.log(historical_station_data);
 
+    console.debug("Historical Storm Data: ", historical_storm_data);
+    console.debug("Historical Station Data: ", historical_station_data);
 
-
+    setStormPoints(historical_storm_data);  // Set the storm data
+    setStationPoints(historical_station_data);  // Set the station data
+  
     // Trigger the callback to send data back to the parent
-    if (onHarvestData) {
-      onHarvestData({
-        storm_data: historical_storm_data,
-        station_data: historical_station_data
-      });
-    }
+    // handleHarvestHistoricalData({
+    //   storm_data: historical_storm_data,
+    //   station_data: historical_station_data
+    // }, setStationPoints, setStormPoints);
+
   } catch (error) {
     console.error('Error fetching storm or station data:', error);
   }
 
 
 };
+
+// Function to handle harvested historical storm data
+function handleHarvestHistoricalData(data, setStationPoints, setStormPoints) {
+  console.log("Harvested Historical Storm Data:", data);
+  //console.log(data.ib_data.features)
+  //if(data.ib_data.features){}
+  setStormPoints(data.storm_data);  // Set the storm data
+  setStationPoints(data.station_data);  // Set the station data
+  // Update the state with the harvested data
+  //console.log("Historical Storm Data set:", data);
+};
+
 
 async function getStationData(min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time) {
   const query = new URLSearchParams({
@@ -155,7 +169,7 @@ function parseStormData(storm_data, storm_name) {
     console.warn("No IBTRACS Data features found for ", storm_name);
     return null
   }
-  
+
   console.log(storm_data)
 
   let storm_details = {}

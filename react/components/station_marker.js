@@ -19,7 +19,6 @@ export default function StationMarker(station_data, station_descriptions, time =
     
     const station_name = station_data[0]
     const station_values = station_data[1]
-    console.log(station_values)
     const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + station_name + ".html"
     const data_text = RecentStationData(station_values, time)
 
