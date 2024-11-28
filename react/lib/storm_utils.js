@@ -112,8 +112,6 @@ export function fetch_value(point, property_list) {
  * @param {float} nw_rad North-West Quadrant, radius of wind speed in nautical miles
  */
 export function build_wind_radii(storm_data_pt, speed, storm_center, ne_rad, se_rad, sw_rad, nw_rad) {
-    // console.debug(speed, storm_center, ne_rad, se_rad, sw_rad, nw_rad);
-
     let final_polygon = {
         "type": "Feature",
         "id": "".concat(storm_data_pt.id, "-R", speed),
@@ -132,56 +130,7 @@ export function build_wind_radii(storm_data_pt, speed, storm_center, ne_rad, se_
         ]
     };
 
-    // Calculate arc per quadrant
-    const quadrants = ['NE', 'SE', 'SW', 'NW'];
-
-    // Radii lengths are typically given in Nautical miles, convert to metres, 
-    // null values will be returned as NaN and skipped when calculating 
-    // quadrant arcs
-    const ne_rad_m = ne_rad * nmi_to_m;
-    const se_rad_m = se_rad * nmi_to_m;
-    const sw_rad_m = sw_rad * nmi_to_m;
-    const nw_rad_m = nw_rad * nmi_to_m;
-
-    // console.debug(`NE: ${ne_rad_m}m SE: ${se_rad_m}m SW: ${sw_rad_m}m NW: ${nw_rad_m}m`);
-
-    let radius = NaN;
-    let rad_coords = [];
-    let quad_count = 0;
-    let empty_quads = [];
-
-    const storm_center_point = { longitude: storm_center[0], latitude: storm_center[1] };
-
-    quadrants.forEach((direction) => {
-        switch (direction) {
-            case "NE":
-                radius = ne_rad_m;
-                break;
-
-            case "SE":
-                radius = se_rad_m;
-                break;
-
-            case "SW":
-                radius = sw_rad_m;
-                break;
-
-            case "NW":
-                radius = nw_rad_m;
-                break;
-        }
-
-        if (radius) {
-            let quad = build_quadrant(storm_center, radius, direction);
-            rad_coords = rad_coords.concat(quad);
-            final_polygon.properties.RADIUS = (radius / nmi_to_m) + " nmi";
-            quad_count++;
-        }
-        else {
-            empty_quads.push(direction);
-            rad_coords = rad_coords.concat(storm_center_point);
-        }
-    });
+    let rad_coords = generate_radii_coords(final_polygon, storm_center, ne_rad, se_rad, sw_rad, nw_rad);
 
     // getBounds() requires a flat list of coordinates in order to generate a 
     // bounding box, each quadrant is separated into it's own polygon array of
@@ -207,8 +156,6 @@ export function build_wind_radii(storm_data_pt, speed, storm_center, ne_rad, se_
  * @param {float} nw_rad North-West Quadrant, radius of wave height in nautical miles
  */
 export function build_sea_height_radii(storm_data_pt, height, storm_center, ne_rad, se_rad, sw_rad, nw_rad) {
-    // console.debug(speed, storm_center, ne_rad, se_rad, sw_rad, nw_rad);
-
     let final_polygon = {
         "type": "Feature",
         "id": "".concat(storm_data_pt.id, "-SH", height),
@@ -226,6 +173,23 @@ export function build_sea_height_radii(storm_data_pt, height, storm_center, ne_r
         "bbox": [
         ]
     };
+
+    let rad_coords = generate_radii_coords(final_polygon, storm_center, ne_rad, se_rad, sw_rad, nw_rad);
+
+    // getBounds() requires a flat list of coordinates in order to generate a 
+    // bounding box, each quadrant is separated into it's own polygon array of
+    // coordinates so it must be reduced in order to generate the bounding box
+    const flat_coords = flatten_nested_array(rad_coords);
+    const final_bbox = geolib.getBounds(flat_coords);
+
+    final_polygon.geometry.coordinates = [coords_to_array(rad_coords)];
+
+    final_polygon.bbox = bounds_to_array(final_bbox);
+
+    return final_polygon;
+}
+
+export function generate_radii_coords(final_polygon, storm_center, ne_rad, se_rad, sw_rad, nw_rad){
 
     // Calculate arc per quadrant
     const quadrants = ['NE', 'SE', 'SW', 'NW'];
@@ -278,17 +242,7 @@ export function build_sea_height_radii(storm_data_pt, height, storm_center, ne_r
         }
     });
 
-    // getBounds() requires a flat list of coordinates in order to generate a 
-    // bounding box, each quadrant is separated into it's own polygon array of
-    // coordinates so it must be reduced in order to generate the bounding box
-    const flat_coords = flatten_nested_array(rad_coords);
-    const final_bbox = geolib.getBounds(flat_coords);
-
-    final_polygon.geometry.coordinates = [coords_to_array(rad_coords)];
-
-    final_polygon.bbox = bounds_to_array(final_bbox);
-
-    return final_polygon;
+    return rad_coords;
 }
 
 export function flatten_nested_array(source_array) {
