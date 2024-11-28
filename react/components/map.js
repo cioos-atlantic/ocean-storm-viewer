@@ -1,11 +1,11 @@
 // https://iconoir.com/ icon library that can be installed via npm
 import React, { useState } from "react";
 import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup, Marker, Popup } from 'react-leaflet'
+import Drawer from '@/components/drawer';
 
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
 import "leaflet-defaulticon-compatibility";
-import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
 
 import StormMarker from "@/components/storm_point";
 import LineOfTravel from "@/components/line_of_travel";
@@ -29,14 +29,14 @@ function Station_Variable(name, std_name, value, units) {
   this.units = units;
 }
 
-// A new comment.
-
-export default function Map({ children, storm_data, station_data, source_type}) {
+export default function Map({ children, storm_points, storm_data, station_data, source_type, setStormPoints, setStationPoints, setHistoricalStormData }) {
   // Add parameter for points
   // Points always there, even not in storm seasons
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
   const allDatasetDescriptions = useDatasetDescriptions();
   console.log(allDatasetDescriptions)
+  
+  console.debug("Storm Points in map.js: ", storm_points);
 
 
 
@@ -45,17 +45,27 @@ export default function Map({ children, storm_data, station_data, source_type}) 
     <div className="map_container">
       <div className='inner_container'>
       {hover_marker !== empty_point_obj && (
-  <StormPointDetails
-    storm_point_hover={hover_marker}
-    onClose={() => setHoverMarker(empty_point_obj)} // Close popup when the marker is reset
-  />
-)}
+        <StormPointDetails
+          storm_point_hover={hover_marker}
+          onClose={() => setHoverMarker(empty_point_obj)} // Close popup when the marker is reset
+        />
+      )}
         
         <MapContainer
           center={defaultPosition}
           zoom={defaultZoom}
           style={{ height: "100%", width: "100%" }}
+          worldCopyJump={true}
         >
+          <Drawer 
+            element_id="left-side" 
+            classes="left"
+            storm_data={storm_data}
+            source_type={source_type}
+            setStormPoints={setStormPoints}
+            setStationPoints={setStationPoints}
+          />
+
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -78,21 +88,21 @@ export default function Map({ children, storm_data, station_data, source_type}) 
             <LayersControl.Overlay checked name="Error Cone">
               <LayerGroup>
                 {
-                  storm_data.err.features.map(err_cone => {
+                  storm_points.err.features.map(err_cone => {
                     return (
                       <ErrorCone
                         key={err_cone.id}
                         error_cone_data={err_cone}
-                        />
-                      );
-                    })
-                  }
+                      />
+                    );
+                  })
+                }
               </LayerGroup>
             </LayersControl.Overlay>
             <LayersControl.Overlay checked name="Points">
               <LayerGroup>
                 {
-                  storm_data.pts.features.map(point => {
+                  storm_points.pts.features.map(point => {
                     return (
                       
                       <StormMarker
@@ -119,8 +129,8 @@ export default function Map({ children, storm_data, station_data, source_type}) 
             <LayersControl.Overlay checked name="Track Line">
               <LayerGroup>
                 {
-                  storm_data.lin.features.length > 0 &&
-                  storm_data.lin.features.map(line => {
+                  storm_points.lin.features.length > 0 &&
+                  storm_points.lin.features.map(line => {
 
                     return (
                       <LineOfTravel
@@ -135,8 +145,8 @@ export default function Map({ children, storm_data, station_data, source_type}) 
             <LayersControl.Overlay checked name="Wind Speed Radius">
               <LayerGroup>
                 {
-                  storm_data.rad.features.length > 0 &&
-                  storm_data.rad.features.map(radii => {
+                  storm_points.rad.features.length > 0 &&
+                  storm_points.rad.features.map(radii => {
                     return (
                       <WindSpeedRadius
                         key={radii.id}
@@ -151,9 +161,8 @@ export default function Map({ children, storm_data, station_data, source_type}) 
             <LayersControl.Overlay checked name="Sea Height Radius">
               <LayerGroup>
                 {
-                  storm_data.sea.features.length > 0 &&
-                  storm_data.sea.features.map(radii => {
-
+                  storm_points.sea.features.length > 0 &&
+                  storm_points.sea.features.map(radii => {
                     return (
                       <SeaHeightRadius
                         key={radii.id}
