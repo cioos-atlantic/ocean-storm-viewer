@@ -14,9 +14,9 @@ import TropicalStormIcon2 from '../public/storm_types/TS_icon.svg'
 import { storm_categories, storm_type_info } from '@/lib/storm_class'
 
 
-import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
 import {empty_point_obj} from "@/components/storm_point_details"
 
+import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
 
 export const hurricon = new Icon({
     iconUrl: HurricaneIcon.src,
