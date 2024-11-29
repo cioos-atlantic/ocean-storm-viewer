@@ -1,10 +1,10 @@
-//import styles from './active_storm_list.module.css'
-//import { parse, format } from 'date-fns';
-//import storm_list from '../data/forecasts/list.json'
+
 import CustomButton from '../custom/custom-button.js';
 import { addDays, subDays, lightFormat } from "date-fns";
 import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
+import { useEffect } from 'react';
 //import {forecastDataDir, getStormData} from '../../lib/storms.js';
+import { getHistoricalStormList, parseStormData } from './utils/historical_storm_utils.js';
 
 const storm_list = [
   { "name": "FIONA", "year": 2022, "source": "ibtracs" },
@@ -17,8 +17,14 @@ const storm_list = [
 
 ]
 
+
+
 export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet }) {
   console.log("Historical Storms Loading...");
+
+  
+
+  getHistoricalStormList()
 
   // const [selected_storm, setSelectedStorm] = useState("");
   return (
@@ -163,35 +169,5 @@ function getStationQueryParams(historical_storm_data) {
   return [min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time]
 
 }
-function parseStormData(storm_data, storm_name) {
-
-  if (storm_data?.ib_data?.features?.length === 0) {
-    console.warn("No IBTRACS Data features found for ", storm_name);
-    return null
-  }
-
-  console.log(storm_data)
-
-  let storm_details = {}
-  let ib_storm_list = []
-
-  storm_data.ib_data.features.map(storm_point => {
-    if (!ib_storm_list.includes(storm_point.properties.NAME)) {
-      ib_storm_list.push(storm_point.properties.NAME)
-      storm_details[storm_point.properties.NAME] = {
-        source: "ibtracs",
-        year: storm_point.properties.SEASON,
-        data: []
-      }
-    }
-    storm_details[storm_point.properties.NAME].data.push(storm_point)
-  });
-
-  // console.log("parseStormData -> Storm Details: ", storm_details);
-  let storm_features = build_storm_features(storm_details[storm_name]);
-
-  // console.log("parseStormData -> Final Storm Features: ", storm_features);
-  return storm_features;
-};
 
 

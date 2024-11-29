@@ -7,14 +7,18 @@ export default async function handler(req, res) {
     //const source = (req.query["source"]) ? req.query["source"] : "ibtracs"; // this gathers from just one source
     //const source = ["IBTRACS", "ECCC"]; // to gather both if available 
     const source = "IBTRACS"; // to gather just ibtracs 
+    const min_time = (req.query["minTime"]) ? req.query["minTime"] : "";
+    const filters= {
+        "ISO_TIME>=": min_time
+    }
 
 
     const source_type = "HISTORICAL";
 
-    console.log("handler", storm_name, season, source, source_type);
+    console.log("handler", storm_name, season, source, source_type, filters);
 
     try {
-        const result = await wfs_query(storm_name, season, source, source_type)
+        const result = await wfs_query(storm_name, season, source, source_type, filters)
         res.status(200).json({ "storm_name": storm_name, "season": season, "source": source, "source_type": source_type, ...result })
     } catch (err) {
         res.status(500).json({ error: 'failed to load data' })
