@@ -4,7 +4,7 @@ import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
 import { useEffect, useState } from 'react';
 import { getHistoricalStormList, parseStormData } from './utils/historical_storm_utils.js';
 
-/*const stormList = [
+const otherStormList = [
   { "name": "FIONA", "year": 2022, "source": "ibtracs" },
   { "name": "ERNESTO", "year": 2018, "source": "ibtracs" },
   { "name": "EARL", "year": 2022, "source": "ibtracs" },
@@ -13,7 +13,7 @@ import { getHistoricalStormList, parseStormData } from './utils/historical_storm
   { "name": "BLAMMO", "year": 1999, "source": "ibtracs" },
   { "name": "CLAUDETTE", "year": 2015, "source": "ibtracs" },
 
-]*/
+]
 
 
 
@@ -50,10 +50,27 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
   return (
     <>
       <h2>Historical Storms: </h2>
+      <hr style={{ height: '4px', backgroundColor: 'blue', border: 'none' }}/>  {/* Bold line */}
+      <h4>Recent Storms: </h4>
       <div id="storm_search_result">
 
         <ul className="results">
           {stormList.map((storm, index) => {
+            return (
+              <li key={storm.name + storm.year} className={(storm.name)}>
+                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints) }}>{`${storm.name}-${storm.year}`}</a>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+
+      <hr style={{ height: '2px', backgroundColor: 'black', border: 'none' }}/> 
+      <h4>Other Storms: </h4>
+      <div id="other_storms_search_result">
+
+        <ul className="results">
+          {otherStormList.map((storm, index) => {
             return (
               <li key={storm.name + storm.year} className={(storm.name)}>
                 <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints) }}>{`${storm.name}-${storm.year}`}</a>
