@@ -1,12 +1,10 @@
-
 import CustomButton from '../custom/custom-button.js';
 import { addDays, subDays, lightFormat } from "date-fns";
 import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
-import { useEffect } from 'react';
-//import {forecastDataDir, getStormData} from '../../lib/storms.js';
+import { useEffect, useState } from 'react';
 import { getHistoricalStormList, parseStormData } from './utils/historical_storm_utils.js';
 
-const storm_list = [
+/*const stormList = [
   { "name": "FIONA", "year": 2022, "source": "ibtracs" },
   { "name": "ERNESTO", "year": 2018, "source": "ibtracs" },
   { "name": "EARL", "year": 2022, "source": "ibtracs" },
@@ -15,16 +13,38 @@ const storm_list = [
   { "name": "BLAMMO", "year": 1999, "source": "ibtracs" },
   { "name": "CLAUDETTE", "year": 2015, "source": "ibtracs" },
 
-]
+]*/
+
+
 
 
 
 export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet }) {
+  const [stormList, setStormList] = useState([]);
+
   console.log("Historical Storms Loading...");
+  useEffect(() => {
+    async function fetchStormData() {
+      try {
+        const fetchedStormList = await getHistoricalStormList();
+        setStormList(fetchedStormList);
+
+
+        console.log(fetchedStormList);  // Log the returned storm list
+      } catch (error) {
+        console.error('Error fetching storm list:', error);
+      }
+    }
+    
+    fetchStormData();  // Call the async function
+
+    
+    
+  }, []); // Empty dependency array ensures it runs only once on mount
 
   
 
-  getHistoricalStormList()
+  
 
   // const [selected_storm, setSelectedStorm] = useState("");
   return (
@@ -33,7 +53,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
       <div id="storm_search_result">
 
         <ul className="results">
-          {storm_list.map((storm, index) => {
+          {stormList.map((storm, index) => {
             return (
               <li key={storm.name + storm.year} className={(storm.name)}>
                 <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints) }}>{`${storm.name}-${storm.year}`}</a>

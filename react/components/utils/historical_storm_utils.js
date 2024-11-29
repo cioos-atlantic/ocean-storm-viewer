@@ -1,4 +1,5 @@
 import { subYears } from "date-fns";
+import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
 
 export async function getHistoricalStormList(){
   // Construct query parameters
@@ -55,6 +56,8 @@ export function parseStormData(storm_data, storm_name) {
 
   let storm_details = {}
   let ib_storm_list = []
+
+  console.log(storm_data)
 
   storm_data.ib_data.features.map(storm_point => {
     if (!ib_storm_list.includes(storm_point.properties.NAME)) {

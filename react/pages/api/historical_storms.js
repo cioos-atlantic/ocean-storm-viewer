@@ -8,9 +8,13 @@ export default async function handler(req, res) {
     //const source = ["IBTRACS", "ECCC"]; // to gather both if available 
     const source = "IBTRACS"; // to gather just ibtracs 
     const min_time = (req.query["minTime"]) ? req.query["minTime"] : "";
-    const filters= {
-        "ISO_TIME>=": min_time
-    }
+    let filters;
+
+    if (min_time !== ""){
+         filters= {
+            "ISO_TIME>=": min_time}
+        }
+    else{filters = ""}
 
 
     const source_type = "HISTORICAL";
