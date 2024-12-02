@@ -106,6 +106,8 @@ export async function handleClick( storm, setStationPoints, setStormPoints) {
   console.log('Button clicked for', storm.name);
   const storm_name = storm.name;
   const storm_year = storm.year;
+  const storm_id = storm.storm_id;
+
 
   let storm_source;
 

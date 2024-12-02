@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     }
 }
 
-export async function wfs_query(storm_name, season, source, source_type, filters) {
+export async function wfs_query(storm_name, season, source, source_type, storm_id,filters) {
     // https://dev.cioosatlantic.ca/geoserver/cioos-atlantic/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=cioos-atlantic%3Aibtracs_active_storms&maxFeatures=50&outputFormat=application%2Fjson
     
     /*
@@ -95,6 +95,10 @@ export async function wfs_query(storm_name, season, source, source_type, filters
         // Test if season is populated, if so add to array
         if (season) {
             ib_filters.push("SEASON=" + season);
+        }
+
+        if (storm_id) {
+            ib_filters.push("SID='" + storm_id+ "'");
         }
         
 
