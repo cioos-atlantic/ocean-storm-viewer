@@ -137,9 +137,10 @@ export function makeStormList(storm_data){
     let name = feature.properties.NAME;
     let year = feature.properties.SEASON;
     let storm_id = feature.properties.SID;
+    let display_name= `${name}-${year}`;
 
 
-    //if (name === "UNNAMED" )
+    if (name === "UNNAMED"){display_name = `${name}-${storm_id}` }
 
     const identifier = `${name}-${year}-${storm_id} `;
 
@@ -147,7 +148,7 @@ export function makeStormList(storm_data){
 
     if (name && year && !stormIdentifiers.has(identifier)) {
       stormIdentifiers.add(identifier);
-      uniqueList.push({ name, year, storm_id, source: "ibtracs" });
+      uniqueList.push({ name, year, storm_id, display_name, source: "ibtracs" });
     }
   
   

@@ -58,7 +58,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           {stormList.map((storm, index) => {
             return (
               <li key={storm.storm_id} className={(storm.name)}>
-                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints) }}>{`${storm.name}-${storm.year}`}</a>
+                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints) }}>{`${storm.display_name}`}</a>
               </li>
             )
           })}
@@ -84,7 +84,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           searchResult.length > 0 && searchResult.map((storm, index) => {
             return (
               <li key={storm.storm_id} className={(storm.name)}>
-                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints) }}>{`${storm.name}-${storm.year}`}</a>
+                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints) }}>{`${storm.display_name}`}</a>
               </li>
             )
           })}
