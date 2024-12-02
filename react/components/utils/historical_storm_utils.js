@@ -167,3 +167,11 @@ export function isName(input) {
   const namePattern = /^[a-zA-Z]+$/; // Matches only letters (no spaces or numbers)
   return namePattern.test(input);
 }
+
+
+
+export function isStormId(input) {
+  const namePattern =  /^\d{4}\d{3}[a-zA-Z]\d{5}$/; // Matches only letters (no spaces or numbers)
+  return namePattern.test(input);
+}
+
