@@ -181,8 +181,8 @@ async function handleFormSubmit(e, setSearchResult){
   console.log(e)
   e.preventDefault();
   
-  
-  const searchInput= e.target.elements.historical_storm_search.value;
+  const searchInputField = e.target.elements.historical_storm_search; // Reference to the input field
+  let searchInput= searchInputField.value;
   const search_values= searchInput.split(" ")
   //if (search_values.length ===1) {}
   console.log(search_values);
@@ -190,7 +190,9 @@ async function handleFormSubmit(e, setSearchResult){
   for (let value of search_values){
     if (isYear(value)){storm_year = value}
     else if (isName(value)){storm_name = value}
-    else {alert("Wrong Input. If input is only year, ensure it is in 4 digits. If year  and storm name, add a space between")}
+    else {alert("Wrong Input. If input is only year, ensure it is in 4 digits. If year  and storm name, add a space between");
+      return;
+    }
   };
 
  
@@ -226,9 +228,15 @@ async function handleFormSubmit(e, setSearchResult){
 
 
 
+
+
   } catch (error) {
     console.error('Error fetching storm or station data:', error);
   }
+
+
+  // Clear the input field
+  searchInputField.value = "";
 
   
 }
