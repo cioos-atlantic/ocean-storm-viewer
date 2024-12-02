@@ -23,17 +23,9 @@ export async function getHistoricalStormList(){
     // console.log(historical_station_data);
 
     console.debug(`historical Storm Data for ${min_storm_time}: `, storm_data);
+    const uniqueList= makeStormList(storm_data)
     // Create a set to track unique IDs and add objects to the result list
-    const uniqueList = [];
-    const storm_names = new Set();
-    const stormData = storm_data.ib_data.features
-
-    stormData.forEach(feature => {
-      if (!storm_names.has(feature.properties.NAME)) {
-        storm_names.add(feature.properties.NAME);
-        uniqueList.push({ "name": feature.properties.NAME, "year": feature.properties.SEASON, "source": "ibtracs" });
-      }
-    });
+    
 
     console.log(uniqueList);
     return uniqueList
@@ -77,3 +69,94 @@ export function parseStormData(storm_data, storm_name) {
   // console.log("parseStormData -> Final Storm Features: ", storm_features);
   return storm_features;
 };
+
+// Function to handle harvested historical storm data
+function handleHarvestHistoricalData(data, setStationPoints, setStormPoints) {
+  console.log("Harvested Historical Storm Data:", data);
+  //console.log(data.ib_data.features)
+  //if(data.ib_data.features){}
+  setStormPoints(data.storm_data);  // Set the storm data
+  setStationPoints(data.station_data);  // Set the station data
+  // Update the state with the harvested data
+  //console.log("Historical Storm Data set:", data);
+};
+
+
+export async function getStationData(min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time) {
+  const query = new URLSearchParams({
+    min_time: min_storm_time,
+    max_time: max_storm_time,
+    min_lon,
+    min_lat,
+    max_lon,
+    max_lat
+  }).toString();
+
+  //const resource = await fetch(process.env.BASE_URL + '/api/historical_storms')
+
+  // process.env reading empty
+
+  //console.log(process)
+  const resource = await fetch(`/api/query_stations_historical?${query}`);
+
+  const historical_station_data = await resource.json();
+
+  console.log(historical_station_data);
+  return historical_station_data
+
+  // Trigger the callback to send data back to the parent
+
+
+};
+
+export function getStationQueryParams(historical_storm_data) {
+  const [min_lon, min_lat, max_lon, max_lat] = historical_storm_data.ib_data.bbox.map(num => num.toString());
+
+  const storm_id = historical_storm_data.ib_data.features['0'].id;
+  const [_, __, storm_time] = storm_id.split('.');
+  console.log(storm_time)
+
+  const max_storm_time = lightFormat(addDays(new Date(storm_time), 15), "yyyy-MM-dd'T'00:00:00");
+  const min_storm_time = lightFormat(subDays(new Date(storm_time), 15), "yyyy-MM-dd'T'00:00:00");
+  console.log(min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time)
+
+
+  return [min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time]
+
+}
+
+export function makeStormList(storm_data){
+  // Create a set to track unique IDs and add objects to the result list
+  const uniqueList = [];
+  const stormIdentifiers = new Set();
+  const stormData = storm_data?.ib_data?.features
+
+  stormData.forEach(feature => {
+    const name = feature.properties.NAME;
+    const year = feature.properties.SEASON
+
+    const identifier = `${name}-${year}`;
+
+    // check if name and year exists and if storm identifier does not have the identifier
+
+    if (name && year && !stormIdentifiers.has(identifier)) {
+      stormIdentifiers.add(identifier);
+      uniqueList.push({ name, year, source: "ibtracs" });
+    }
+  
+  
+  })
+
+  
+  return uniqueList
+}
+
+export function isYear(input) {
+  const yearPattern = /^\d{4}$/; // Matches exactly 4 digits
+  return yearPattern.test(input);
+}
+
+export function isName(input) {
+  const namePattern = /^[a-zA-Z]+$/; // Matches only letters (no spaces or numbers)
+  return namePattern.test(input);
+}
