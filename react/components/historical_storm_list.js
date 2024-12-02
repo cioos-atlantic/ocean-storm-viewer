@@ -16,12 +16,6 @@ const otherStormList = [
 
 ]
 
-const empty_storm_list = [
-  { "name": "", "year": "", "source": "ibtracs" },
-]
-
-
-
 
 
 export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet }) {
