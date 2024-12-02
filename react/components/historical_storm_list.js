@@ -57,7 +57,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
         <ul className="results">
           {stormList.map((storm, index) => {
             return (
-              <li key={storm.name + storm.year} className={(storm.name)}>
+              <li key={storm.storm_id} className={(storm.name)}>
                 <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints) }}>{`${storm.name}-${storm.year}`}</a>
               </li>
             )
@@ -65,21 +65,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
         </ul>
       </div>
 
-      <hr style={{ height: '2px', backgroundColor: 'black', border: 'none' }}/> 
-      <h4>Other Storms: </h4>
-      <div id="other_storms_search_result">
-
-        <ul className="results">
-          {otherStormList.map((storm, index) => {
-            return (
-              <li key={storm.name + storm.year} className={(storm.name)}>
-                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints) }}>{`${storm.name}-${storm.year}`}</a>
-              </li>
-            )
-          })}
-        </ul>
-
-      </div>
+      
 
       <hr style={{ height: '2px', backgroundColor: 'black', border: 'none' }}/> 
       <h4>Storm Search: </h4>
@@ -97,7 +83,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           
           searchResult.length > 0 && searchResult.map((storm, index) => {
             return (
-              <li key={storm.name + storm.year} className={(storm.name)}>
+              <li key={storm.storm_id} className={(storm.name)}>
                 <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints) }}>{`${storm.name}-${storm.year}`}</a>
               </li>
             )
@@ -137,7 +123,8 @@ export async function handleClick( storm, setStationPoints, setStormPoints) {
   const query = new URLSearchParams({
     name: storm_name,
     season: storm_year,      // Using season for storm year
-    source: storm_source
+    source: storm_source,
+    id: storm_id
   }).toString();
 
   //const resource = await fetch(process.env.BASE_URL + '/api/historical_storms')
@@ -228,6 +215,9 @@ async function handleFormSubmit(e, setSearchResult){
     
 
     console.log(uniqueList);
+    if (uniqueList.length === 0) {
+      alert("No result found for this search, please try again...")
+    }
     setSearchResult(uniqueList)
     //return uniqueList
 

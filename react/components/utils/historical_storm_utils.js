@@ -131,17 +131,23 @@ export function makeStormList(storm_data){
   const stormIdentifiers = new Set();
   const stormData = storm_data?.ib_data?.features
 
-  stormData.forEach(feature => {
-    const name = feature.properties.NAME;
-    const year = feature.properties.SEASON
+  
 
-    const identifier = `${name}-${year}`;
+  stormData?.forEach(feature => {
+    let name = feature.properties.NAME;
+    let year = feature.properties.SEASON;
+    let storm_id = feature.properties.SID;
+
+
+    //if (name === "UNNAMED" )
+
+    const identifier = `${name}-${year}-${storm_id} `;
 
     // check if name and year exists and if storm identifier does not have the identifier
 
     if (name && year && !stormIdentifiers.has(identifier)) {
       stormIdentifiers.add(identifier);
-      uniqueList.push({ name, year, source: "ibtracs" });
+      uniqueList.push({ name, year, storm_id, source: "ibtracs" });
     }
   
   
