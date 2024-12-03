@@ -120,8 +120,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
               <LayerGroup>
                 {
                   Object.entries(station_data).map((element) => {
-                    console.log(element)
-                    return StationMarker(element, allDatasetDescriptions)
+                    const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
+                    return StationMarker(element, allDatasetDescriptions, storm_timestamp)
                   })
                 }
               </LayerGroup>

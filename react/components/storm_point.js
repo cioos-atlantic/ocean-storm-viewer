@@ -107,6 +107,10 @@ const storm_types = {
 export default function StormMarker({ storm_point_data, setHoverMarker, setShowPopup }) {
 
     const position = flip_coords(storm_point_data.geometry.coordinates);
+
+    let clicked = false
+    // Keep track of previously clicked marker to default back to?
+
     const storm_type= storm_point_data.properties["NATURE"];
     const storm_icon= storm_types[storm_type]
     const storm_category = String(storm_point_data.properties["USA_SSHS"])
@@ -128,9 +132,6 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setShowP
         ellipseColor= storm_categories[storm_category]["ellipseColor"];
         textColor= storm_categories[storm_category]["textColor"];
     }
-
-    
-
 
     //console.log(storm_point_data.properties)
    // console.log(String(storm_point_data.properties["USA_SSHS"]));
@@ -167,11 +168,14 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setShowP
             key={storm_point_data.id}
             position={position}
             eventHandlers={{
-                mouseover: (event) => {
-                    
-                    setHoverMarker(storm_point_data)},
-                /* mouseout: (event) => setHoverMarker(empty_point_obj) */
-                
+                mouseover: (event) => setHoverMarker(storm_point_data),
+                click: (event) => {
+                    setHoverMarker(storm_point_data)
+                    clicked = true},
+                mouseout: (event) => {
+                    if(!clicked)
+                        setHoverMarker(empty_point_obj)}
+
             }}
             icon={customIcon}
         >

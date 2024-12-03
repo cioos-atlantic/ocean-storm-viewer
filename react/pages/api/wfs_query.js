@@ -144,7 +144,7 @@ export async function wfs_query(storm_name, season, source, source_type, filters
         // cioos-atlantic:erddap_cache
         wfs_sources.push("erddap_cache_active");
 
-        let erddap_source = "erddap_cache_active"
+        let erddap_source = "erddap_cache_active&sortby=station,max_time"
         const erddap_features_url = build_wfs_query("cioos-atlantic:" + erddap_source, [], source_type)
 
         console.debug("ERDDAP URL: ", erddap_features_url)
@@ -165,7 +165,7 @@ export async function wfs_query(storm_name, season, source, source_type, filters
         wfs_sources.push("erddap_cache");
         
 
-        let erddap_source = "erddap_cache"
+        let erddap_source = "erddap_cache&sortby=station,max_time"
         const erddap_features_url = build_wfs_query("cioos-atlantic:" + erddap_source, erddap_filters, source_type)
 
         console.debug("ERDDAP URL: ", erddap_features_url)
@@ -204,8 +204,6 @@ function build_wfs_query(source, filters, source_type, output_format="applicatio
     const final_filter = (source.includes("erddap") && source_type === "ACTIVE") ? (""):("&cql_filter=" + filters.join(" AND "))
     
     const url = base_url + "&request=GetFeature&typeName=" + source + output_format + final_filter;
-
-    console.log(url)
 
     return url;
 }
