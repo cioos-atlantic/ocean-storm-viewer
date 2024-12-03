@@ -38,13 +38,19 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   
   console.debug("Storm Points in map.js: ", storm_points);
 
+
+
+
   return (
     <div className="map_container">
       <div className='inner_container'>
+      {hover_marker !== empty_point_obj && (
         <StormPointDetails
           storm_point_hover={hover_marker}
+          onClose={() => setHoverMarker(empty_point_obj)} // Close popup when the marker is reset
         />
-
+      )}
+        
         <MapContainer
           center={defaultPosition}
           zoom={defaultZoom}
@@ -98,10 +104,12 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                 {
                   storm_points.pts.features.map(point => {
                     return (
+                      
                       <StormMarker
                         key={point.id}
                         storm_point_data={point}
                         setHoverMarker={setHoverMarker}
+                       
                       />
                     );
                   })
