@@ -13,16 +13,16 @@ export default async function handler(req, res) {
   const filters = [`storm='${season}_${storm_name}'`]
   //const filters= [ `min_time BETWEEN ${req.query["min_time"]}`, `${req.query["max_time"]}`]
 
-  console.log(filters)
+  console.debug("query_stations_historical.js -> filters: ", filters);
 
   try {
-    console.log("handler", source, source_type);
+    console.debug("query_stations_historical.js -> source & type", source, source_type);
     /*
     const result = await wfs_query(storm_name, season, source, source_type)
     res.status(200).json({ "storm_name": storm_name, "season": season, "source": source, "source_type": source_type, ...result })
     */
-    const result = await wfs_query("", "", source, source_type, filters)
-    console.log('getting features...')
+    const result = await wfs_query("", "", source, source_type, "", filters)
+    console.debug('getting features...')
     const station_recent = parseStationData(result, station)
     //console.log('HR')
     res.status(200).json(station_recent)
