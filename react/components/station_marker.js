@@ -8,6 +8,9 @@ import { Marker, Popup } from "react-leaflet";
 
 import { getDisplayName } from "./utils/station_data_format_util";
 
+
+const empty_data_text = {}
+
 /**
  * 
  * @param {[Object]} station_data Station Data object after being retrieved from WFS and processed. 
@@ -16,6 +19,8 @@ import { getDisplayName } from "./utils/station_data_format_util";
  * @returns StationMarker JavaScript snippet
  */
 export default function StationMarker(station_data, station_descriptions, time = new Date(), ) {
+    if(isNaN(time))
+      time= new Date()
     
     const station_name = station_data[0]
     const station_values = station_data[1]
@@ -42,12 +47,6 @@ export default function StationMarker(station_data, station_descriptions, time =
               padding: '20px', // Optional padding around chart
               }}> 
             <h4>{display_name}</h4>
-            <div>
-              <RenderChart  
-              chartData={station_values.properties.station_data}
-              stationName={station_name}
-              />
-            </div>
             {data_text}
             <a href={data_link} target="_blank">Full data</a>
           </Popup>

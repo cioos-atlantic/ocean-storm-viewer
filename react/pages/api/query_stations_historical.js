@@ -1,4 +1,5 @@
 import { wfs_query } from "./wfs_query";
+import station_data_format from "@/components/utils/station_data_format";
 
 export default async function handler(req, res) {
   const station = req.query["station"]
@@ -22,8 +23,8 @@ export default async function handler(req, res) {
     res.status(200).json({ "storm_name": storm_name, "season": season, "source": source, "source_type": source_type, ...result })
     */
     const result = await wfs_query("", "", source, source_type, "", filters)
-    console.debug('getting features...')
-    const station_recent = parseStationData(result, station)
+    console.log('getting features...')
+    const station_recent = station_data_format(result['erddap_data']['features'], station)//parseStationData(result, station)
     //console.log('HR')
     res.status(200).json(station_recent)
   } catch (err) {
