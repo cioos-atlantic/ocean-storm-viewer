@@ -35,7 +35,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
   const allDatasetDescriptions = useDatasetDescriptions();
   console.log(allDatasetDescriptions)
-  
+
   console.debug("Storm Points in map.js: ", storm_points);
 
 
@@ -44,21 +44,21 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   return (
     <div className="map_container">
       <div className='inner_container'>
-      {hover_marker !== empty_point_obj && (
-        <StormPointDetails
-          storm_point_hover={hover_marker}
-          onClose={() => setHoverMarker(empty_point_obj)} // Close popup when the marker is reset
-        />
-      )}
-        
+        {hover_marker !== empty_point_obj && (
+          <StormPointDetails
+            storm_point_hover={hover_marker}
+            onClose={() => setHoverMarker(empty_point_obj)} // Close popup when the marker is reset
+          />
+        )}
+
         <MapContainer
           center={defaultPosition}
           zoom={defaultZoom}
           style={{ height: "100%", width: "100%" }}
           worldCopyJump={true}
         >
-          <Drawer 
-            element_id="left-side" 
+          <Drawer
+            element_id="left-side"
             classes="left"
             storm_data={storm_data}
             source_type={source_type}
@@ -104,12 +104,12 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                 {
                   storm_points.pts.features.map(point => {
                     return (
-                      
+
                       <StormMarker
                         key={point.id}
                         storm_point_data={point}
                         setHoverMarker={setHoverMarker}
-                       
+
                       />
                     );
                   })

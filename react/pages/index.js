@@ -37,15 +37,15 @@ export async function getServerSideProps() {
   let active_storm_data = {};
   let station_data = {};
 
-  try{
+  try {
     const resource = await fetch(process.env.BASE_URL + '/api/active_storms')
     active_storm_data = await resource.json();
   }
   catch (fetch_err) {
     console.log("Could not fetch storm data on load.");
   }
-  
-  try{
+
+  try {
     const station_resource = await fetch(process.env.BASE_URL + '/api/query_stations')
     station_data = await station_resource.json();
   }
@@ -58,7 +58,7 @@ export async function getServerSideProps() {
   return {
     props: {
       active_storm_data: active_storm_data,
-      station_data : station_data
+      station_data: station_data
     }
   }
 }
@@ -68,7 +68,7 @@ export async function getServerSideProps() {
 export default function StormDashboard({ active_storm_data, station_data }) {
   const router = useRouter()
   const qs = queryString.parseUrl(process.env.BASE_URL + router.asPath)
-  
+
   // console.log("STORM TYPE: " + qs.query.storms)
 
   return (

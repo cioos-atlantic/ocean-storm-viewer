@@ -38,7 +38,7 @@ export default function ActiveStormList({ active_storm_data, setStormPoints, map
   console.debug("ECCC Storm List: " + active_storm_data.eccc_data.features.length + " points");
 
   let active_storms = false;
-  if(active_storm_data.ib_data.features.length > 0 || active_storm_data.eccc_data.features.length > 0){
+  if (active_storm_data.ib_data.features.length > 0 || active_storm_data.eccc_data.features.length > 0) {
     active_storms = true;
   }
 
@@ -46,8 +46,8 @@ export default function ActiveStormList({ active_storm_data, setStormPoints, map
     if (!ib_storm_list.includes(storm_point.properties.NAME)) {
       ib_storm_list.push(storm_point.properties.NAME)
       storm_details[storm_point.properties.NAME] = {
-        source: "ibtracs", 
-        year: storm_point.properties.SEASON, 
+        source: "ibtracs",
+        year: storm_point.properties.SEASON,
         data: []
       }
     }
@@ -64,15 +64,15 @@ export default function ActiveStormList({ active_storm_data, setStormPoints, map
             <li key={"show_all_storms"} >
               <a onClick={(e) => { populateAllStormDetails(e, storm_details, setSelectedStorm, setStormPoints) }}>Show All</a>
             </li>
-          ):(
+          ) : (
             <></>
           )}
         </ul>
-        
+
         <div>
           {ib_storm_list.map(storm_name => {
             return (
-              <StormListItem 
+              <StormListItem
                 key={storm_name + storm_details[storm_name].year}
                 storm_name={storm_name}
                 storm_data={storm_details[storm_name]}

@@ -28,9 +28,7 @@ header nav {
   font-size: 1.25rem;
 }
 
-header nav ul {
-
-}
+header nav ul {}
 
 header nav ul li {
   float: left;
@@ -142,9 +140,7 @@ footer {
   background-color: #DDD;
 }
 
-#storm_timeline ul li.selected::after {
-  
-}
+#storm_timeline ul li.selected::after {}
 
 .selected_storm a {
   font-weight: bold;

@@ -1,6 +1,6 @@
 import { parseISO, format } from 'date-fns';
 import { fetch_value } from "@/lib/storm_utils";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import StormType from './Storm_popup/Storm_type';
 import StormCategory from './Storm_popup/storm_category';
 import StormPressure from './Storm_popup/storm_pressure';
@@ -33,10 +33,10 @@ export default function StormPointDetails({ storm_point_hover, onClose }) {
     return (
         <div className="info_pane">
             <div>
-                <button 
-                onClick={onClose} 
-                style={{ float: "right", cursor: "pointer" }}
-                aria-label="Close Storm Details"
+                <button
+                    onClick={onClose}
+                    style={{ float: "right", cursor: "pointer" }}
+                    aria-label="Close Storm Details"
                 >✖
                 </button>
                 <h3>{STORMNAME}</h3>
@@ -52,7 +52,7 @@ export default function StormPointDetails({ storm_point_hover, onClose }) {
                     <p><strong>Error radius :</strong> {storm_point_hover.properties.ERRCT} nmi ({(storm_point_hover.properties.ERRCT * 1.852).toFixed(2)} km)</p>
                 }
             </div>
-            
+
         </div>
     )
 }

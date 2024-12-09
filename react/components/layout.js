@@ -41,7 +41,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
 
   //const allDatasetDescriptions = useDatasetDescriptions();
   //console.log(allDatasetDescriptions);
-  
+
 
   // useMemo() tells React to "memorize" the map component.
   // Wthout this, the map will get redrawn by many interactions 
@@ -67,7 +67,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
     source_type = "historical";
     console.debug("Historical Storm Data in Layout.js: ", historicalStormData);
   }
-  
+
   console.debug("Storm_data_pass in Layout.js: ", storm_data_pass);
 
   return (

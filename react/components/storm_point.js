@@ -16,7 +16,7 @@ import { change_icon_url } from "./utils/storm_display_utils";
 
 
 import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
-import {empty_point_obj} from "@/components/storm_point_details"
+import { empty_point_obj } from "@/components/storm_point_details"
 
 
 export const hurricon = new Icon({
@@ -111,31 +111,31 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setShowP
     let clicked = false
     // Keep track of previously clicked marker to default back to?
 
-    const storm_type= storm_point_data.properties["NATURE"];
-    const storm_icon= storm_types[storm_type]
+    const storm_type = storm_point_data.properties["NATURE"];
+    const storm_icon = storm_types[storm_type]
     const storm_category = String(storm_point_data.properties["USA_SSHS"])
     let arcColor, ellipseColor, textColor, arcStroke;
 
     const [customIcon, setCustomIcon] = useState(storm_icon);
 
-    if (storm_category === "undefined"){
+    if (storm_category === "undefined") {
         arcColor = "#000000";
-        ellipseColor= "#000000";
+        ellipseColor = "#000000";
         textColor = "#000000";
         arcStroke = "#000000";
 
     }
-    else{
+    else {
         //console.log(storm_categories[storm_category])
-        arcColor= storm_categories[storm_category]["arcColor"];
-        arcStroke= storm_categories[storm_category]["arcStroke"];
-        ellipseColor= storm_categories[storm_category]["ellipseColor"];
-        textColor= storm_categories[storm_category]["textColor"];
+        arcColor = storm_categories[storm_category]["arcColor"];
+        arcStroke = storm_categories[storm_category]["arcStroke"];
+        ellipseColor = storm_categories[storm_category]["ellipseColor"];
+        textColor = storm_categories[storm_category]["textColor"];
     }
 
     //console.log(storm_point_data.properties)
-   // console.log(String(storm_point_data.properties["USA_SSHS"]));
-    
+    // console.log(String(storm_point_data.properties["USA_SSHS"]));
+
     const svgPath = storm_type_info[storm_type]["exp_img"];
     //console.log(storm_type_info[storm_type])
     //storm_type_info[storm_type]["img"]
@@ -143,7 +143,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setShowP
     //const ellipseColor= storm_categories[storm_category]["ellipseColor"];
     //const textColor= storm_categories[storm_category]["textColor"];
     //const icon=storm_types[storm_type];
-    
+
     useEffect(() => {
         (async () => {
             const arcColor = storm_categories[storm_category]?.arcColor || "#000000";
@@ -171,10 +171,12 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setShowP
                 mouseover: (event) => setHoverMarker(storm_point_data),
                 click: (event) => {
                     setHoverMarker(storm_point_data)
-                    clicked = true},
+                    clicked = true
+                },
                 mouseout: (event) => {
-                    if(!clicked)
-                        setHoverMarker(empty_point_obj)}
+                    if (!clicked)
+                        setHoverMarker(empty_point_obj)
+                }
 
             }}
             icon={customIcon}

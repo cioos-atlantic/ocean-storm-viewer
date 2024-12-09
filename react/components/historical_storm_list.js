@@ -35,22 +35,22 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
         console.error('Error fetching storm list:', error);
       }
     }
-    
+
     fetchStormData();  // Call the async function
 
-    
-    
+
+
   }, []); // Empty dependency array ensures it runs only once on mount
 
-  
 
-  
+
+
 
   // const [selected_storm, setSelectedStorm] = useState("");
   return (
     <>
       <h2>Historical Storms: </h2>
-      <hr style={{ height: '4px', backgroundColor: 'blue', border: 'none' }}/>  {/* Bold line */}
+      <hr style={{ height: '4px', backgroundColor: 'blue', border: 'none' }} />  {/* Bold line */}
       <h4>Recent Storms: </h4>
       <div id="storm_search_result">
 
@@ -65,44 +65,44 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
         </ul>
       </div>
 
-      
 
-      <hr style={{ height: '2px', backgroundColor: 'black', border: 'none' }}/> 
+
+      <hr style={{ height: '2px', backgroundColor: 'black', border: 'none' }} />
       <h4>Storm Search: </h4>
       <div id="storm_search">
         <form onSubmit={(e) => handleFormSubmit(e, setSearchResult)}>
-        <input type="text" id="historical_storm_search" name="historical_storm_search" required minLength="4" placeholder='Storm name or year'/> 
-        <br/>
-        <button type="submit">Search</button>
+          <input type="text" id="historical_storm_search" name="historical_storm_search" required minLength="4" placeholder='Storm name or year' />
+          <br />
+          <button type="submit">Search</button>
         </form>
 
         <div id="storm_search_result">
 
-        <ul className="results">
-          {
-          
-          searchResult.length > 0 && searchResult.map((storm, index) => {
-            return (
-              <li key={storm.storm_id} className={(storm.name)}>
-                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints) }}>{`${storm.display_name}`}</a>
-              </li>
-            )
-          })}
-        </ul>
+          <ul className="results">
+            {
+
+              searchResult.length > 0 && searchResult.map((storm, index) => {
+                return (
+                  <li key={storm.storm_id} className={(storm.name)}>
+                    <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints) }}>{`${storm.display_name}`}</a>
+                  </li>
+                )
+              })}
+          </ul>
+        </div>
+
+
+
       </div>
 
-        
-           
-      </div>
 
-       
     </>
   );
 
 
 }
 
-export async function handleClick( storm, setStationPoints, setStormPoints) {
+export async function handleClick(storm, setStationPoints, setStormPoints) {
   console.log('Button clicked for', storm.name);
   const storm_name = storm.name;
   const storm_year = storm.year;
@@ -158,7 +158,7 @@ export async function handleClick( storm, setStationPoints, setStormPoints) {
 
     setStormPoints(historical_storm_data);  // Set the storm data
     setStationPoints(historical_station_data);  // Set the station data
-  
+
     // Trigger the callback to send data back to the parent
     // handleHarvestHistoricalData({
     //   storm_data: historical_storm_data,
@@ -174,30 +174,31 @@ export async function handleClick( storm, setStationPoints, setStormPoints) {
 
 
 
-async function handleFormSubmit(e, setSearchResult){
+async function handleFormSubmit(e, setSearchResult) {
   //prevent default behavior
   let storm_name = "";
   let storm_year = "";
   console.log(e)
   e.preventDefault();
-  
+
   const searchInputField = e.target.elements.historical_storm_search; // Reference to the input field
-  let searchInput= searchInputField.value;
-  const search_values= searchInput.split(" ")
+  let searchInput = searchInputField.value;
+  const search_values = searchInput.split(" ")
   //if (search_values.length ===1) {}
   console.log(search_values);
 
-  for (let value of search_values){
-    if (isYear(value)){storm_year = value}
-    else if (isName(value)){storm_name = value}
-    else {alert("Wrong Input. If input is only year, ensure it is in 4 digits. If year  and storm name, add a space between");
+  for (let value of search_values) {
+    if (isYear(value)) { storm_year = value }
+    else if (isName(value)) { storm_name = value }
+    else {
+      alert("Wrong Input. If input is only year, ensure it is in 4 digits. If year  and storm name, add a space between");
       return;
     }
   };
 
- 
+
   const query = new URLSearchParams({
-    name: storm_name, 
+    name: storm_name,
     season: storm_year     // Using season for storm year
   }).toString();
 
@@ -214,9 +215,9 @@ async function handleFormSubmit(e, setSearchResult){
 
     console.debug(`historical Storm Data for ${storm_name} and ${storm_year}: `, storm_data);
     // Create a set to track unique IDs and add objects to the result list
-    const uniqueList= makeStormList(storm_data)
+    const uniqueList = makeStormList(storm_data)
     // Create a set to track unique IDs and add objects to the result list
-    
+
 
     console.log(uniqueList);
     if (uniqueList.length === 0) {
@@ -238,7 +239,7 @@ async function handleFormSubmit(e, setSearchResult){
   // Clear the input field
   searchInputField.value = "";
 
-  
+
 }
 
 

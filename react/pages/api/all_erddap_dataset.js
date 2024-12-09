@@ -76,7 +76,7 @@ async function fetchDatasetMetadata(datasetID) {
 }
 
 async function fetchAllDatasetDescriptions() {
-  const allDatasets = await fetchAllDatasets(); 
+  const allDatasets = await fetchAllDatasets();
 
   const datasetDescriptions = await Promise.all(
     allDatasets.map(async dataset => {

@@ -1,19 +1,19 @@
 import { subYears } from "date-fns";
 import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
 
-export async function getHistoricalStormList(){
+export async function getHistoricalStormList() {
   // Construct query parameters
   const oneYearAgo = subYears(new Date(), 1);
   const min_storm_time = new Date(oneYearAgo).toISOString().split('T')[0] + "T00:00:00Z"; // get the current year
-  console.log( min_storm_time)
-  
+  console.log(min_storm_time)
+
 
 
   const query = new URLSearchParams({
     minTime: min_storm_time,      // Using season for storm year
   }).toString();
 
-  
+
   try {
     const resource = await fetch(`/api/historical_storms?${query}`);
     const storm_data = await resource.json();
@@ -23,9 +23,9 @@ export async function getHistoricalStormList(){
     // console.log(historical_station_data);
 
     console.debug(`historical Storm Data for ${min_storm_time}: `, storm_data);
-    const uniqueList= makeStormList(storm_data)
+    const uniqueList = makeStormList(storm_data)
     // Create a set to track unique IDs and add objects to the result list
-    
+
 
     console.log(uniqueList);
     return uniqueList
@@ -125,22 +125,22 @@ export function getStationQueryParams(historical_storm_data) {
 
 }
 
-export function makeStormList(storm_data){
+export function makeStormList(storm_data) {
   // Create a set to track unique IDs and add objects to the result list
   const uniqueList = [];
   const stormIdentifiers = new Set();
   const stormData = storm_data?.ib_data?.features
 
-  
+
 
   stormData?.forEach(feature => {
     let name = feature.properties.NAME;
     let year = feature.properties.SEASON;
     let storm_id = feature.properties.SID;
-    let display_name= `${name}-${year}`;
+    let display_name = `${name}-${year}`;
 
 
-    if (name === "UNNAMED"){display_name = `${name}-${storm_id}` }
+    if (name === "UNNAMED") { display_name = `${name}-${storm_id}` }
 
     const identifier = `${name}-${year}-${storm_id} `;
 
@@ -150,11 +150,11 @@ export function makeStormList(storm_data){
       stormIdentifiers.add(identifier);
       uniqueList.push({ name, year, storm_id, display_name, source: "ibtracs" });
     }
-  
-  
+
+
   })
 
-  
+
   return uniqueList
 }
 
@@ -171,7 +171,7 @@ export function isName(input) {
 
 
 export function isStormId(input) {
-  const namePattern =  /^\d{4}\d{3}[a-zA-Z]\d{5}$/; // Matches only letters (no spaces or numbers)
+  const namePattern = /^\d{4}\d{3}[a-zA-Z]\d{5}$/; // Matches only letters (no spaces or numbers)
   return namePattern.test(input);
 }
 

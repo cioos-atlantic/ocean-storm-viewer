@@ -1,7 +1,7 @@
-export default function FooterNav({children}){
-    return(
+export default function FooterNav({ children }) {
+    return (
         <nav>
-            
+
         </nav>
     )
 }

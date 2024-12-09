@@ -6,10 +6,10 @@ import { convert_unit_data, windSpeedToKmh, windSpeedToKnots } from './utils/uni
 // Register necessary components, including the Line controller
 Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend);
 
-const chartData ={
-  column_std_names:{},
-  units:{},
-  rows:{}
+const chartData = {
+  column_std_names: {},
+  units: {},
+  rows: {}
 }
 
 function RenderChart({ sourceData, position, stationName }) {
@@ -26,31 +26,32 @@ function RenderChart({ sourceData, position, stationName }) {
       chartData.rows = sourceData.rows //position > 30 ? sourceData.rows.slice(position-30, position+1) : sourceData.rows.slice(0, position+1)
       //chartData.rows = chartData.rows.length > 10 ? Data.rows.slice(Math.max(chartData.rows.length - 10, 0)) : chartData.rows
 
-      const station_timeData = get_station_field_data(chartData,"time", "column_std_names")
+      const station_timeData = get_station_field_data(chartData, "time", "column_std_names")
       const timeData = station_timeData.map((timestamp) => new Date(timestamp).toLocaleString('en-US', {
-                                hour: '2-digit',
-                                //minute: '2-digit',
-                                day: '2-digit',
-                                month: '2-digit',
-                                //year: 'numeric'
+        hour: '2-digit',
+        //minute: '2-digit',
+        day: '2-digit',
+        month: '2-digit',
+        //year: 'numeric'
       }));
 
       const exclude_var = ['time', 'latitude', 'longitude', 'wind_from_direction', 'air_pressure', 'relative_humidity',
         'air_temperature', 'sea_surface_temperature', 'sea_surface_wave_from_direction', 'sea_surface_maximum_wave_period'
       ]
       // Prepare datasets for each variable, excluding 'time'
-      const datasets = chartData.column_std_names.filter((variable) => !exclude_var.includes(variable)).map((variable, index) =>{
-         // Exclude 'time' from datasets
-          const unit = get_station_field_units(sourceData, variable, "column_std_names")
-          const values = get_station_field_data(chartData, variable, "column_std_names")
+      const datasets = chartData.column_std_names.filter((variable) => !exclude_var.includes(variable)).map((variable, index) => {
+        // Exclude 'time' from datasets
+        const unit = get_station_field_units(sourceData, variable, "column_std_names")
+        const values = get_station_field_data(chartData, variable, "column_std_names")
 
-          return{
+        return {
           label: `${variable} (${convert_unit_data(values[0], unit).unit})` || key, //  std_name if available
-          data: values.map((value)=>convert_unit_data(value,unit).value) || [], // Ensure that value exists
+          data: values.map((value) => convert_unit_data(value, unit).value) || [], // Ensure that value exists
           borderColor: getRandomColor(), // Generate random colors for each line
           backgroundColor: 'rgba(0, 0, 0, 0)',
           fill: false,
-        };});
+        };
+      });
 
       // Chart.js configuration
       const chartConfig = {
@@ -106,18 +107,18 @@ function RenderChart({ sourceData, position, stationName }) {
   }, [sourceData, stationName]); // Re-run effect if chartData or stationName changes
 
   return (
-    
-      <canvas
-        ref={chartRef}
-        style={{
-          top: 0,
-          left: 0,
-          width: '500px',
-          height: '300px', // You can keep this if you want to maintain responsiveness
-          aspectRatio: '409 / 409', // Maintain a 1:1 aspect ratio if you want
-        }}
-      />
-    
+
+    <canvas
+      ref={chartRef}
+      style={{
+        top: 0,
+        left: 0,
+        width: '500px',
+        height: '300px', // You can keep this if you want to maintain responsiveness
+        aspectRatio: '409 / 409', // Maintain a 1:1 aspect ratio if you want
+      }}
+    />
+
   );
 }
 

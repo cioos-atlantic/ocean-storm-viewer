@@ -31,8 +31,8 @@ export default function Drawer({ children, element_id, classes, storm_data, sour
                             setStormPoints={setStormPoints}
                             map={map}
                             Leaflet={Leaflet}
-                            />
-                        ) : source_type == "historical" ? (
+                        />
+                    ) : source_type == "historical" ? (
                         <HistoricalStormList
                             setStationPoints={setStationPoints}
                             setStormPoints={setStormPoints}

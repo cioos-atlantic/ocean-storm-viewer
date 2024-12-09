@@ -19,44 +19,44 @@ const hurricane_categories = {
         "min": 157,
         "max": null,
         "name": { "en": "Category 5", "fr": "catégorie 5" },
-        "img" : "../data/img/storm_categories/Category_5_hurricane_icon.svg"
+        "img": "../data/img/storm_categories/Category_5_hurricane_icon.svg"
     },
     "4": {
         "min": 113,
         "max": 136,
         "name": { "en": "Category 4", "fr": "catégorie 4" },
-        "img" : "../data/img/storm_categories/Category_4_hurricane_icon.svg"
+        "img": "../data/img/storm_categories/Category_4_hurricane_icon.svg"
     },
     "3": {
         "min": 96,
         "max": 112,
         "name": { "en": "Category 3", "fr": "catégorie 3" },
-        "img" : "../data/img/storm_categories/Category_3_hurricane_icon.svg"
+        "img": "../data/img/storm_categories/Category_3_hurricane_icon.svg"
     },
     "2": {
         "min": 83,
         "max": 95,
         "name": { "en": "Category 2", "fr": "catégorie 2" },
-        "img" : "../data/img/storm_categories/Category_2_hurricane_icon.svg"
+        "img": "../data/img/storm_categories/Category_2_hurricane_icon.svg"
     },
     "1": {
         "min": 64,
         "max": 82,
         "name": { "en": "Category 1", "fr": "catégorie 1" },
-        "img" : "../data/img/storm_categories/Category_1_hurricane_icon.svg"
+        "img": "../data/img/storm_categories/Category_1_hurricane_icon.svg"
     },
     "TS": {
         "min": 34,
         "max": 63,
         "name": { "en": "Tropical Storm", "fr": "Tempête tropicale" },
-        "img" : "../data/img/storm_categories/Category_TS_hurricane_icon.svg"
+        "img": "../data/img/storm_categories/Category_TS_hurricane_icon.svg"
     },
     "TD": {
         "min": 33,
         "max": null,
         "name": { "en": "Tropical Depression", "fr": "Dépression tropicale" },
-        "img" : "../data/img/storm_categories/Category_TD_hurricane_icon.svg"
-        
+        "img": "../data/img/storm_categories/Category_TD_hurricane_icon.svg"
+
     },
 }
 
@@ -197,7 +197,7 @@ export function build_sea_height_radii(storm_data_pt, height, storm_center, ne_r
     return final_polygon;
 }
 
-export function generate_radii_coords(final_polygon, storm_center, ne_rad, se_rad, sw_rad, nw_rad){
+export function generate_radii_coords(final_polygon, storm_center, ne_rad, se_rad, sw_rad, nw_rad) {
 
     // Calculate arc per quadrant
     const quadrants = ['NE', 'SE', 'SW', 'NW'];

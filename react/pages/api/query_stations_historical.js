@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     //console.log('HR')
     res.status(200).json(station_recent)
   } catch (err) {
-    res.status(500).json({ error: err.message}) //
+    res.status(500).json({ error: err.message }) //
   }
 }
 
@@ -41,7 +41,7 @@ function parseStationData(result, station) {
   let station_data = {};
   const features = result['erddap_data']['features'];
   console.log(features);
-  
+
 
   const re_match = /(?<var_name>.*)\s\((?<standard_name>.*)\|(?<units>.*)\|(?<long_name>.*)\)/g;
   for (let feature in features) {
@@ -57,48 +57,48 @@ function parseStationData(result, station) {
       //const parsed_data = JSON.parse(features[feature]['properties']['station_data']);
 
       //if (parsed_data.length !== 0){
-        //console.log("Station data available")
-        //console.log(parsed_data)
-        if (station_data[station_name]) {
-          station_data[station_name]['properties']['max_time'] = features[feature]['properties']['max_time']
-        }
-        else {
-          station_data[station_name] = features[feature];
-          let station_data_formatted = {
-            'column_names': [],
-            'column_units': [],
-            'column_std_names': [],
-            'column_long_names': [],
-            'column_raw_names': [],
-            'rows': []
-          };
-          const data_fields = Object.keys(parsed_data[0]);
-
-          data_fields.forEach((field) => {
-            const names = [...field.matchAll(re_match)];
-            if (names.length > 0) {
-              station_data_formatted['column_names'].push(names[0].groups["var_name"]);
-              station_data_formatted['column_std_names'].push(names[0].groups["standard_name"]);
-              station_data_formatted['column_units'].push(names[0].groups["units"]);
-              station_data_formatted['column_long_names'].push(names[0].groups["long_name"]);
-              station_data_formatted['column_raw_names'].push(field);
-            };
-          });
-          station_data[station_name]['properties']['station_data'] = station_data_formatted;
+      //console.log("Station data available")
+      //console.log(parsed_data)
+      if (station_data[station_name]) {
+        station_data[station_name]['properties']['max_time'] = features[feature]['properties']['max_time']
+      }
+      else {
+        station_data[station_name] = features[feature];
+        let station_data_formatted = {
+          'column_names': [],
+          'column_units': [],
+          'column_std_names': [],
+          'column_long_names': [],
+          'column_raw_names': [],
+          'rows': []
         };
-        const station_column_data = station_data[station_name]['properties']['station_data']['column_raw_names'];
-        parsed_data.forEach((row) => {
-          let row_data = []
-          station_column_data.forEach((column) => {
-            row_data.push(row[column])
-          });
-          station_data[station_name]['properties']['station_data']['rows'].push(row_data);
+        const data_fields = Object.keys(parsed_data[0]);
+
+        data_fields.forEach((field) => {
+          const names = [...field.matchAll(re_match)];
+          if (names.length > 0) {
+            station_data_formatted['column_names'].push(names[0].groups["var_name"]);
+            station_data_formatted['column_std_names'].push(names[0].groups["standard_name"]);
+            station_data_formatted['column_units'].push(names[0].groups["units"]);
+            station_data_formatted['column_long_names'].push(names[0].groups["long_name"]);
+            station_data_formatted['column_raw_names'].push(field);
+          };
         });
-      }
-      else{
-        continue
-      }
-    
+        station_data[station_name]['properties']['station_data'] = station_data_formatted;
+      };
+      const station_column_data = station_data[station_name]['properties']['station_data']['column_raw_names'];
+      parsed_data.forEach((row) => {
+        let row_data = []
+        station_column_data.forEach((column) => {
+          row_data.push(row[column])
+        });
+        station_data[station_name]['properties']['station_data']['rows'].push(row_data);
+      });
+    }
+    else {
+      continue
+    }
+
     //};
   };
   console.log(station_data);
