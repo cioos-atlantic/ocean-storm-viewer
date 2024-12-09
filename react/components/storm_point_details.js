@@ -1,5 +1,5 @@
 import { parseISO, format } from 'date-fns';
-import { fetch_value } from "@/lib/storm_utils";
+import { fetch_value, parse_iflag } from "@/lib/storm_utils";
 import React, { useState } from "react";
 import StormType from './Storm_popup/Storm_type';
 import StormCategory from './Storm_popup/storm_category';
@@ -27,8 +27,21 @@ export default function StormPointDetails({ storm_point_hover, onClose }) {
     const STORMFORCE = fetch_value(storm_point_hover, ["STORMFORCE", "USA_SSHS"]);
     const MAXWIND = fetch_value(storm_point_hover, ["MAXWIND", "WMO_WIND", "USA_WIND"]);
     const MINPRESS = fetch_value(storm_point_hover, ["MSLP", "WMO_PRES", "USA_PRES"]);
+    const STORMSPEED = fetch_value(storm_point_hover, ["STORM_SPEED"]);
+    const STORMDIR = fetch_value(storm_point_hover, ["STORM_DIR"]);
+    const WMO_AGENCY = fetch_value(storm_point_hover, ["WMO_AGENCY"]);
+    const TRACK_TYPE = fetch_value(storm_point_hover, ["TRACK_TYPE"]);
+    const DIST2LAND = fetch_value(storm_point_hover, ["DIST2LAND"]);
+    const LANDFALL = fetch_value(storm_point_hover, ["LANDFALL"]);
+    const USA_RECORD = fetch_value(storm_point_hover, ["USA_RECORD"]);
 
+    const IFLAG = fetch_value(storm_point_hover, ["IFLAG"]);
 
+    let IFLAG_DETAILS = { "flag": "", "description": "", "agency": "" };
+    if (IFLAG) {
+        IFLAG_DETAILS = parse_iflag(storm_point_hover);
+        console.log(storm_point_hover, IFLAG_DETAILS);
+    }
 
     return (
         <div className="info_pane">
@@ -37,8 +50,7 @@ export default function StormPointDetails({ storm_point_hover, onClose }) {
                     onClick={onClose}
                     style={{ float: "right", cursor: "pointer" }}
                     aria-label="Close Storm Details"
-                >✖
-                </button>
+                >✖</button>
                 <h3>{STORMNAME}</h3>
                 <StormType STORMTYPE={STORMTYPE} />
                 <p><strong>Storm Status:</strong> {storm_point_hover.properties.TCDVLP}</p>
@@ -46,11 +58,34 @@ export default function StormPointDetails({ storm_point_hover, onClose }) {
                 <p><strong>Timestamp:</strong> {TIMESTAMP}</p>
                 <p><strong>Lat/Long:</strong> {storm_point_hover.properties.LAT}&deg; N, {storm_point_hover.properties.LON}&deg; W</p>
                 <p><strong>Max Windspeed:</strong> {MAXWIND} knots ({(MAXWIND * 1.84).toFixed(2)} km/h)</p>
+                
+                <p><strong>Storm Speed:</strong> {STORMSPEED} knots ({(STORMSPEED * 1.84).toFixed(2)} km/h)</p>
+                <p><strong>Storm Direction:</strong> {STORMDIR}&deg;</p>
+                { WMO_AGENCY && 
+                    <p><strong>Reporting Agency:</strong> {WMO_AGENCY}</p>
+                }
+                <p><strong>Distance to Land:</strong> {DIST2LAND} km</p>
+                <p><strong>Landfall:</strong> {LANDFALL} km</p>
+                <p><strong>Record Identifier:</strong> {USA_RECORD}</p>
+                
                 <StormPressure STORMPRESSURE={MINPRESS} />
                 {
                     storm_point_hover.properties.ERRCT &&
                     <p><strong>Error radius :</strong> {storm_point_hover.properties.ERRCT} nmi ({(storm_point_hover.properties.ERRCT * 1.852).toFixed(2)} km)</p>
                 }
+                <p><strong>Tracking Type:</strong> {TRACK_TYPE}</p>
+                <p>
+                    <strong>Interpolation Flags:</strong> {
+                    IFLAG_DETAILS.map(agency => {
+                        return (
+                            <>
+                                <div>Flag: <span title={agency.description}>{agency.flag}</span></div>
+                                <div>Source: {agency.agency}</div>
+                            </>
+                        )
+                    })
+                }
+                </p>
             </div>
 
         </div>

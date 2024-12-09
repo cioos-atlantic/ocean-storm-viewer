@@ -559,3 +559,50 @@ export function get_storm_class(storm_point) {
 
 }
 
+export function parse_iflag(storm_point) {
+    const i_flag_value = storm_point.properties.IFLAG;
+    const flags = {
+        "_": "missing reports. No information provided.",
+        "O": "original report as provided by the agency.",
+        "P": "position was interpolated (all variables were interpolated/filled, including intensity)",
+        "I": "Position was provided, but Intensity variables (and likely other variables) were interpolated/filled",
+        "V": "Position and intensity variables are original but some variables were interpolated/filled",
+    };
+
+    const dataset = [
+        "USA Agency",
+        "Tokyo",
+        "CMA",
+        "HKO",
+        "NewDelhi",
+        "Reunion",
+        "BoM",
+        "Nadi",
+        "Wellington",
+        "ds824",
+        "TD9636",
+        "TD9635",
+        "Neumann Southern Hemisphere data set",
+        "M.L. Chenoweth N Atlantic Historic dataset"
+    ];
+
+    let agency = "";
+    let flag_value = "";
+    let return_val = [];
+
+    for (let index in i_flag_value) {
+        flag_value = i_flag_value[index];
+        agency = dataset[index];
+
+        if (flag_value != "_") {
+            // Index 0 is a USA Agency
+            if (index == 0 && storm_point.properties.USA_AGENCY) {
+                agency += ": " + storm_point.properties.USA_AGENCY;
+            }
+
+            return_val.push({ "flag": flag_value, "description": flags[flag_value], "agency": agency });
+        }
+    }
+
+    return return_val;
+}

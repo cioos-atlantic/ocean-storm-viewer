@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     const source = req.query["source"].split(",")
     const source_type = req.query["source_type"]
 
-    console.log("handler", storm_name, season, source, source_type);
+    console.log("wfs_query -> handler", storm_name, season, source, source_type);
 
     try {
         const result = await wfs_query(storm_name, season, source, source_type)
@@ -30,6 +30,17 @@ export default async function handler(req, res) {
     }
 }
 
+/**
+ * 
+ * 
+ * @param {string} storm_name 
+ * @param {int} season 
+ * @param {array} source 
+ * @param {string} source_type 
+ * @param {string} storm_id 
+ * @param {object} filters 
+ * @returns GeoJSON object 
+ */
 export async function wfs_query(storm_name, season, source, source_type, storm_id, filters) {
     // https://dev.cioosatlantic.ca/geoserver/cioos-atlantic/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=cioos-atlantic%3Aibtracs_active_storms&maxFeatures=50&outputFormat=application%2Fjson
 
@@ -45,7 +56,7 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
     &cql_filter=(SEASON=2024);(TIMESTAMP BETWEEN 2024-01-01 AND 2024-12-31)
     */
 
-    console.log("wfs_query", storm_name, season, source, source_type);
+    console.log("wfs_query", storm_name, season, source, source_type, storm_id, filters);
 
     // Define base URL
     const base_url = "https://dev.cioosatlantic.ca/geoserver/ows?service=wfs&version=2.0.0";
@@ -102,8 +113,8 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
         }
 
 
-        if (filters !== "") {
-
+        if (Object.keys(filters).length > 0) {
+            console.debug("Building filters...")
             const filter_string = Object.entries(filters)
                 .map(([key, value]) => {
                     return `${key}${value}`
@@ -190,28 +201,6 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
     }
 
     return responses;
-
-
-
-    console.log(cql_filter, wfs_sources.join(",cioos-atlantic:"));
-
-    // Build final filter if 1 or more conditions have been added to the array, join with an AND
-    // Otherwise, return an empty string representing no filter
-    const final_filter = (cql_filter.length > 0) ? "&cql_filter=" + cql_filter.join(";") : "";
-    console.log("Final Filter: ", final_filter);
-
-    // Build final URL
-    // const get_features_url = base_url + "&request=GetFeature&typeName=cioos-atlantic%3A" + wfs_source + output_format + final_filter + property_list;
-    const get_features_url = base_url + "&request=GetFeature&typeName=cioos-atlantic%3A" + wfs_sources.join(",cioos-atlantic:") + output_format + final_filter;
-    console.log("URL: ", get_features_url);
-
-    // Fetch response
-    const response = await fetch(get_features_url);
-
-    // Fetch data from response
-    const data = await response.json();
-
-    return data;
 }
 
 function build_wfs_query(source, filters, source_type, output_format = "application/json", base_url = "https://dev.cioosatlantic.ca/geoserver/ows?service=wfs&version=2.0.0",) {
@@ -225,7 +214,12 @@ function build_wfs_query(source, filters, source_type, output_format = "applicat
     return url;
 }
 
-
+/**
+ * Performs an asynchronous fetch operation 
+ * 
+ * @param {string} url 
+ * @returns JSON object
+ */
 async function fetch_wfs_data(url) {
     const response = await fetch(url);
     const data = await response.json();
