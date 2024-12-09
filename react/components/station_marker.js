@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo} from "react";
 import station_names from "../data/station/names.json"
 import {RecentStationData} from './utils/station_data_format_util'
 import RenderChart from './station_graph.js'
@@ -7,9 +7,9 @@ import { flip_coords } from "@/lib/storm_utils";
 import { Marker, Popup } from "react-leaflet";
 
 import { getDisplayName } from "./utils/station_data_format_util";
+import styles from './station_marker.module.css'
 
 
-const empty_data_text = {}
 
 /**
  * 
@@ -21,6 +21,10 @@ const empty_data_text = {}
 export default function StationMarker(station_data, station_descriptions, time = new Date(), ) {
     if(isNaN(time))
       time= new Date()
+
+    //Check if selected var contains any of the following
+    //wind_speed, temperature, sea_surface_wave, air_pressure
+    const [selectedVar, setSelectedVarCategory] = useState("wind_speed")
     
     const station_name = station_data[0]
     const station_values = station_data[1]
@@ -41,12 +45,26 @@ export default function StationMarker(station_data, station_descriptions, time =
         key={station_name} 
         position={flip_coords(station_values.geometry.coordinates)}
         >
-          <Popup 
+          <Popup > 
+            <h4>{display_name}</h4>
+            <div class={styles.button.divider} id="var_buttons">
+              <button className={styles.button} id="station-button-wind" onClick={()=>setSelectedVarCategory("wind_speed")}>Wind</button>
+              <button className={styles.button} id="station-button-temp" onClick={()=>setSelectedVarCategory("temperature")}>Temp</button>
+              <button className={styles.button} id="station-button-wave" onClick={()=>setSelectedVarCategory("wave")}>Wave</button>
+              <button className={styles.button} id="station-button-pressure" onClick={()=>setSelectedVarCategory("air_pressure")}>Pressure</button>
+            </div>
+            <div className="station_chart" 
             contentStyle={{
               width: 'auto', // Adjust width based on content (chart)
               padding: '20px', // Optional padding around chart
-              }}> 
-            <h4>{display_name}</h4>
+              }}>
+                <RenderChart  
+                sourceData={station_values?.properties?.station_data}
+                stationName={station_name}
+                varCategory={selectedVar}
+                />
+            </div>
+            {selectedVar}
             {data_text}
             <a href={data_link} target="_blank">Full data</a>
           </Popup>
