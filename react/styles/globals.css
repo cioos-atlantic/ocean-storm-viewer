@@ -158,3 +158,44 @@ footer {
   padding-left: 0.5rem;
   font-size: 1.1rem;
 }
+
+/* Styling for the station dashboard containing block */
+.station_dashboard {
+  background: white;
+  color: black;
+  border-top: 3px solid #e55162;
+  padding: 2rem;
+  margin-left: 20%;
+  position: absolute;
+  bottom: 50px;
+  z-index: 5000;
+  width: 80%;
+}
+
+/* Styling for the dashboard header */
+.station_dashboard .dash-header {
+  border: 1px solid darkgoldenrod;
+}
+
+/* Handles the styling of buttons in the header */
+.station_dashboard .dash-header button {
+  float: right;
+  background-color: #fff;
+  border: 0;
+  font-size: 1.5rem;
+}
+
+/* handles styling of buttons in the header with the "close" class */
+.station_dashboard .dash-header button.close{
+  font-weight: bold;
+}
+
+/* Styling for the dashboard body */
+.station_dashboard .dash-body {
+  border: 1px solid green;
+}
+
+/* Styling for the dashboard footer */
+.station_dashboard .dash-footer {
+  border: 1px solid blue;
+}

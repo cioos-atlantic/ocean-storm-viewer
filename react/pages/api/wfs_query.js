@@ -111,10 +111,10 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
         if (storm_id) {
             ib_filters.push("SID='" + storm_id + "'");
         }
-
+        
 
         if (Object.keys(filters).length > 0) {
-            console.debug("Building filters...")
+            
             const filter_string = Object.entries(filters)
                 .map(([key, value]) => {
                     return `${key}${value}`
