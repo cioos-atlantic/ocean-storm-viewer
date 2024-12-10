@@ -7,13 +7,13 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
 import "leaflet-defaulticon-compatibility";
 
-import StormMarker from "@/components/storm_point";
-import LineOfTravel from "@/components/line_of_travel";
-import WindSpeedRadius from "@/components/wind_radii";
-import SeaHeightRadius from "@/components/sea_height_radii";
+import StormMarker from "@/components/storm_marker/storm_point";
+import LineOfTravel from "@/components/storm_marker/line_of_travel";
+import WindSpeedRadius from "@/components/storm_marker/wind_radii";
+import SeaHeightRadius from "@/components/storm_marker/sea_height_radii";
+import ErrorCone from "@/components/storm_marker/error_cone";
 
 import StationMarker from "./station_marker";
-import ErrorCone from "@/components/error_cone";
 import StormPointDetails, { empty_point_obj } from "@/components/storm_point_details";
 import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
 import { empty_station_obj } from "./layout";

@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Marker, Popup } from 'react-leaflet'
 import { Icon, DivIcon, Point } from 'leaflet'
-import HurricaneIcon from '../public/hurricane.svg'
-import TropicalStormIcon from '../public/tropical-storm.svg'
-import TropicalDisturbanceIcon from '../public/storm_types/DI_icon.svg'
-import ExtratropicalIcon from '../public/storm_types/ET_icon.svg'
-import MixtureIcon from '../public/storm_types/MX_icon.svg'
-import NotReportedIcon from '../public/storm_types/NR_icon.svg'
-import PostTropicalIcon from '../public/storm_types/PT_icon.svg'
-import SubTropicalIcon from '../public/storm_types/SS_icon.svg'
-import TropicalDepressionIcon from '../public/storm_types/TD_icon.svg'
-import TropicalStormIcon2 from '../public/storm_types/TS_icon.svg'
+import HurricaneIcon from '@/public/hurricane.svg'
+import TropicalStormIcon from '@/public/tropical-storm.svg'
+import TropicalDisturbanceIcon from '@/public/storm_types/DI_icon.svg'
+import ExtratropicalIcon from '@/public/storm_types/ET_icon.svg'
+import MixtureIcon from '@/public/storm_types/MX_icon.svg'
+import NotReportedIcon from '@/public/storm_types/NR_icon.svg'
+import PostTropicalIcon from '@/public/storm_types/PT_icon.svg'
+import SubTropicalIcon from '@/public/storm_types/SS_icon.svg'
+import TropicalDepressionIcon from '@/public/storm_types/TD_icon.svg'
+import TropicalStormIcon2 from '@/public/storm_types/TS_icon.svg'
 import { storm_categories, storm_type_info } from '@/lib/storm_class'
-import { change_icon_url } from "./utils/storm_display_utils";
-
+import { change_icon_url } from "../utils/storm_display_utils";
 
 import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
 import { empty_point_obj } from "@/components/storm_point_details"
-
 
 export const hurricon = new Icon({
     iconUrl: HurricaneIcon.src,

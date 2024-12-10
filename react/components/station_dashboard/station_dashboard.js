@@ -6,7 +6,7 @@ export default function StationDashboard({children, selected_station, setSelecte
         <div key="01-station-dashboard" class="station_dashboard">
             <div class="dash-header">
                 <button
-                    class="close"
+                    className={"close"}
                     onClick={(e) => {
                         setSelectedStation(empty_station_obj)
                     }}
