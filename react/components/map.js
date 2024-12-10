@@ -33,6 +33,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   // Add parameter for points
   // Points always there, even not in storm seasons
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
+  const [selectedStationVar, setSelectedStationVar] = useState("wind_speed")
   const allDatasetDescriptions = useDatasetDescriptions();
   console.log(allDatasetDescriptions)
   
@@ -121,7 +122,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                 {
                   Object.entries(station_data).map((element) => {
                     const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                    return StationMarker(element, allDatasetDescriptions, storm_timestamp)
+                    return StationMarker(element, allDatasetDescriptions, storm_timestamp, selectedStationVar, {setSelectedStationVar})
                   })
                 }
               </LayerGroup>
