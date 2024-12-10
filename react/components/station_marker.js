@@ -18,7 +18,7 @@ const empty_data_text = {}
  * @param {Date} time Time of the station data to retrieve. Defaults to most recent data if not provided
  * @returns StationMarker JavaScript snippet
  */
-export default function StationMarker(station_data, station_descriptions, time = new Date(), ) {
+export default function StationMarker(station_data, station_descriptions, time = new Date(), setSelectedStation) {
     if(isNaN(time))
       time= new Date()
     
@@ -40,7 +40,13 @@ export default function StationMarker(station_data, station_descriptions, time =
       <Marker 
         key={station_name} 
         position={flip_coords(station_values.geometry.coordinates)}
-        >
+        eventHandlers={{
+          click: (e) => {
+            console.log(e, "SETTING SELECTED STATION", station_data);
+            setSelectedStation(station_data);
+          },
+        }}
+      >
           <Popup 
             contentStyle={{
               width: 'auto', // Adjust width based on content (chart)
