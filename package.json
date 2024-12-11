@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@ant-design/charts": "^2.2.4",
     "chart.js": "^4.4.4",
     "react-chartjs-2": "^5.2.0"
   }

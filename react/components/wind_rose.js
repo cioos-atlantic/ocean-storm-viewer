@@ -18,7 +18,7 @@ export function RenderWindRose ( { sourceData, position, stationName }){
             const windData = calculateWindSpeedDistribution(station_dirData, windSpeed, time_data_point);
             console.log(windData)
           
-            setChartOptions(createChartOptions(windData));
+            
           })
       }, [sourceData]);
 }
@@ -98,30 +98,36 @@ function extractWindSpeedBins(){
 
     return windSpdLabel
 }
+function makeGroupedList(directions, speeds){
+    const groupedList = [];
+    directions.forEach((direction, index) => {
+    
+        const cardinal = categorizeWindDirection(direction);
+        //console.log(cardinal)
+        const speedBin = categorizeWindSpeed(speeds[index]);
+    
+        groupedList.push({
+          windSpeed : speeds[index],
+          speedBin : speedBin,
+          direction : direction,
+          cardinal : cardinal,
+        });
+      });
 
+    return groupedList
+
+}
 
 
 // Calculate wind speed distribution per direction
 function calculateWindSpeedDistribution(directions, speeds, totalDataPoints) {
 
-  const groupedList = []
+  
   const freqObj = makeEmptyfreqObj(windSpeedBins, cardinalPoints);
 
   const windSpdLabel = extractWindSpeedBins();
   
-  directions.forEach((direction, index) => {
-    
-    const cardinal = categorizeWindDirection(direction);
-    //console.log(cardinal)
-    const speedBin = categorizeWindSpeed(speeds[index]);
-
-    groupedList.push({
-      windSpeed : speeds[index],
-      speedBin : speedBin,
-      direction : direction,
-      cardinal : cardinal,
-    });
-  });
+  const groupedList = makeGroupedList(directions, speeds)
 
   groupedList.forEach((dataPoint) => {
     const cardinalList= freqObj[dataPoint.cardinal];
@@ -129,10 +135,12 @@ function calculateWindSpeedDistribution(directions, speeds, totalDataPoints) {
     cardinalList[windIdx]++;
   });
     
-  console.log(groupedList.length)
-  const freqFrac= makeFreqFraction(freqObj, totalDataPoints)
+  console.log(groupedList.length);
+  const freqFrac= makeFreqFraction(freqObj, totalDataPoints);
 
-  return freqFrac
+  const windChartData = parseWindData(freqFrac, windSpdLabel);
+
+  return windChartData
 }
 
 
@@ -152,5 +160,54 @@ function processWindSpeeds(sourceData){
   });
 
   return windSpeed;
+}
+
+function parseWindData(freqFrac, windSpdLabel){
+    const data = [];
+    Object.entries(freqFrac).forEach(([key, points]) => {
+
+        points.forEach((value, index)=> {
+            data.push(
+                {
+                  cardinalPoint: key,
+                    value: value,
+                    windSpeedBin: windSpdLabel[index]
+                }
+            )
+        })
+    })
+
+}
+
+
+function generateChart(data){
+    const config = {
+        views: [
+          {
+            data,
+            region: { start: { x: 0, y: 0 }, end: { x: 1, y: 1 } },
+            coordinate: { type: 'polar' },
+            meta: {
+              cardinalPoint: { alias: 'Cardinal-Point' },
+              value: { alias: 'Value' },
+            },
+            tooltip: {
+              showMarkers: false,
+              shared: true,
+            },
+            geometries: [
+              {
+                type: 'interval',
+                xField: 'cardinalPoint',
+                yField: 'value',
+                colorField: 'windSpeedBin',
+                adjust: [{ type: 'stack' }],
+              },
+            ],
+          },
+        ],
+      };
+
+    return <Mix {...config} />;
 }
 
