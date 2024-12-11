@@ -5,6 +5,12 @@ import { Mix } from '@ant-design/charts';
 export function RenderWindRose ( { sourceData, position, stationName }){
     useEffect(() => { 
         const station_dirData = get_station_field_data(sourceData, 'wind_from_direction', "column_std_names");
+        console.log(station_dirData)
+        if (!station_dirData || station_dirData.every(item => item === undefined)) {
+            console.log("station_dirData returned an array of undefined values");
+            return; // Exit early
+        }
+
         const windSpeeds = processWindSpeeds(sourceData);
         console.log(windSpeeds)
         const unit = get_station_field_units(sourceData,"wind_speed", "column_std_names");
@@ -18,8 +24,12 @@ export function RenderWindRose ( { sourceData, position, stationName }){
             const windData = calculateWindSpeedDistribution(station_dirData, windSpeed, time_data_point);
             console.log(windData)
           
-            
-          })
+            return generateChart(windData) 
+          }
+          )
+        
+
+          
       }, [sourceData]);
 }
 
@@ -137,8 +147,10 @@ function calculateWindSpeedDistribution(directions, speeds, totalDataPoints) {
     
   console.log(groupedList.length);
   const freqFrac= makeFreqFraction(freqObj, totalDataPoints);
+  console.log(freqFrac)
 
   const windChartData = parseWindData(freqFrac, windSpdLabel);
+  console.log(windChartData)
 
   return windChartData
 }
@@ -175,7 +187,9 @@ function parseWindData(freqFrac, windSpdLabel){
                 }
             )
         })
-    })
+    });
+
+    return data;
 
 }
 
