@@ -30,6 +30,9 @@ export default function StationMarker(station_data, station_descriptions, time =
     const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + station_name + ".html"
     const data_text = RecentStationData(station_values, time)
 
+    if (!data_text) 
+      return null
+
     // Change to call from ERDDAP
     const display_name = getDisplayName(station_descriptions, station_name);
 
@@ -58,7 +61,6 @@ export default function StationMarker(station_data, station_descriptions, time =
     
 
     return (
-      data_text ?
       <Marker 
         key={station_name} 
         position={flip_coords(station_values.geometry.coordinates)}
@@ -90,6 +92,5 @@ export default function StationMarker(station_data, station_descriptions, time =
             <a href={data_link} target="_blank">Full data</a>
           </Popup>
         </Marker>
-        : null
     )
 }
