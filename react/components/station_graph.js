@@ -15,6 +15,8 @@ const chartData ={
 function RenderChart({ sourceData, position, stationName, varCategory }) {
   const chartRef = useRef(null); // Reference to the canvas element
 
+  const startAtZero = varCategory === 'air_pressure' ? false : true
+
   useEffect(() => {
     // Check if chartData is available
     if (sourceData && sourceData.rows.length > 0) {
@@ -69,7 +71,7 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
               grid: {
                 display: true, // Show grid on the y-axis
               },
-              beginAtZero: false,
+              beginAtZero: startAtZero,
             },
           },
           responsive: true,
