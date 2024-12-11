@@ -37,8 +37,9 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
                                 //year: 'numeric'
       }));
 
+      // Move this to config later
       const exclude_var = ['time', 'latitude', 'longitude', 'wind_from_direction', 'relative_humidity',
-         'sea_surface_wave_from_direction', 'sea_surface_wave_maximum_period'
+         'sea_surface_wave_from_direction', 'sea_surface_wave_maximum_period', 'sea_surface_wave_mean_period'
       ]
       // Prepare datasets for each variable, excluding 'time'
       const datasets = chartData.column_std_names.filter((variable) => !exclude_var.includes(variable) && variable.includes(varCategory)).map((variable, index) =>{
