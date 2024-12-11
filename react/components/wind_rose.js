@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { get_station_field_data, get_station_field_units } from './utils/station_data_format_util';
-
+import { Mix } from '@ant-design/charts';
 
 export function RenderWindRose ( { sourceData, position, stationName }){
     useEffect(() => { 
