@@ -101,7 +101,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                 {
                   Object.entries(station_data).map((station) => {
                     const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                    return StationMarker(station, allDatasetDescriptions, storm_timestamp, setSelectedStation)
+                    return StationMarker(station, allDatasetDescriptions, storm_timestamp, setSelectedStation, selectedStationVar, {setSelectedStationVar})
                   })
                 }
               </LayerGroup>
@@ -142,7 +142,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                 {
                   Object.entries(station_data).map((element) => {
                     const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                    return StationMarker(element, allDatasetDescriptions, storm_timestamp, selectedStationVar, {setSelectedStationVar})
+                    return StationMarker(element, allDatasetDescriptions, storm_timestamp, setSelectedStation, selectedStationVar, {setSelectedStationVar})
                   })
                 }
               </LayerGroup>
