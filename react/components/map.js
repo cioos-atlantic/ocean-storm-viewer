@@ -16,6 +16,8 @@ import StationMarker from "./station_marker";
 import ErrorCone from "@/components/error_cone";
 import StormPointDetails, { empty_point_obj } from "@/components/storm_point_details";
 import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
+import { empty_station_obj } from "./layout";
+import StationDashboard from "./station_dashboard/station_dashboard";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
@@ -30,28 +32,36 @@ function Station_Variable(name, std_name, value, units) {
 }
 
 export default function Map({ children, storm_points, storm_data, station_data, source_type, setStormPoints, setStationPoints, setHistoricalStormData }) {
-  // Add parameter for points
-  // Points always there, even not in storm seasons
+
+  // The state variable that contains the storm point currently being hovered 
+  // over or clicked on
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
+
+  // The state variable that contains the station that was last clicked on
+  const [selected_station, setSelectedStation] = useState(empty_station_obj);
+
   const [selectedStationVar, setSelectedStationVar] = useState("wind_speed")
   const allDatasetDescriptions = useDatasetDescriptions();
+
   console.log(allDatasetDescriptions)
-  
   console.debug("Storm Points in map.js: ", storm_points);
-
-
-
 
   return (
     <div className="map_container">
       <div className='inner_container'>
-      {hover_marker !== empty_point_obj && (
-        <StormPointDetails
-          storm_point_hover={hover_marker}
-          onClose={() => setHoverMarker(empty_point_obj)} // Close popup when the marker is reset
-        />
-      )}
+        {hover_marker !== empty_point_obj && (
+          <StormPointDetails
+            storm_point_hover={hover_marker}
+            onClose={() => setHoverMarker(empty_point_obj)} // Close popup when the marker is reset
+          />
+        )}
         
+        {selected_station !== empty_station_obj && (
+          <StationDashboard
+            selected_station={selected_station}
+            setSelectedStation={setSelectedStation}
+          >THE KIDS!</StationDashboard>
+        )}
         <MapContainer
           center={defaultPosition}
           zoom={defaultZoom}
@@ -84,6 +94,16 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                   attribution='<a href=&quot;https://www.canada.ca/en/environment-climate-change.html&quot;>ECCC</a>'
                   version='1.3.0'
                 />
+              </LayerGroup>
+            </LayersControl.Overlay>
+            <LayersControl.Overlay checked name="Stations">
+              <LayerGroup>
+                {
+                  Object.entries(station_data).map((station) => {
+                    const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
+                    return StationMarker(station, allDatasetDescriptions, storm_timestamp, setSelectedStation)
+                  })
+                }
               </LayerGroup>
             </LayersControl.Overlay>
             <LayersControl.Overlay checked name="Error Cone">

@@ -102,7 +102,7 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
         }
         
 
-        if (filters !== "") {
+        if (Object.keys(filters).length > 0) {
             
             const filter_string = Object.entries(filters)
             .map(([key, value]) => {
