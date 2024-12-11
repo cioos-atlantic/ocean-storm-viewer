@@ -137,16 +137,6 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                 }
               </LayerGroup>
             </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Stations">
-              <LayerGroup>
-                {
-                  Object.entries(station_data).map((element) => {
-                    const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                    return StationMarker(element, allDatasetDescriptions, storm_timestamp, setSelectedStation, selectedStationVar, {setSelectedStationVar})
-                  })
-                }
-              </LayerGroup>
-            </LayersControl.Overlay>
             <LayersControl.Overlay checked name="Track Line">
               <LayerGroup>
                 {
