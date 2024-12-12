@@ -16,7 +16,17 @@ const windSpeedBins = [
     { min: 64, max: undefined, label: ">= 65 m/s" },
   
   ];
-const colorPalette= ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#FF6384','#36A2EB','#FFCE56'];
+const colorPalette= [
+    '#5E4FA2', // Deep Purple
+  '#3288BD', // Blue
+  '#66C2A5', // Teal
+  '#ABDDA4', // Light Green
+  '#E6F598', // Yellow-Green
+  '#FEE08B', // Yellow
+  '#FDAE61', // Orange
+  '#F46D43', // Red-Orange
+  '#D53E4F', // Deep Red
+];
 
 const cardinalPoints = [
     'N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW',
