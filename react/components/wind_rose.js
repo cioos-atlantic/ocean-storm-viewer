@@ -230,51 +230,58 @@ function generateChart(data){
 }
 
 function renderAntVChart(chartData, chartKey){
-    // Create and render chart dynamically
-    const containerId = `chart-${chartKey}`;
-    let chartContainer = document.getElementById(containerId);
+    const parentContainer = document.getElementById('charts-container');
 
-    // Create a new container for this chart if it doesn't exist
-    if (!chartContainer) {
-    chartContainer = document.createElement('div');
-    chartContainer.id = containerId;
-    chartContainer.style.marginBottom = '20px';
-    document.getElementById('charts-container').appendChild(chartContainer);
-    }
+    if (parentContainer) {
+      // Create a new container for this chart if it doesn't exist
+      const containerId = `chart-${chartKey}`;
+      let chartContainer = document.getElementById(containerId);
+  
+      if (!chartContainer) {
+        chartContainer = document.createElement('div');
+        chartContainer.id = containerId;
+        chartContainer.style.marginBottom = '20px';
+        parentContainer.appendChild(chartContainer);
+      }
 
     const chart = new Chart({ container: containerId });
-
     chart.options({
-    type: "interval",
-    autoFit: true,
-    height: 720,
-    padding: 50,
-    data: chartData,
-    encode: { x: "direction", y: "value", color: "windSpeedBin", size: 18 },
-    transform: [{ type: "stackY" }],
-    scale: {
-        color: {
-        range: colorPalette,
+        type: "interval",
+        autoFit: true,
+        height: 400,
+        padding: 10,
+        data: chartData,
+        encode: { x: "direction", y: "value", color: "windSpeedBin", size: 18 },
+        transform: [{ type: "stackY" }],
+        scale: {
+            color: {
+            range: colorPalette,
+            },
         },
-    },
-    coordinate: { type: "polar" },
-    axis: {
-        x: { line: true, grid: true, gridLineDash: [0, 0], gridLineWidth: 1 },
-        y: { title: false, line: true, gridLineWidth: 1 },
-    },
-    tooltip: {
-        title: (d) => d.direction,
-        items: [
-        (d, i, data, column) => ({
-            name: d.windSpeedBin,
-            value: d.value,
-            channel: "y",
-        }),
-        ],
-    },
-    interaction: { tooltip: { shared: true } },
-    });
-
+        coordinate: { type: "polar" },
+        axis: {
+            x: { line: true, grid: true, gridLineDash: [0, 0], gridLineWidth: 1 },
+            y: { title: false, line: true, gridLineWidth: 1 },
+        },
+        tooltip: {
+            title: (d) => d.direction,
+            items: [
+            (d, i, data, column) => ({
+                name: d.windSpeedBin,
+                value: d.value,
+                channel: "y",
+            }),
+            ],
+        },
+        interaction: { tooltip: { shared: true } },
+        });
     chart.render();
+    } else {
+        console.error("Parent container for charts not found.");
+    }
+    
+
+
+
 
 }
