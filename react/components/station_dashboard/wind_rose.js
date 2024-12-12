@@ -76,9 +76,7 @@ function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
     const windChartData = calculateWindSpeedDistribution(stationDirData, windSpeed, totalDataPoints);
     chartOption.push({
       type: "interval",
-      title:{
-        title: key,
-      },
+      title:key,
       autoFit: true,
       height: 300,
       padding: 40,
