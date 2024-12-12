@@ -4,7 +4,7 @@ import { empty_station_obj } from "../layout"
 export default function StationDashboard({children, selected_station, setSelectedStation}) {
     return (
         <div key="01-station-dashboard" class="station_dashboard">
-            <div class="dash-header">
+            <div className="dash-header">
                 <button
                     class="close"
                     onClick={(e) => {

@@ -1,13 +1,35 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { get_station_field_data, get_station_field_units } from './utils/station_data_format_util';
 import { Mix } from '@ant-design/charts';
+import { Chart } from "@antv/g2";
+
+
+const windSpeedBins = [
+    { min: 0, max: 8, label: "=< 8" },
+    { min: 8, max: 16, label: "9-16" },
+    { min: 16, max: 24, label: "17-24" },
+    { min: 24, max: 32, label: "25-32" },
+    { min: 32, max: 40, label: "33-40" },
+    { min: 40, max: 48, label: "41-48" },
+    { min: 48, max: 56, label: "49-56" },
+    { min: 56, max: 64, label: "57-64" },
+    { min: 64, max: undefined, label: ">= 65" },
+  
+  ];
+const colorPalette= ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#FF6384','#36A2EB','#FFCE56'];
+
+const cardinalPoints = [
+    'N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW',
+  ];
 
 export function RenderWindRose ( { sourceData, position, stationName }){
+    const [chartData, setChartData] = useState(null);
+
     useEffect(() => { 
-        const station_dirData = get_station_field_data(sourceData, 'wind_from_direction', "column_std_names");
-        console.log(station_dirData)
-        if (!station_dirData || station_dirData.every(item => item === undefined)) {
-            console.log("station_dirData returned an array of undefined values");
+        const stationDirData = get_station_field_data(sourceData, 'wind_from_direction', "column_std_names");
+        console.log(stationDirData)
+        if (!stationDirData || stationDirData.every(item => item === undefined)) {
+            console.log("stationDirData returned an array of undefined values");
             return; // Exit early
         }
 
@@ -15,38 +37,22 @@ export function RenderWindRose ( { sourceData, position, stationName }){
         console.log(windSpeeds)
         const unit = get_station_field_units(sourceData,"wind_speed", "column_std_names");
         const station_timeData = get_station_field_data(sourceData, "time", "column_std_names");
-        const time_data_point= station_timeData.length;
-          console.log(time_data_point);
+        const totalDataPoints= station_timeData.length;
+          console.log(totalDataPoints);
     
-          Object.keys(windSpeeds).map((windSpeedKey, index)=> {
-            const windSpeed = windSpeeds[windSpeedKey];
-            console.log(windSpeed)
-            const windData = calculateWindSpeedDistribution(station_dirData, windSpeed, time_data_point);
-            console.log(windData)
-          
-            return generateChart(windData) 
-          }
-          )
-        
-
+        Object.entries(windSpeeds).forEach(([key, windSpeed]) => {
+            const windChartData = calculateWindSpeedDistribution(stationDirData, windSpeed, totalDataPoints);
+            renderAntVChart(windChartData, key); // Pass chart data and unique key
+            });
+    
           
       }, [sourceData]);
+      // Add a container div for all charts
+    return <div id="charts-container" />;
 }
 
 
-const windSpeedBins = [
-  { min: 0, max: 8, label: "=< 8" },
-  { min: 8, max: 16, label: "9-16" },
-  { min: 16, max: 24, label: "17-24" },
-  { min: 24, max: 32, label: "25-32" },
-  { min: 32, max: 40, label: "33-40" },
-  { min: 40, max: 48, label: "41-48" },
-  { min: 48, max: 56, label: "49-56" },
-  { min: 56, max: 64, label: "57-64" },
-  { min: 64, max: undefined, label: ">= 65" },
 
-];
-const colorPalette= ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#FF6384','#36A2EB','#FFCE56'];
 
 function categorizeWindDirection(direction) {
   const cardinalPoints = [
@@ -66,9 +72,7 @@ function categorizeWindSpeed(speed) {
   return "Unknown"; // For speeds that don't match any bin
 }
 
-const cardinalPoints = [
-  'N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW',
-];
+
 
 function makeEmptyfreqObj(windSpeedBins, cardinalPoints){
   const freqObj =  {};
@@ -181,14 +185,14 @@ function parseWindData(freqFrac, windSpdLabel){
         points.forEach((value, index)=> {
             data.push(
                 {
-                  cardinalPoint: key,
+                  direction: key,
                     value: value,
                     windSpeedBin: windSpdLabel[index]
                 }
             )
         })
     });
-
+    console.log(data)
     return data;
 
 }
@@ -202,7 +206,7 @@ function generateChart(data){
             region: { start: { x: 0, y: 0 }, end: { x: 1, y: 1 } },
             coordinate: { type: 'polar' },
             meta: {
-              cardinalPoint: { alias: 'Cardinal-Point' },
+              direction: { alias: 'Direction' },
               value: { alias: 'Value' },
             },
             tooltip: {
@@ -212,7 +216,7 @@ function generateChart(data){
             geometries: [
               {
                 type: 'interval',
-                xField: 'cardinalPoint',
+                xField: 'direction',
                 yField: 'value',
                 colorField: 'windSpeedBin',
                 adjust: [{ type: 'stack' }],
@@ -225,3 +229,52 @@ function generateChart(data){
     return <Mix {...config} />;
 }
 
+function renderAntVChart(chartData, chartKey){
+    // Create and render chart dynamically
+    const containerId = `chart-${chartKey}`;
+    let chartContainer = document.getElementById(containerId);
+
+    // Create a new container for this chart if it doesn't exist
+    if (!chartContainer) {
+    chartContainer = document.createElement('div');
+    chartContainer.id = containerId;
+    chartContainer.style.marginBottom = '20px';
+    document.getElementById('charts-container').appendChild(chartContainer);
+    }
+
+    const chart = new Chart({ container: containerId });
+
+    chart.options({
+    type: "interval",
+    autoFit: true,
+    height: 720,
+    padding: 50,
+    data: chartData,
+    encode: { x: "direction", y: "value", color: "windSpeedBin", size: 18 },
+    transform: [{ type: "stackY" }],
+    scale: {
+        color: {
+        range: colorPalette,
+        },
+    },
+    coordinate: { type: "polar" },
+    axis: {
+        x: { line: true, grid: true, gridLineDash: [0, 0], gridLineWidth: 1 },
+        y: { title: false, line: true, gridLineWidth: 1 },
+    },
+    tooltip: {
+        title: (d) => d.direction,
+        items: [
+        (d, i, data, column) => ({
+            name: d.windSpeedBin,
+            value: d.value,
+            channel: "y",
+        }),
+        ],
+    },
+    interaction: { tooltip: { shared: true } },
+    });
+
+    chart.render();
+
+}
