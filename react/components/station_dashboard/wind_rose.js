@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { get_station_field_data, get_station_field_units } from './utils/station_data_format_util';
+import { get_station_field_data, get_station_field_units } from '../utils/station_data_format_util';
 import { Mix } from '@ant-design/charts';
 import { Chart } from "@antv/g2";
 
@@ -32,8 +32,10 @@ const cardinalPoints = [
     'N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW',
   ];
 
-export function RenderWindRose ( { sourceData, position, stationName }){
-    const [chartData, setChartData] = useState(null);
+export function RenderWindRose ( { sourceData }){
+
+    //const [chartData, setChartData] = useState(null);
+    console.log(sourceData)
 
     useEffect(() => { 
         const stationDirData = get_station_field_data(sourceData, 'wind_from_direction', "column_std_names");
@@ -100,7 +102,7 @@ function makeFreqFraction(freqObj, totalDataPoints){
   const freqFrac= structuredClone(freqObj);
 
   Object.values(freqFrac).forEach((point) =>{
-    console.log(point)
+    //console.log(point)
 
 
     point.forEach((value, index) => {
@@ -110,7 +112,7 @@ function makeFreqFraction(freqObj, totalDataPoints){
     });
   });
 
-  console.log(freqFrac);
+  //console.log(freqFrac);
   return freqFrac
 }
 
@@ -202,7 +204,7 @@ function parseWindData(freqFrac, windSpdLabel){
             )
         })
     });
-    console.log(data)
+    //console.log(data)
     return data;
 
 }

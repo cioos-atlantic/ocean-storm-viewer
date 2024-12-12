@@ -1,6 +1,6 @@
 import { formatCioosStations } from "../station_formats";
 import RenderChart from '../station_graph.js'
-import { RenderWindRose } from "../wind_rose";
+import { RenderWindRose } from "../station_dashboard/wind_rose";
 
 //Station data should be formatted from station_data_format util
 //Takes input from the station_data list field, not the whole station data itself
@@ -75,8 +75,6 @@ export function RecentStationData(data, time) {
               />
               <RenderWindRose  
               sourceData={station_data}
-              position={row_position}
-              stationName={data?.properties?.station}
               />
         </div>
         {children}
