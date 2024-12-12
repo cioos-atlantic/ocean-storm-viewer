@@ -5,15 +5,15 @@ import { Chart } from "@antv/g2";
 
 
 const windSpeedBins = [
-    { min: 0, max: 8, label: "=< 8" },
-    { min: 8, max: 16, label: "9-16" },
-    { min: 16, max: 24, label: "17-24" },
-    { min: 24, max: 32, label: "25-32" },
-    { min: 32, max: 40, label: "33-40" },
-    { min: 40, max: 48, label: "41-48" },
-    { min: 48, max: 56, label: "49-56" },
-    { min: 56, max: 64, label: "57-64" },
-    { min: 64, max: undefined, label: ">= 65" },
+    { min: 0, max: 8, label: "=< 8 m/s" },
+    { min: 8, max: 16, label: "9-16 m/s" },
+    { min: 16, max: 24, label: "17-24 m/s" },
+    { min: 24, max: 32, label: "25-32 m/s" },
+    { min: 32, max: 40, label: "33-40 m/s" },
+    { min: 40, max: 48, label: "41-48 m/s" },
+    { min: 48, max: 56, label: "49-56 m/s" },
+    { min: 56, max: 64, label: "57-64 m/s" },
+    { min: 64, max: undefined, label: ">= 65 m/s" },
   
   ];
 const colorPalette= ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#FF6384','#36A2EB','#FFCE56'];
