@@ -1,0 +1,115 @@
+export function categorizeWindDirection(direction) {
+  const cardinalPoints = [
+    'N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW',
+  ];
+  const sectors = 360 / cardinalPoints.length;
+  const index = Math.round(direction / sectors) % cardinalPoints.length;
+  return cardinalPoints[index];
+}
+
+export function categorizeWindSpeed(speed) {
+  for (const bin of windSpeedBins) {
+    if (speed >= bin.min && (bin.max === undefined || speed < bin.max)) {
+      return bin.label; // Return the label instead of the index
+    }
+  }
+  return "Unknown"; // For speeds that don't match any bin
+}
+
+
+
+export function makeEmptyfreqObj(windSpeedBins, cardinalPoints){
+  const freqObj =  {};
+  cardinalPoints.forEach((point)=>{
+    freqObj[point] = new Array(windSpeedBins.length).fill(0);});
+  
+  console.log(freqObj);
+
+  return freqObj
+  
+}
+
+export function makeFreqFraction(freqObj, totalDataPoints){
+  console.log(totalDataPoints)
+  const freqFrac= structuredClone(freqObj);
+
+  Object.values(freqFrac).forEach((point) =>{
+    //console.log(point)
+
+
+    point.forEach((value, index) => {
+      
+      point[index] = (value / totalDataPoints) * 100
+
+    });
+  });
+
+  //console.log(freqFrac);
+  return freqFrac
+};
+
+export function extractWindSpeedBins(){
+  const windSpdLabel= []
+    
+    windSpeedBins.forEach((obj) =>
+      {windSpdLabel.push(obj.label)})
+
+    return windSpdLabel
+};
+
+export function makeGroupedList(directions, speeds){
+    const groupedList = [];
+    directions.forEach((direction, index) => {
+    
+        const cardinal = categorizeWindDirection(direction);
+        //console.log(cardinal)
+        const speedBin = categorizeWindSpeed(speeds[index]);
+    
+        groupedList.push({
+          windSpeed : speeds[index],
+          speedBin : speedBin,
+          direction : direction,
+          cardinal : cardinal,
+        });
+      });
+
+    return groupedList
+
+}
+
+export function processWindSpeeds(sourceData){
+    const include_var = [ "wind_speed"]
+    // Initialize the result object
+    const windSpeed = {};
+  
+    sourceData.column_std_names
+    .filter((variable) => include_var.includes(variable))
+    .forEach((variable, index) => {
+      const values = get_station_field_data(sourceData, variable, "column_std_names");
+  
+       // Store each instance of wind_speed with a unique name like "wind_speed_1", "wind_speed_2", etc.
+       windSpeed[`${variable}_${index + 1}`] = values;
+  
+    });
+  
+    return windSpeed;
+  }
+  
+export function parseWindData(freqFrac, windSpdLabel){
+    const data = [];
+    Object.entries(freqFrac).forEach(([key, points]) => {
+
+        points.forEach((value, index)=> {
+            data.push(
+                {
+                direction: key,
+                    value: value,
+                    windSpeedBin: windSpdLabel[index]
+                }
+            )
+        })
+    });
+    //console.log(data)
+    return data;
+
+}

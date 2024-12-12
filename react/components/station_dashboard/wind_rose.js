@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { get_station_field_data, get_station_field_units } from '../utils/station_data_format_util';
 import { Mix } from '@ant-design/charts';
-import { Chart } from "@antv/g2";
+import { Chart, G2 } from "@antv/g2";
+import 
+
 
 
 const windSpeedBins = [
@@ -33,7 +35,7 @@ const cardinalPoints = [
   ];
 
 export function RenderWindRose ( { sourceData }){
-    const charts = useMemo(() => {
+     useEffect(() => {
 
     //const [chartData, setChartData] = useState(null);
     console.log(sourceData)
@@ -50,98 +52,23 @@ export function RenderWindRose ( { sourceData }){
         const station_timeData = get_station_field_data(sourceData, "time", "column_std_names");
         const totalDataPoints= station_timeData.length;
           console.log(totalDataPoints);
-          generateChartOption(windSpeeds, stationDirData, totalDataPoints)
+          //generateChartOption(windSpeeds, stationDirData, totalDataPoints)
     
-          return Object.entries(windSpeeds).map(([key, windSpeed]) => {
-            const windChartData = calculateWindSpeedDistribution(stationDirData, windSpeed, totalDataPoints);
-            return <ChartComponent key={key} data={windChartData} chartKey={key} />;
-          });    
+          //return Object.entries(windSpeeds).map(([key, windSpeed]) => {
+          //  const windChartData = calculateWindSpeedDistribution(stationDirData, windSpeed, totalDataPoints);
+          //  return <ChartComponent key={key} data={windChartData} chartKey={key} />;
+          //});  
+        const chartOptions = generateChartOption(windSpeeds, stationDirData, totalDataPoints);
+        //return renderChart(chartOptions)  
+        return <div id="charts-container" style={{ display: 'flex', flexWrap: 'wrap' }}>{renderChart(chartOptions)}</div>;
           
       }, [sourceData]);
       // Add a container div for all charts
-    return <div id="charts-container" style={{ display: 'flex', flexWrap: 'wrap' }}>{charts}</div>;
-}
-
-
-
-
-function categorizeWindDirection(direction) {
-  const cardinalPoints = [
-    'N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW',
-  ];
-  const sectors = 360 / cardinalPoints.length;
-  const index = Math.round(direction / sectors) % cardinalPoints.length;
-  return cardinalPoints[index];
-}
-
-function categorizeWindSpeed(speed) {
-  for (const bin of windSpeedBins) {
-    if (speed >= bin.min && (bin.max === undefined || speed < bin.max)) {
-      return bin.label; // Return the label instead of the index
-    }
-  }
-  return "Unknown"; // For speeds that don't match any bin
-}
-
-
-
-function makeEmptyfreqObj(windSpeedBins, cardinalPoints){
-  const freqObj =  {};
-  cardinalPoints.forEach((point)=>{
-    freqObj[point] = new Array(windSpeedBins.length).fill(0);});
-  
-  console.log(freqObj);
-
-  return freqObj
-  
-}
-
-function makeFreqFraction(freqObj, totalDataPoints){
-  console.log(totalDataPoints)
-  const freqFrac= structuredClone(freqObj);
-
-  Object.values(freqFrac).forEach((point) =>{
-    //console.log(point)
-
-
-    point.forEach((value, index) => {
-      
-      point[index] = (value / totalDataPoints) * 100
-
-    });
-  });
-
-  //console.log(freqFrac);
-  return freqFrac
-}
-
-function extractWindSpeedBins(){
-  const windSpdLabel= []
     
-    windSpeedBins.forEach((obj) =>
-      {windSpdLabel.push(obj.label)})
-
-    return windSpdLabel
 }
-function makeGroupedList(directions, speeds){
-    const groupedList = [];
-    directions.forEach((direction, index) => {
-    
-        const cardinal = categorizeWindDirection(direction);
-        //console.log(cardinal)
-        const speedBin = categorizeWindSpeed(speeds[index]);
-    
-        groupedList.push({
-          windSpeed : speeds[index],
-          speedBin : speedBin,
-          direction : direction,
-          cardinal : cardinal,
-        });
-      });
 
-    return groupedList
 
-}
+
 
 
 // Calculate wind speed distribution per direction
@@ -299,4 +226,21 @@ function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
     
   });
   console.log(chartOption);
+  return chartOption
 }
+
+function renderChart(chartOptions){
+  //const chartContainerRef = useRef(null);
+  //const chartOptions = generateChartOption(windSpeeds, stationDirData, totalDataPoints);
+  const chart = new Chart();
+  chart.options({
+    type: 'spaceFlex',
+    width: 800,
+    height: 400,
+    children:chartOptions
+  });
+  chart.render();
+
+  return chart.getContainer();
+
+};
