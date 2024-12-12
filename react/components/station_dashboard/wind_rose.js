@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { get_station_field_data, get_station_field_units } from '../utils/station_data_format_util';
 import { Mix } from '@ant-design/charts';
 import { Chart } from "@antv/g2";
@@ -33,11 +33,10 @@ const cardinalPoints = [
   ];
 
 export function RenderWindRose ( { sourceData }){
+    const charts = useMemo(() => {
 
     //const [chartData, setChartData] = useState(null);
     console.log(sourceData)
-
-    useEffect(() => { 
         const stationDirData = get_station_field_data(sourceData, 'wind_from_direction', "column_std_names");
         console.log(stationDirData)
         if (!stationDirData || stationDirData.every(item => item === undefined)) {
@@ -52,15 +51,14 @@ export function RenderWindRose ( { sourceData }){
         const totalDataPoints= station_timeData.length;
           console.log(totalDataPoints);
     
-        Object.entries(windSpeeds).forEach(([key, windSpeed]) => {
+          return Object.entries(windSpeeds).map(([key, windSpeed]) => {
             const windChartData = calculateWindSpeedDistribution(stationDirData, windSpeed, totalDataPoints);
-            renderAntVChart(windChartData, key); // Pass chart data and unique key
-            });
-    
+            return <ChartComponent key={key} data={windChartData} chartKey={key} />;
+          });    
           
       }, [sourceData]);
       // Add a container div for all charts
-    return <div id="charts-container" />;
+    return <div id="charts-container" style={{ display: 'flex', flexWrap: 'wrap' }}>{charts}</div>;
 }
 
 
@@ -210,90 +208,93 @@ function parseWindData(freqFrac, windSpdLabel){
 }
 
 
-function generateChart(data){
-    const config = {
-        views: [
-          {
-            data,
-            region: { start: { x: 0, y: 0 }, end: { x: 1, y: 1 } },
-            coordinate: { type: 'polar' },
-            meta: {
-              direction: { alias: 'Direction' },
-              value: { alias: 'Value' },
-            },
-            tooltip: {
-              showMarkers: false,
-              shared: true,
-            },
-            geometries: [
-              {
-                type: 'interval',
-                xField: 'direction',
-                yField: 'value',
-                colorField: 'windSpeedBin',
-                adjust: [{ type: 'stack' }],
-              },
-            ],
-          },
-        ],
-      };
 
-    return <Mix {...config} />;
+function ChartComponent({ data, chartKey }) {
+  const chartContainerRef = useRef(null);
+
+  useEffect(() => {
+    const chart = new Chart({
+      container: chartContainerRef.current});
+    chart.options({
+      type: "interval",
+      title:{
+        title: chartKey,
+      },
+      autoFit: true,
+      height: 300,
+      padding: 40,
+      data: data,
+      encode: { x: "direction", y: "value", color: "windSpeedBin", size: 18 },
+      transform: [{ type: "stackY" }],
+      scale: {
+          color: {
+          range: colorPalette,
+          },
+      },
+      coordinate: { type: "polar" },
+      axis: {
+          x: { line: true, grid: true, gridLineDash: [0, 0], gridLineWidth: 1 },
+          y: { title: false, line: true, gridLineWidth: 1 },
+      },
+      tooltip: {
+          title: (d) => d.direction,
+          items: [
+          (d, i, data, column) => ({
+              name: d.windSpeedBin,
+              value: d.value,
+              channel: "y",
+          }),
+          ],
+      },
+      interaction: { tooltip: { shared: true } },
+      });
+    chart.render();
+
+    return () => chart.destroy(); // Cleanup on unmount
+  }, [data]);
+
+  return <div id={`chart-${chartKey}`} ref={chartContainerRef} className="chart-container" />;
 }
 
-function renderAntVChart(chartData, chartKey){
-    const parentContainer = document.getElementById('charts-container');
 
-    if (parentContainer) {
-      // Create a new container for this chart if it doesn't exist
-      const containerId = `chart-${chartKey}`;
-      let chartContainer = document.getElementById(containerId);
-  
-      if (!chartContainer) {
-        chartContainer = document.createElement('div');
-        chartContainer.id = containerId;
-        chartContainer.style.marginBottom = '20px';
-        parentContainer.appendChild(chartContainer);
-      }
 
-    const chart = new Chart({ container: containerId });
-    chart.options({
-        type: "interval",
-        autoFit: true,
-        height: 400,
-        padding: 10,
-        data: chartData,
-        encode: { x: "direction", y: "value", color: "windSpeedBin", size: 18 },
-        transform: [{ type: "stackY" }],
-        scale: {
-            color: {
-            range: colorPalette,
-            },
-        },
-        coordinate: { type: "polar" },
-        axis: {
-            x: { line: true, grid: true, gridLineDash: [0, 0], gridLineWidth: 1 },
-            y: { title: false, line: true, gridLineWidth: 1 },
-        },
-        tooltip: {
-            title: (d) => d.direction,
-            items: [
-            (d, i, data, column) => ({
-                name: d.windSpeedBin,
-                value: d.value,
-                channel: "y",
-            }),
-            ],
-        },
-        interaction: { tooltip: { shared: true } },
-        });
-    chart.render();
-    } else {
-        console.error("Parent container for charts not found.");
-    }
+function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
+  const chartOption = [];
+  Object.entries(windSpeeds).map(([key, windSpeed]) => {
+    const windChartData = calculateWindSpeedDistribution(stationDirData, windSpeed, totalDataPoints);
+    chartOption.push({
+      type: "interval",
+      title:{
+        title: key,
+      },
+      autoFit: true,
+      height: 300,
+      padding: 40,
+      data: windChartData,
+      encode: { x: "direction", y: "value", color: "windSpeedBin", size: 18 },
+      transform: [{ type: "stackY" }],
+      scale: {
+          color: {
+          range: colorPalette,
+          },
+      },
+      coordinate: { type: "polar" },
+      axis: {
+          x: { line: true, grid: true, gridLineDash: [0, 0], gridLineWidth: 1 },
+          y: { title: false, line: true, gridLineWidth: 1 },
+      },
+      tooltip: {
+          title: (d) => d.direction,
+          items: [
+          (d, i, data, column) => ({
+              name: d.windSpeedBin,
+              value: d.value,
+              channel: "y",
+          }),
+          ],
+      },
+      interaction: { tooltip: { shared: true } },
+      })
     
-
-
-
-
+  });
 }

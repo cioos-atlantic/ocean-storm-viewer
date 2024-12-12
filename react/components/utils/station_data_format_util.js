@@ -73,9 +73,6 @@ export function RecentStationData(data, time) {
               position={row_position}
               stationName={data?.properties?.station}
               />
-              <RenderWindRose  
-              sourceData={station_data}
-              />
         </div>
         {children}
       </div>
