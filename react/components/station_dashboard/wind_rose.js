@@ -50,6 +50,7 @@ export function RenderWindRose ( { sourceData }){
         const station_timeData = get_station_field_data(sourceData, "time", "column_std_names");
         const totalDataPoints= station_timeData.length;
           console.log(totalDataPoints);
+          generateChartOption(windSpeeds, stationDirData, totalDataPoints)
     
           return Object.entries(windSpeeds).map(([key, windSpeed]) => {
             const windChartData = calculateWindSpeedDistribution(stationDirData, windSpeed, totalDataPoints);
@@ -297,4 +298,5 @@ function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
       })
     
   });
+  console.log(chartOption);
 }
