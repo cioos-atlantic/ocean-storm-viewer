@@ -18,7 +18,7 @@ import styles from './station_marker.module.css'
  * @param {Date} time Time of the station data to retrieve. Defaults to most recent data if not provided
  * @returns StationMarker JavaScript snippet
  */
-export default function StationMarker(station_data, station_descriptions, time = new Date(), setSelectedStation, selectedStationVar, {setSelectedStationVar}) {
+export default function StationMarker(station_data, station_descriptions, time = new Date(), setSelectedStation, selectedStationVar, {setSelectedStationVar}, setHasWindRoseData) {
     if(isNaN(time))
       time= new Date()
 
@@ -68,6 +68,7 @@ export default function StationMarker(station_data, station_descriptions, time =
           click: (e) => {
             console.log(e, "SETTING SELECTED STATION", station_data);
             setSelectedStation(station_data);
+            setHasWindRoseData(true);
           },
         }}
       >

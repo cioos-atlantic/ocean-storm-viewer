@@ -34,9 +34,9 @@ function a11yProps(index) {
   };
 }
 
-export default function BasicTabs({stationData}) {
+export default function BasicTabs({stationData, setHasWindRoseData, hasWindRoseData }) {
   const [value, setValue] = React.useState(0);
-  const [hasData, setHasData] = React.useState(true); // State to track if data is available
+  //const [hasData, setHasData] = React.useState(true); // State to track if data is available
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -47,7 +47,7 @@ export default function BasicTabs({stationData}) {
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="WindRose" {...a11yProps(0)} disabled={!hasData} />
+          <Tab label="WindRose" {...a11yProps(0)} disabled={!hasWindRoseData} />
           <Tab label="Item Two" {...a11yProps(1)} />
           <Tab label="Item Three" {...a11yProps(2)} />
         </Tabs>
@@ -55,8 +55,8 @@ export default function BasicTabs({stationData}) {
       <CustomTabPanel value={value} index={0}>
       <RenderWindRose  
                 sourceData={stationData}
-                setHasData= {setHasData}
-                hasData= {hasData}
+                setHasWindRoseData={setHasWindRoseData}
+            hasWindRoseData={hasWindRoseData}
                 /> 
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>

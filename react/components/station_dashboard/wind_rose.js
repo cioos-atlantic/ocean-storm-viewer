@@ -4,7 +4,7 @@ import { Chart } from "@antv/g2";
 import { categorizeWindDirection, categorizeWindSpeed, makeEmptyfreqObj, makeFreqFraction, makeGroupedList, extractWindSpeedBins, processWindSpeeds, parseWindData, windSpeedBins, cardinalPoints, colorPalette } from './wind_rose_utils';
 
 
-export function RenderWindRose ( { sourceData, setHasData, hasData }){
+export function RenderWindRose ( { sourceData, setHasWindRoseData, hasWindRoseData }){
   
   const chartContainerRef = useRef(null);
   useEffect(() => {
@@ -18,11 +18,11 @@ export function RenderWindRose ( { sourceData, setHasData, hasData }){
     console.log(stationDirData)
     if (!stationDirData || stationDirData.every(item => item === undefined)) {
         console.log("stationDirData returned an array of undefined values");
-        setHasData(false)
+        setHasWindRoseData(false)
         return; // Exit early
     }
 
-    setHasData(true)
+    setHasWindRoseData(true)
     const windSpeeds = processWindSpeeds(sourceData);
     console.log(windSpeeds)
     const unit = get_station_field_units(sourceData,"wind_speed", "column_std_names");
@@ -45,12 +45,12 @@ export function RenderWindRose ( { sourceData, setHasData, hasData }){
     };
     
       
-  }, [sourceData, setHasData]);
+  }, [sourceData, setHasWindRoseData]);
   // Add a container div for all charts
 
   return (
     <div>
-      {!hasData ? (
+      {!hasWindRoseData ? (
         <div>No data available</div>
       ) : (
         <div id="container" ref={chartContainerRef} />
