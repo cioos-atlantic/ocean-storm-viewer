@@ -4,7 +4,7 @@ import { getDisplayName } from "../utils/station_data_format_util";
 import { RenderWindRose } from "./wind_rose";
 import BasicTabs from "./tabs";
 
-export default function StationDashboard({children, selected_station, setSelectedStation, stationsDescriptions}) {
+export default function StationDashboard({children, selected_station, setSelectedStation, stationsDescriptions, setHasWindRoseData, hasWindRoseData}) {
     console.log(selected_station);
     console.log(stationsDescriptions);
     const station_name = selected_station[0];
@@ -26,6 +26,8 @@ export default function StationDashboard({children, selected_station, setSelecte
                 <p>
                 <BasicTabs  
                 stationData={stationData}
+                setHasWindRoseData={setHasWindRoseData}
+            hasWindRoseData={hasWindRoseData}
                 /> 
                 </p>
             </div>
