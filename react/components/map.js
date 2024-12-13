@@ -60,7 +60,11 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           <StationDashboard
             selected_station={selected_station}
             setSelectedStation={setSelectedStation}
-          >THE KIDS!</StationDashboard>
+            station_descriptions={allDatasetDescriptions}
+            storm_timestamp = {new Date()}
+            selectedStationVar = {selectedStationVar}
+            setSelectedStationVar = {setSelectedStationVar}
+          ></StationDashboard>
         )}
         <MapContainer
           center={defaultPosition}

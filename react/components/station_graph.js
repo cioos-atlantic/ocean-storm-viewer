@@ -114,9 +114,9 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
         style={{
           top: 0,
           left: 0,
-          width: '500px',
-          height: '300px', // You can keep this if you want to maintain responsiveness
-          aspectRatio: '409 / 409', // Maintain a 1:1 aspect ratio if you want
+          maxWidth: '200px',
+          maxHeight: '200px', // You can keep this if you want to maintain responsiveness
+          aspectRatio: '100 / 100', // Maintain a 1:1 aspect ratio if you want
         }}
       />
     
