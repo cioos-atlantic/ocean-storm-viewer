@@ -40,7 +40,7 @@ export default function BasicTabs({stationData}) {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    setHasData(true);
+    
   };
 
   return (

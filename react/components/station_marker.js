@@ -19,6 +19,7 @@ const empty_data_text = {}
  * @returns StationMarker JavaScript snippet
  */
 export default function StationMarker(station_data, station_descriptions, time = new Date(), setSelectedStation) {
+
     if(isNaN(time))
       time= new Date()
     

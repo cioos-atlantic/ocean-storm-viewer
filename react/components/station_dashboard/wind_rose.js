@@ -45,13 +45,18 @@ export function RenderWindRose ( { sourceData, setHasData, hasData }){
     };
     
       
-  }, [sourceData]);
+  }, [sourceData, setHasData]);
   // Add a container div for all charts
 
-  if (!hasData) {
-    return <div>No data available</div>; // Fallback UI when no data is available
-  }
-  return <div id="container" ref={chartContainerRef} />;
+  return (
+    <div>
+      {!hasData ? (
+        <div>No data available</div>
+      ) : (
+        <div id="container" ref={chartContainerRef} />
+      )}
+    </div>
+  );
 }
 
 
