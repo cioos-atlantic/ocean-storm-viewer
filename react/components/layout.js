@@ -13,6 +13,8 @@ import { empty_storm_obj } from '../lib/storm_utils';
 import dynamic from "next/dynamic";
 
 import ErddapHandler from "../pages/api/query_stations";
+import { About } from "@/pages/about_page";
+
 
 
 
@@ -38,13 +40,14 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
 
   const active_storms = querystring.query.storms == "active";
   const historical_storms = querystring.query.storms == "historical";
+  const about_page = querystring.query.storms == "hurricanes";
 
   //const allDatasetDescriptions = useDatasetDescriptions();
   //console.log(allDatasetDescriptions);
   
 
   // useMemo() tells React to "memorize" the map component.
-  // Wthout this, the map will get redrawn by many interactions 
+  // Without this, the map will get redrawn by many interactions 
   // and cause flashing - this lets us update map layers without
   // the map constant flashing with each change and click.
   const MapWithNoSSR = useMemo(
@@ -93,6 +96,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
         )}
         <HeaderNav navItems={topNav}></HeaderNav>
       </header>
+      {about_page ? (<About/>):(<>
       <main className="body">
         <MapWithNoSSR
           storm_points={storm_points}
@@ -103,6 +107,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
           setStationPoints={setStationPoints}
         />
       </main>
+      </>)}
       <footer>
         <FooterNav></FooterNav>
       </footer>

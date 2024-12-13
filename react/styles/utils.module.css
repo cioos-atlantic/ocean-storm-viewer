@@ -1,0 +1,46 @@
+/* utils.module.css */
+.mainContent {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9; /* Light background for main content */
+  border-radius: 8px;
+}
+
+.aboutSection {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #fff; /* White background for section content */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for depth effect */
+}
+
+.headingXl {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #333; /* Dark text for headings */
+}
+
+.headingLg {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #555; /* Slightly lighter text for subheadings */
+}
+
+.lightText {
+  color: #666; /* Light grey for text */
+}
+
+.list {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure full viewport height */
+  padding-top: 75px;
+}
