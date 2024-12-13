@@ -12,8 +12,10 @@ const chartData ={
   rows:{}
 }
 
-function RenderChart({ sourceData, position, stationName }) {
+function RenderChart({ sourceData, position, stationName, varCategory }) {
   const chartRef = useRef(null); // Reference to the canvas element
+
+  const startAtZero = varCategory === 'air_pressure' ? false : true
 
   useEffect(() => {
     // Check if chartData is available
@@ -35,12 +37,12 @@ function RenderChart({ sourceData, position, stationName }) {
                                 //year: 'numeric'
       }));
 
-      const exclude_var = ['time', 'latitude', 'longitude', 'wind_from_direction', 'air_pressure', 'relative_humidity',
-        'air_temperature', 'sea_surface_temperature', 'sea_surface_wave_from_direction', 'sea_surface_maximum_wave_period'
+      // Move this to config later
+      const exclude_var = ['time', 'latitude', 'longitude', 'wind_from_direction', 'relative_humidity',
+         'sea_surface_wave_from_direction', 'sea_surface_wave_maximum_period', 'sea_surface_wave_mean_period'
       ]
       // Prepare datasets for each variable, excluding 'time'
-      const datasets = chartData.column_std_names.filter((variable) => !exclude_var.includes(variable)).map((variable, index) =>{
-         // Exclude 'time' from datasets
+      const datasets = chartData.column_std_names.filter((variable) => !exclude_var.includes(variable) && variable.includes(varCategory)).map((variable, index) =>{
           const unit = get_station_field_units(sourceData, variable, "column_std_names")
           const values = get_station_field_data(chartData, variable, "column_std_names")
 
@@ -70,7 +72,7 @@ function RenderChart({ sourceData, position, stationName }) {
               grid: {
                 display: true, // Show grid on the y-axis
               },
-              beginAtZero: true,
+              beginAtZero: startAtZero,
             },
           },
           responsive: true,
@@ -103,7 +105,7 @@ function RenderChart({ sourceData, position, stationName }) {
         chartRef.current.chart.destroy();
       }
     };
-  }, [sourceData, stationName]); // Re-run effect if chartData or stationName changes
+  }, [sourceData, varCategory, stationName]); // Re-run effect if chartData or stationName changes
 
   return (
     

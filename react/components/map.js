@@ -40,6 +40,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   // The state variable that contains the station that was last clicked on
   const [selected_station, setSelectedStation] = useState(empty_station_obj);
 
+  const [selectedStationVar, setSelectedStationVar] = useState("wind_speed")
   const allDatasetDescriptions = useDatasetDescriptions();
 
   console.log(allDatasetDescriptions)
@@ -101,7 +102,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                 {
                   Object.entries(station_data).map((station) => {
                     const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                    return StationMarker(station, allDatasetDescriptions, storm_timestamp, setSelectedStation)
+                    return StationMarker(station, allDatasetDescriptions, storm_timestamp, setSelectedStation, selectedStationVar, {setSelectedStationVar})
                   })
                 }
               </LayerGroup>

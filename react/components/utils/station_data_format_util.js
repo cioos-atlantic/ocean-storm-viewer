@@ -57,6 +57,8 @@ export function get_station_data_value(station_data, row_position, column_name, 
 // Returns the most recent row of data for a station
 // If provided a time (as JS timestamp), it will return the 
 // most recent row from the data before that time
+
+// state can select a standard variable?
 export function RecentStationData(data, time) {
     let station_data = data?.properties?.station_data;
 
@@ -67,13 +69,6 @@ export function RecentStationData(data, time) {
   
     let station_info = (
       <div className="station_pane">
-        <div className="station_chart">
-              <RenderChart  
-              sourceData={station_data}
-              position={row_position}
-              stationName={data?.properties?.station}
-              />
-        </div>
         {children}
       </div>
     );
