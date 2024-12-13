@@ -30,18 +30,32 @@ export function formatCioosStations(data_obj, children, row_position){
   children.push(<br></br>)
 
   const wind_from_direction = data_value('wind_from_direction')
+  wind_from_direction ? (180 + parseInt(wind_from_direction)) % 360 : null
   if(wind_from_direction){
     const wind_direction = (180 + parseInt(wind_from_direction)) % 360
-    children.push(<strong>Wind:  </strong>)
+    children.push(<strong>Wind Direction:  </strong>)
     children.push(<Image className="wind_arrow" alt={wind_direction} src="arrow.svg" height={20} width={20} 
       style={{ transform: 'rotate(' + (wind_direction) + 'deg)' }}></Image>)
   }
   
   const wind_speed = data_value('wind_speed')
   if(wind_speed){
-    wind_from_direction ? null : children.push(<strong>Wind:  </strong>)
+    wind_from_direction ? children.push(<br></br>) : null
+    children.push(<strong>Wind Speed:  </strong>)
+    /*wind_from_direction ? children.push(<Image className="wind_arrow" alt={wind_from_direction} src="arrow.svg" height={20} width={20} 
+      style={{ transform: 'rotate(' + (wind_from_direction) + 'deg)' }}></Image>) : null
+      */
     const resultKmh = windSpeedToKmh(wind_speed)
     const resultKnots = windSpeedToKnots(wind_speed)
+    children.push(<span>    {resultKnots.value} {resultKnots.unit} ({resultKmh.value} {resultKmh.unit})</span>)}
+  
+  const wind_speed_of_gust = data_value('wind_speed_of_gust')
+  if(wind_speed_of_gust){
+    children.push(<br></br>)
+    children.push(<strong>Gust Speed:  </strong>)
+    //wind_from_direction ? null : children.push(<strong>Wind Speed (gust):  </strong>)
+    const resultKmh = windSpeedToKmh(wind_speed_of_gust)
+    const resultKnots = windSpeedToKnots(wind_speed_of_gust)
     children.push(<span>    {resultKnots.value} {resultKnots.unit} ({resultKmh.value} {resultKmh.unit})</span>)}
   
   const air_temperature = data_value('air_temperature')

@@ -3,6 +3,7 @@ export function convert_unit_data (value, unit_from, unit_to=null){
   return (unit_from == 'm/s' && unit_to == 'knots') ? windSpeedToKnots(value)
   : (unit_from == 'm/s') ? windSpeedToKmh(value) //km/h default instead of m/s
   : (unit_from == 'm s-1') ? windSpeedToKmh(value) //km/h default instead of m/s
+  : (unit_from == 'km h-1') ? {'value':value, 'unit':'km/h'} //km/h default instead of m/s
   : (unit_from == '°C' && unit_to == '°F') ? tempToDegreeF(value)
   : (unit_from == 'm' && unit_to == 'ft') ? windHeightToFt(value)
   : (unit_from == 'hPa' && unit_to == 'kPa') ? pressureToKPa(value)

@@ -1,0 +1,23 @@
+.button {
+    line-height: 1em;
+    padding: 0px;
+    width:40px;
+    height:40px;
+}
+
+.button.stationVar {
+    line-height: 1em;
+    padding: 0px;
+    width:40px;
+    height:40px;
+}
+
+.button.divider{
+    width:50px;
+    display:inline-block;
+}
+
+.tab {
+    display: inline-block;
+    margin-left: 40px;
+}
