@@ -2,6 +2,7 @@ import { FaWindowClose } from "react-icons/fa";
 import { empty_station_obj } from "../layout"
 import { getDisplayName } from "../utils/station_data_format_util";
 import { RenderWindRose } from "./wind_rose";
+import BasicTabs from "./tabs";
 
 export default function StationDashboard({children, selected_station, setSelectedStation, stationsDescriptions}) {
     console.log(selected_station);
@@ -22,10 +23,9 @@ export default function StationDashboard({children, selected_station, setSelecte
                 <h3>{display_name}</h3>
             </div>
             <div class="dash-body">
-                <p>BEHOLD! A Station dashboard goes here!</p>
                 <p>
-                <RenderWindRose  
-                sourceData={stationData}
+                <BasicTabs  
+                stationData={stationData}
                 /> 
                 </p>
             </div>

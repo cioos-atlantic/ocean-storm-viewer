@@ -4,9 +4,13 @@ import { Chart } from "@antv/g2";
 import { categorizeWindDirection, categorizeWindSpeed, makeEmptyfreqObj, makeFreqFraction, makeGroupedList, extractWindSpeedBins, processWindSpeeds, parseWindData, windSpeedBins, cardinalPoints, colorPalette } from './wind_rose_utils';
 
 
-export function RenderWindRose ( { sourceData }){
+export function RenderWindRose ( { sourceData, setHasData, hasData }){
+  
   const chartContainerRef = useRef(null);
   useEffect(() => {
+    // Check if container ref exists
+    const container = chartContainerRef.current;
+    if (!container) return;
 
 //const [chartData, setChartData] = useState(null);
     console.log(sourceData)
@@ -14,9 +18,11 @@ export function RenderWindRose ( { sourceData }){
     console.log(stationDirData)
     if (!stationDirData || stationDirData.every(item => item === undefined)) {
         console.log("stationDirData returned an array of undefined values");
+        setHasData(false)
         return; // Exit early
     }
 
+    setHasData(true)
     const windSpeeds = processWindSpeeds(sourceData);
     console.log(windSpeeds)
     const unit = get_station_field_units(sourceData,"wind_speed", "column_std_names");
@@ -31,10 +37,20 @@ export function RenderWindRose ( { sourceData }){
       //});  
     const chartOptions = generateChartOption(windSpeeds, stationDirData, totalDataPoints);
     renderChart(chartOptions)  
+
+    return () => {
+      while (container.firstChild) {
+        container.firstChild.remove();
+      }
+    };
     
       
   }, [sourceData]);
   // Add a container div for all charts
+
+  if (!hasData) {
+    return <div>No data available</div>; // Fallback UI when no data is available
+  }
   return <div id="container" ref={chartContainerRef} />;
 }
 
