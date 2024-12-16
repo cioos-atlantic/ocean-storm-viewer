@@ -7,7 +7,7 @@ import styles from '../station_marker.module.css'
 import RenderChart from '../station_graph.js'
 import { BlockquoteLeft } from "react-bootstrap-icons";
 
-export default function StationDashboard({children, selected_station, setSelectedStation, station_descriptions, time, selectedStationVar, setSelectedStationVar}) {
+export default function StationDashboard({children, selected_station, setSelectedStation, station_descriptions, time, selectedTab, setSelectedTab}) {
   
     const stationData = selected_station
       
@@ -57,6 +57,7 @@ export default function StationDashboard({children, selected_station, setSelecte
                     class="close"
                     onClick={(e) => {
                         setSelectedStation(empty_station_obj)
+                        setSelectedTab(0)
                     }}
                 ><FaWindowClose/></button>
                 <h3>{display_name}</h3>
@@ -68,6 +69,8 @@ export default function StationDashboard({children, selected_station, setSelecte
                     stationData={station_values?.properties?.station_data}
                     stationSummaryText={data_text}
                     variablePresence={variablePresence}
+                    selectedTab={selectedTab}
+                    setSelectedTab={setSelectedTab}
                     /> 
                 </p>
             </div>

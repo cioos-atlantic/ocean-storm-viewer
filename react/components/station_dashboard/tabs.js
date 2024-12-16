@@ -37,7 +37,7 @@ function a11yProps(index) {
 
 
 
-export default function BasicTabs({stationName, stationData, stationSummaryText, variablePresence}) {
+export default function BasicTabs({stationName, stationData, stationSummaryText, variablePresence, selectedTab, setSelectedTab}) {
   function generateGraph(selectedVar){
     return (
      <div className="station_chart" 
@@ -60,14 +60,13 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
 
   const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + stationName + ".html"
   const handleChange = (event, newValue) => {
-    setValue(newValue);
-    
+    setSelectedTab(newValue);
   };
 
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+        <Tabs value={selectedTab} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Summary" {...a11yProps(0)} />
           <Tab label="Wind Speed" {...a11yProps(1)} disabled={!variablePresence['wind_speed']}/>
           <Tab label="Wind Dir." {...a11yProps(2)} disabled={!variablePresence['wind_from_direction']} />
@@ -76,28 +75,28 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
           <Tab label="Pressure" {...a11yProps(5)} disabled={!variablePresence['air_pressure']}/>
         </Tabs>
       </Box>
-      <CustomTabPanel value={value} index={0}>
+      <CustomTabPanel value={selectedTab} index={0}>
         {stationSummaryText}
         <div class="data-footer">
                 <a href={data_link} target="_blank">Full data</a>
         </div>
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
+      <CustomTabPanel value={selectedTab} index={1}>
         {generateGraph("wind_speed")}
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
+      <CustomTabPanel value={selectedTab} index={2}>
       <RenderWindRose  
                 sourceData={stationData}
                 hasWindRoseData={variablePresence['wind_from_direction']}
                 /> 
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
+      <CustomTabPanel value={selectedTab} index={3}>
         {generateGraph("temperature")}
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={4}>
+      <CustomTabPanel value={selectedTab} index={4}>
         {generateGraph("wave")}
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={5}>
+      <CustomTabPanel value={selectedTab} index={5}>
         {generateGraph("air_pressure")}
       </CustomTabPanel>
     </Box>
