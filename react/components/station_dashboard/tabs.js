@@ -35,24 +35,26 @@ function a11yProps(index) {
   };
 }
 
-function generateGraph(stationData, stationName, selectedVar){
- return (
-  <div className="station_chart" 
-  style={{
-  height: 'auto',
-  width: 'auto', // Adjust width based on content (chart)
-  padding: '0px', // Optional padding around chart
-  }}>
-  <RenderChart  
-      sourceData={stationData}
-      stationName={stationName}
-      varCategory={selectedVar}
-    />
-</div>
- )
-}
+
 
 export default function BasicTabs({stationName, stationData, stationSummaryText, variablePresence}) {
+  function generateGraph(selectedVar){
+    return (
+     <div className="station_chart" 
+     style={{
+     height: 'auto',
+     width: 'auto', // Adjust width based on content (chart)
+     padding: '0px', // Optional padding around chart
+     }}>
+     <RenderChart  
+         sourceData={stationData}
+         stationName={stationName}
+         varCategory={selectedVar}
+       />
+   </div>
+    )
+   }
+
   const [value, setValue] = React.useState(0);
   //const [hasData, setHasData] = React.useState(true); // State to track if data is available
 
@@ -81,7 +83,7 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
         </div>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        {generateGraph(stationData, stationName, "wind_speed")}
+        {generateGraph("wind_speed")}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
       <RenderWindRose  
@@ -90,13 +92,13 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
                 /> 
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
-        {generateGraph(stationData, stationName, "temperature")}
+        {generateGraph("temperature")}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
-        {generateGraph(stationData, stationName, "wave")}
+        {generateGraph("wave")}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={5}>
-        {generateGraph(stationData, stationName, "air_pressure")}
+        {generateGraph("air_pressure")}
       </CustomTabPanel>
     </Box>
   );
