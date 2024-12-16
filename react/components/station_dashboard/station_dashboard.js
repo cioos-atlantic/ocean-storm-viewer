@@ -14,22 +14,16 @@ export default function StationDashboard({children, selected_station, setSelecte
     console.log(stationData)
       //Check if selected var contains any of the following
       //wind_speed, temperature, sea_surface_wave, air_pressure
-      const station_name = stationData[0]
+      const stationName = stationData[0]
       const station_values = stationData[1]
       console.log(stationData)
-      const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + station_name + ".html"
       const data_text = RecentStationData(station_values, time)
   
       if (!data_text) 
         return null
   
       // Change to call from ERDDAP
-      const display_name = getDisplayName(station_descriptions, station_name);
-  
-      let wind_disabled = true;
-      let temp_disabled = true;
-      let wave_disabled = true;
-      let pressure_disabled = true;
+      const display_name = getDisplayName(station_descriptions, stationName);
   
       const exclude_var = ['time', 'latitude', 'longitude','relative_humidity',
         'sea_surface_wave_from_direction', 'sea_surface_wave_maximum_period'
@@ -68,39 +62,14 @@ export default function StationDashboard({children, selected_station, setSelecte
                 <h3>{display_name}</h3>
             </div>
             <div class="dash-body">
-                <h4>{display_name}</h4>
                 <p>
                     <BasicTabs  
+                    stationName = {stationName}
                     stationData={station_values?.properties?.station_data}
+                    stationSummaryText={data_text}
                     variablePresence={variablePresence}
                     /> 
                 </p>
-                <div className={styles.button.divider} id="var_buttons">
-                    <button className={styles.button} id="station-button-wind" 
-                        disabled={wind_disabled} onClick={()=>setSelectedStationVar("wind_speed")}>Wind</button>
-                    <button className={styles.button} id="station-button-temp" 
-                        disabled={temp_disabled} onClick={()=>setSelectedStationVar("temperature")}>Temp</button>
-                    <button className={styles.button} id="station-button-wave" 
-                        disabled={wave_disabled} onClick={()=>setSelectedStationVar("wave")}>Wave</button>
-                    <button className={styles.button} id="station-button-pressure" 
-                        disabled={pressure_disabled} onClick={()=>setSelectedStationVar("air_pressure")}>Pressure</button>
-                </div>
-                <div className="station_chart" 
-                style={{
-                height: 'auto',
-                width: 'auto', // Adjust width based on content (chart)
-                padding: '20px', // Optional padding around chart
-                }}>
-                    <RenderChart  
-                    sourceData={station_values?.properties?.station_data}
-                    stationName={station_name}
-                    varCategory={selectedStationVar}
-                    />
-                </div>
-                {data_text}
-            </div>
-            <div class="dash-footer">
-                <a href={data_link} target="_blank">Full data</a>
             </div>
         </div>
     )

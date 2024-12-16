@@ -74,29 +74,6 @@ export default function StationMarker(station_data, station_descriptions, time =
       >
           <Popup > 
             <h4>{display_name}</h4>
-            <div className={styles.button.divider} id="var_buttons">
-              <button className={styles.button} id="station-button-wind" 
-                disabled={wind_disabled} onClick={()=>setSelectedStationVar("wind_speed")}>Wind</button>
-              <button className={styles.button} id="station-button-temp" 
-                disabled={temp_disabled} onClick={()=>setSelectedStationVar("temperature")}>Temp</button>
-              <button className={styles.button} id="station-button-wave" 
-                disabled={wave_disabled} onClick={()=>setSelectedStationVar("wave")}>Wave</button>
-              <button className={styles.button} id="station-button-pressure" 
-                disabled={pressure_disabled} onClick={()=>setSelectedStationVar("air_pressure")}>Pressure</button>
-            </div>
-            <div className="station_chart" 
-            contentstyle={{
-              width: 'auto', // Adjust width based on content (chart)
-              padding: '20px', // Optional padding around chart
-              }}>
-                <RenderChart  
-                sourceData={station_values?.properties?.station_data}
-                stationName={station_name}
-                varCategory={selectedStationVar}
-                />
-            </div>
-            {data_text}
-            <a href={data_link} target="_blank">Full data</a>
           </Popup>
         </Marker>
     )
