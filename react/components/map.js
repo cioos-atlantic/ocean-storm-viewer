@@ -36,6 +36,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   // The state variable that contains the storm point currently being hovered 
   // over or clicked on
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
+  const [hasWindRoseData, setHasWindRoseData] = useState(false);
 
   // The state variable that contains the station that was last clicked on
   const [selected_station, setSelectedStation] = useState(empty_station_obj);
@@ -60,6 +61,9 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           <StationDashboard
             selected_station={selected_station}
             setSelectedStation={setSelectedStation}
+            stationsDescriptions={allDatasetDescriptions}
+            setHasWindRoseData={setHasWindRoseData}
+            hasWindRoseData={hasWindRoseData}
             station_descriptions={allDatasetDescriptions}
             storm_timestamp = {new Date()}
             selectedStationVar = {selectedStationVar}
@@ -105,7 +109,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                 {
                   Object.entries(station_data).map((station) => {
                     const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                    return StationMarker(station, allDatasetDescriptions, storm_timestamp, setSelectedStation, selectedStationVar, {setSelectedStationVar})
+                    return StationMarker(station, allDatasetDescriptions, storm_timestamp, setSelectedStation, selectedStationVar, {setSelectedStationVar}, setHasWindRoseData)
                   })
                 }
               </LayerGroup>
