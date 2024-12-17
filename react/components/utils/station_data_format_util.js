@@ -51,8 +51,12 @@ export function get_station_field_position(station_data, field_name, name_type='
 export function get_station_data_value(station_data, row_position, column_name, name_type="column_names"){  
     if(!station_data[row_position]) return null
     const col_index = get_station_field_position(station_data, column_name, name_type="column_names")
-    return col_index > -1 ? station_data[row_position][col_index] : null
-}
+    return col_index > -1 ? 
+    {data: station_data[row_position][col_index] || null,
+    standard_name: station_data['column_std_names'][col_index] || null,
+    long_name: station_data['column_long_names'][col_index] || null
+  }: null;
+} 
   
 // Returns the most recent row of data for a station
 // If provided a time (as JS timestamp), it will return the 
@@ -91,3 +95,5 @@ export function getDisplayName(station_descriptions, station_name){
     }
     return display_name;
 }
+
+
