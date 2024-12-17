@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController } from 'chart.js';
+import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController} from 'chart.js';
 import { get_station_field_data, get_station_field_units, get_station_field_position } from './utils/station_data_format_util';
 import { convert_unit_data, windSpeedToKmh, windSpeedToKnots } from './utils/unit_conversion';
 
@@ -30,7 +30,7 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
 
       const station_timeData = get_station_field_data(chartData,"time", "column_std_names")
       const timeData = station_timeData.map((timestamp) => new Date(timestamp).toLocaleString('en-US', {
-                                hour: '2-digit',
+                                //hour: '2-digit',
                                 //minute: '2-digit',
                                 day: '2-digit',
                                 month: '2-digit',
@@ -79,7 +79,7 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
           //maintainAspectRatio: false,
           plugins: {
             legend: {
-              position: 'bottom',
+              position: 'right',
             },
             title: {
               display: false,
@@ -114,9 +114,9 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
         style={{
           top: 0,
           left: 0,
-          width: '500px',
-          height: '300px', // You can keep this if you want to maintain responsiveness
-          aspectRatio: '409 / 409', // Maintain a 1:1 aspect ratio if you want
+          maxWidth: 'auto',
+          maxHeight: '200px', // You can keep this if you want to maintain responsiveness
+          aspectRatio: '100 / 100', // Maintain a 1:1 aspect ratio if you want
         }}
       />
     
