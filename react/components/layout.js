@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect } from "react";
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from './layout.module.css'
-import utilStyles from '../styles/utils.module.css'
 import Link from 'next/link'
 import HeaderNav from './header_nav'
 import FooterNav from './footer_nav'
