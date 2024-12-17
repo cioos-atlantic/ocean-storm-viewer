@@ -30,68 +30,80 @@ export function formatCioosStations(data_obj, children, row_position) {
   children.push(<br></br>)
 
   const wind_from_direction = data_value('wind_from_direction')
-  if (wind_from_direction) {
+  wind_from_direction ? (180 + parseInt(wind_from_direction)) % 360 : null
+  if(wind_from_direction){
     const wind_direction = (180 + parseInt(wind_from_direction)) % 360
-    children.push(<strong>Wind:  </strong>)
-    children.push(<Image className="wind_arrow" alt={wind_direction} src="arrow.svg" height={20} width={20}
+    children.push(<strong>Wind Direction:  </strong>)
+    children.push(<Image className="wind_arrow" alt={wind_direction} src="arrow.svg" height={20} width={20} 
       style={{ transform: 'rotate(' + (wind_direction) + 'deg)' }}></Image>)
   }
 
   const wind_speed = data_value('wind_speed')
-  if (wind_speed) {
-    wind_from_direction ? null : children.push(<strong>Wind:  </strong>)
+  if(wind_speed){
+    wind_from_direction ? children.push(<br />) : null
+    children.push()
+    /*wind_from_direction ? children.push(<Image className="wind_arrow" alt={wind_from_direction} src="arrow.svg" height={20} width={20} 
+      style={{ transform: 'rotate(' + (wind_from_direction) + 'deg)' }}></Image>) : null
+      */
     const resultKmh = windSpeedToKmh(wind_speed)
     const resultKnots = windSpeedToKnots(wind_speed)
-    children.push(<span>    {resultKnots.value} {resultKnots.unit} ({resultKmh.value} {resultKmh.unit})</span>)
-  }
-
+    children.push(<span><strong>Wind Speed:  </strong>{resultKnots.value} {resultKnots.unit} ({resultKmh.value} {resultKmh.unit})</span>)}
+  
+  const wind_speed_of_gust = data_value('wind_speed_of_gust')
+  if(wind_speed_of_gust){
+    //wind_from_direction ? null : children.push(<strong>Wind Speed (gust):  </strong>)
+    const resultKmh = windSpeedToKmh(wind_speed_of_gust)
+    const resultKnots = windSpeedToKnots(wind_speed_of_gust)
+    children.push(<br />)
+    children.push(<span><strong>Gust Speed: </strong>{resultKnots.value} {resultKnots.unit} ({resultKmh.value} {resultKmh.unit})</span>)}
+  
   const air_temperature = data_value('air_temperature')
   if (air_temperature) {
     const resultDegreeF = tempToDegreeF(air_temperature)
     //Should already be in Celsius may not need? Maybe good for formatting though
     const resultDegreeC = tempToDegreeC(air_temperature)
-    children.push(<p><strong>Temperature (Air):</strong> {resultDegreeC.value} {resultDegreeC.unit}   ({resultDegreeF.value} {resultDegreeF.unit})</p>)
-  }
+    children.push(<br />)
+    children.push(<span><strong>Temperature (Air):</strong> {resultDegreeC.value} {resultDegreeC.unit}   ({resultDegreeF.value} {resultDegreeF.unit})</span>)}
 
   const sea_surface_temperature = data_value('sea_surface_temperature')
   if (sea_surface_temperature) {
     //console.log(data_obj['wind_speed']);
     const resultDegreeF = tempToDegreeF(sea_surface_temperature)
     const resultDegreeC = tempToDegreeC(sea_surface_temperature)
-    children.push(<p><strong>Temperature (Sea Surface):</strong> {resultDegreeC.value} {resultDegreeC.unit} ({resultDegreeF.value} {resultDegreeF.unit})</p>)
-  }
+    children.push(<br />)
+    children.push(<span><strong>Temperature (Sea Surface):</strong> {resultDegreeC.value} {resultDegreeC.unit} ({resultDegreeF.value} {resultDegreeF.unit})</span>)}
 
-  const relative_humidity = data_value('relative_humidity')
-  if (data_obj['relative_humidity']) {
-    children.push(<p><strong>Humidity:</strong> {parseInt(relative_humidity)}%</p>)
-  }
+  const sea_surface_wave_maximum_height = data_value('sea_surface_wave_maximum_height')
+    if(sea_surface_wave_maximum_height){
+      //console.log(data_obj['wind_speed']);
+      const resultM = windHeightToM(sea_surface_wave_maximum_height)
+      const resultFt = windHeightToFt(sea_surface_wave_maximum_height)
+      children.push(<br />)
+      children.push(<span><strong>Wave Height (Max):</strong> {resultM.value} {resultM.unit} ({resultFt.value} {resultFt.unit})</span>)}
+  
+  const sea_surface_wave_significant_height = data_value('sea_surface_wave_significant_height')
+    if(sea_surface_wave_significant_height){
+      //console.log(data_obj['wind_speed']);
+      const resultM = windHeightToM(sea_surface_wave_significant_height)
+      const resultFt = windHeightToFt(sea_surface_wave_significant_height)
+      children.push(<br />)
+      children.push(<span><strong>Wave Height (Avg):</strong> {resultM.value} {resultM.unit} ({resultFt.value} {resultFt.unit})</span>)}
 
   const air_pressure = data_value('air_pressure')
-  if (air_pressure) {
+  if(air_pressure){
     //console.log(data_obj['wind_speed']);
     const resultKPa = pressureToKPa(air_pressure)
     const resultInHg = pressureToInHg(air_pressure)
-    children.push(<p><strong>Air Pressure:</strong> {resultKPa.value} {resultKPa.unit} ({resultInHg.value} {resultInHg.unit})</p>)
-  }
+    children.push(<br />)
+    children.push(<span><strong>Air Pressure:</strong> {resultKPa.value} {resultKPa.unit} ({resultInHg.value} {resultInHg.unit})</span>)}
 
-  const sea_surface_wave_maximum_height = data_value('sea_surface_wave_maximum_height')
-  if (sea_surface_wave_maximum_height) {
-    //console.log(data_obj['wind_speed']);
-    const resultM = windHeightToM(sea_surface_wave_maximum_height)
-    const resultFt = windHeightToFt(sea_surface_wave_maximum_height)
-    children.push(<p><strong>Wave Height (Max):</strong> {resultM.value} {resultM.unit} ({resultFt.value} {resultFt.unit})</p>)
+    
+  const relative_humidity = data_value('relative_humidity')
+  if(data_obj['relative_humidity']){
+    children.push(<br />)
+    children.push(<span><strong>Humidity:</strong> {parseInt(relative_humidity)}%</span>)}
   }
-
-  const sea_surface_wave_significant_height = data_value('sea_surface_wave_significant_height')
-  if (sea_surface_wave_significant_height) {
-    //console.log(data_obj['wind_speed']);
-    const resultM = windHeightToM(sea_surface_wave_significant_height)
-    const resultFt = windHeightToFt(sea_surface_wave_significant_height)
-    children.push(<p><strong>Wave Height (Avg):</strong> {resultM.value} {resultM.unit} ({resultFt.value} {resultFt.unit})</p>)
-  }
-}
-
-export function formatCioosDateTime(date_str) {
+export function formatCioosDateTime(date_str){
   const date = new Date(date_str * 1);
   const options = {
     year: 'numeric',

@@ -1,15 +1,16 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo} from "react";
 import station_names from "../data/station/names.json"
 import { RecentStationData } from './utils/station_data_format_util'
 import RenderChart from './station_graph.js'
 import { flip_coords } from "@/lib/storm_utils";
+import { empty_station_obj } from "./layout"
 
 import { Marker, Popup } from "react-leaflet";
 
 import { getDisplayName } from "./utils/station_data_format_util";
+import styles from './station_marker.module.css'
 
 
-const empty_data_text = {}
 
 /**
  * 
@@ -18,23 +19,28 @@ const empty_data_text = {}
  * @param {Date} time Time of the station data to retrieve. Defaults to most recent data if not provided
  * @returns StationMarker JavaScript snippet
  */
-export default function StationMarker(station_data, station_descriptions, time = new Date(), setSelectedStation) {
+export default function StationMarker(station_data, station_descriptions, time = new Date(), setSelectedStation, setSelectedTab) {
     if(isNaN(time))
       time= new Date()
+
+    //Check if selected var contains any of the following
+    //wind_speed, temperature, sea_surface_wave, air_pressure
     
     const station_name = station_data[0]
     const station_values = station_data[1]
-    const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + station_name + ".html"
-    const data_text = RecentStationData(station_values, time)
+    // Change to call from ERDDAP
+    const display_name = getDisplayName(station_descriptions, station_name);
 
-  // Change to call from ERDDAP
-  const display_name = getDisplayName(station_descriptions, station_name);
-
+    const exclude_var = ['time', 'latitude', 'longitude', 'wind_from_direction', 'relative_humidity',
+      'sea_surface_wave_from_direction', 'sea_surface_wave_maximum_period'
+   ]
+    const standardNames = station_values?.properties?.station_data?.column_std_names
+    
 
   //const display_name = (station_name in station_names) ? station_names[station_name]['display']:station_name
 
-  // Data for station doesn't exist at the provided time
-  if (!data_text) return
+    // Data for station doesn't exist at the provided time
+    
 
     return (
       <Marker 
@@ -44,17 +50,12 @@ export default function StationMarker(station_data, station_descriptions, time =
           click: (e) => {
             console.log(e, "SETTING SELECTED STATION", station_data);
             setSelectedStation(station_data);
+            setSelectedTab(0);
           },
         }}
       >
-          <Popup 
-            contentStyle={{
-              width: 'auto', // Adjust width based on content (chart)
-              padding: '20px', // Optional padding around chart
-              }}> 
+          <Popup > 
             <h4>{display_name}</h4>
-            {data_text}
-            <a href={data_link} target="_blank">Full data</a>
           </Popup>
         </Marker>
     )

@@ -1,5 +1,6 @@
 import { formatCioosStations } from "../station_formats";
 import RenderChart from '../station_graph.js'
+import { RenderWindRose } from "../station_dashboard/wind_rose";
 
 //Station data should be formatted from station_data_format util
 //Takes input from the station_data list field, not the whole station data itself
@@ -56,30 +57,25 @@ export function get_station_data_value(station_data, row_position, column_name, 
 // Returns the most recent row of data for a station
 // If provided a time (as JS timestamp), it will return the 
 // most recent row from the data before that time
+
+// state can select a standard variable?
 export function RecentStationData(data, time) {
   let station_data = data?.properties?.station_data;
 
-  const row_position = get_recent_row_position(data, time)
-  if (row_position < 0) return
-  let children = []
-  formatCioosStations(station_data, children, row_position)
-
-  let station_info = (
-    <div className="station_pane">
-      <div className="station_chart">
-        <RenderChart
-          sourceData={station_data}
-          position={row_position}
-          stationName={data?.properties?.station}
-        />
+    const row_position = get_recent_row_position(data,time)
+    if(row_position < 0) return 
+    let children = []
+    formatCioosStations(station_data, children, row_position)
+  
+    let station_info = (
+      <div className="station_pane">
+        {children}
       </div>
-      {children}
-    </div>
-  );
-
-  return station_info;
-
-}
+    );
+  
+    return station_info;
+    
+  }
 
 export function getDisplayName(station_descriptions, station_name) {
   let display_name;

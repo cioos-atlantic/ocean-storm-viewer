@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController } from 'chart.js';
+import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController} from 'chart.js';
 import { get_station_field_data, get_station_field_units, get_station_field_position } from './utils/station_data_format_util';
 import { convert_unit_data, windSpeedToKmh, windSpeedToKnots } from './utils/unit_conversion';
 
@@ -12,8 +12,10 @@ const chartData = {
   rows: {}
 }
 
-function RenderChart({ sourceData, position, stationName }) {
+function RenderChart({ sourceData, position, stationName, varCategory }) {
   const chartRef = useRef(null); // Reference to the canvas element
+
+  const startAtZero = varCategory === 'air_pressure' ? false : true
 
   useEffect(() => {
     // Check if chartData is available
@@ -28,21 +30,21 @@ function RenderChart({ sourceData, position, stationName }) {
 
       const station_timeData = get_station_field_data(chartData, "time", "column_std_names")
       const timeData = station_timeData.map((timestamp) => new Date(timestamp).toLocaleString('en-US', {
-        hour: '2-digit',
-        //minute: '2-digit',
-        day: '2-digit',
-        month: '2-digit',
-        //year: 'numeric'
+                                //hour: '2-digit',
+                                //minute: '2-digit',
+                                day: '2-digit',
+                                month: '2-digit',
+                                //year: 'numeric'
       }));
 
-      const exclude_var = ['time', 'latitude', 'longitude', 'wind_from_direction', 'air_pressure', 'relative_humidity',
-        'air_temperature', 'sea_surface_temperature', 'sea_surface_wave_from_direction', 'sea_surface_maximum_wave_period'
+      // Move this to config later
+      const exclude_var = ['time', 'latitude', 'longitude', 'wind_from_direction', 'relative_humidity',
+         'sea_surface_wave_from_direction', 'sea_surface_wave_maximum_period', 'sea_surface_wave_mean_period'
       ]
       // Prepare datasets for each variable, excluding 'time'
-      const datasets = chartData.column_std_names.filter((variable) => !exclude_var.includes(variable)).map((variable, index) => {
-        // Exclude 'time' from datasets
-        const unit = get_station_field_units(sourceData, variable, "column_std_names")
-        const values = get_station_field_data(chartData, variable, "column_std_names")
+      const datasets = chartData.column_std_names.filter((variable) => !exclude_var.includes(variable) && variable.includes(varCategory)).map((variable, index) =>{
+          const unit = get_station_field_units(sourceData, variable, "column_std_names")
+          const values = get_station_field_data(chartData, variable, "column_std_names")
 
         return {
           label: `${variable} (${convert_unit_data(values[0], unit).unit})` || key, //  std_name if available
@@ -71,14 +73,14 @@ function RenderChart({ sourceData, position, stationName }) {
               grid: {
                 display: true, // Show grid on the y-axis
               },
-              beginAtZero: true,
+              beginAtZero: startAtZero,
             },
           },
           responsive: true,
           //maintainAspectRatio: false,
           plugins: {
             legend: {
-              position: 'bottom',
+              position: 'right',
             },
             title: {
               display: false,
@@ -104,21 +106,21 @@ function RenderChart({ sourceData, position, stationName }) {
         chartRef.current.chart.destroy();
       }
     };
-  }, [sourceData, stationName]); // Re-run effect if chartData or stationName changes
+  }, [sourceData, varCategory, stationName]); // Re-run effect if chartData or stationName changes
 
   return (
-
-    <canvas
-      ref={chartRef}
-      style={{
-        top: 0,
-        left: 0,
-        width: '500px',
-        height: '300px', // You can keep this if you want to maintain responsiveness
-        aspectRatio: '409 / 409', // Maintain a 1:1 aspect ratio if you want
-      }}
-    />
-
+    
+      <canvas
+        ref={chartRef}
+        style={{
+          top: 0,
+          left: 0,
+          maxWidth: 'auto',
+          maxHeight: '200px', // You can keep this if you want to maintain responsiveness
+          aspectRatio: '100 / 100', // Maintain a 1:1 aspect ratio if you want
+        }}
+      />
+    
   );
 }
 

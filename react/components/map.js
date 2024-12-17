@@ -22,15 +22,6 @@ import StationDashboard from "./station_dashboard/station_dashboard";
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
 
-
-// Have it as a dictionary with time as keys and values as values?
-function Station_Variable(name, std_name, value, units) {
-  this.name = name;
-  this.standard_name = std_name;
-  this.value = value;
-  this.units = units;
-}
-
 export default function Map({ children, storm_points, storm_data, station_data, source_type, setStormPoints, setStationPoints, setHistoricalStormData }) {
 
   // The state variable that contains the storm point currently being hovered 
@@ -39,6 +30,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
 
   // The state variable that contains the station that was last clicked on
   const [selected_station, setSelectedStation] = useState(empty_station_obj);
+  const [selected_tab, setSelectedTab] = useState(0)
 
   const allDatasetDescriptions = useDatasetDescriptions();
 
@@ -60,7 +52,12 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           <StationDashboard
             selected_station={selected_station}
             setSelectedStation={setSelectedStation}
-          >THE KIDS!</StationDashboard>
+            stationsDescriptions={allDatasetDescriptions}
+            station_descriptions={allDatasetDescriptions}
+            storm_timestamp = {new Date()}
+            selectedTab = {selected_tab}
+            setSelectedTab = {setSelectedTab}
+          ></StationDashboard>
         )}
         <MapContainer
           center={defaultPosition}
@@ -101,7 +98,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                 {
                   Object.entries(station_data).map((station) => {
                     const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                    return StationMarker(station, allDatasetDescriptions, storm_timestamp, setSelectedStation)
+                    return StationMarker(station, allDatasetDescriptions, storm_timestamp, setSelectedStation, setSelectedTab)
                   })
                 }
               </LayerGroup>
