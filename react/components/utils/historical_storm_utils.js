@@ -189,6 +189,5 @@ export function parseForFlyToPoint(storm_details, storm_name, map, Leaflet){
   flyToPoint(storm_data, map, Leaflet)
   
 
-
   
 }
