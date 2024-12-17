@@ -14,7 +14,7 @@ export function RenderWindRose ( { sourceData, hasWindRoseData }){
 
 //const [chartData, setChartData] = useState(null);
     console.log(sourceData)
-    const stationDirData = get_station_field_data(sourceData, 'wind_from_direction', "column_std_names");
+    const stationDirData = get_station_field_data(sourceData, 'wind_from_direction', "column_std_names").data;
     console.log(stationDirData)
     if (!stationDirData || stationDirData.every(item => item === undefined)) {
         console.log("stationDirData returned an array of undefined values");
@@ -24,7 +24,7 @@ export function RenderWindRose ( { sourceData, hasWindRoseData }){
     const windSpeeds = processWindSpeeds(sourceData);
     console.log(windSpeeds)
     const unit = get_station_field_units(sourceData,"wind_speed", "column_std_names");
-    const station_timeData = get_station_field_data(sourceData, "time", "column_std_names");
+    const station_timeData = get_station_field_data(sourceData, "time", "column_std_names").data;
     const totalDataPoints= station_timeData.length;
       console.log(totalDataPoints);
       //generateChartOption(windSpeeds, stationDirData, totalDataPoints)

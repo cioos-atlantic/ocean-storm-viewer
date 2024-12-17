@@ -28,7 +28,7 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
       chartData.rows = sourceData.rows //position > 30 ? sourceData.rows.slice(position-30, position+1) : sourceData.rows.slice(0, position+1)
       //chartData.rows = chartData.rows.length > 10 ? Data.rows.slice(Math.max(chartData.rows.length - 10, 0)) : chartData.rows
 
-      const station_timeData = get_station_field_data(chartData,"time", "column_std_names")
+      const station_timeData = get_station_field_data(chartData,"time", "column_std_names").data
       const timeData = station_timeData.map((timestamp) => new Date(timestamp).toLocaleString('en-US', {
                                 //hour: '2-digit',
                                 //minute: '2-digit',
@@ -44,10 +44,11 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
       // Prepare datasets for each variable, excluding 'time'
       const datasets = chartData.column_std_names.filter((variable) => !exclude_var.includes(variable) && variable.includes(varCategory)).map((variable, index) =>{
           const unit = get_station_field_units(sourceData, variable, "column_std_names")
-          const values = get_station_field_data(chartData, variable, "column_std_names")
+          const data_obj = get_station_field_data(chartData, variable, "column_std_names");
+          const values = data_obj.data
 
           return{
-          label: `${variable} (${convert_unit_data(values[0], unit).unit})` || key, //  std_name if available
+          label: `${data_obj.long_name} (${convert_unit_data(values[0], unit).unit})` || key, //  std_name if available
           data: values.map((value)=>convert_unit_data(value,unit).value) || [], // Ensure that value exists
           borderColor: getRandomColor(), // Generate random colors for each line
           backgroundColor: 'rgba(0, 0, 0, 0)',

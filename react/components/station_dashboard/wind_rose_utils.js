@@ -118,7 +118,7 @@ export function processWindSpeeds(sourceData){
     sourceData.column_std_names
     .filter((variable) => include_var.includes(variable))
     .forEach((variable, index) => {
-      const values = get_station_field_data(sourceData, variable, "column_std_names");
+      const values = get_station_field_data(sourceData, variable, "column_std_names").data;
   
        // Store each instance of wind_speed with a unique name like "wind_speed_1", "wind_speed_2", etc.
        windSpeed[`${variable}_${index + 1}`] = values;
