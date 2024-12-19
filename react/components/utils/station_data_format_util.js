@@ -101,3 +101,27 @@ export function getDisplayName(station_descriptions, station_name){
 }
 
 
+export function getColumnNameList(column_std_names, column_names, variable){
+  const column_names_list = [];
+  
+  column_std_names.forEach((std_name, index) => {
+    if (std_name === variable){
+      column_names_list.push(column_names[index]);
+
+    };
+  });
+  console.log(column_names_list)
+  return column_names_list
+}
+
+
+export function getUniqueStdNamesList(column_std_names){
+  // using Set constructor
+  let s = new Set(column_std_names);
+
+  // Convert back the set to array
+  let uniqueColStdNames = [...s];
+
+  return uniqueColStdNames
+}
+
