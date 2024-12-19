@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
-import { get_station_field_data, get_station_field_units } from '../utils/station_data_format_util';
+import { get_station_field_data, get_station_field_units, getColumnNameList, getUniqueStdNamesList } from '../utils/station_data_format_util';
 
 export const windSpeedBins = [
   { min: 0, max: 8, label: "=< 8 m/s" },
@@ -114,14 +114,25 @@ export function processWindSpeeds(sourceData){
     const include_var = [ "wind_speed"]
     // Initialize the result object
     const windSpeed = {};
+    const  column_names = sourceData.column_names;
   
-    sourceData.column_std_names
-    .filter((variable) => include_var.includes(variable))
+    const column_std_names = sourceData.column_std_names;
+    const uniqueColStdNames= getUniqueStdNamesList(column_std_names);
+    console.log(uniqueColStdNames);
+  
+    uniqueColStdNames.filter((variable) => include_var.includes(variable))
     .forEach((variable, index) => {
-      const values = get_station_field_data(sourceData, variable, "column_std_names").data;
-  
-       // Store each instance of wind_speed with a unique name like "wind_speed_1", "wind_speed_2", etc.
-       windSpeed[`${variable}_${index + 1}`] = values;
+      const column_names_list = getColumnNameList(column_std_names, column_names, variable)
+
+
+      column_names_list.forEach(col_name => {
+        const station_data_obj = get_station_field_data(sourceData, col_name)
+        const values = station_data_obj.data;
+        const long_name= station_data_obj.long_name;
+    
+        // Store each instance of wind_speed with a unique name like "wind_speed_1", "wind_speed_2", etc.
+        windSpeed[long_name] = values;
+      });
   
     });
   
