@@ -93,12 +93,13 @@ function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
   const chartOption = [];
   Object.entries(windSpeeds).map(([key, windSpeed]) => {
     const windChartData = calculateWindSpeedDistribution(stationDirData, windSpeed, totalDataPoints);
+    console.log(key);
     chartOption.push({
       type: "interval",
-      title:key,
+      title: key,
       autoFit: true,
-      height: 300,
-      padding: 40,
+      height: "360",
+      padding: "auto",
       data: windChartData,
       encode: { x: "direction", y: "value", color: "windSpeedBin", size: 18 },
       transform: [{ type: "stackY" }],
@@ -136,8 +137,8 @@ function renderChart(chartOptions) {
 
     chart.options({
       type: "spaceFlex",
-      width: 800,
-      height: 250,
+      width: 1000,
+      height: 400,
       children: chartOptions,
     });
 
