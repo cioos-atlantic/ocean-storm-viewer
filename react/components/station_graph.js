@@ -28,7 +28,7 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
       chartData.rows = sourceData.rows //position > 30 ? sourceData.rows.slice(position-30, position+1) : sourceData.rows.slice(0, position+1)
       //chartData.rows = chartData.rows.length > 10 ? Data.rows.slice(Math.max(chartData.rows.length - 10, 0)) : chartData.rows
 
-      const station_timeData = get_station_field_data(chartData,"time", "column_std_names").data
+      const station_timeData = get_station_field_data(sourceData,"time", "column_std_names")?.data
       const timeData = station_timeData.map((timestamp) => new Date(timestamp).toLocaleString('en-US', {
                                 //hour: '2-digit',
                                 //minute: '2-digit',
@@ -42,10 +42,14 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
          'sea_surface_wave_from_direction', 'sea_surface_wave_maximum_period', 'sea_surface_wave_mean_period'
       ]
       // Prepare datasets for each variable, excluding 'time'
-      const datasets = chartData.column_std_names.filter((variable) => !exclude_var.includes(variable) && variable.includes(varCategory)).map((variable, index) =>{
+      const datasets = sourceData.column_std_names.filter((variable) => !exclude_var.includes(variable) && variable.includes(varCategory)).map((variable, index) =>{
+        console.log(sourceData)
+        console.log(chartData)
           const unit = get_station_field_units(sourceData, variable, "column_std_names")
-          const data_obj = get_station_field_data(chartData, variable, "column_std_names");
-          const values = data_obj.data
+          
+          const data_obj = get_station_field_data(sourceData, variable, "column_std_names");
+          console.log(data_obj)
+          const values = data_obj?.data
 
           return{
           label: `${data_obj.long_name} (${convert_unit_data(values[0], unit).unit})` || key, //  std_name if available
@@ -137,3 +141,4 @@ const getRandomColor = () => {
 
 
 export default React.memo(RenderChart);
+
