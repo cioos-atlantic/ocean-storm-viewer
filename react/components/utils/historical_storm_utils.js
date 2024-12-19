@@ -1,5 +1,6 @@
 import { subYears } from "date-fns";
 import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
+import { flyToPoint } from "../storm_list_item";
 
 export async function getHistoricalStormList(){
   // Construct query parameters
@@ -37,7 +38,7 @@ export async function getHistoricalStormList(){
   }
 }
 
-export function parseStormData(storm_data, storm_name) {
+export function parseStormData(storm_data, storm_name, map, Leaflet) {
 
   if (storm_data?.ib_data?.features?.length === 0) {
     console.warn("No IBTRACS Data features found for ", storm_name);
@@ -63,8 +64,12 @@ export function parseStormData(storm_data, storm_name) {
     storm_details[storm_point.properties.NAME].data.push(storm_point)
   });
 
+
+
   // console.log("parseStormData -> Storm Details: ", storm_details);
   let storm_features = build_storm_features(storm_details[storm_name]);
+
+  parseForFlyToPoint(storm_details, storm_name, map, Leaflet)
 
   // console.log("parseStormData -> Final Storm Features: ", storm_features);
   return storm_features;
@@ -175,3 +180,14 @@ export function isStormId(input) {
   return namePattern.test(input);
 }
 
+
+export function parseForFlyToPoint(storm_details, storm_name, map, Leaflet){
+  //console.log(Leaflet);
+  
+  const storm_data = storm_details[storm_name];
+  console.log(storm_data)
+  flyToPoint(storm_data, map, Leaflet)
+  
+
+  
+}

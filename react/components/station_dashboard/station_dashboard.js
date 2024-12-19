@@ -51,10 +51,10 @@ export default function StationDashboard({children, selected_station, setSelecte
       // Data for station doesn't exist at the provided time
 
     return (
-        <div key="01-station-dashboard" class="station_dashboard">
+        <div key="01-station-dashboard" className="station_dashboard">
             <div className="dash-header">
                 <button
-                    class="close"
+                    className="close"
                     onClick={(e) => {
                         setSelectedStation(empty_station_obj)
                         setSelectedTab(0)
@@ -62,7 +62,7 @@ export default function StationDashboard({children, selected_station, setSelecte
                 ><FaWindowClose/></button>
                 <h3>{display_name}</h3>
             </div>
-            <div class="dash-body">
+            <div className="dash-body">
                 <p>
                     <BasicTabs  
                     stationName = {stationName}
