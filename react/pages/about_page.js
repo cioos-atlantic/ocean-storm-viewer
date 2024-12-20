@@ -5,6 +5,7 @@ import aboutStyles from '../styles/About.module.css';
 import Image from "next/image";
 import { pastAtlStorms } from '@/data/pastStormsDetails';
 import parse from 'html-react-parser';
+import { faq } from '@/data/faq';
 
 
 
@@ -58,16 +59,21 @@ export function About(){
           Hurricanes begin when thunderstorms circle around an area of low air pressure over the ocean. Warm water (above 26C) provides heat and energy for the air pressure to transfer the hot, humid air upwards in a spiral shape. As that warm air rises it condenses into storm clouds, which get stronger and faster as the low-pressure cyclone travels (<a href="https://kids.nationalgeographic.com/science/article/hurricane">National Geographic</a>). 
           </p>
           <h3 className={aboutStyles.subheading} id="section1.3">How are they defined?</h3>
-          <p className={aboutStyles.lightText}>
-          Hurricanes are classified using the Saffir-Simpson Hurricane Wind Scale, a 1-5 category rating based on the hurricane’s maximum wind speed. The higher the category, the greater the hurricane’s potential damage. The scale does not consider other hazards of hurricanes, such as storm surge and rainfall (<a href="https://www.nhc.noaa.gov/aboutsshws.php" >NOAA</a>). 
-          </p>
-         <ul>
+          <div className={aboutStyles.lightText}>
+            <div>
+            Hurricanes are classified using the Saffir-Simpson Hurricane Wind Scale, a 1-5 category rating based on the hurricane’s maximum wind speed. The higher the category, the greater the hurricane’s potential damage. The scale does not consider other hazards of hurricanes, such as storm surge and rainfall (<a href="https://www.nhc.noaa.gov/aboutsshws.php" >NOAA</a>). 
+            <ul>
             <li>Category 1: 119-153km/h</li>
             <li>Category 2: 154-177km/h</li>
             <li>Category 3: 178-208km/h</li>
             <li>Category 4: 209-251km/h</li>
             <li>Category 5: 252km/h or higher </li>
          </ul>
+
+            </div>
+          
+          </div>
+         
          <br></br>
             
           
