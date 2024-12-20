@@ -84,31 +84,29 @@ def cache_erddap_data(storm_id, df, destination_table, pg_engine, table_schema, 
     
     
     with pg_engine.begin() as pg_conn:   
-        """ 
-        print(f"Adding geom column")
+        #print(f"Adding geom column")
         sql = f"ALTER TABLE public.{destination_table} ADD COLUMN IF NOT EXISTS geom geometry(Point, 4326);"
         pg_conn.execute(text(sql))
-        """
         
-        print("Updating Geometry...")
+       #print("Updating Geometry...")
         sql = f'UPDATE public.{destination_table} SET geom = ST_SetSRID(ST_MakePoint("min_lon", "min_lat"), 4326);'
         pg_conn.execute(text(sql))
 
         # TODO: Add users to env file. Caused errors when attempting through variable
-        print("Providing docker with permissions...")
+        #print("Providing docker with permissions...")
         sql = f"GRANT ALL ON public.{destination_table} TO docker;"
         sql = f"GRANT SELECT ON public.{destination_table} TO hurricane_dash_geoserver;"
         pg_conn.execute(text(sql))
 
-        print("Committing Transaction.")
+        #print("Committing Transaction.")
         pg_conn.execute(text("COMMIT;"))
-        print("Fin.")
+        print("Cached" + storm_id)
     return
 
 def create_table_from_schema(pg_engine, table_name, schema_file, pg_schema='public'):
     # Create ECCC Tables if not exist
     with pg_engine.begin() as pg_conn:
-        print(f"Creating Table {table_name} (if not exists)...")
+        #print(f"Creating Table {table_name} (if not exists)...")
 
         sql = f"SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = '{pg_schema}' AND tablename = '{table_name}');"
         result = pg_conn.execute(text(sql))
@@ -118,11 +116,11 @@ def create_table_from_schema(pg_engine, table_name, schema_file, pg_schema='publ
             sql = Path(schema_file).read_text()
             pg_conn.execute(text(sql))
 
-        print(f"Adding geom column")
+        #print(f"Adding geom column")
         sql = f"ALTER TABLE {pg_schema}.{table_name} ADD COLUMN IF NOT EXISTS geom geometry(Point, 4326);"
         pg_conn.execute(text(sql))
 
-        print("Committing Transaction.")
+        #print("Committing Transaction.")
         pg_conn.execute(text("COMMIT;"))
 
 # Extracts data from the erddap metadata Pandas dataframe, NC_GLOBAL and
@@ -255,7 +253,7 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
                     cached_entries.append(entry)
                 # time in ISO format or set column to timestamp (UTC for timezone)
             prev_interval = interval
-        print(dataset_id + " cached")
+        #print(dataset_id + " cached")
         return cached_entries
     except Exception as ex:
          print("HTTPStatusError", ex)
@@ -363,7 +361,6 @@ def main():
             max_time = storm['ISO_TIME']['max']
             dataset_list = get_erddap_datasets(min_time, max_time)
             cached_data = []
-            print(dataset_list)
             # Store in shared list to reduce calls and avoid overwriting for active cache
             for dataset_id in dataset_list:
                 # Interrogate each dataset for the list of variable names using the list 
