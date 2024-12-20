@@ -2,7 +2,7 @@ import CustomButton from '../custom/custom-button.js';
 import { addDays, subDays, lightFormat } from "date-fns";
 import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
 import { useEffect, useState } from 'react';
-import { getHistoricalStormList, parseStormData, makeStormList, isName, isYear } from './utils/historical_storm_utils.js';
+import { getHistoricalStormList, parseStormData, makeStormList, isName, isYear, parseForFlyToPoint } from './utils/historical_storm_utils.js';
 
 
 const otherStormList = [
@@ -19,6 +19,7 @@ const otherStormList = [
 
 
 export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet }) {
+  
   const [stormList, setStormList] = useState([]);
   const [searchResult, setSearchResult] = useState({})
 
@@ -58,7 +59,11 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           {stormList.map((storm, index) => {
             return (
               <li key={storm.storm_id} className={(storm.name)}>
-                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints) }}>{`${storm.display_name}`}</a>
+                <a onClick={(e) => { 
+                  handleClick(storm, setStationPoints, setStormPoints, map, Leaflet);
+                  
+                  //console.log(storm);
+                  }}>{`${storm.display_name}`}</a>
               </li>
             )
           })}
@@ -84,7 +89,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           searchResult.length > 0 && searchResult.map((storm, index) => {
             return (
               <li key={storm.storm_id} className={(storm.name)}>
-                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints) }}>{`${storm.display_name}`}</a>
+                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints, map, Leaflet) }}>{`${storm.display_name}`}</a>
               </li>
             )
           })}
@@ -102,7 +107,9 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
 
 }
 
-export async function handleClick( storm, setStationPoints, setStormPoints) {
+export async function handleClick( storm, setStationPoints, setStormPoints, map, Leaflet) {
+  //console.log(Leaflet);
+  
   console.log('Button clicked for', storm.name);
   const storm_name = storm.name;
   const storm_year = storm.year;
@@ -137,6 +144,8 @@ export async function handleClick( storm, setStationPoints, setStormPoints) {
   try {
     const resource = await fetch(`/api/historical_storms?${query}`);
     const storm_data = await resource.json();
+
+     
     //console.log(storm_data);
 
     //console.log(historical_storm_data);
@@ -150,14 +159,17 @@ export async function handleClick( storm, setStationPoints, setStormPoints) {
     const station_resource = await fetch(`/api/query_stations_historical?${query}`);
     const historical_station_data = await station_resource.json();
 
-    const historical_storm_data = parseStormData(storm_data, storm.name);
-    // console.log(historical_station_data);
+    //console.log(Leaflet);
+
+    const historical_storm_data = parseStormData(storm_data, storm.name, map, Leaflet);
+    //console.log(historical_storm_data);
 
     console.debug("Historical Storm Data: ", historical_storm_data);
     console.debug("Historical Station Data: ", historical_station_data);
 
     setStormPoints(historical_storm_data);  // Set the storm data
     setStationPoints(historical_station_data);  // Set the station data
+    
   
     // Trigger the callback to send data back to the parent
     // handleHarvestHistoricalData({
@@ -240,5 +252,7 @@ async function handleFormSubmit(e, setSearchResult){
 
   
 }
+
+
 
 

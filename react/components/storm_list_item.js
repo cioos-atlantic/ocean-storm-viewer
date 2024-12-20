@@ -13,7 +13,8 @@ function formatCoordinates(coordinates){
 }
 
 
-function flyToPoint(storm_data, map, Leaflet){
+export function flyToPoint(storm_data, map, Leaflet){
+    //console.log(Leaflet)
     const first_point = flip_coords(storm_data.data[0].geometry.coordinates);
     const last_point = flip_coords(storm_data.data.splice(-1)[0].geometry.coordinates);
     
@@ -45,6 +46,7 @@ export default function StormListItem({ storm_name, storm_data, setSelectedStorm
             className={"storm_card " + selected }
             onClick={(e) => { 
                 populateStormDetails(e, storm_data, setSelectedStorm, setStormPoints);
+                console.log(storm_data)
                 flyToPoint(storm_data, map, Leaflet);
             }}
         >
