@@ -29,6 +29,10 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
           datasets: datasets, // Set the datasets
         },
         options: {
+          interaction: {
+            intersect: false,
+            mode: 'index',
+          },
           scales: {
             x: {
               grid: {
@@ -52,6 +56,7 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
               display: false,
               text: `Data for ${stationName}`,
             },
+
           },
         },
       };
