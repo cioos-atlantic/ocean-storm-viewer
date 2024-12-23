@@ -7,8 +7,6 @@ import { pastAtlStorms } from '@/data/pastStormsDetails';
 import parse from 'html-react-parser';
 import { faq } from '@/data/faq';
 
-
-
 export function About(){
   return(
     <div className={aboutStyles.container}>
@@ -91,9 +89,6 @@ export function About(){
           ))}
         </ul>
 
-
-
-
         <h2 id="section3">3. How to Find more Information</h2>
         <ul>
           <li>
@@ -107,10 +102,6 @@ export function About(){
             </a>
           </li>
         </ul>
-
-
-          
-  
 
         </section>
       </main>
