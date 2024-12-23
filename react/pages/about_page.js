@@ -38,7 +38,7 @@ export function About(){
               <ul>
                 {pastAtlStorms.map((storm, index) => (
                     <li key={index}>
-                      <a href={`#section1.${index}`}>{storm.title}</a>
+                      <a href={`#section2.${index}`}>{storm.title}</a>
                     </li>
                   ))}
               </ul>
