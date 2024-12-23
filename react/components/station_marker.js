@@ -45,7 +45,7 @@ export default function StationMarker(station_data, station_descriptions, time =
     return (
       <Marker 
         key={station_name} 
-        position={flip_coords(station_values.geometry.coordinates)}
+        position={flip_coords(station_values?.geometry?.coordinates)}
         eventHandlers={{
           click: (e) => {
             console.log(e, "SETTING SELECTED STATION", station_data);
