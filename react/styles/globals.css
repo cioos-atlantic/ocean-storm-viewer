@@ -7,7 +7,7 @@ body {
 
 header {
   width: 100%;
-  position: absolute;
+  position: fixed;
   top: 0;
   background-color: #e55162;
   z-index: 8000;
@@ -56,7 +56,7 @@ header nav ul li:last-child a::after {
 }
 
 footer {
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 50px;
   bottom: 0px;
@@ -71,8 +71,6 @@ footer {
 
 .inner_container {
   height: 100%;
-  width: 80%;
-  margin-left: 20%;
 }
 
 .leaflet-control-container .leaflet-top {
@@ -83,17 +81,32 @@ footer {
   bottom: 50px;
 }
 
-.eccc-rad-34 {
+.line-of-travel {
+  position: relative;
+  stroke: green;
+}
+
+.sea-height {
+  position: relative;
+  stroke: navy;
+  fill: navy;
+}
+
+.wind-rad-34 {
+  position: relative;
   stroke: yellow;
   fill: yellow;
 }
 
-.eccc-rad-48 {
+.wind-rad-48,
+.wind-rad-50 {
+  position: relative;
   stroke: orange;
   fill: orange;
 }
 
-.eccc-rad-64 {
+.wind-rad-64 {
+  position: relative;
   stroke: red;
   fill: red;
 }
@@ -131,4 +144,62 @@ footer {
 
 #storm_timeline ul li.selected::after {
   
+}
+
+.selected_storm a {
+  font-weight: bold;
+}
+
+.storm_card {
+  margin-bottom: 1.5rem;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  font-size: 0.9rem;
+}
+
+.storm_card.selected_storm {
+  background-color: #EEE;
+  padding-left: 0.5rem;
+  font-size: 1.1rem;
+}
+
+/* Styling for the station dashboard containing block */
+.station_dashboard {
+  background: white;
+  color: black;
+  border-top: 3px solid #e55162;
+  padding: 2rem;
+  margin-left: 20%;
+  position: absolute;
+  bottom: 50px;
+  z-index: 5000;
+  width: 80%;
+}
+
+/* Styling for the dashboard header */
+.station_dashboard .dash-header {
+  border: 1px solid darkgoldenrod;
+}
+
+/* Handles the styling of buttons in the header */
+.station_dashboard .dash-header button {
+  float: right;
+  background-color: #fff;
+  border: 0;
+  font-size: 1.5rem;
+}
+
+/* handles styling of buttons in the header with the "close" class */
+.station_dashboard .dash-header button.close{
+  font-weight: bold;
+}
+
+/* Styling for the dashboard body */
+.station_dashboard .dash-body {
+  border: 1px solid green;
+}
+
+/* Styling for the dashboard footer */
+.station_dashboard .dash-footer {
+  border: 1px solid blue;
 }

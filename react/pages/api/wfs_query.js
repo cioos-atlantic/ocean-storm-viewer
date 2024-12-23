@@ -10,7 +10,7 @@
 // cioos-atlantic:ibtracs_active_storms
 // cioos-atlantic:ibtracs_historical_storms
 
-import { el } from "date-fns/locale";
+// import { el } from "date-fns/locale";
 
 // https://dev.cioosatlantic.ca/geoserver/ows?service=wfs&version=2.0.0&request=GetCapabilities
 
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     }
 }
 
-export async function wfs_query(storm_name, season, source, source_type) {
+export async function wfs_query(storm_name, season, source, source_type, storm_id,filters) {
     // https://dev.cioosatlantic.ca/geoserver/cioos-atlantic/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=cioos-atlantic%3Aibtracs_active_storms&maxFeatures=50&outputFormat=application%2Fjson
     
     /*
@@ -80,10 +80,10 @@ export async function wfs_query(storm_name, season, source, source_type) {
     if(get_ibtracs){
         console.debug("Fetching IBTRACS active storm data...");
         let ib_filters = [];
-        let ib_source = "ibtracs_active_storms";
+        let ib_source = "ibtracs_active_storms&sortby=SID ASC, ISO_TIME ASC";
 
         if (source_type !== undefined && source_type.trim().toUpperCase() != "ACTIVE") {
-            ib_source = "ibtracs_historical_storms";
+            ib_source = "ibtracs_historical_storms&sortby=SID ASC, ISO_TIME ASC";
         }
 
         // Test if storm name is populated, if so add to array
@@ -91,16 +91,40 @@ export async function wfs_query(storm_name, season, source, source_type) {
             ib_filters.push("NAME='" + storm_name.trim().toUpperCase() + "'");
         }
         
+        
         // Test if season is populated, if so add to array
         if (season) {
             ib_filters.push("SEASON=" + season);
         }
+
+        if (storm_id) {
+            ib_filters.push("SID='" + storm_id+ "'");
+        }
         
-        const ib_features_url = build_wfs_query("cioos-atlantic:" + ib_source, ib_filters);
+
+        if (Object.keys(filters).length > 0) {
+            
+            const filter_string = Object.entries(filters)
+            .map(([key, value]) => {
+                return `${key}${value}`})
+            .join("&");
+            
+            ib_filters.push(filter_string);
+        }
+        console.debug(ib_filters);
+        const ib_features_url = build_wfs_query("cioos-atlantic:" + ib_source, ib_filters, source_type,);
 
         console.debug("IBTRACS URL: ", ib_features_url);
 
         responses["ib_data"] = await fetch_wfs_data(ib_features_url);
+
+        responses["ib_data"].features = responses["ib_data"].features.map((storm_point) => {
+            storm_point.properties.TIMESTAMP = storm_point.id.match(/\d+-\d+-\d+[\sT]\d+:\d+:\d+/)[0].replace(" ", "T");
+            storm_point.properties.STORMNAME = storm_point.properties.NAME;
+
+            return storm_point;
+        });
+
     }
 
     if(get_eccc){
@@ -124,22 +148,44 @@ export async function wfs_query(storm_name, season, source, source_type) {
             eccc_filters.push("(TIMESTAMP BETWEEN " + season + "-01-01 AND " + season + "-12-31)")
         }
         
-        const eccc_features_url = build_wfs_query("cioos-atlantic:" + eccc_sources.join(",cioos-atlantic:"), eccc_filters);
+        const eccc_features_url = build_wfs_query("cioos-atlantic:" + eccc_sources.join(",cioos-atlantic:"), eccc_filters, source_type,);
         
         console.debug("ECCC URL: ", eccc_features_url);
 
         responses["eccc_data"] = await fetch_wfs_data(eccc_features_url);
     }    
-    if(get_erddap){
-        console.debug("Getting ERDDAP data")
-        // cioos-atlantic:erddap_cache
-        wfs_sources.push("erddap_cache_active")
+    if(get_erddap && source_type === "ACTIVE"){
 
-        let erddap_source = "erddap_cache_active"
-        const erddap_features_url = build_wfs_query("cioos-atlantic:" + erddap_source, [])
+        console.debug("Getting ERDDAP data");
+        // cioos-atlantic:erddap_cache
+        wfs_sources.push("erddap_cache_active");
+
+        let erddap_source = "erddap_cache_active&sortby=station,max_time"
+        const erddap_features_url = build_wfs_query("cioos-atlantic:" + erddap_source, [], source_type)
 
         console.debug("ERDDAP URL: ", erddap_features_url)
         responses["erddap_data"] = await fetch_wfs_data(erddap_features_url)
+    }
+    if(get_erddap && source_type === "HISTORICAL" ){// edit for historical data
+        let erddap_filters;
+        if (!filters) {
+            console.debug("Filters not provided, returning an empty array.");
+            erddap_filters = [];
+        }
+        else{
+            erddap_filters = filters;
+        }
+
+        console.debug("Getting ERDDAP data");
+        // cioos-atlantic:erddap_cache
+        wfs_sources.push("erddap_cache");
+        
+
+        let erddap_source = "erddap_cache&sortby=station,max_time"
+        const erddap_features_url = build_wfs_query("cioos-atlantic:" + erddap_source, erddap_filters, source_type)
+
+        console.debug("ERDDAP URL: ", erddap_features_url)
+        responses["erddap_data"] = await fetch_wfs_data(erddap_features_url);
     }
 
     return responses;
@@ -167,12 +213,12 @@ export async function wfs_query(storm_name, season, source, source_type) {
     return data;
 }
 
-function build_wfs_query(source, filters, output_format="application/json", base_url="https://dev.cioosatlantic.ca/geoserver/ows?service=wfs&version=2.0.0"){
-    console.debug();
-
+function build_wfs_query(source, filters, source_type, output_format="application/json", base_url="https://dev.cioosatlantic.ca/geoserver/ows?service=wfs&version=2.0.0", ){
     output_format = "&outputFormat=" + encodeURI(output_format);
     //Filter causes issues for ERDDAP cache
-    const final_filter = (source.includes("erddap")) ? (""):("&cql_filter=" + filters.join(" AND "))
+    
+    const final_filter = (source.includes("erddap") && source_type === "ACTIVE") ? (""):("&cql_filter=" + filters.join(" AND "))
+    
     const url = base_url + "&request=GetFeature&typeName=" + source + output_format + final_filter;
 
     return url;
