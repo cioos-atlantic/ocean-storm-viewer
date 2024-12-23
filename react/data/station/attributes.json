@@ -22,5 +22,17 @@
     "relative_humidity":{
         "name":"Humidity",
         "definition":"Humidity definition"
+    },
+    "wind_from_direction":{
+        "name":"Humidity",
+        "definition":"Humidity definition"
+    },
+    "wind_speed":{
+        "name":"Humidity",
+        "definition":"Humidity definition"
+    },
+    "wind_speed_of_gust":{
+        "name":"Humidity",
+        "definition":"Humidity definition"
     }
 }
