@@ -333,6 +333,8 @@ def main():
     parser_historical.add_argument("--storm", help="The storm identifier, in the format of YYYY_stormname (lowercase). Example: 2022_fiona", nargs='?', type=storm_format)
     parser_historical.add_argument("--min", help="The start time of data in the storm interval. Format: YYYY", nargs='?', type=int)
     parser_historical.add_argument("--max", help="The end time of data in the storm interval. Format: YYYY", nargs='?', type=int)
+    parser_historical.add_argument("--dry", help="Dry run. Will grab from ERDDAP but not commit the data to the database", action="store_true")
+
     """
     parser_historical.add_argument("storm", help="The storm identifier, in the format of YYYY_stormname (lowercase). Example: 2022_fiona", type=storm_format)
     parser_historical.add_argument("min_time", help="The start time of data in the storm interval. Format: YYYY-mm-ddTHH:MM:SSZ", type=datetime_format)
@@ -346,6 +348,8 @@ def main():
         arg_storm = args.storm
         arg_year_min = args.min
         arg_year_max = args.max
+        arg_dry = args.dry
+        print(arg_dry)
         #min_time = datetime.strptime(args.min_time, '%Y-%m-%dT%H:%M:%SZ')
         #max_time = datetime.strptime(args.max_time, '%Y-%m-%dT%H:%M:%SZ')
 
@@ -374,10 +378,12 @@ def main():
                     cached_data.extend(cache_station_data(dataset, dataset_id, storm_id, 
                                                         min_time=datetime.strftime(min_time,'%Y-%m-%dT%H:%M:%SZ'), 
                                                         max_time=datetime.strftime(max_time,'%Y-%m-%dT%H:%M:%SZ')))
-            if(cached_data):
+            if(cached_data and not arg_dry):
                     print('Caching historical storm...')
                     cache_erddap_data(storm_id = storm_id, df=pd.DataFrame(cached_data),destination_table=pg_erddap_cache_historical_table,
                                         pg_engine=engine,table_schema=erddap_cache_historical_schema)
+            elif(arg_dry):
+                print("Dry run")
     # ACTIVE
     else:
         storm_id = "ACTIVE"
