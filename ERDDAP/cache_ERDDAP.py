@@ -47,6 +47,7 @@ pg_ibtracs_historical_table = os.getenv('PG_IBTRACS_HISTORICAL_TABLE')
 docker_user = {'docker'}
 
 active_data_period = config.getint('erddap_cache', 'active_data_period')
+post_storm_period = config.getint('erddap_cache', 'post_storm_period')
 
 engine = create_engine(f"postgresql+psycopg2://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 
@@ -85,8 +86,8 @@ def cache_erddap_data(storm_id, df, destination_table, pg_engine, table_schema, 
     
     with pg_engine.begin() as pg_conn:   
         #print(f"Adding geom column")
-        sql = f"ALTER TABLE public.{destination_table} ADD COLUMN IF NOT EXISTS geom geometry(Point, 4326);"
-        pg_conn.execute(text(sql))
+        #sql = f"ALTER TABLE public.{destination_table} ADD COLUMN IF NOT EXISTS geom geometry(Point, 4326);"
+        #pg_conn.execute(text(sql))
         
        #print("Updating Geometry...")
         sql = f'UPDATE public.{destination_table} SET geom = ST_SetSRID(ST_MakePoint("min_lon", "min_lat"), 4326);'
@@ -117,8 +118,8 @@ def create_table_from_schema(pg_engine, table_name, schema_file, pg_schema='publ
             pg_conn.execute(text(sql))
 
         #print(f"Adding geom column")
-        sql = f"ALTER TABLE {pg_schema}.{table_name} ADD COLUMN IF NOT EXISTS geom geometry(Point, 4326);"
-        pg_conn.execute(text(sql))
+        #sql = f"ALTER TABLE {pg_schema}.{table_name} ADD COLUMN IF NOT EXISTS geom geometry(Point, 4326);"
+        #pg_conn.execute(text(sql))
 
         #print("Committing Transaction.")
         pg_conn.execute(text("COMMIT;"))
@@ -359,6 +360,8 @@ def main():
             storm_id = str(storm['SEASON'].values[0]) + "_" + storm['NAME'].values[0]
             min_time = storm['ISO_TIME']['min']
             max_time = storm['ISO_TIME']['max']
+            if(post_storm_period>0):
+                max_time += timedelta(days=post_storm_period)
             dataset_list = get_erddap_datasets(min_time, max_time)
             cached_data = []
             # Store in shared list to reduce calls and avoid overwriting for active cache
