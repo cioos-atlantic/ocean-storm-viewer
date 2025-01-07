@@ -22,6 +22,7 @@
     "fs": "^0.0.1-security",
     "geolib": "^3.3.4",
     "glob": "^10.4.5",
+    "html-react-parser": "^5.2.1",
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.2",
     "next": "^15.0.3",
