@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useLocation, useHistory} from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { siteTitle } from '@/components/layout';
 import aboutStyles from '../styles/About.module.css';
@@ -7,7 +8,15 @@ import { pastAtlStorms } from '@/data/pastStormsDetails';
 import parse from 'html-react-parser';
 import { faq } from '@/data/faq';
 
+
+
+
+
 export function About(){
+  const router = useRouter();
+
+
+
   return(
     <div className={aboutStyles.container}>
             <Head>
@@ -38,7 +47,7 @@ export function About(){
               <ul>
                 {pastAtlStorms.map((storm, index) => (
                     <li key={index}>
-                      <a href={`#section2.${index}`}>{storm.title}</a>
+                      <a className ={aboutStyles.stormTitle} href={`#section2.${index}`}>{storm.title}</a>
                     </li>
                   ))}
               </ul>
@@ -71,7 +80,8 @@ export function About(){
           {pastAtlStorms.map((storm, index) => (
             <div key={index}>
               <h3 className={aboutStyles.subheading} id={`section2.${index}`}
-              onClick={() =>{console.log(`${storm.title} clicked`)}}>
+              onClick={() =>{console.log(`${storm.title} clicked`)
+                              handleClick(storm.name, storm.year, router)}}>
                 {storm.title}
               </h3>
               <div className={aboutStyles.lightText}>{parse(storm.details)}</div>
@@ -112,36 +122,10 @@ export function About(){
 }
 
 
-async function getStormDetails(storm){
-  console.log('Button clicked for', storm.name);
-  const storm_name = storm.name;
-  const storm_year = storm.year;
 
-  const query = new URLSearchParams({
-    name: storm_name,
-    season: storm_year,      // Using season for storm year
-  }).toString();
-    try {
-      const resource = await fetch(`/api/historical_storms?${query}`);
-      const storm_data = await resource.json();
-  
-      const station_resource = await fetch(`/api/query_stations_historical?${query}`);
-      const historical_station_data = await station_resource.json();
-  
-      //console.log(Leaflet);
-  
-      const historical_storm_data = parseStormData(storm_data, storm.name, map, Leaflet);
-      //console.log(historical_storm_data);
-  
-      console.debug("Historical Storm Data: ", historical_storm_data);
-      console.debug("Historical Station Data: ", historical_station_data);
-  
-      setStormPoints(historical_storm_data);  // Set the storm data
-      setStationPoints(historical_station_data);  // Set the station data
-      
-    
-     
-    } catch (error) {
-      console.error('Error fetching storm:', error);
-    }
+
+
+function handleClick(stormName, stormYear, router){
+  const url = `/?storms=historical&name=${stormName}&season=${stormYear}`;
+  router.push(url);
 }
