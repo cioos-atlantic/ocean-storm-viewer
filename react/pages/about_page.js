@@ -23,7 +23,7 @@ export function About(){
         <section className={aboutStyles.aboutSection}>
           <h1>Table of Content</h1>
             <ul>
-              <a href="#section1">1. Extreme Storms and Hurricanes</a>
+              <a href="#section1" aria-label="Go to Extreme Storms and Hurricanes section">1. Extreme Storms and Hurricanes</a>
               <ul>
                 {faq.map((question, index) => (
                   <li key={index}>
@@ -34,7 +34,7 @@ export function About(){
             </ul>
 
             <ul>
-              <a href="#section2">2. Some Past Atlantic Canada Storms</a>
+              <a href="#section2" aria-label="Go to Some Past Atlantic Canada Storms section">2. Some Past Atlantic Canada Storms</a>
               <ul>
                 {pastAtlStorms.map((storm, index) => (
                     <li key={index}>
@@ -45,7 +45,7 @@ export function About(){
             </ul>
 
             <ul>
-              <a href="#section3">3. How to Find more Information</a>
+              <a href="#section3" aria-label="Go to How to Find more Information section">3. How to Find more Information</a>
             </ul>
 
 
@@ -70,7 +70,8 @@ export function About(){
           </p>
           {pastAtlStorms.map((storm, index) => (
             <div key={index}>
-              <h3 className={aboutStyles.subheading} id={`section2.${index}`}>
+              <h3 className={aboutStyles.subheading} id={`section2.${index}`}
+              onClick={() =>{console.log(`${storm.title} clicked`)}}>
                 {storm.title}
               </h3>
               <div className={aboutStyles.lightText}>{parse(storm.details)}</div>
@@ -82,6 +83,7 @@ export function About(){
                   className={aboutStyles.aboutPageImg}
                   width={350}
                   height={315}
+                  layout="intrinsic"
                 />
                 <figcaption className={aboutStyles.imageCaption}>{parse(storm.imgCaption)}</figcaption>
               </figure>
@@ -92,12 +94,12 @@ export function About(){
         <h2 id="section3">3. How to Find more Information</h2>
         <ul>
           <li>
-            <a href= "https://en.wikipedia.org/wiki/List_of_hurricanes_in_Canada ">
+            <a href= "https://en.wikipedia.org/wiki/List_of_hurricanes_in_Canada " target="_blank" rel="noopener noreferrer" aria-label="Learn about hurricanes in Canada on Wikipedia">
               Hurricanes in Canada 
             </a>
           </li>
           <li>
-            <a href= "https://www.nspower.ca/about-us/articles/details/articles/2022/11/29/you-asked-we-answer-extreme-weather-and-our-power-grid ">
+            <a href= "https://www.nspower.ca/about-us/articles/details/articles/2022/11/29/you-asked-we-answer-extreme-weather-and-our-power-grid" target="_blank" rel="noopener noreferrer" aria-label="Learn more about extreme weather and power grids on Nova Scotia Power Blog">
               Nova Scotia Power Blog 
             </a>
           </li>
@@ -107,4 +109,39 @@ export function About(){
       </main>
     </div>
   )
+}
+
+
+async function getStormDetails(storm){
+  console.log('Button clicked for', storm.name);
+  const storm_name = storm.name;
+  const storm_year = storm.year;
+
+  const query = new URLSearchParams({
+    name: storm_name,
+    season: storm_year,      // Using season for storm year
+  }).toString();
+    try {
+      const resource = await fetch(`/api/historical_storms?${query}`);
+      const storm_data = await resource.json();
+  
+      const station_resource = await fetch(`/api/query_stations_historical?${query}`);
+      const historical_station_data = await station_resource.json();
+  
+      //console.log(Leaflet);
+  
+      const historical_storm_data = parseStormData(storm_data, storm.name, map, Leaflet);
+      //console.log(historical_storm_data);
+  
+      console.debug("Historical Storm Data: ", historical_storm_data);
+      console.debug("Historical Station Data: ", historical_station_data);
+  
+      setStormPoints(historical_storm_data);  // Set the storm data
+      setStationPoints(historical_station_data);  // Set the station data
+      
+    
+     
+    } catch (error) {
+      console.error('Error fetching storm:', error);
+    }
 }
