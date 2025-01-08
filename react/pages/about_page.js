@@ -47,7 +47,7 @@ export function About(){
               <ul>
                 {pastAtlStorms.map((storm, index) => (
                     <li key={index}>
-                      <a className ={aboutStyles.stormTitle} href={`#section2.${index}`}>{storm.title}</a>
+                      <a href={`#section2.${index}`}>{storm.title}</a>
                     </li>
                   ))}
               </ul>
@@ -80,9 +80,17 @@ export function About(){
           {pastAtlStorms.map((storm, index) => (
             <div key={index}>
               <h3 className={aboutStyles.subheading} id={`section2.${index}`}
+              aria-label={`Learn more about the storm: ${storm.title}`}
+              role="button"
+              tabIndex="0"
               onClick={() =>{console.log(`${storm.title} clicked`)
-                              handleClick(storm.name, storm.year, router)}}>
-                {storm.title}
+                              handleClick(storm.name, storm.year, router)}}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleClick(storm.name, storm.year, router);
+                }
+                }}> 
+                  {storm.title}
               </h3>
               <div className={aboutStyles.lightText}>{parse(storm.details)}</div>
               <br></br>
@@ -93,7 +101,6 @@ export function About(){
                   className={aboutStyles.aboutPageImg}
                   width={350}
                   height={315}
-                  layout="intrinsic"
                 />
                 <figcaption className={aboutStyles.imageCaption}>{parse(storm.imgCaption)}</figcaption>
               </figure>
