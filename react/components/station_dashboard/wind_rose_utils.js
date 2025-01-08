@@ -31,6 +31,13 @@ export const cardinalPoints = [
 
 
 
+/**
+ * The function categorizeWindDirection converts a wind direction angle into a cardinal direction
+  * @returns The function `categorizeWindDirection` takes a numerical direction value and categorizes it
+ * into one of the cardinal wind directions (e.g., N, NE, E, etc.). The function calculates the index
+ * of the corresponding cardinal direction based on the input direction value and returns the cardinal
+ * direction as a string.
+ */
 export function categorizeWindDirection(direction) {
   const cardinalPoints = [
     'N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW',
@@ -40,6 +47,13 @@ export function categorizeWindDirection(direction) {
   return cardinalPoints[index];
 }
 
+/**
+ * The function categorizeWindSpeed(speed) categorizes wind speeds into predefined bins and returns the
+ * corresponding label.
+ 
+ * @returns The function `categorizeWindSpeed` returns the label of the wind speed bin that the input
+ * speed falls into. If the input speed does not match any bin, it returns "Unknown".
+ */
 export function categorizeWindSpeed(speed) {
   for (const bin of windSpeedBins) {
     if (speed >= bin.min && (bin.max === undefined || speed < bin.max)) {
@@ -51,6 +65,13 @@ export function categorizeWindSpeed(speed) {
 
 
 
+/**
+ * The function `makeEmptyfreqObj` creates an empty frequency object with cardinal points as keys and
+ * arrays of zeros as values.
+ * @returns The function `makeEmptyfreqObj` is returning an object `freqObj` that has keys representing
+ * cardinal points and values as arrays filled with zeros based on the length of the `windSpeedBins`
+ * array.
+ */
 export function makeEmptyfreqObj(windSpeedBins, cardinalPoints){
   const freqObj =  {};
   cardinalPoints.forEach((point)=>{
@@ -62,6 +83,13 @@ export function makeEmptyfreqObj(windSpeedBins, cardinalPoints){
   
 }
 
+/**
+ * The function `makeFreqFraction` calculates the frequency fraction of each data point in a given object based on the total number of data points.
+ * @returns The function `makeFreqFraction` returns a modified version of the `freqObj` object where
+ * each value has been converted to a frequency fraction based on the `totalDataPoints`. The values in
+ * the object have been transformed to represent the percentage of the total data points that they
+ * account for.
+ */
 export function makeFreqFraction(freqObj, totalDataPoints){
   console.log(totalDataPoints)
   const freqFrac= structuredClone(freqObj);
@@ -81,6 +109,10 @@ export function makeFreqFraction(freqObj, totalDataPoints){
   return freqFrac
 };
 
+/**
+ * The function `extractWindSpeedBins` extracts and returns an array of wind speed labels from a given a set of wind speed bins.
+
+ */
 export function extractWindSpeedBins(){
   const windSpdLabel= []
     
@@ -90,6 +122,11 @@ export function extractWindSpeedBins(){
     return windSpdLabel
 };
 
+/**
+ * The function `makeGroupedList` takes arrays of wind directions and speeds, categorizes them, and
+ * returns a list of objects with wind speed, speed bin, direction, and cardinal direction.
+ 
+ */
 export function makeGroupedList(directions, speeds){
     const groupedList = [];
     directions.forEach((direction, index) => {
@@ -110,6 +147,10 @@ export function makeGroupedList(directions, speeds){
 
 }
 
+/**
+ * The function `processWindSpeeds` processes wind speed data from a source and stores it in an object with unique keys like "wind_speed_1", "wind_speed_2",
+ * etc.
+ */
 export function processWindSpeeds(sourceData){
     const include_var = [ "wind_speed"]
     // Initialize the result object
@@ -128,6 +169,15 @@ export function processWindSpeeds(sourceData){
     return windSpeed;
   }
   
+/**
+ * The function `parseWindData` takes frequency fraction data and wind speed labels, and organizes them
+ * into an array of objects with direction, value, and wind speed bin properties.
+
+ * @returns The `parseWindData` function returns an array of objects containing wind data. Each object
+ * in the array has the properties `direction`, `value`, and `windSpeedBin`. The `direction` property
+ * corresponds to the key from the `freqFrac` object, the `value` property corresponds to the value at
+ * a specific index in the points array, and the `windSpeedBin` property
+ */
 export function parseWindData(freqFrac, windSpdLabel){
     const data = [];
     Object.entries(freqFrac).forEach(([key, points]) => {
@@ -147,49 +197,3 @@ export function parseWindData(freqFrac, windSpdLabel){
 
 }
 
-function ChartComponent({ data, chartKey }) {
-  const chartContainerRef = useRef(null);
-
-  useEffect(() => {
-    const chart = new Chart({
-      container: chartContainerRef.current});
-    chart.options({
-      type: "interval",
-      title:{
-        title: chartKey,
-      },
-      autoFit: true,
-      height: 300,
-      padding: 40,
-      data: data,
-      encode: { x: "direction", y: "value", color: "windSpeedBin", size: 18 },
-      transform: [{ type: "stackY" }],
-      scale: {
-          color: {
-          range: colorPalette,
-          },
-      },
-      coordinate: { type: "polar" },
-      axis: {
-          x: { line: true, grid: true, gridLineDash: [0, 0], gridLineWidth: 1 },
-          y: { title: false, line: true, gridLineWidth: 1 },
-      },
-      tooltip: {
-          title: (d) => d.direction,
-          items: [
-          (d, i, data, column) => ({
-              name: d.windSpeedBin,
-              value: d.value,
-              channel: "y",
-          }),
-          ],
-      },
-      interaction: { tooltip: { shared: true } },
-      });
-    chart.render();
-
-    return () => chart.destroy(); // Cleanup on unmount
-  }, [data]);
-
-  return <div id={`chart-${chartKey}`} ref={chartContainerRef} className="chart-container" />;
-}

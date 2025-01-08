@@ -4,6 +4,13 @@ import { Chart } from "@antv/g2";
 import { categorizeWindDirection, categorizeWindSpeed, makeEmptyfreqObj, makeFreqFraction, makeGroupedList, extractWindSpeedBins, processWindSpeeds, parseWindData, windSpeedBins, cardinalPoints, colorPalette } from './wind_rose_utils';
 
 
+/**
+ * The `RenderWindRose` function renders a wind rose chart based on provided source data if wind rose
+ * data is available.
+ * @returns The `RenderWindRose` function returns a JSX element that conditionally renders either a
+ * message stating "No data available" or a `div` element with an id of "container" that is assigned a
+ * reference using the `chartContainerRef` variable.
+ */
 export function RenderWindRose ( { sourceData, hasWindRoseData }){
   
   const chartContainerRef = useRef(null);
@@ -62,6 +69,13 @@ export function RenderWindRose ( { sourceData, hasWindRoseData }){
 
 
 // Calculate wind speed distribution per direction
+/**
+ * The function `calculateWindSpeedDistribution` processes wind direction and speed data to generate a
+ * distribution chart.
+ 
+ * @returns The function `calculateWindSpeedDistribution` is returning the `windChartData` after
+ * processing the input data points.
+ */
 function calculateWindSpeedDistribution(directions, speeds, totalDataPoints) {
 
   
@@ -89,6 +103,13 @@ function calculateWindSpeedDistribution(directions, speeds, totalDataPoints) {
 
 
 
+/**
+ * The function `generateChartOption` creates chart options for displaying wind speed distribution data
+ * based on input parameters.
+ * @returns The function `generateChartOption` returns an array of chart options for each wind speed
+ * category. Each chart option object contains various configurations for a chart, such as type, title,
+ * data, encoding, scales, coordinates, axes, tooltips, and interactions.
+ */
 function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
   const chartOption = [];
   Object.entries(windSpeeds).map(([key, windSpeed]) => {
@@ -130,6 +151,9 @@ function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
   return chartOption
 }
 
+/**
+ * The function `renderChart` creates a new chart with specified options and renders it in a container.
+ */
 function renderChart(chartOptions) {
   if (chartOptions){
     const chart = new Chart({ container: "container" });

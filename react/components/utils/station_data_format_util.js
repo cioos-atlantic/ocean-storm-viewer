@@ -77,6 +77,19 @@ export function RecentStationData(data, time) {
     
   }
 
+/**
+ * The function `getDisplayName` retrieves the display name of a station from a dataset based on the
+ * station name provided.
+ * @param station_descriptions - An array of objects containing station descriptions. Each object has
+ * properties like `id` and `title`.
+ * @param station_name - station_name is the identifier of a station for which we want to retrieve the
+ * display name. It is used to search for a matching station description in the provided
+ * station_descriptions dataset.
+ * @returns The `getDisplayName` function returns the display name of a station based on the provided
+ * `station_descriptions` dataset and `station_name`. If a match is found in the `station_descriptions`
+ * dataset for the `station_name`, it returns the title of the matched dataset. If no match is found,
+ * it returns the original `station_name`.
+ */
 export function getDisplayName(station_descriptions, station_name){
     let display_name;
 

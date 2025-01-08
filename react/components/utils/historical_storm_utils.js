@@ -2,6 +2,14 @@ import { subYears } from "date-fns";
 import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
 import { flyToPoint } from "../storm_list_item";
 
+/**
+ * This JavaScript function fetches historical storm data from an API based on a specified time range
+ * and returns a list of unique storm objects.
+ * @returns The `getHistoricalStormList` function is returning a list of unique storm data objects that
+ * have been fetched from the API endpoint `/api/historical_storms` based on the query parameters
+ * constructed in the function. The function fetches historical storm data from the API, processes the
+ * data to extract unique storm objects, and then returns this list of unique storm data objects.
+ */
 export async function getHistoricalStormList(){
   // Construct query parameters
   const oneYearAgo = subYears(new Date(), 1);
@@ -38,6 +46,21 @@ export async function getHistoricalStormList(){
   }
 }
 
+/**
+ * The `parseStormData` function parses storm data, organizes it by storm name, and builds storm
+ * features for visualization on a map using Leaflet.
+ * @param storm_data - Storm data containing information about various storms, including their features
+ * and properties.
+ * @param storm_name - The `storm_name` parameter is the name of the storm for which you want to parse
+ * the storm data. This function takes the storm data, storm name, a map object, and the Leaflet
+ * library as input parameters to parse and process the storm data for visualization on the map.
+ * @param map - The `map` parameter in the `parseStormData` function is a reference to a map
+ * object used for displaying geographical data. It is commonly used in web mapping applications to
+ * render interactive maps with markers, layers, and other visual elements. The `Leaflet` parameter is a reference to
+ * @param Leaflet - Leaflet is a popular open-source JavaScript library for interactive maps. It
+ * provides functionalities for displaying maps, adding markers, shapes, and layers, as well as handling user interactions like zooming and panning. * @returns The `parseStormData` function returns the `storm_features` variable after processing the
+ * storm data.
+ */
 export function parseStormData(storm_data, storm_name, map, Leaflet) {
 
   if (storm_data?.ib_data?.features?.length === 0) {
@@ -76,6 +99,19 @@ export function parseStormData(storm_data, storm_name, map, Leaflet) {
 };
 
 // Function to handle harvested historical storm data
+/**
+ * The function `handleHarvestHistoricalData` processes harvested historical storm data by setting
+ * storm and station points and updating the state with the data.
+ * @param data - The `data` parameter in the `handleHarvestHistoricalData` function  contains historical storm data that includes information about storms and stations. This data is used to set the storm points and station points in the application. The function logs the harvested historical
+ * storm data to the console and then sets the
+ * @param setStationPoints - The `setStationPoints` parameter is a function that is used to update the
+ * state with the station data harvested from historical storm data. It is typically a function
+ * provided by a state management library like React's `useState` hook or a similar mechanism in other
+ * frameworks. When called with the `data.station
+ * @param setStormPoints - The `setStormPoints` function is used to update or set the storm data in the
+ * application state. It takes the `data.storm_data` as a parameter and sets this data in the
+ * application state for further processing or display.
+ */
 function handleHarvestHistoricalData(data, setStationPoints, setStormPoints) {
   console.log("Harvested Historical Storm Data:", data);
   //console.log(data.ib_data.features)
@@ -87,6 +123,15 @@ function handleHarvestHistoricalData(data, setStationPoints, setStormPoints) {
 };
 
 
+/**
+ * The `getStationData` function fetches historical station data based on specified parameters and
+ * returns the data as a JSON object.
+ 
+ * @returns The function `getStationData` is returning the historical station data fetched from the API
+ * endpoint `/api/query_stations_historical` based on the provided parameters such as `min_lon`,
+ * `min_lat`, `max_lon`, `max_lat`, `max_storm_time`, and `min_storm_time`. The data is fetched
+ * asynchronously using `fetch` and then converted to JSON format before being returned
+ */
 export async function getStationData(min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time) {
   const query = new URLSearchParams({
     min_time: min_storm_time,
@@ -114,6 +159,16 @@ export async function getStationData(min_lon, min_lat, max_lon, max_lat, max_sto
 
 };
 
+
+
+/**
+ * The function `getStationQueryParams` extracts specific data from historical storm data and returns a
+ * set of query parameters for a station.
+ * @param historical_storm_data - The `getStationQueryParams` function takes in `historical_storm_data`
+ * as a parameter, which seems to be an object containing historical storm data.
+ * @returns The function `getStationQueryParams` returns an array containing the minimum longitude,
+ * minimum latitude, maximum longitude, maximum latitude, maximum storm time, and minimum storm time.
+ */
 export function getStationQueryParams(historical_storm_data) {
   const [min_lon, min_lat, max_lon, max_lat] = historical_storm_data.ib_data.bbox.map(num => num.toString());
 
@@ -130,6 +185,18 @@ export function getStationQueryParams(historical_storm_data) {
 
 }
 
+
+/**
+ * The function `makeStormList` processes storm data to create a list of unique storm objects with
+ * specific properties.
+ * @param storm_data - The `makeStormList` function takes in `storm_data` as a parameter, which is
+ * expected to be an object containing storm data with a specific structure. The function processes
+ * this data to extract information about storms and creates a list of unique storm objects based on
+ * certain criteria like storm name, year,
+ * @returns The function `makeStormList` returns a list of unique storm objects extracted from the
+ * input `storm_data`. Each storm object contains the properties `name`, `year`, `storm_id`,
+ * `display_name`, and `source`, with the source set to "ibtracs".
+ */
 export function makeStormList(storm_data){
   // Create a set to track unique IDs and add objects to the result list
   const uniqueList = [];
@@ -158,16 +225,31 @@ export function makeStormList(storm_data){
   
   
   })
-
   
   return uniqueList
 }
 
+/**
+ * The function `isYear` checks if the input is a valid year in the format of exactly 4 digits.
+ * @param input - The `isYear` function is designed to check if the input is a valid year in the format
+ * of exactly 4 digits. The function uses a regular expression pattern `^\d{4}$` to match exactly 4
+ * digits.
+ * @returns The function isYear returns a boolean value indicating whether the input matches the
+ * pattern for a year (exactly 4 digits).
+ */
 export function isYear(input) {
   const yearPattern = /^\d{4}$/; // Matches exactly 4 digits
   return yearPattern.test(input);
 }
 
+/**
+ * The function isName checks if the input consists only of letters (no spaces or numbers).
+ * @param input - The `isName` function takes an `input` parameter, which is a string representing a
+ * name. The function uses a regular expression pattern `namePattern` to check if the input contains
+ * only letters (no spaces or numbers). The function returns `true` if the input matches the pattern,
+ * @returns The function `isName` is returning a boolean value indicating whether the input string
+ * consists only of letters (no spaces or numbers).
+ */
 export function isName(input) {
   const namePattern = /^[a-zA-Z]+$/; // Matches only letters (no spaces or numbers)
   return namePattern.test(input);
@@ -175,23 +257,44 @@ export function isName(input) {
 
 
 
+/**
+ * The function isStormId checks if the input string matches a specific pattern for a storm ID.
+ * @param input - The `isStormId` function is designed to check if the input matches a specific
+ * pattern. The pattern is defined as a string that starts with 4 digits, followed by 3 digits, then a
+ * single letter (either lowercase or uppercase), and ends with 5 digits.
+ * @returns The function `isStormId` is returning a boolean value indicating whether the input matches
+ * the specified pattern for a storm ID.
+ */
 export function isStormId(input) {
   const namePattern =  /^\d{4}\d{3}[a-zA-Z]\d{5}$/; // Matches only letters (no spaces or numbers)
   return namePattern.test(input);
 }
 
 
+/**
+ * The function `parseForFlyToPoint` takes storm details, storm name, map, and Leaflet as parameters,
+ * retrieves storm data based on the storm name, and then flies the map to that storm data using
+ * Leaflet.
+ * @param storm_details - The `storm_details` parameter is an object containing details about different storms. 
+ * @param storm_name - The `storm_name` parameter is the name of the storm for which you want to parse the details and fly to its location on the map.
+ * @param map - The `map` parameter is a reference to the Leaflet map object where you want to fly to a specific point. Leaflet is a popular open-source JavaScript library for interactive maps.
+ * @param Leaflet - Leaflet is a popular JavaScript library for interactive maps. It provides functionalities to create maps, add layers, markers, and other interactive elements to the map. 
+ */
 export function parseForFlyToPoint(storm_details, storm_name, map, Leaflet){
   //console.log(Leaflet);
   
   const storm_data = storm_details[storm_name];
   console.log(storm_data)
-  flyToPoint(storm_data, map, Leaflet)
-  
-
-  
+  flyToPoint(storm_data, map, Leaflet) 
 }
 
+/**
+ * The function `addSearchParams` updates the URL parameters with the storm name and year, then
+ * navigates to the new URL using the router.
+ * @param stormName - Storm Name in strings
+ * @param stormYear - Storm Year in strings
+ * @param router - The `router` parameter  has a `push` method that allows you to navigate to a new URL by updating the browser's history.
+ */
 export function addSearchParams(stormName, stormYear, router) {
   const currentUrlParams = new URLSearchParams(window.location.search);
   currentUrlParams.set('name', stormName);
