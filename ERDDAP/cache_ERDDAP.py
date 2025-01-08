@@ -236,7 +236,11 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
                 # Might be able to only do the conversion during the 
                 # df_interval = df_interval[time_col].dt.strftime('%Y-%m-%dT%H:%M:%SZ')
                 # Change the dataframe to JSON, can change the format or orientation 
-                station_data = df_interval.to_json(orient="records")
+
+                # Experimental average binning per hour
+                #times = pd.to_datetime(df_interval[time_col])
+                df_interval = df_interval.groupby(pd.Grouper(key=time_col, axis=0, freq="h")).mean(numeric_only=True)
+                station_data = df_interval.reset_index().to_json(orient="records")
 
                 entry = {
                     "storm":storm_id,
@@ -349,7 +353,6 @@ def main():
         arg_year_min = args.min
         arg_year_max = args.max
         arg_dry = args.dry
-        print(arg_dry)
         #min_time = datetime.strptime(args.min_time, '%Y-%m-%dT%H:%M:%SZ')
         #max_time = datetime.strptime(args.max_time, '%Y-%m-%dT%H:%M:%SZ')
 

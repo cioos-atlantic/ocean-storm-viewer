@@ -119,7 +119,7 @@ function parseChartData(sourceData, varCategory){
 
   const station_timeData = get_station_field_data(sourceData,"time", "column_std_names")?.data
   const timeData = station_timeData.map((timestamp) => new Date(timestamp).toLocaleString('en-US', {
-                            //hour: '2-digit',
+                            hour: '2-digit',
                             //minute: '2-digit',
                             day: '2-digit',
                             month: '2-digit',
