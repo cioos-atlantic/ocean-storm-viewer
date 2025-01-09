@@ -26,6 +26,14 @@ export const empty_station_obj = {
 
 // export const empty_station_obj = {pts:[]};
 
+/**
+ * The Layout function in JavaScript sets up a webpage layout with header, main content, and footer,
+ * displaying different content based on query parameters.
+ * @returns The `Layout` component is being returned. It includes the structure of the webpage with a
+ * header, main content area (which may include a map component based on the conditions), and a footer.
+ * The content and components rendered within the `Layout` component depend on the values of `home`,
+ * `topNav`, `logo`, `active_storm_data`, `station_data`, and `querystring`
+ */
 export default function Layout({ children, home, topNav, logo, active_storm_data, station_data, querystring }) {
 
   const [storms, setStorms] = useState([]);

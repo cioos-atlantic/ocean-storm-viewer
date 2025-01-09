@@ -19,6 +19,11 @@ const otherStormList = [
 
 
 
+/**
+ * The `HistoricalStormList` function fetches historical storm data, displays recent storms with
+ * clickable links, and allows users to search for specific storms by name or year.
+ 
+ */
 export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet }) {
   
   const [stormList, setStormList] = useState([]);
@@ -131,6 +136,11 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
 
 }
 
+/**
+ * The handleClick function handles a button click event, fetches historical storm and station data
+ * based on the storm details, and sets the retrieved data for display on the map.
+
+ */
 export async function handleClick( storm, setStationPoints, setStormPoints, map, Leaflet, router) {
   //console.log(Leaflet);
   
@@ -160,24 +170,12 @@ export async function handleClick( storm, setStationPoints, setStormPoints, map,
     id: storm_id
   }).toString();
 
-  //const resource = await fetch(process.env.BASE_URL + '/api/historical_storms')
 
-  // process.env reading empty
-
-  //console.log(process)
   try {
     const resource = await fetch(`/api/historical_storms?${query}`);
     const storm_data = await resource.json();
 
-     
-    //console.log(storm_data);
-
-    //console.log(historical_storm_data);
-    //const [min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time] = getStationQueryParams (historical_storm_data)
-
-    //console.log(min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time);
-
-    //const historical_station_data = await getStationData(min_lon, min_lat, max_lon, max_lat, max_storm_time, min_storm_time )
+    
 
     //console.log(historical_station_data)
     const station_resource = await fetch(`/api/query_stations_historical?${query}`);
@@ -194,12 +192,7 @@ export async function handleClick( storm, setStationPoints, setStormPoints, map,
     setStormPoints(historical_storm_data);  // Set the storm data
     setStationPoints(historical_station_data);  // Set the station data
     
-  
-    // Trigger the callback to send data back to the parent
-    // handleHarvestHistoricalData({
-    //   storm_data: historical_storm_data,
-    //   station_data: historical_station_data
-    // }, setStationPoints, setStormPoints);
+
 
   } catch (error) {
     console.error('Error fetching storm:', error);
@@ -210,6 +203,14 @@ export async function handleClick( storm, setStationPoints, setStormPoints, map,
 
 
 
+/**
+ * The function `handleFormSubmit` processes user input from a form, extracts storm name and year,
+ * performs a search, and updates the search results.
+ 
+ * @returns The `handleFormSubmit` function is returning the unique list of search results obtained
+ * from the `handleSearch` function after processing the input values for storm name and year. This
+ * unique list is then set as the search result using the `setSearchResult` function.
+ */
 async function handleFormSubmit(e, setSearchResult){
   //prevent default behavior
   let storm_name = "";
@@ -243,6 +244,13 @@ async function handleFormSubmit(e, setSearchResult){
   
 }
 
+/**
+ * The function `handleSearch` fetches historical storm data based on the storm name and year, creates
+ * a list of unique storm objects, and returns the list.
+ 
+ * @returns The `handleSearch` function is returning the `uniqueList` variable, which contains the list
+ * of unique storm data objects obtained from the API call.
+ */
 export async function handleSearch(storm_name, storm_year){
   let uniqueList;
 

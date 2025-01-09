@@ -10,6 +10,11 @@ const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
 
 
+/**
+ * The function `Map` returns a JSX element that displays a map with a specific tile layer and a
+ * hurricane response zone overlay.
+ * @returns The code snippet is a React component named `Map` that renders a map container * This returns a map without any station or storm points.
+ */
 export default function Map() {
 
 

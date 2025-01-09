@@ -1,5 +1,9 @@
 import { GeoJSON } from 'react-leaflet'
 
+/**
+ * The function LineOfTravel renders a GeoJSON component with styling based on storm line data.
+ 
+ */
 export default function LineOfTravel({ storm_line_data }) {
     return (
         <GeoJSON
