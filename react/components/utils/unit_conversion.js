@@ -1,6 +1,7 @@
 export function convert_unit_data (value, unit_from, unit_to=null){
   // Checks for certain values to convert or just reformat  
-  return (unit_from == 'm/s' && unit_to == 'knots') ? windSpeedToKnots(value)
+  return (value == null) ? {'value':NaN, 'unit':unit_from}
+  : (unit_from == 'm/s' && unit_to == 'knots') ? windSpeedToKnots(value)
   : (unit_from == 'm/s') ? windSpeedToKmh(value) //km/h default instead of m/s
   : (unit_from == 'm s-1') ? windSpeedToKmh(value) //km/h default instead of m/s
   : (unit_from == 'km h-1') ? {'value':value, 'unit':'km/h'} //km/h default instead of m/s
