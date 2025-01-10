@@ -11,6 +11,10 @@ import { faq } from '@/data/faq';
 
 
 
+/**
+* The About component is responsible for rendering the About page of the Atlantic Hurricane Dashboard.
+* It includes sections for extreme storms and hurricanes, past Atlantic Canada storms, and how to find more information.
+*/
 
 export function About(){
   const router = useRouter();
@@ -132,6 +136,11 @@ export function About(){
 
 
 
+/**
+ * Handles the click event on a past Atlantic Canada storm's title.
+ * It constructs a URL with the storm's name and year, and navigates to that URL using the provided router.
+ 
+ */
 function handleClick(stormName, stormYear, router){
   const url = `/?storms=historical&name=${stormName}&season=${stormYear}`;
   router.push(url);
