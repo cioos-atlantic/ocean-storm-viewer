@@ -8,6 +8,18 @@ import StormPressure from './Storm_popup/storm_pressure';
 export const empty_point_obj = { properties: {}, geometry: {} }
 
 
+/**
+ * This function displays detailed information about a storm point on a map.
+ * It takes in two parameters:
+ * @param {Object} storm_point_hover - An object representing the storm point data.
+ * @param {Function} onClose - A function to be called when the close button is clicked.
+ * 
+ * The function first checks if the storm point data is empty. If it is, it returns an empty JSX element.
+ * Then, it extracts relevant information from the storm point data using the `fetch_value` function.
+ * The extracted information includes the timestamp, storm name, storm type, storm force, maximum wind speed, and minimum pressure.
+ * 
+ * The function then renders the storm point details in a JSX format, including the extracted information and any additional details.
+ */
 export default function StormPointDetails({ storm_point_hover, onClose }) {
     // If properties has no items, it's an empty storm_point_hover object and should return
     // immediately
@@ -52,7 +64,7 @@ export default function StormPointDetails({ storm_point_hover, onClose }) {
                     <p><strong>Error radius :</strong> {storm_point_hover.properties.ERRCT} nmi ({(storm_point_hover.properties.ERRCT * 1.852).toFixed(2)} km)</p>
                 }
             </div>
-            
+
         </div>
     )
 }

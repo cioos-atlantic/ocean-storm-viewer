@@ -12,6 +12,9 @@ const chartData ={
   rows:{}
 }
 
+/**
+ * Renders a line chart using Chart.js to display station data.
+ */
 function RenderChart({ sourceData, position, stationName, varCategory }) {
   const chartRef = useRef(null); // Reference to the canvas element
 
@@ -108,7 +111,7 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
   }, [sourceData, varCategory, stationName]); // Re-run effect if chartData or stationName changes
 
   return (
-    
+
       <canvas
         ref={chartRef}
         style={{
@@ -119,7 +122,7 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
           aspectRatio: '100 / 100', // Maintain a 1:1 aspect ratio if you want
         }}
       />
-    
+
   );
 }
 

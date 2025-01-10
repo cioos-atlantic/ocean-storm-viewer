@@ -104,46 +104,54 @@ const storm_types = {
 };
 
 
+/**
+ * This function represents a React component that renders a storm marker on a map.
+ * It takes in three props: storm_point_data, setHoverMarker, and setShowPopup.
+ *
+ * @param {Object} storm_point_data - The data object representing a storm point.
+ * @param {Function} setHoverMarker - A function to set the hovered marker.
+ * @param {Function} setShowPopup - A function to show or hide the popup.
+ *
+ * @returns {JSX.Element} - A React Marker component with event handlers and custom icon.
+ */
 export default function StormMarker({ storm_point_data, setHoverMarker, setShowPopup }) {
 
     const position = flip_coords(storm_point_data.geometry.coordinates);
 
-    let clicked = false
+    let clicked = false;
     // Keep track of previously clicked marker to default back to?
 
-    const storm_type= storm_point_data.properties["NATURE"];
-    const storm_icon= storm_types[storm_type]
-    const storm_category = String(storm_point_data.properties["USA_SSHS"])
+    const storm_type = storm_point_data.properties["NATURE"];
+    const storm_icon = storm_types[storm_type];
+    const storm_category = String(storm_point_data.properties["USA_SSHS"]);
     let arcColor, ellipseColor, textColor, arcStroke;
 
     const [customIcon, setCustomIcon] = useState(storm_icon);
 
-    if (storm_category === "undefined"){
+    if (storm_category === "undefined") {
         arcColor = "#000000";
-        ellipseColor= "#000000";
+        ellipseColor = "#000000";
         textColor = "#000000";
         arcStroke = "#000000";
-
-    }
-    else{
+    } else {
         //console.log(storm_categories[storm_category])
-        arcColor= storm_categories[storm_category]["arcColor"];
-        arcStroke= storm_categories[storm_category]["arcStroke"];
-        ellipseColor= storm_categories[storm_category]["ellipseColor"];
-        textColor= storm_categories[storm_category]["textColor"];
+        arcColor = storm_categories[storm_category]["arcColor"];
+        arcStroke = storm_categories[storm_category]["arcStroke"];
+        ellipseColor = storm_categories[storm_category]["ellipseColor"];
+        textColor = storm_categories[storm_category]["textColor"];
     }
 
     //console.log(storm_point_data.properties)
-   // console.log(String(storm_point_data.properties["USA_SSHS"]));
-    
+    // console.log(String(storm_point_data.properties["USA_SSHS"]));
+
     const svgPath = storm_type_info[storm_type]["exp_img"];
     //console.log(storm_type_info[storm_type])
     //storm_type_info[storm_type]["img"]
-    //const arcColor= storm_categories[storm_category]["arcColor"];
-    //const ellipseColor= storm_categories[storm_category]["ellipseColor"];
-    //const textColor= storm_categories[storm_category]["textColor"];
-    //const icon=storm_types[storm_type];
-    
+    //const arcColor = storm_categories[storm_category]["arcColor"];
+    //const ellipseColor = storm_categories[storm_category]["ellipseColor"];
+    //const textColor = storm_categories[storm_category]["textColor"];
+    //const icon = storm_types[storm_type];
+
     useEffect(() => {
         (async () => {
             const arcColor = storm_categories[storm_category]?.arcColor || "#000000";
@@ -170,12 +178,14 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setShowP
             eventHandlers={{
                 mouseover: (event) => setHoverMarker(storm_point_data),
                 click: (event) => {
-                    setHoverMarker(storm_point_data)
-                    clicked = true},
+                    setHoverMarker(storm_point_data);
+                    clicked = true;
+                },
                 mouseout: (event) => {
-                    if(!clicked)
-                        setHoverMarker(empty_point_obj)}
-
+                    if (!clicked) {
+                        setHoverMarker(empty_point_obj);
+                    }
+                }
             }}
             icon={customIcon}
         >

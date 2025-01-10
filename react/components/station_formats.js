@@ -103,6 +103,9 @@ export function formatCioosStations(data_obj, children, row_position){
     children.push(<br />)
     children.push(<span><strong>Humidity:</strong> {parseInt(relative_humidity)}%</span>)}
   }
+/**
+ * Converts a Unix timestamp to a human-readable date and time string.//++
+ */
 export function formatCioosDateTime(date_str){
   const date = new Date(date_str * 1);
   const options = { 
@@ -112,13 +115,16 @@ export function formatCioosDateTime(date_str){
     hour: '2-digit', 
     minute: '2-digit',
     timeZoneName: 'long'
-};
+  };
 
   const timestamp = date.toLocaleString('en-US', options);
   return timestamp
 }
 
 
+/**
+ * Parses and converts raw station data into a structured format.//+
+ */
 export function parseData(fullStationData) {
   console.log(fullStationData);
   //console.log(JSON.parse(chartData));
@@ -159,15 +165,18 @@ export function parseData(fullStationData) {
 
     console.log(stationDataTable);
 
-  
+
   });
   console.log(stationDataTable);
   const convertedStationData= dataConversion(stationDataTable);
 
-  
+
   return convertedStationData 
 }
 
+/**
+ * Converts raw station data into a structured format with converted units.
+ */
 function dataConversion(stationDataTable){
   let rawStationData = { ...stationDataTable }; // make deep copy
 
@@ -200,8 +209,8 @@ function dataConversion(stationDataTable){
           //console.log(`Value: ${v}, Converted: ${resultKmh.value}`);
           return resultKmh.value}); 
       }
-      
-      
+
+
       //console.log(station)
     })
 
@@ -210,10 +219,13 @@ function dataConversion(stationDataTable){
   return rawStationData
 
 }
+/**
+ * Retrieves the bounding box (bbox) of a storm's track data.
+ *
+ */
 export function getStormBbox (storm_data){
   const bbox = storm_data["pts"]["features"]['0'].bbox;
   console.log(bbox);
-  return bbox;;
-
+  return bbox;
 }
     

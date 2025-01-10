@@ -1,5 +1,13 @@
 import { GeoJSON } from 'react-leaflet'
 
+/**
+ * This function renders wind speed radii data on a map using the GeoJSON component from 'react-leaflet'.
+ * It checks if the hovered marker's timestamp matches the wind speed radii data's timestamp,
+ * and conditionally displays the wind speed radii.
+ * If the hovered marker's timestamp matches the wind speed radii data's timestamp,
+ * it returns a GeoJSON component with the wind speed radii data and style options.
+ * Otherwise, it returns an empty fragment.
+ */
 export default function WindSpeedRadius({ storm_wind_radii_data, hover_marker }) {
     let display_wind_speed_radii = true;
     if (hover_marker.properties.TIMESTAMP != storm_wind_radii_data.properties.TIMESTAMP) {
