@@ -26,6 +26,7 @@ const otherStormList = [
  
  */
 export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation}) {
+
   
   const [stormList, setStormList] = useState([]);
   const [searchResult, setSearchResult] = useState({})
@@ -119,7 +120,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           searchResult.length > 0 && searchResult.map((storm, index) => {
             return (
               <li key={storm.storm_id} className={(storm.name)}>
-                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router) }}>{`${storm.display_name}`}</a>
+                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation) }}>{`${storm.display_name}`}</a>
               </li>
             )
           })}
