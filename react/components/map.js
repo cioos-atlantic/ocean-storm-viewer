@@ -71,6 +71,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             source_type={source_type}
             setStormPoints={setStormPoints}
             setStationPoints={setStationPoints}
+            setSelectedStation={setSelectedStation}
           />
 
           <TileLayer

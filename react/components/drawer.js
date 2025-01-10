@@ -13,7 +13,7 @@ import Leaflet from 'leaflet';
  * `styles.drawer_interior`. Depending on the `source_type`, either the `ActiveStormList`,
  * `HistoricalStormList`, or a placeholder for the Home Page is rendered within the `Drawer` component.
  */
-export default function Drawer({ children, element_id, classes, storm_data, source_type, setStormPoints, setStationPoints }) {
+export default function Drawer({ children, element_id, classes, storm_data, source_type, setStormPoints, setStationPoints, setSelectedStation }) {
     let other = null;
 
     switch (classes) {
@@ -39,6 +39,7 @@ export default function Drawer({ children, element_id, classes, storm_data, sour
                             setStormPoints={setStormPoints}
                             map={map}
                             Leaflet={Leaflet}
+                            setSelectedStation={setSelectedStation}
                             />
                         ) : source_type == "historical" ? (
                         <HistoricalStormList
@@ -46,6 +47,7 @@ export default function Drawer({ children, element_id, classes, storm_data, sour
                             setStormPoints={setStormPoints}
                             map={map}
                             Leaflet={Leaflet}
+                            setSelectedStation={setSelectedStation}
                         />
                     ) : (
                         <>

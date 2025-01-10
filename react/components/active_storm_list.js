@@ -35,7 +35,7 @@ export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
  * items with details for each storm. The component also conditionally renders a "Show All" link if
  * there are active storms available.
  */
-export default function ActiveStormList({ active_storm_data, setStormPoints, map, Leaflet }) {
+export default function ActiveStormList({ active_storm_data, setStormPoints, map, Leaflet, setSelectedStation }) {
   const [selected_storm, setSelectedStorm] = useState("");
 
   let ib_storm_list = []
@@ -89,6 +89,7 @@ export default function ActiveStormList({ active_storm_data, setStormPoints, map
                 is_selected={(storm_name == selected_storm)}
                 map={map}
                 Leaflet={Leaflet}
+                setSelectedStation={setSelectedStation}
               />
             )
           })}

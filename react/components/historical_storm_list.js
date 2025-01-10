@@ -4,6 +4,7 @@ import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
 import { useEffect, useState } from 'react';
 import { getHistoricalStormList, parseStormData, makeStormList, isName, isYear, parseForFlyToPoint, addSearchParams } from './utils/historical_storm_utils.js';
 import { useRouter } from 'next/router';
+import { empty_station_obj } from './layout.js';
 
 
 const otherStormList = [
@@ -24,7 +25,7 @@ const otherStormList = [
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet }) {
+export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation}) {
   
   const [stormList, setStormList] = useState([]);
   const [searchResult, setSearchResult] = useState({})
@@ -66,7 +67,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           const selectedStorm = stormObjectList[0];
           console.log(selectedStorm);
           if (selectedStorm) {
-            await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router);
+            await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation);
           }
         }
     }
@@ -89,7 +90,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
             return (
               <li key={storm.storm_id} className={(storm.name)}>
                 <a onClick={(e) => { 
-                  handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router);
+                  handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation);
                   
                   //console.log(storm);
                   }}>{`${storm.display_name}`}</a>
@@ -141,8 +142,9 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
  * based on the storm details, and sets the retrieved data for display on the map.
 
  */
-export async function handleClick( storm, setStationPoints, setStormPoints, map, Leaflet, router) {
+export async function handleClick( storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation) {
   //console.log(Leaflet);
+  setSelectedStation(empty_station_obj)
   
   console.log('Button clicked for', storm.name);
   const storm_name = storm.name;

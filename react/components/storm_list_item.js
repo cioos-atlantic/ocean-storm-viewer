@@ -35,7 +35,7 @@ export function flyToPoint(storm_data, map, Leaflet){
  *
  * @returns {JSX.Element} - The JSX representation of the StormListItem component.
  */
-export default function StormListItem({ storm_name, storm_data, setSelectedStorm, setStormPoints, is_selected, map, Leaflet }) {
+export default function StormListItem({ storm_name, storm_data, setSelectedStorm, setStormPoints, is_selected, map, Leaflet, setSelectedStation }) {
     const date_time_format_min = "MMMM do, yyyy";
     const date_time_format_full = "MMM do, yyyy h:mm a X";
     const first_point = storm_data.data[0];
@@ -57,7 +57,7 @@ export default function StormListItem({ storm_name, storm_data, setSelectedStorm
         <div 
             className={"storm_card " + selected }
             onClick={(e) => { 
-                populateStormDetails(e, storm_data, setSelectedStorm, setStormPoints);
+                populateStormDetails(e, storm_data, setSelectedStorm, setStormPoints, setSelectedStation);
                 console.log(storm_data)
                 flyToPoint(storm_data, map, Leaflet);
             }}
