@@ -65,7 +65,7 @@ export default function ActiveStormList({ active_storm_data, setStormPoints, map
               <a onClick={(e) => { populateAllStormDetails(e, storm_details, setSelectedStorm, setStormPoints) }}>Show All</a>
             </li>
           ):(
-            <></>
+            <p>No data exists for active storms right now</p>
           )}
         </ul>
         
