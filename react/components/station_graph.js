@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController} from 'chart.js';
 import { get_station_field_data, get_station_field_units, get_station_field_position, getColumnNameList, getUniqueStdNamesList } from './utils/station_data_format_util';
 import { convert_unit_data, windSpeedToKmh, windSpeedToKnots } from './utils/unit_conversion';
+import { graph_colour } from './station_dashboard/station_graph/graph_config.js'
 
 // Register necessary components, including the Line controller
 Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend);
@@ -108,14 +109,13 @@ const getRandomColor = () => {
   return color;
 };
 
-/*
-const getColour = (var) => {
-
-  let colour = '#'
-  colour = getRandomColor()
-  return colour
+function getColour(graph_colour_list, var_name){
+  let colour = '';
+  console.log(var_name)
+  console.log(graph_colour_list)
+  colour = var_name in graph_colour_list ? graph_colour[var_name] : getRandomColor()
+  return colour;
 }
-*/
 
 
 export default React.memo(RenderChart);
@@ -147,7 +147,10 @@ function parseChartData(sourceData, varCategory){
     console.log(variable)
 
     const column_names_list = getColumnNameList(column_std_names, column_names, variable)
-
+    
+    var graph_colour_list = {}
+    Object.assign(graph_colour_list, graph_colour);
+    console.log(graph_colour_list)
     column_names_list.forEach(col_name => {
       const unit = get_station_field_units(sourceData, col_name)
       
@@ -158,7 +161,7 @@ function parseChartData(sourceData, varCategory){
         datasets.push({
         label: `${data_obj.long_name} (${convert_unit_data(values[0], unit).unit})` || key, //  std_name if available
         data: values.map((value)=>convert_unit_data(value,unit).value) || [], // Ensure that value exists
-        borderColor: getRandomColor(), // Generate random colors for each line
+        borderColor: getColour(graph_colour_list, variable), // Generate random colors for each line
         backgroundColor: 'rgba(0, 0, 0, 0)',
         fill: false,
       })}
