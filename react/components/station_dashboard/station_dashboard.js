@@ -7,7 +7,7 @@ import styles from '../station_marker.module.css'
 import RenderChart from '../station_graph.js'
 import { BlockquoteLeft } from "react-bootstrap-icons";
 
-export default function StationDashboard({children, selected_station, setSelectedStation, station_descriptions, time, selectedTab, setSelectedTab}) {
+export default function StationDashboard({children, selected_station, setSelectedStation, station_descriptions, time, selectedTab, setSelectedTab, isDrawerOpen}) {
   
     const stationData = selected_station
       
@@ -51,7 +51,7 @@ export default function StationDashboard({children, selected_station, setSelecte
       // Data for station doesn't exist at the provided time
 
     return (
-        <div key="01-station-dashboard" className="station_dashboard">
+        <div key="01-station-dashboard" className={`station_dashboard ${isDrawerOpen ? 'drawerOpen' : 'drawerClosed'}`}>
             <div className="dash-header">
                 <button
                     className="close"

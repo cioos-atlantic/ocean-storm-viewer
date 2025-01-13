@@ -30,7 +30,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
 
   // The state variable that contains the station that was last clicked on
   const [selected_station, setSelectedStation] = useState(empty_station_obj);
-  const [selected_tab, setSelectedTab] = useState(0)
+  const [selected_tab, setSelectedTab] = useState(0);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const allDatasetDescriptions = useDatasetDescriptions();
 
@@ -56,6 +57,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             storm_timestamp = {new Date()}
             selectedTab = {selected_tab}
             setSelectedTab = {setSelectedTab}
+            isDrawerOpen= {isDrawerOpen}
           ></StationDashboard>
         )}
         <MapContainer
@@ -71,6 +73,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             source_type={source_type}
             setStormPoints={setStormPoints}
             setStationPoints={setStationPoints}
+            setIsDrawerOpen= {setIsDrawerOpen}
+            isDrawerOpen= {isDrawerOpen}
           />
 
           <TileLayer

@@ -1,5 +1,5 @@
 .drawer {
-    position: absolute;
+    position: relative;
     top: 0;
     background-color: white;
     z-index: 7000;
@@ -22,3 +22,107 @@
     margin-top: 5rem;
     padding: 2rem;
 }
+
+
+.closeButton {
+    position: absolute;
+    top: 5.2rem; /* Adjust vertical position */
+    right: 0.6rem; /* Adjust horizontal position */
+    width: 1.5rem; /* Button width */
+    height: 1.5rem; /* Button height */
+    background-color: transparent; /* Transparent background */
+    border: 2px solid #e55162; /* Border color */
+    border-radius: 50%; /* Circular shape */
+    color: #e55162; /* X color */
+    font-size: 10px; /* Font size for the X */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center the X inside the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+}
+
+.closeButton:hover {
+    background-color: #e55162; /* Change background color on hover */
+    color: white; /* Change text color on hover */
+}
+.closeButton:focus {
+    outline: none; /* Remove outline when focused */
+    box-shadow: 0 0 0 3px rgba(229, 81, 98, 0.5); /* Add a glow around the button */
+}
+
+.openButton{position: absolute;
+    top: 0;
+    left: 0; /* For left drawer */
+    width: 20px; /* Adjust width of the bar */
+    height: 100%; /* Full height of the drawer */
+    background-color: #e55162; /* Background color */
+    border: none; /* Remove border */
+    cursor: pointer; /* Pointer cursor */
+    z-index: 7001; /* Above drawer */
+    transition: background-color 0.3s ease; /* Smooth hover transition */
+}
+.openButton:hover {
+    background-color: hsl(348, 77%, 38%); /* Darker color on hover */
+}
+/* If the drawer is on the right */
+.drawer.right .openButton {
+    left: auto;
+    right: 0; /* Align to the right edge */
+}
+/* Rotated Text Inside the Vertical Bar */
+.openButtonText {
+    color: white; /* Text color */
+    font-size: 12px; /* Font size */
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold; /* Bold text */
+    writing-mode: vertical-rl; /* Vertical text layout */
+    text-orientation: mixed; /* Orientation for better appearance */
+    transform: rotate(180deg); /* Flip text for proper reading direction */
+    text-align: center;
+    line-height: 1; /* Adjust line height for neat spacing */
+}
+
+
+@media (max-width: 1024px) {
+    .drawer {
+        max-width: 20%;
+        width: 20%;
+    }
+    .drawer_interior {
+        margin-top: 5rem;
+        padding: 0.8rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .drawer {
+        max-width: 30%;
+        width: 30%;
+    }
+    .drawer_interior {
+        margin-top: 5rem;
+        padding: 0.8rem;
+    }
+}
+@media (max-width: 768px) {
+    .drawer {
+        max-width: 30%;
+        width: 30%;
+    }
+    .drawer_interior {
+        margin-top: 5rem;
+        padding: 0.8rem;
+    }
+}
+@media (max-width: 576px) {
+    .drawer {
+        max-width: 50%;
+        width: 50%;
+    }
+    .drawer_interior {
+        margin-top: 5rem;
+        padding: 0.8rem;
+    }
+}
+
