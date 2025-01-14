@@ -285,5 +285,8 @@ footer {
   .storm_card {
     font-size: 0.8rem; /* Smaller text for storm cards */
   }
+  .station_dashboard .dash-body {
+    width: 100%; /* Green border for body */
+  }
 
 }

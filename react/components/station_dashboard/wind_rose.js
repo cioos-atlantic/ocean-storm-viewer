@@ -98,10 +98,11 @@ function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
       type: "interval",
       title: key,
       autoFit: true,
-      height: "360",
-      padding: "auto",
+      height: "300",
+      //width: "100%",
+      padding: "0px",
       data: windChartData,
-      encode: { x: "direction", y: "value", color: "windSpeedBin", size: 18 },
+      encode: { x: "direction", y: "value", color: "windSpeedBin" },
       transform: [{ type: "stackY" }],
       scale: {
           color: {
@@ -137,8 +138,6 @@ function renderChart(chartOptions) {
 
     chart.options({
       type: "spaceFlex",
-      width: 1000,
-      height: 400,
       children: chartOptions,
     });
 
