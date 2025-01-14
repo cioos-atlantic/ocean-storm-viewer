@@ -51,7 +51,17 @@ export function RenderWindRose ( { sourceData, hasWindRoseData }){
       {!hasWindRoseData ? (
         <div>No data available</div>
       ) : (
-        <div id="container" ref={chartContainerRef} />
+        <div id="container" 
+        ref={chartContainerRef}
+        style={{
+          width: '100%',
+          height: '100%',
+          overflow: 'auto', // Allow scroll if content overflows
+          position: 'relative',
+          overflowX: 'scroll',
+          //overflowY: 'scroll',
+        }}
+        />
       )}
     </div>
   );
@@ -98,9 +108,10 @@ function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
       type: "interval",
       title: key,
       autoFit: true,
-      height: "300",
+      //height: "100%",
       //width: "100%",
-      padding: "0px",
+      padding: "0,0,0,0",
+      //margin: "0,0,0,0",
       data: windChartData,
       encode: { x: "direction", y: "value", color: "windSpeedBin" },
       transform: [{ type: "stackY" }],
@@ -108,6 +119,9 @@ function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
           color: {
           range: colorPalette,
           },
+      },
+      label:{
+        position:"outside"
       },
       coordinate: { type: "polar" },
       axis: {
@@ -139,6 +153,10 @@ function renderChart(chartOptions) {
     chart.options({
       type: "spaceFlex",
       children: chartOptions,
+      //width: "auto", // Set the desired width of the chart
+      //height: "auto", // Set the desired height of the chart
+      //overflow: 'auto',
+
     });
 
     chart.render();

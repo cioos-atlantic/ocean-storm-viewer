@@ -264,9 +264,11 @@ footer {
     height: 40px; /* Slightly smaller height for phones */
   }
   .station_dashboard {
-    width: 100%; /* Full width for small screens */
+    width: 95%; /* Full width for small screens */
     margin-left: 0; /* Remove left margin */
     padding: 0.5rem; /* Reduce padding for compactness */
+    left: 20px;
+    bottom: 35px;
   }
   .info_pane {
     margin-top: 5%; /* Reduce margin for better usability */
@@ -287,6 +289,10 @@ footer {
   }
   .station_dashboard .dash-body {
     width: 100%; /* Green border for body */
+  }
+  .canvas{
+    width: 100%;
+    height: 100%;
   }
 
 }

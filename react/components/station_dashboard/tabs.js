@@ -2,6 +2,8 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import TabList from '@mui/lab/TabList';
+import TabContext from '@mui/lab/TabContext';
 import Box from '@mui/material/Box';
 import { RenderWindRose } from './wind_rose';
 import RenderChart from '../station_graph.js'
@@ -17,7 +19,7 @@ function CustomTabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box sx={{ p: 1 }}>{children}</Box>}
     </div>
   );
 }
@@ -65,20 +67,34 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%'}}>
+      <TabContext value={String(selectedTab)}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={selectedTab} onChange={handleChange} aria-label="basic tabs example">
+        <TabList 
+          value={selectedTab} 
+          onChange={handleChange} 
+          aria-label="basic tabs example"
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile // Ensures scroll buttons appear on mobile devices
+          sx={{
+            '.MuiTabs-flexContainer': {
+              justifyContent: 'space-between',},
+            '.MuiTabScrollButton-root': {
+              display: 'block', // Ensure scroll buttons are visible
+              },
+          }}>
           <Tab label="Summary" {...a11yProps(0)} />
           <Tab label="Wind Speed" {...a11yProps(1)} disabled={!variablePresence['wind_speed']}/>
           <Tab label="Wind Dir." {...a11yProps(2)} disabled={!variablePresence['wind_from_direction']} />
           <Tab label="Temperature" {...a11yProps(3)} disabled={!variablePresence['temperature']}/>
           <Tab label="Waves" {...a11yProps(4)} disabled={!variablePresence['wave']}/>
           <Tab label="Pressure" {...a11yProps(5)} disabled={!variablePresence['air_pressure']}/>
-        </Tabs>
+        </TabList>
       </Box>
       <CustomTabPanel value={selectedTab} index={0}>
         {stationSummaryText}
-        <div class="data-footer">
+        <div className="data-footer">
                 <a href={data_link} target="_blank">Full data</a>
         </div>
       </CustomTabPanel>
@@ -100,6 +116,7 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
       <CustomTabPanel value={selectedTab} index={5}>
         {generateGraph("air_pressure")}
       </CustomTabPanel>
+      </TabContext>
     </Box>
   );
 }

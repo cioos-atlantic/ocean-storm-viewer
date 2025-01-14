@@ -86,6 +86,8 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
         style={{
           top: 0,
           left: 0,
+          width: '100%',
+          //height: '200px', // You can adjust this based on your needs
           maxWidth: 'auto',
           maxHeight: '200px', // You can keep this if you want to maintain responsiveness
           aspectRatio: '100 / 100', // Maintain a 1:1 aspect ratio if you want
