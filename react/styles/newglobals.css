@@ -9,7 +9,7 @@ body {
 /* Header Styling */
 header {
   width: 100%;
-  position: fixed;
+  position: absolute;
   top: 0;
   background-color: #e55162; /* Light red background for header */
   z-index: 8000; /* High z-index to ensure header stays on top */
@@ -20,7 +20,7 @@ header img.logo {
   float: left; /* Align logo to the left */
   background-color: white; /* White background for logo */
   height: 75px; /* Matches header height */
-  width: 15%; /* Fixed width for logo */
+  width: 15%; /* absolute width for logo */
   padding-left: 1.5rem; /* Spacing on left */
   padding-right: 1.5rem; /* Spacing on right */
 }
@@ -58,9 +58,9 @@ header nav ul li:last-child a::after {
 
 /* Footer Styling */
 footer {
-  position: fixed; /* Stick footer to the bottom */
+  position: absolute; /* Stick footer to the bottom */
   width: 100%; /* Full-width footer */
-  height: 50px; /* Fixed height */
+  height: 50px; /* absolute height */
   bottom: 0px; /* Positioned at the very bottom */
   z-index: 8000; /* High z-index for visibility */
   background-color: black; /* Black footer background */
@@ -70,6 +70,7 @@ footer {
 .map_container {
   height: 100vh; /* Full viewport height for map */
   width: 100%; /* Full width for map container */
+  overflow: hidden;
 }
 
 .inner_container {
@@ -131,6 +132,7 @@ footer {
   padding: 1rem; /* Internal padding */
   border-top-left-radius: 1rem; /* Rounded top-left corner */
   border-bottom-left-radius: 1rem; /* Rounded bottom-left corner */
+  overflow: auto;
 }
 
 /* Storm Timeline Styling */
@@ -179,6 +181,7 @@ footer {
   bottom: 50px; /* Above the footer */
   z-index: 5000; /* High z-index to overlay the map */
   width: 80%; /* 80% width for balance */
+  max-height: 80%;
 }
 
 /* When drawer is open (add a class dynamically) */
@@ -279,6 +282,7 @@ footer {
     margin-top: 30%; /*to allow the close button to show */
     width: 80%; /* Adjust width for better fit */
     font-size: 0.9rem; /* Slightly smaller font for compactness */
+    
   }
   .leaflet-control-container .leaflet-top {
     top: 85px; /* Slightly lower to account for smaller header */

@@ -56,7 +56,7 @@ export function RenderWindRose ( { sourceData, hasWindRoseData }){
         style={{
           width: '100%',
           height: '100%',
-          overflow: 'scroll', // Allow scroll if content overflows
+          overflow: 'auto', // Allow scroll if content overflows
           position: 'relative',
           //overflowX: 'scroll',
           //overflowY: 'scroll',
@@ -108,7 +108,7 @@ function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
       type: "interval",
       title: key,
       autoFit: true,
-      height: "400",
+      //height: "400",
       //width: "100%",
       padding: "0,0,0,0",
       //margin: "0,0,0,0",
@@ -156,7 +156,8 @@ function renderChart(chartOptions) {
       //width: "auto", // Set the desired width of the chart
       //height: "auto", // Set the desired height of the chart
       //overflow: 'auto',
-      aspectRatio: "100 / 100"
+      //aspectRatio: "100 / 100",
+      height: 360
 
     });
 
