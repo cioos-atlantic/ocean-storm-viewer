@@ -51,6 +51,15 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
           plugins: {
             legend: {
               position: 'right',
+              fullSize: true,
+              labels: {
+                padding: 5,
+                boxWidth: 10,
+                font: {
+                    size: 10,
+                }
+              }
+              
             },
             title: {
               display: false,

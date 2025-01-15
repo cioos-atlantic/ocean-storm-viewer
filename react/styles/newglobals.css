@@ -223,7 +223,12 @@ footer {
   }
   .inner_container {
     height: 100%;
-    padding: 1rem; /* Add padding for readability */
+    
+  }
+  .info_pane {
+    margin-top: 20%; /*to allow the close button to show */
+    width: 40%; /* Adjust width for better fit */
+    font-size: 0.9rem; /* Slightly smaller font for compactness */
   }
 }
 
@@ -233,7 +238,7 @@ footer {
   }
   .inner_container {
     height: 100%;
-    padding: 0.5rem; /* Reduce padding for space efficiency */
+    
   }
 }
 
@@ -244,7 +249,7 @@ footer {
   }
   .inner_container {
     height: 100%;
-    padding: 0.25rem; /* Minimal padding for tight layouts */
+    
   }
   header img.logo {
     width: 30%; /* Increase logo width for better visibility */
@@ -271,8 +276,8 @@ footer {
     bottom: 35px;
   }
   .info_pane {
-    margin-top: 5%; /* Reduce margin for better usability */
-    width: 90%; /* Adjust width for better fit */
+    margin-top: 30%; /*to allow the close button to show */
+    width: 80%; /* Adjust width for better fit */
     font-size: 0.9rem; /* Slightly smaller font for compactness */
   }
   .leaflet-control-container .leaflet-top {
