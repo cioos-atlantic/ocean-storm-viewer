@@ -4,6 +4,7 @@ import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
 import { useEffect, useState } from 'react';
 import { getHistoricalStormList, parseStormData, makeStormList, isName, isYear, parseForFlyToPoint, addSearchParams } from './utils/historical_storm_utils.js';
 import { useRouter } from 'next/router';
+
 import { empty_station_obj } from './layout.js';
 
 
@@ -92,7 +93,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
               <li key={storm.storm_id} className={(storm.name)}>
                 <a onClick={(e) => { 
                   handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation);
-                  
+
                   //console.log(storm);
                   }}>{`${storm.display_name}`}</a>
               </li>
@@ -144,6 +145,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
 
  */
 export async function handleClick( storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation) {
+
   //console.log(Leaflet);
   setSelectedStation(empty_station_obj)
   
@@ -240,10 +242,8 @@ async function handleFormSubmit(e, setSearchResult){
   console.log(uniqueList)
   setSearchResult(uniqueList)
 
-
   // Clear the input field
   searchInputField.value = "";
-
   
 }
 
@@ -290,7 +290,3 @@ export async function handleSearch(storm_name, storm_year){
   
   return uniqueList
 }
-
-
-
-

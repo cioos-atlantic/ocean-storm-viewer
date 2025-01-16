@@ -134,6 +134,7 @@ export default function About(){
  * It constructs a URL with the storm's name and year, and navigates to that URL using the provided router.
  
  */
+
 function handleClick(stormName, stormYear, router){
   const url = `/?storms=historical&name=${stormName}&season=${stormYear}`;
   router.push(url);
