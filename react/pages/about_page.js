@@ -8,15 +8,8 @@ import { pastAtlStorms } from '@/data/pastStormsDetails';
 import parse from 'html-react-parser';
 import { faq } from '@/data/faq';
 
-
-
-
-
-export function About(){
+export default function About(){
   const router = useRouter();
-
-
-
   return(
     <div className={aboutStyles.container}>
             <Head>
@@ -57,7 +50,6 @@ export function About(){
               <a href="#section3" aria-label="Go to How to Find more Information section">3. How to Find more Information</a>
             </ul>
 
-
           <h2 id="section1">1. Extreme Storms and Hurricanes</h2>
           <ul>
             {faq.map((question, index) => (
@@ -91,6 +83,7 @@ export function About(){
                 }
                 }}> 
                   {storm.title}
+
               </h3>
               <div className={aboutStyles.lightText}>{parse(storm.details)}</div>
               <br></br>
@@ -127,9 +120,6 @@ export function About(){
     </div>
   )
 }
-
-
-
 
 
 function handleClick(stormName, stormYear, router){

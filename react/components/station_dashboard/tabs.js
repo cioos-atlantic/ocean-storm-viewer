@@ -38,6 +38,7 @@ function a11yProps(index) {
 
 
 export default function BasicTabs({stationName, stationData, stationSummaryText, variablePresence, selectedTab, setSelectedTab}) {
+  console.log(stationData)
   function generateGraph(selectedVar){
     return (
      <div className="station_chart" 
