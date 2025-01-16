@@ -75,11 +75,13 @@ async function fetchDatasetMetadata(datasetID) {
     const attributes = metadata.table.rows;
     //console.log(attributes)
     const description = attributes.find(attr => attr[2] === "summary")?.[4] || "No description available.";
-    const institution = attributes.find(attr => attr[2] === "institution")?.[4] || "No institution available.";
+    const institution = attributes.find(attr => attr[2] === "creator_name")?.[4] || "No institution available.";
+    const institution_link = attributes.find(attr => attr[2] === "creator_url")?.[4] || "No URL available";
 
     const info = {
       description,
-      institution
+      institution,
+      institution_link
     }
 
     //console.log(`Dataset Description for ${datasetID}: ${description}`);
@@ -116,6 +118,7 @@ async function fetchAllDatasetDescriptions() {
         title: dataset.title,
         description: info.description,
         institution: info.institution,
+        institution_link: info.institution_link
       };
     })
   );

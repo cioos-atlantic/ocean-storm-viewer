@@ -2,7 +2,7 @@ import { FaWindowClose } from "react-icons/fa";
 import { empty_station_obj } from "../layout"
 import { RenderWindRose } from "./wind_rose";
 import BasicTabs from "./tabs";
-import { RecentStationData, getDisplayName } from "../utils/station_data_format_util";
+import { RecentStationData, getDisplayName, getMatchedStation } from "../utils/station_data_format_util";
 import styles from '../station_marker.module.css'
 import RenderChart from '../station_graph.js'
 import { BlockquoteLeft } from "react-bootstrap-icons";
@@ -31,7 +31,13 @@ export default function StationDashboard({children, selected_station, setSelecte
         return null
   
       // Change to call from ERDDAP
-      const display_name = getDisplayName(station_descriptions, stationName);
+      //const display_name = getDisplayName(station_descriptions, stationName);
+      const station_description = getMatchedStation(station_descriptions, stationName)
+      const display_name = station_description.title
+      const institution = station_description.institution
+      const institution_link = station_description.institution_link
+      console.log(station_description)
+      console.log(institution_link)
   
       const exclude_var = ['time', 'latitude', 'longitude','relative_humidity',
         'sea_surface_wave_from_direction', 'sea_surface_wave_maximum_period'
@@ -69,6 +75,7 @@ export default function StationDashboard({children, selected_station, setSelecte
                     }}
                 ><FaWindowClose/></button>
                 <h3>{display_name}</h3>
+                <h3><a href={institution_link} target="_blank" rel="noopener noreferrer">{institution}</a></h3>
             </div>
             <div className="dash-body">
                 <p>

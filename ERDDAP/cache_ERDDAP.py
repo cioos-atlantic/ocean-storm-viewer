@@ -47,6 +47,7 @@ pg_ibtracs_historical_table = os.getenv('PG_IBTRACS_HISTORICAL_TABLE')
 docker_user = {'docker'}
 
 active_data_period = config.getint('erddap_cache', 'active_data_period')
+post_storm_period = config.getint('erddap_cache', 'post_storm_period')
 
 engine = create_engine(f"postgresql+psycopg2://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 
@@ -85,8 +86,8 @@ def cache_erddap_data(storm_id, df, destination_table, pg_engine, table_schema, 
     
     with pg_engine.begin() as pg_conn:   
         #print(f"Adding geom column")
-        sql = f"ALTER TABLE public.{destination_table} ADD COLUMN IF NOT EXISTS geom geometry(Point, 4326);"
-        pg_conn.execute(text(sql))
+        #sql = f"ALTER TABLE public.{destination_table} ADD COLUMN IF NOT EXISTS geom geometry(Point, 4326);"
+        #pg_conn.execute(text(sql))
         
        #print("Updating Geometry...")
         sql = f'UPDATE public.{destination_table} SET geom = ST_SetSRID(ST_MakePoint("min_lon", "min_lat"), 4326);'
@@ -117,8 +118,8 @@ def create_table_from_schema(pg_engine, table_name, schema_file, pg_schema='publ
             pg_conn.execute(text(sql))
 
         #print(f"Adding geom column")
-        sql = f"ALTER TABLE {pg_schema}.{table_name} ADD COLUMN IF NOT EXISTS geom geometry(Point, 4326);"
-        pg_conn.execute(text(sql))
+        #sql = f"ALTER TABLE {pg_schema}.{table_name} ADD COLUMN IF NOT EXISTS geom geometry(Point, 4326);"
+        #pg_conn.execute(text(sql))
 
         #print("Committing Transaction.")
         pg_conn.execute(text("COMMIT;"))
@@ -235,7 +236,11 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
                 # Might be able to only do the conversion during the 
                 # df_interval = df_interval[time_col].dt.strftime('%Y-%m-%dT%H:%M:%SZ')
                 # Change the dataframe to JSON, can change the format or orientation 
-                station_data = df_interval.to_json(orient="records")
+
+                # Experimental average binning per hour
+                #times = pd.to_datetime(df_interval[time_col])
+                df_interval = df_interval.groupby(pd.Grouper(key=time_col, axis=0, freq="h")).mean(numeric_only=True)
+                station_data = df_interval.reset_index().to_json(orient="records")
 
                 entry = {
                     "storm":storm_id,
@@ -332,6 +337,8 @@ def main():
     parser_historical.add_argument("--storm", help="The storm identifier, in the format of YYYY_stormname (lowercase). Example: 2022_fiona", nargs='?', type=storm_format)
     parser_historical.add_argument("--min", help="The start time of data in the storm interval. Format: YYYY", nargs='?', type=int)
     parser_historical.add_argument("--max", help="The end time of data in the storm interval. Format: YYYY", nargs='?', type=int)
+    parser_historical.add_argument("--dry", help="Dry run. Will grab from ERDDAP but not commit the data to the database", action="store_true")
+
     """
     parser_historical.add_argument("storm", help="The storm identifier, in the format of YYYY_stormname (lowercase). Example: 2022_fiona", type=storm_format)
     parser_historical.add_argument("min_time", help="The start time of data in the storm interval. Format: YYYY-mm-ddTHH:MM:SSZ", type=datetime_format)
@@ -345,6 +352,7 @@ def main():
         arg_storm = args.storm
         arg_year_min = args.min
         arg_year_max = args.max
+        arg_dry = args.dry
         #min_time = datetime.strptime(args.min_time, '%Y-%m-%dT%H:%M:%SZ')
         #max_time = datetime.strptime(args.max_time, '%Y-%m-%dT%H:%M:%SZ')
 
@@ -359,6 +367,8 @@ def main():
             storm_id = str(storm['SEASON'].values[0]) + "_" + storm['NAME'].values[0]
             min_time = storm['ISO_TIME']['min']
             max_time = storm['ISO_TIME']['max']
+            if(post_storm_period>0):
+                max_time += timedelta(days=post_storm_period)
             dataset_list = get_erddap_datasets(min_time, max_time)
             cached_data = []
             # Store in shared list to reduce calls and avoid overwriting for active cache
@@ -371,10 +381,12 @@ def main():
                     cached_data.extend(cache_station_data(dataset, dataset_id, storm_id, 
                                                         min_time=datetime.strftime(min_time,'%Y-%m-%dT%H:%M:%SZ'), 
                                                         max_time=datetime.strftime(max_time,'%Y-%m-%dT%H:%M:%SZ')))
-            if(cached_data):
+            if(cached_data and not arg_dry):
                     print('Caching historical storm...')
                     cache_erddap_data(storm_id = storm_id, df=pd.DataFrame(cached_data),destination_table=pg_erddap_cache_historical_table,
                                         pg_engine=engine,table_schema=erddap_cache_historical_schema)
+            elif(arg_dry):
+                print("Dry run")
     # ACTIVE
     else:
         storm_id = "ACTIVE"

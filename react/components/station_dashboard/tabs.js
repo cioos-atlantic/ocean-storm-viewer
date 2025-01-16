@@ -81,6 +81,7 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
      height: 'auto',
      width: 'auto', // Adjust width based on content (chart)
      padding: '0px', // Optional padding around chart
+     display:'flex',
      }}>
      <RenderChart  
          sourceData={stationData}

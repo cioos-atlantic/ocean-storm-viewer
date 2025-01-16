@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController} from 'chart.js';
 import { get_station_field_data, get_station_field_units, get_station_field_position, getColumnNameList, getUniqueStdNamesList } from './utils/station_data_format_util';
 import { convert_unit_data, windSpeedToKmh, windSpeedToKnots } from './utils/unit_conversion';
+import { graph_colour } from './station_dashboard/station_graph/graph_config.js'
 
 // Register necessary components, including the Line controller
 Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend);
@@ -11,6 +12,8 @@ Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryS
  * Renders a line chart using Chart.js to display station data.
  */
 function RenderChart({ sourceData, position, stationName, varCategory }) {
+
+
   const chartRef = useRef(null); // Reference to the canvas element
 
   const startAtZero = varCategory === 'air_pressure' ? false : true
@@ -50,10 +53,11 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
             },
           },
           responsive: true,
+          spanGaps:true,
           //maintainAspectRatio: false,
           plugins: {
             legend: {
-              position: 'right',
+              position: 'right'
             },
             title: {
               display: false,
@@ -108,6 +112,13 @@ const getRandomColor = () => {
   return color;
 };
 
+function getColour(graph_colour_list, var_name){
+  let colour = '';
+  console.log(var_name)
+  console.log(graph_colour_list)
+  colour = var_name in graph_colour_list ? graph_colour[var_name] : getRandomColor()
+  return colour;
+}
 
 
 export default React.memo(RenderChart);
@@ -122,7 +133,7 @@ function parseChartData(sourceData, varCategory){
 
   const station_timeData = get_station_field_data(sourceData,"time", "column_std_names")?.data
   const timeData = station_timeData.map((timestamp) => new Date(timestamp).toLocaleString('en-US', {
-                            //hour: '2-digit',
+                            hour: '2-digit',
                             //minute: '2-digit',
                             day: '2-digit',
                             month: '2-digit',
@@ -139,21 +150,24 @@ function parseChartData(sourceData, varCategory){
     console.log(variable)
 
     const column_names_list = getColumnNameList(column_std_names, column_names, variable)
-
+    
+    var graph_colour_list = {}
+    Object.assign(graph_colour_list, graph_colour);
+    console.log(graph_colour_list)
     column_names_list.forEach(col_name => {
       const unit = get_station_field_units(sourceData, col_name)
       
       const data_obj = get_station_field_data(sourceData, col_name);
-      console.log(data_obj)
       const values = data_obj?.data
-
-      datasets.push({
-      label: `${data_obj.long_name} (${convert_unit_data(values[0], unit).unit})` || key, //  std_name if available
-      data: values.map((value)=>convert_unit_data(value,unit).value) || [], // Ensure that value exists
-      borderColor: getRandomColor(), // Generate random colors for each line
-      backgroundColor: 'rgba(0, 0, 0, 0)',
-      fill: false,
-      })
+      // If array of values is empty / all null skip it
+      if(!values.every(element => element === null)) {
+        datasets.push({
+        label: `${data_obj.long_name} (${convert_unit_data(values[0], unit).unit})` || key, //  std_name if available
+        data: values.map((value)=>convert_unit_data(value,unit).value) || [], // Ensure that value exists
+        borderColor: getColour(graph_colour_list, variable), // Generate random colors for each line
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        fill: false,
+      })}
       
     });
     
