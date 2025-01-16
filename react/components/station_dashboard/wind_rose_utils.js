@@ -200,7 +200,7 @@ function ChartComponent({ data, chartKey }) {
     chart.render();
 
     return () => chart.destroy(); // Cleanup on unmount
-  }, [data]);
+  }, [data, chartKey]);
 
   return <div id={`chart-${chartKey}`} ref={chartContainerRef} className="chart-container" />;
 }
