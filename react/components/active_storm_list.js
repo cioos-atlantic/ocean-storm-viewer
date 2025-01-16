@@ -27,7 +27,15 @@ export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
 
 
 
-export default function ActiveStormList({ active_storm_data, setStormPoints, map, Leaflet }) {
+/**
+ * The ActiveStormList function displays a list of active storms with details and allows users to
+ * select and view storm data.
+ * @returns The `ActiveStormList` component is returning JSX elements that display a list of active
+ * storms. It includes a heading "Active Storms", a list of storm search results, and a list of storm
+ * items with details for each storm. The component also conditionally renders a "Show All" link if
+ * there are active storms available.
+ */
+export default function ActiveStormList({ active_storm_data, setStormPoints, map, Leaflet, setSelectedStation }) {
   const [selected_storm, setSelectedStorm] = useState("");
 
   let ib_storm_list = []
@@ -81,6 +89,7 @@ export default function ActiveStormList({ active_storm_data, setStormPoints, map
                 is_selected={(storm_name == selected_storm)}
                 map={map}
                 Leaflet={Leaflet}
+                setSelectedStation={setSelectedStation}
               />
             )
           })}

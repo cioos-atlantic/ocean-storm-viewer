@@ -1,5 +1,14 @@
 import React from "react";
 
+/**
+ * The Popup function creates a modal popup with a title, content, and close button that can be used in
+ * a web application.
+ * @returns The function `Popup` is returning a JSX structure that consists of a popup container with a
+ * title, children content, and a close button. It also includes an overlay that covers the entire
+ * screen to create a modal effect. The popup is styled with CSS properties for positioning, background
+ * color, box shadow, padding, border radius, and z-index. The close button triggers the `onClose`
+ * function when
+ */
 export default function Popup({ title, children, onClose }) {
     return (
         <>
