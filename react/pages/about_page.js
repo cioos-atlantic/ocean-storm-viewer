@@ -9,17 +9,13 @@ import parse from 'html-react-parser';
 import { faq } from '@/data/faq';
 
 
-
-
 /**
 * The About component is responsible for rendering the About page of the Atlantic Hurricane Dashboard.
 * It includes sections for extreme storms and hurricanes, past Atlantic Canada storms, and how to find more information.
 */
 
-export function About(){
+export default function About(){
   const router = useRouter();
-
-
 
   return(
     <div className={aboutStyles.container}>
@@ -61,7 +57,6 @@ export function About(){
               <a href="#section3" aria-label="Go to How to Find more Information section">3. How to Find more Information</a>
             </ul>
 
-
           <h2 id="section1">1. Extreme Storms and Hurricanes</h2>
           <ul>
             {faq.map((question, index) => (
@@ -95,6 +90,7 @@ export function About(){
                 }
                 }}> 
                   {storm.title}
+
               </h3>
               <div className={aboutStyles.lightText}>{parse(storm.details)}</div>
               <br></br>
@@ -131,9 +127,6 @@ export function About(){
     </div>
   )
 }
-
-
-
 
 
 /**

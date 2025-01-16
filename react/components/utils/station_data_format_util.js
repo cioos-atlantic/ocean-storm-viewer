@@ -8,7 +8,15 @@ export function get_station_field_data(station_data, field_name, name_type='colu
     const arrayColumn = (arr, n) => arr.map(x => x[n]);
     const field_position = get_station_field_position(station_data,field_name,name_type)
     const field_data = arrayColumn(station_data['rows'], field_position)
-    return field_data
+    console.log(field_position)
+    console.log( station_data["column_long_names"][field_position])
+    const field_obj = {    
+    data: field_data || null,
+    standard_name: station_data?.['column_std_names']?.[field_position] || null,
+    long_name: station_data?.['column_long_names']?.[field_position] || null
+    };
+
+    return field_obj
 }
 
 export function get_recent_row_position(station_info, time){
@@ -51,8 +59,8 @@ export function get_station_field_position(station_data, field_name, name_type='
 export function get_station_data_value(station_data, row_position, column_name, name_type="column_names"){  
     if(!station_data[row_position]) return null
     const col_index = get_station_field_position(station_data, column_name, name_type="column_names")
-    return col_index > -1 ? station_data[row_position][col_index] : null
-}
+    return col_index > -1 ? station_data[row_position][col_index] : null;
+} 
   
 // Returns the most recent row of data for a station
 // If provided a time (as JS timestamp), it will return the 
@@ -104,3 +112,29 @@ export function getDisplayName(station_descriptions, station_name){
     }
     return display_name;
 }
+
+
+export function getColumnNameList(column_std_names, column_names, variable){
+  const column_names_list = [];
+  
+  column_std_names.forEach((std_name, index) => {
+    if (std_name === variable){
+      column_names_list.push(column_names[index]);
+
+    };
+  });
+  console.log(column_names_list)
+  return column_names_list
+}
+
+
+export function getUniqueStdNamesList(column_std_names){
+  // using Set constructor
+  let s = new Set(column_std_names);
+
+  // Convert back the set to array
+  let uniqueColStdNames = [...s];
+
+  return uniqueColStdNames
+}
+

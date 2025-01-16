@@ -169,7 +169,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setShowP
             );
             setCustomIcon(updatedIcon);
         })();
-    }, [storm_category, svgPath]);
+    }, [storm_category, svgPath, storm_icon]);
 
     return (
         <Marker

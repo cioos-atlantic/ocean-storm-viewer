@@ -72,6 +72,8 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
    * "station_chart" and some inline styles for height, width, and padding. Inside the `div`, there is
    * a `RenderChart` component with props `sourceData`, `stationName`, and `varCategory`.
    */
+  console.log(stationData)
+
   function generateGraph(selectedVar){
     return (
      <div className="station_chart" 

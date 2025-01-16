@@ -12,7 +12,7 @@ import { empty_storm_obj } from '../lib/storm_utils';
 import dynamic from "next/dynamic";
 
 import ErddapHandler from "../pages/api/query_stations";
-import { About } from "@/pages/about_page";
+import About from "@/pages/about_page";
 
 
 
