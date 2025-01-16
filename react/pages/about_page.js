@@ -7,7 +7,7 @@ import { pastAtlStorms } from '@/data/pastStormsDetails';
 import parse from 'html-react-parser';
 import { faq } from '@/data/faq';
 
-export function About(){
+export default function About(){
   return(
     <div className={aboutStyles.container}>
             <Head>

@@ -77,7 +77,7 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
         chartRef.current.chart.destroy();
       }
     };
-  }, [sourceData, varCategory, stationName]); // Re-run effect if chartData or stationName changes
+  }, [sourceData, varCategory, stationName, startAtZero]); // Re-run effect if chartData or stationName changes
 
   return (
     
