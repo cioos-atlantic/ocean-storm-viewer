@@ -1,0 +1,38 @@
+{
+    "sea_surface_wave_significant_height":{
+        "name":"Wave Height (Avg)",
+        "definition":"Significant wave height is defined as the average of the highest one-third of all waves."
+    },
+    "sea_surface_wave_maximum_height":{
+        "name":"Wave Height (Max)",
+        "definition":"Wave heights are described in metres and are measured from trough to crest. Maximum wave heights may be twice as high as the significant wave height."
+    },
+    "air_temperature":{
+        "name":"Temperature (Air)",
+        "definition": "The temperature of the air in degrees Celsius (°C). At most principal stations the maximum and minimum temperatures are for a day beginning at 0601 Greenwich (or Universal) Mean Time, which is within a few hours of midnight local standard time in Canada."
+    },
+    "sea_surface_temperature": {
+        "name":"Temperature (Sea Surface)",
+        "definition":"Sea Surface Temperature definition"
+    },
+    "air_pressure":{
+        "name":"Air Pressure",
+        "definition":"Atmospheric Pressure, also called barometric pressure, is the force per unit area exerted by the atmosphere as a consequence of its weight. It is equal to the weight of a vertical column of air of a unit area, extending from a given elevation or level to the outer limit of the atmosphere. Measurement units for pressure are called hectopascals (hPa)."
+    },
+    "relative_humidity":{
+        "name":"Humidity",
+        "definition":"Relative humidity in percent (%) is the ratio of the quantity of water vapour the air contains compared to the maximum amount it can hold at that particular temperature."
+    },
+    "wind_from_direction":{
+        "name":"Humidity",
+        "definition":"The direction (true or geographic, not magnetic) from which the wind blows. It represents the average direction during the two minute period ending at the time of observation. Expressed in tens of degrees (10's deg), 9 means 90 degrees true or an east wind, and 36 means 360 degrees true or a wind blowing from the geographic North Pole. A value of zero (0) denotes a calm wind."
+    },
+    "wind_speed":{
+        "name":"Humidity",
+        "definition":"The speed of motion of air in kilometres per hour (km/h) usually observed at 10 metres above the ground. It represents the average speed during the one-, two- or ten-minute period ending at the time of observation. In observing, it is measured in nautical miles per hour or kilometres per hour."
+    },
+    "wind_speed_of_gust":{
+        "name":"Humidity",
+        "definition":"Gusts are sudden, rapid and brief changes in the wind speed. They are characterized by more or less continual fluctuations between the high (peak) and low (lull) speed. The extreme gust speed is the instantaneous peak wind observed from the anemometer dials, abstracted from a continuous chart recording, or from a data logger."
+    }
+}
