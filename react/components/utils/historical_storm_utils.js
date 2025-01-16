@@ -191,3 +191,10 @@ export function parseForFlyToPoint(storm_details, storm_name, map, Leaflet){
 
   
 }
+
+export function addSearchParams(stormName, stormYear, router) {
+  const currentUrlParams = new URLSearchParams(window.location.search);
+  currentUrlParams.set('name', stormName);
+  currentUrlParams.set('season', stormYear);
+  router.push(`${window.location.pathname}?${currentUrlParams.toString()}`);
+}

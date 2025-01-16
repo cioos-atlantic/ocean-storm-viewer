@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useLocation, useHistory} from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { siteTitle } from '@/components/layout';
 import aboutStyles from '../styles/About.module.css';
@@ -8,6 +9,7 @@ import parse from 'html-react-parser';
 import { faq } from '@/data/faq';
 
 export default function About(){
+  const router = useRouter();
   return(
     <div className={aboutStyles.container}>
             <Head>
@@ -23,7 +25,7 @@ export default function About(){
         <section className={aboutStyles.aboutSection}>
           <h1>Table of Content</h1>
             <ul>
-              <a href="#section1">1. Extreme Storms and Hurricanes</a>
+              <a href="#section1" aria-label="Go to Extreme Storms and Hurricanes section">1. Extreme Storms and Hurricanes</a>
               <ul>
                 {faq.map((question, index) => (
                   <li key={index}>
@@ -34,7 +36,7 @@ export default function About(){
             </ul>
 
             <ul>
-              <a href="#section2">2. Some Past Atlantic Canada Storms</a>
+              <a href="#section2" aria-label="Go to Some Past Atlantic Canada Storms section">2. Some Past Atlantic Canada Storms</a>
               <ul>
                 {pastAtlStorms.map((storm, index) => (
                     <li key={index}>
@@ -45,9 +47,8 @@ export default function About(){
             </ul>
 
             <ul>
-              <a href="#section3">3. How to Find more Information</a>
+              <a href="#section3" aria-label="Go to How to Find more Information section">3. How to Find more Information</a>
             </ul>
-
 
           <h2 id="section1">1. Extreme Storms and Hurricanes</h2>
           <ul>
@@ -70,8 +71,19 @@ export default function About(){
           </p>
           {pastAtlStorms.map((storm, index) => (
             <div key={index}>
-              <h3 className={aboutStyles.subheading} id={`section2.${index}`}>
-                {storm.title}
+              <h3 className={aboutStyles.subheading} id={`section2.${index}`}
+              aria-label={`Learn more about the storm: ${storm.title}`}
+              role="button"
+              tabIndex="0"
+              onClick={() =>{console.log(`${storm.title} clicked`)
+                              handleClick(storm.name, storm.year, router)}}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleClick(storm.name, storm.year, router);
+                }
+                }}> 
+                  {storm.title}
+
               </h3>
               <div className={aboutStyles.lightText}>{parse(storm.details)}</div>
               <br></br>
@@ -92,12 +104,12 @@ export default function About(){
         <h2 id="section3">3. How to Find more Information</h2>
         <ul>
           <li>
-            <a href= "https://en.wikipedia.org/wiki/List_of_hurricanes_in_Canada ">
+            <a href= "https://en.wikipedia.org/wiki/List_of_hurricanes_in_Canada " target="_blank" rel="noopener noreferrer" aria-label="Learn about hurricanes in Canada on Wikipedia">
               Hurricanes in Canada 
             </a>
           </li>
           <li>
-            <a href= "https://www.nspower.ca/about-us/articles/details/articles/2022/11/29/you-asked-we-answer-extreme-weather-and-our-power-grid ">
+            <a href= "https://www.nspower.ca/about-us/articles/details/articles/2022/11/29/you-asked-we-answer-extreme-weather-and-our-power-grid" target="_blank" rel="noopener noreferrer" aria-label="Learn more about extreme weather and power grids on Nova Scotia Power Blog">
               Nova Scotia Power Blog 
             </a>
           </li>
@@ -107,4 +119,10 @@ export default function About(){
       </main>
     </div>
   )
+}
+
+
+function handleClick(stormName, stormYear, router){
+  const url = `/?storms=historical&name=${stormName}&season=${stormYear}`;
+  router.push(url);
 }

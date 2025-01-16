@@ -95,7 +95,10 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
         )}
         <HeaderNav navItems={topNav}></HeaderNav>
       </header>
-      {about_page ? (<About/>):(<>
+      {about_page ? (
+        <About
+            
+            />):(<>
       <main className="body">
         <MapWithNoSSR
           storm_points={storm_points}

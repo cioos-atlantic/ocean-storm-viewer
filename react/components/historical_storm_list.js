@@ -2,7 +2,8 @@ import CustomButton from '../custom/custom-button.js';
 import { addDays, subDays, lightFormat } from "date-fns";
 import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
 import { useEffect, useState } from 'react';
-import { getHistoricalStormList, parseStormData, makeStormList, isName, isYear, parseForFlyToPoint } from './utils/historical_storm_utils.js';
+import { getHistoricalStormList, parseStormData, makeStormList, isName, isYear, parseForFlyToPoint, addSearchParams } from './utils/historical_storm_utils.js';
+import { useRouter } from 'next/router';
 
 
 const otherStormList = [
@@ -22,6 +23,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
   
   const [stormList, setStormList] = useState([]);
   const [searchResult, setSearchResult] = useState({})
+  const router = useRouter();
 
   console.log("Historical Storms Loading...");
   useEffect(() => {
@@ -43,7 +45,29 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
     
   }, []); // Empty dependency array ensures it runs only once on mount
 
-  
+   // Check query parameters on mount and trigger `handleClick`
+   /* This `useEffect` hook is used to run a search query when the component mounts. Here's a breakdown
+   of what it does: */
+   useEffect(() => { 
+    
+      async function searchQuery(){
+        const { name, season } = router.query;
+        /* This code snippet is checking if both `name` and `season` are present in the query
+        parameters received from the router. If both parameters exist, it calls the `handleSearch`
+        function with the `name` and `season` values to fetch storm data based on the search
+        criteria. */
+        if (name && season) {
+          const stormObjectList = await handleSearch(name, season)
+          const selectedStorm = stormObjectList[0];
+          console.log(selectedStorm);
+          if (selectedStorm) {
+            await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router);
+          }
+        }
+    }
+  searchQuery()
+  }, []); // 
+
 
   
 
@@ -60,7 +84,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
             return (
               <li key={storm.storm_id} className={(storm.name)}>
                 <a onClick={(e) => { 
-                  handleClick(storm, setStationPoints, setStormPoints, map, Leaflet);
+                  handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router);
                   
                   //console.log(storm);
                   }}>{`${storm.display_name}`}</a>
@@ -75,7 +99,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
       <hr style={{ height: '2px', backgroundColor: 'black', border: 'none' }}/> 
       <h4>Storm Search: </h4>
       <div id="storm_search">
-        <form onSubmit={(e) => handleFormSubmit(e, setSearchResult)}>
+        <form onSubmit={(e) => handleFormSubmit(e, setSearchResult, router)}>
         <input type="text" id="historical_storm_search" name="historical_storm_search" required minLength="4" placeholder='Storm name or year'/> 
         <br/>
         <button type="submit">Search</button>
@@ -89,7 +113,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           searchResult.length > 0 && searchResult.map((storm, index) => {
             return (
               <li key={storm.storm_id} className={(storm.name)}>
-                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints, map, Leaflet) }}>{`${storm.display_name}`}</a>
+                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router) }}>{`${storm.display_name}`}</a>
               </li>
             )
           })}
@@ -107,7 +131,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
 
 }
 
-export async function handleClick( storm, setStationPoints, setStormPoints, map, Leaflet) {
+export async function handleClick( storm, setStationPoints, setStormPoints, map, Leaflet, router) {
   //console.log(Leaflet);
   
   console.log('Button clicked for', storm.name);
@@ -115,7 +139,7 @@ export async function handleClick( storm, setStationPoints, setStormPoints, map,
   const storm_year = storm.year;
   const storm_id = storm.storm_id;
 
-
+  addSearchParams(storm_name, storm_year, router)
   let storm_source;
 
   // if condition because of what list.json looks like eccc instead of ECCC
@@ -206,15 +230,28 @@ async function handleFormSubmit(e, setSearchResult){
       return;
     }
   };
+  
+  const uniqueList= await handleSearch(storm_name, storm_year)
 
- 
+  console.log(uniqueList)
+  setSearchResult(uniqueList)
+
+
+  // Clear the input field
+  searchInputField.value = "";
+
+  
+}
+
+export async function handleSearch(storm_name, storm_year){
+  let uniqueList;
+
   const query = new URLSearchParams({
     name: storm_name, 
     season: storm_year     // Using season for storm year
   }).toString();
 
   console.log(query)
-
 
   try {
     const resource = await fetch(`/api/historical_storms?${query}`);
@@ -226,7 +263,7 @@ async function handleFormSubmit(e, setSearchResult){
 
     console.debug(`historical Storm Data for ${storm_name} and ${storm_year}: `, storm_data);
     // Create a set to track unique IDs and add objects to the result list
-    const uniqueList= makeStormList(storm_data)
+    uniqueList = makeStormList(storm_data)
     // Create a set to track unique IDs and add objects to the result list
     
 
@@ -234,23 +271,13 @@ async function handleFormSubmit(e, setSearchResult){
     if (uniqueList.length === 0) {
       alert("No result found for this search, please try again...")
     }
-    setSearchResult(uniqueList)
-    //return uniqueList
-
-
-
-
-
+    
 
   } catch (error) {
     console.error('Error fetching storm or station data:', error);
   }
-
-
-  // Clear the input field
-  searchInputField.value = "";
-
   
+  return uniqueList
 }
 
 
