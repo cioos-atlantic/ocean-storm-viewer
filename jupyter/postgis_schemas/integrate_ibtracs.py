@@ -112,6 +112,17 @@ table_dtypes = {
     "HKO_CAT": 'string', 
     "HKO_WIND": 'Float32', 
     "HKO_PRES": 'Float32', 
+	"KMA_LAT": 'Float32',
+	"KMA_LON": 'Float32',
+	"KMA_CAT": 'string',
+	"KMA_WIND": 'Float32',
+	"KMA_PRES": 'Float32',
+	"KMA_R50_DIR": 'Float32',
+	"KMA_R50_LONG": 'Float32',
+	"KMA_R50_SHORT": 'Float32',
+	"KMA_R30_DIR": 'Float32',
+	"KMA_R30_LONG": 'Float32',
+	"KMA_R30_SHORT": 'Float32',
     "NEWDELHI_LAT": 'Float32', 
     "NEWDELHI_LON": 'Float32', 
     "NEWDELHI_GRADE": 'string', 
@@ -300,7 +311,12 @@ def process_files(ibtracs_files:dict, pg_engine:Engine):
 def process_ibtracs(source_csv_file:str, destination_table:str, pg_engine:Engine):
     df = pd.read_csv(filepath_or_buffer=source_csv_file, header=0, skiprows=skip_rows, parse_dates=True, dtype=table_dtypes, na_values=na_values, keep_default_na=False)
     
-    table_columns = pd.read_sql_table(destination_table, pg_engine).columns.drop('geom')
+    table_columns = []
+    with pg_engine.begin() as conn:
+        query = text(f"SELECT * FROM public.{destination_table} LIMIT 0")
+        table_columns = pd.read_sql_query(query, conn).columns.drop('geom')
+
+    # table_columns = pd.read_sql_table(destination_table, pg_engine).columns.drop('geom')
     
     del_result = None
     ins_result = None
