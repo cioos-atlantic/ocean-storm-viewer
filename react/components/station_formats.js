@@ -1,5 +1,6 @@
 import {windSpeedToKnots, windSpeedToKmh, tempToDegreeF, tempToDegreeC, pressureToKPa, pressureToInHg, windHeightToM, windHeightToFt} from './utils/unit_conversion.js'
 import Image from "next/image";
+import attributes from '../data/station/attributes.json'
 //TODO: Clean up
 
 
@@ -33,7 +34,7 @@ export function formatCioosStations(data_obj, children, row_position){
   wind_from_direction ? (180 + parseInt(wind_from_direction)) % 360 : null
   if(wind_from_direction){
     const wind_direction = (180 + parseInt(wind_from_direction)) % 360
-    children.push(<strong>Wind Direction:  </strong>)
+    children.push(<strong title={attributes.wind_from_direction.definition}>Wind Direction:  </strong>)
     children.push(<Image className="wind_arrow" alt={wind_direction} src="arrow.svg" height={20} width={20} 
       style={{ transform: 'rotate(' + (wind_direction) + 'deg)' }}></Image>)
   }
@@ -47,7 +48,7 @@ export function formatCioosStations(data_obj, children, row_position){
       */
     const resultKmh = windSpeedToKmh(wind_speed)
     const resultKnots = windSpeedToKnots(wind_speed)
-    children.push(<span><strong>Wind Speed:  </strong>{resultKnots.value} {resultKnots.unit} ({resultKmh.value} {resultKmh.unit})</span>)}
+    children.push(<span title={attributes.wind_speed.definition}><strong>Wind Speed:  </strong>{resultKnots.value} {resultKnots.unit} ({resultKmh.value} {resultKmh.unit})</span>)}
   
   const wind_speed_of_gust = data_value('wind_speed_of_gust')
   if(wind_speed_of_gust){
@@ -55,7 +56,7 @@ export function formatCioosStations(data_obj, children, row_position){
     const resultKmh = windSpeedToKmh(wind_speed_of_gust)
     const resultKnots = windSpeedToKnots(wind_speed_of_gust)
     children.push(<br />)
-    children.push(<span><strong>Gust Speed: </strong>{resultKnots.value} {resultKnots.unit} ({resultKmh.value} {resultKmh.unit})</span>)}
+    children.push(<span title={attributes.wind_speed_of_gust.definition}><strong>Gust Speed: </strong>{resultKnots.value} {resultKnots.unit} ({resultKmh.value} {resultKmh.unit})</span>)}
   
   const air_temperature = data_value('air_temperature')
   if(air_temperature){
@@ -63,7 +64,7 @@ export function formatCioosStations(data_obj, children, row_position){
     //Should already be in Celsius may not need? Maybe good for formatting though
     const resultDegreeC = tempToDegreeC(air_temperature)
     children.push(<br />)
-    children.push(<span><strong>Temperature (Air):</strong> {resultDegreeC.value} {resultDegreeC.unit}   ({resultDegreeF.value} {resultDegreeF.unit})</span>)}
+    children.push(<span title={attributes.air_temperature.definition}><strong>Temperature (Air):</strong> {resultDegreeC.value} {resultDegreeC.unit}   ({resultDegreeF.value} {resultDegreeF.unit})</span>)}
 
   const sea_surface_temperature = data_value('sea_surface_temperature')
   if(sea_surface_temperature){
@@ -71,7 +72,7 @@ export function formatCioosStations(data_obj, children, row_position){
     const resultDegreeF = tempToDegreeF(sea_surface_temperature)
     const resultDegreeC = tempToDegreeC(sea_surface_temperature)
     children.push(<br />)
-    children.push(<span><strong>Temperature (Sea Surface):</strong> {resultDegreeC.value} {resultDegreeC.unit} ({resultDegreeF.value} {resultDegreeF.unit})</span>)}
+    children.push(<span title={attributes.sea_surface_temperature.definition}><strong>Temperature (Sea Surface):</strong> {resultDegreeC.value} {resultDegreeC.unit} ({resultDegreeF.value} {resultDegreeF.unit})</span>)}
 
   const sea_surface_wave_maximum_height = data_value('sea_surface_wave_maximum_height')
     if(sea_surface_wave_maximum_height){
@@ -79,7 +80,7 @@ export function formatCioosStations(data_obj, children, row_position){
       const resultM = windHeightToM(sea_surface_wave_maximum_height)
       const resultFt = windHeightToFt(sea_surface_wave_maximum_height)
       children.push(<br />)
-      children.push(<span><strong>Wave Height (Max):</strong> {resultM.value} {resultM.unit} ({resultFt.value} {resultFt.unit})</span>)}
+      children.push(<span title={attributes.sea_surface_wave_maximum_height.definition}><strong>Wave Height (Max):</strong> {resultM.value} {resultM.unit} ({resultFt.value} {resultFt.unit})</span>)}
   
   const sea_surface_wave_significant_height = data_value('sea_surface_wave_significant_height')
     if(sea_surface_wave_significant_height){
@@ -87,7 +88,7 @@ export function formatCioosStations(data_obj, children, row_position){
       const resultM = windHeightToM(sea_surface_wave_significant_height)
       const resultFt = windHeightToFt(sea_surface_wave_significant_height)
       children.push(<br />)
-      children.push(<span><strong>Wave Height (Avg):</strong> {resultM.value} {resultM.unit} ({resultFt.value} {resultFt.unit})</span>)}
+      children.push(<span title={attributes.sea_surface_wave_significant_height.definition}><strong>Wave Height (Avg):</strong> {resultM.value} {resultM.unit} ({resultFt.value} {resultFt.unit})</span>)}
 
   const air_pressure = data_value('air_pressure')
   if(air_pressure){
@@ -95,14 +96,17 @@ export function formatCioosStations(data_obj, children, row_position){
     const resultKPa = pressureToKPa(air_pressure)
     const resultInHg = pressureToInHg(air_pressure)
     children.push(<br />)
-    children.push(<span><strong>Air Pressure:</strong> {resultKPa.value} {resultKPa.unit} ({resultInHg.value} {resultInHg.unit})</span>)}
+    children.push(<span title={attributes.air_pressure.definition}><strong>Air Pressure:</strong> {resultKPa.value} {resultKPa.unit} ({resultInHg.value} {resultInHg.unit})</span>)}
 
     
   const relative_humidity = data_value('relative_humidity')
   if(data_obj['relative_humidity']){
     children.push(<br />)
-    children.push(<span><strong>Humidity:</strong> {parseInt(relative_humidity)}%</span>)}
+    children.push(<span title={attributes.relative_humidity.definition}><strong>Humidity:</strong> {parseInt(relative_humidity)}%</span>)}
   }
+/**
+ * Converts a Unix timestamp to a human-readable date and time string.//++
+ */
 export function formatCioosDateTime(date_str){
   const date = new Date(date_str * 1);
   const options = { 
@@ -112,13 +116,16 @@ export function formatCioosDateTime(date_str){
     hour: '2-digit', 
     minute: '2-digit',
     timeZoneName: 'long'
-};
+  };
 
   const timestamp = date.toLocaleString('en-US', options);
   return timestamp
 }
 
 
+/**
+ * Parses and converts raw station data into a structured format.//+
+ */
 export function parseData(fullStationData) {
   console.log(fullStationData);
   //console.log(JSON.parse(chartData));
@@ -159,15 +166,18 @@ export function parseData(fullStationData) {
 
     console.log(stationDataTable);
 
-  
+
   });
   console.log(stationDataTable);
   const convertedStationData= dataConversion(stationDataTable);
 
-  
+
   return convertedStationData 
 }
 
+/**
+ * Converts raw station data into a structured format with converted units.
+ */
 function dataConversion(stationDataTable){
   let rawStationData = { ...stationDataTable }; // make deep copy
 
@@ -200,8 +210,8 @@ function dataConversion(stationDataTable){
           //console.log(`Value: ${v}, Converted: ${resultKmh.value}`);
           return resultKmh.value}); 
       }
-      
-      
+
+
       //console.log(station)
     })
 
@@ -210,10 +220,13 @@ function dataConversion(stationDataTable){
   return rawStationData
 
 }
+/**
+ * Retrieves the bounding box (bbox) of a storm's track data.
+ *
+ */
 export function getStormBbox (storm_data){
   const bbox = storm_data["pts"]["features"]['0'].bbox;
   console.log(bbox);
-  return bbox;;
-
+  return bbox;
 }
     

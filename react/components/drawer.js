@@ -6,7 +6,15 @@ import Leaflet from 'leaflet';
 import React, { useState } from "react";
 
 
-export default function Drawer({ children, element_id, classes, storm_data, source_type, setStormPoints, setStationPoints, setIsDrawerOpen, isDrawerOpen }) {
+/**
+ * The function `Drawer` renders a side drawer component with different content based on the
+ * `source_type` prop.
+ * @returns The `Drawer` component is being returned, which contains a div element with the specified
+ * element_id and classes. Inside this div, there is another div with the class
+ * `styles.drawer_interior`. Depending on the `source_type`, either the `ActiveStormList`,
+ * `HistoricalStormList`, or a placeholder for the Home Page is rendered within the `Drawer` component.
+ */
+export default function Drawer({ children, element_id, classes, storm_data, source_type, setStormPoints, setStationPoints, setSelectedStation, setIsDrawerOpen, isDrawerOpen }) {
 
     let sideClass = null;
     
@@ -41,7 +49,8 @@ export default function Drawer({ children, element_id, classes, storm_data, sour
                                 setStormPoints={setStormPoints}
                                 map={map}
                                 Leaflet={Leaflet}
-                                />
+                                setSelectedStation={setSelectedStation}
+                            />
                         ) : 
                         source_type == "historical" ? (
                             <HistoricalStormList
@@ -49,7 +58,8 @@ export default function Drawer({ children, element_id, classes, storm_data, sour
                                 setStormPoints={setStormPoints}
                                 map={map}
                                 Leaflet={Leaflet}
-                            />
+                                setSelectedStation={setSelectedStation}
+                        />
                         ) : 
                         (
                             <>

@@ -8,6 +8,13 @@ import Box from '@mui/material/Box';
 import { RenderWindRose } from './wind_rose';
 import RenderChart from '../station_graph.js'
 
+/**
+ * The CustomTabPanel function renders children based on the value and index props.
+ 
+ * @returns A `div` element representing a custom tab panel is being returned. The `hidden` attribute
+ * is used to conditionally show or hide the panel based on the `value` and `index` props. The panel
+ * content is rendered inside a `Box` component if the `value` matches the `index`.
+ */
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -24,12 +31,23 @@ function CustomTabPanel(props) {
   );
 }
 
+/* The code snippet `CustomTabPanel.propTypes` is defining the prop types for the `CustomTabPanel`
+component. It specifies that the component expects three props: */
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
 };
 
+/**
+ * The function `a11yProps` returns an object with id and aria-controls properties based on the given
+ * index.
+ 
+ * @returns The function `a11yProps` returns an object with two properties: `id` and `aria-controls`.
+ * The `id` property is set to a string value of `simple-tab-`, where `index` is the input
+ * parameter of the function. The `aria-controls` property is set to a string value of
+ * `simple-tabpanel-`, where `index` is also the
+ */
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -39,8 +57,25 @@ function a11yProps(index) {
 
 
 
+/**
+ * The `BasicTabs` function generates a tabbed interface displaying different data visualizations and
+ * information for a specific weather station.
+ * @returns A JSX element is being returned. It consists of a Box component with tabs for different
+ * data categories related to a weather station. The tabs include Summary, Wind Speed, Wind Direction,
+ * Temperature, Waves, and Pressure. Each tab displays relevant information or charts based on the
+ * selected category. The Summary tab includes station summary text and a link to view full data. The
+ * Wind Speed, Temperature, Waves, and
+ */
 export default function BasicTabs({stationName, stationData, stationSummaryText, variablePresence, selectedTab, setSelectedTab}) {
+  /**
+   * The function `generateGraph` returns a JSX element containing a chart component with specified
+   * data and styling.
+   * @returns A JSX element is being returned. It contains a `div` element with the class name
+   * "station_chart" and some inline styles for height, width, and padding. Inside the `div`, there is
+   * a `RenderChart` component with props `sourceData`, `stationName`, and `varCategory`.
+   */
   console.log(stationData)
+
   function generateGraph(selectedVar){
     return (
      <div className="station_chart" 
@@ -48,6 +83,7 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
      height: 'auto',
      width: 'auto', // Adjust width based on content (chart)
      padding: '0px', // Optional padding around chart
+     display:'flex',
      }}>
      <RenderChart  
          sourceData={stationData}

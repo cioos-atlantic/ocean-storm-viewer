@@ -8,8 +8,6 @@ export function get_station_field_data(station_data, field_name, name_type='colu
     const arrayColumn = (arr, n) => arr.map(x => x[n]);
     const field_position = get_station_field_position(station_data,field_name,name_type)
     const field_data = arrayColumn(station_data['rows'], field_position)
-    console.log(field_position)
-    console.log( station_data["column_long_names"][field_position])
     const field_obj = {    
     data: field_data || null,
     standard_name: station_data?.['column_std_names']?.[field_position] || null,
@@ -85,9 +83,21 @@ export function RecentStationData(data, time) {
     
   }
 
+/**
+ * The function `getDisplayName` retrieves the display name of a station from a dataset based on the
+ * station name provided.
+ * @param station_descriptions - An array of objects containing station descriptions. Each object has
+ * properties like `id` and `title`.
+ * @param station_name - station_name is the identifier of a station for which we want to retrieve the
+ * display name. It is used to search for a matching station description in the provided
+ * station_descriptions dataset.
+ * @returns The `getDisplayName` function returns the display name of a station based on the provided
+ * `station_descriptions` dataset and `station_name`. If a match is found in the `station_descriptions`
+ * dataset for the `station_name`, it returns the title of the matched dataset. If no match is found,
+ * it returns the original `station_name`.
+ */
 export function getDisplayName(station_descriptions, station_name){
     let display_name;
-
     const matchedDataset = station_descriptions?.find(station_description => station_description.id === station_name);
     
     if (matchedDataset) {
@@ -98,6 +108,15 @@ export function getDisplayName(station_descriptions, station_name){
       display_name = station_name
     }
     return display_name;
+}
+
+export function getMatchedStation(station_descriptions, station_name){
+  const matchedDataset = station_descriptions?.find(station_description => station_description.id === station_name);
+  
+  if (matchedDataset) {
+    return matchedDataset
+  }
+  return null
 }
 
 

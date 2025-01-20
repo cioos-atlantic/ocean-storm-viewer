@@ -1,3 +1,7 @@
+/**
+ * The function `handleStormHoveredData` extracts information from a point object representing a storm
+ * and logs the storm's time.
+ */
 export function handleStormHoveredData(point){
   //console.log(point);
   const stormId= point.id;
@@ -14,11 +18,18 @@ export function handleStormHoveredData(point){
 
   
 
-  console.log(stormTime)}
+  console.log(stormTime)
+}
   //passStormData(point)}
   // Construct query parameters
   
   
+/**
+ * The function `passStormData` takes storm time, latitude, and longitude as input parameters,
+ * constructs a query string, fetches historical station data based on the query, and logs the
+ * retrieved data.
+
+ */
 export async function passStormData(stormTime, stormLat, stormLon ){
   const query = new URLSearchParams({
     time: stormTime,
