@@ -57,7 +57,7 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
           //maintainAspectRatio: false,
           plugins: {
             legend: {
-              position: 'right'
+              position: 'right',
               fullSize: true,
               labels: {
                 padding: 5,
