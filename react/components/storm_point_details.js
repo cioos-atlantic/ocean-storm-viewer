@@ -4,6 +4,7 @@ import React, {useState} from "react";
 import StormType from './Storm_popup/Storm_type';
 import StormCategory from './Storm_popup/storm_category';
 import StormPressure from './Storm_popup/storm_pressure';
+import { Box } from '@mui/material';
 
 export const empty_point_obj = { properties: {}, geometry: {} }
 
@@ -43,7 +44,14 @@ export default function StormPointDetails({ storm_point_hover, onClose }) {
 
 
     return (
-        <div className="info_pane">
+        
+        <Box className="info_pane"
+        sx={{
+            padding: 2,
+            fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '16px' }, // Adjust font size for different screen widths
+            marginTop: { xs: '35%', sm: '18%', md: '13%', lg: '11%' }, // Adjust margin-top for different screen widths
+            '@media (min-width:500px) and (max-width:580px)': { marginTop: '27%' },
+          }}>
             <div>
                 <button 
                 onClick={onClose} 
@@ -65,6 +73,8 @@ export default function StormPointDetails({ storm_point_hover, onClose }) {
                 }
             </div>
 
-        </div>
+        </Box>
+        
+        
     )
 }

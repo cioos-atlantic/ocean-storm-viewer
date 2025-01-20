@@ -127,7 +127,7 @@ footer {
 .info_pane {
   position: absolute;
   top: 0;
-  margin-top: 10%; /* Add space from the top */
+   /* margin-top: 10%; Add space from the top */
   right: 0;
   background-color: white; /* White background for better readability */
   color: black; /* Black text */
