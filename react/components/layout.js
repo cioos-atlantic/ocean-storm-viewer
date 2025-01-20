@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 
 import ErddapHandler from "../pages/api/query_stations";
 import { About } from "@/pages/about_page";
+import Grid from '@mui/material/Grid2';
 
 
 
@@ -83,17 +84,53 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
         <meta name="og:title" content={siteTitle} />
       </Head>
       <header className={styles.header}>
-        <a href={logo.href}><Image src={logo.src} width={200} height={100} className='logo' alt="logo" /></a>
-        {home ? (
-          <>
-            {/* Home Page Header Content */}
-          </>
-        ) : (
-          <>
-            {/* Other Page Header Content */}
-          </>
-        )}
-        <HeaderNav navItems={topNav}></HeaderNav>
+        <Grid container alignItems="center" spacing={1}  
+        sx={{ justifyContent: 'space-between', flexWrap: 'nowrap',  maxHeight: { xs: '80px', sm: '100px', md: '120px', lg: '140px' } // Responsive max height for the header 
+        }}
+        >
+          {/* Logo Section */}
+          <Grid item xs={12} sm={6} md={4} lg={3} xl={2} xxl={1} >
+            <a href={logo.href}>
+              <Image
+                src={logo.src}
+                width={200}
+                height={100}
+                className="logo" // Preserving your existing class for the logo
+                alt="logo"
+                style={{
+                  maxWidth: '100%', // Ensures responsiveness
+                }}
+              />
+            </a>
+          </Grid>
+
+          {/* Content Section */}
+          <Grid item xs={12} sm={6} md={4} lg={3} xl={2} xxl={1}
+>
+            {home ? (
+              <>
+                {/* Home Page Header Content */}
+              </>
+            ) : (
+              <>
+                {/* Other Page Header Content */}
+              </>
+            )}
+          </Grid>
+
+          {/* Navigation Section */}
+          <Grid item xs={12} sm={6} md={6} lg={4} xl={3} xxl={2}
+          sx={{
+            maxWidth: '100%', // Ensures responsiveness
+            overflow: 'visible', // 
+            display: 'flex',
+            justifyContent: 'flex-end',
+            gap: 1, // Adds spacing between navigation items
+            fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '18px', xl: '20px', xxl: '22px' }, // Font size changes based on breakpoints
+          }}>
+            <HeaderNav navItems={topNav} />
+          </Grid>
+        </Grid>
       </header>
       {about_page ? (<About/>):(<>
       <main className="body">

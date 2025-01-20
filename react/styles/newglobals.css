@@ -19,8 +19,8 @@ header {
 header img.logo {
   float: left; /* Align logo to the left */
   background-color: white; /* White background for logo */
-  height: 75px; /* Matches header height */
-  width: 15%; /* absolute width for logo */
+  height: 76px; /* Matches header height */
+  width: 78%; /* absolute width for logo */
   padding-left: 1.5rem; /* Spacing on left */
   padding-right: 1.5rem; /* Spacing on right */
 }
@@ -28,15 +28,20 @@ header img.logo {
 /* Navigation Styling */
 header nav {
   float: left; /* Align navigation links to the left */
-  font-size: 1.25rem; /* Slightly larger font for readability */
+  /*font-size: 1.25rem;  Slightly larger font for readability */
+  width:100%
+
 }
 
-header nav ul {}
+header nav ul {
+  
+}
 
 header nav ul li {
   float: left; /* Display navigation items inline */
   margin-right: 0.5rem; /* Space between links */
   list-style-type: none; /* Remove bullets from list items */
+  
 }
 
 header nav ul li a {
@@ -219,89 +224,4 @@ footer {
   border: 1px solid blue; /* Blue border for footer */
 }
 
-/* Responsive Styles for Map Container */
-@media (max-width: 1024px) {
-  .map_container {
-    height: calc(100vh - 33px); /* Adjust height for smaller screens */
-  }
-  .inner_container {
-    height: 100%;
-    
-  }
-  .info_pane {
-    margin-top: 20%; /*to allow the close button to show */
-    width: 40%; /* Adjust width for better fit */
-    font-size: 0.9rem; /* Slightly smaller font for compactness */
-  }
-}
 
-@media (max-width: 768px) {
-  .map_container {
-    height: calc(100vh - 40px); /* Adjust height for tablets */
-  }
-  .inner_container {
-    height: 100%;
-    
-  }
-}
-
-
-@media (max-width: 576px) {
-  .map_container {
-    height: calc(100vh - 35px); /* Adjust height for mobile */
-  }
-  .inner_container {
-    height: 100%;
-    
-  }
-  header img.logo {
-    width: 30%; /* Increase logo width for better visibility */
-  }
-  header nav ul li {
-    font-size: 0.9rem; /* Reduce font size of navigation items */
-  }
-  header nav ul {
-    display: flex; /* Change to flexbox layout */
-    flex-wrap: wrap; /* Allow wrapping for limited space */
-    position: absolute;
-    top: 0.6rem; 
-    width: 65%;
-    right: 1rem; 
-  }
-  footer {
-    height: 40px; /* Slightly smaller height for phones */
-  }
-  .station_dashboard {
-    width: 95%; /* Full width for small screens */
-    margin-left: 0; /* Remove left margin */
-    padding: 0.5rem; /* Reduce padding for compactness */
-    left: 20px;
-    bottom: 35px;
-  }
-  .info_pane {
-    margin-top: 30%; /*to allow the close button to show */
-    width: 80%; /* Adjust width for better fit */
-    font-size: 0.9rem; /* Slightly smaller font for compactness */
-    
-  }
-  .leaflet-control-container .leaflet-top {
-    top: 85px; /* Slightly lower to account for smaller header */
-  }
-  .leaflet-control-container .leaflet-bottom {
-    bottom: 45px; /* Adjust for smaller footer */
-  }
-  body {
-    font-size: 0.9rem; /* Reduce default font size */
-  }
-  .storm_card {
-    font-size: 0.8rem; /* Smaller text for storm cards */
-  }
-  .station_dashboard .dash-body {
-    width: 100%; /* Green border for body */
-  }
-  .canvas{
-    width: 100%;
-    height: 100%;
-  }
-
-}
