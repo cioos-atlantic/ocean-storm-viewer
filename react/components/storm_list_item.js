@@ -3,7 +3,11 @@ import { parseISO, format } from 'date-fns';
 import { populateStormDetails, get_storm_basin, flip_coords, bounds_to_array } from '@/lib/storm_utils'
 // import styles from './active_storm_list.module.css'
 
-function formatCoordinates(coordinates) {
+/**
+ * Formats a set of geographic coordinates into a human-readable format.
+ * sample output // Output: <28.21°N 80.61°W>
+ */
+function formatCoordinates(coordinates){
     const lat_dir = coordinates[1] > 0 ? "N" : "S";
     const lon_dir = coordinates[0] > 0 ? "E" : "W";
 
@@ -13,7 +17,11 @@ function formatCoordinates(coordinates) {
 }
 
 
-function flyToPoint(storm_data, map, Leaflet) {
+/**
+ * Flys the map to the bounding box of a storm's track.
+ */
+export function flyToPoint(storm_data, map, Leaflet){
+    //console.log(Leaflet)
     const first_point = flip_coords(storm_data.data[0].geometry.coordinates);
     const last_point = flip_coords(storm_data.data.splice(-1)[0].geometry.coordinates);
 
@@ -22,7 +30,12 @@ function flyToPoint(storm_data, map, Leaflet) {
 }
 
 
-export default function StormListItem({ storm_name, storm_data, setSelectedStorm, setStormPoints, is_selected, map, Leaflet }) {
+/**
+ * A React functional component that represents a single storm in the list.
+ *
+ * @returns {JSX.Element} - The JSX representation of the StormListItem component.
+ */
+export default function StormListItem({ storm_name, storm_data, setSelectedStorm, setStormPoints, is_selected, map, Leaflet, setSelectedStation }) {
     const date_time_format_min = "MMMM do, yyyy";
     const date_time_format_full = "MMM do, yyyy h:mm a X";
     const first_point = storm_data.data[0];
@@ -41,10 +54,11 @@ export default function StormListItem({ storm_name, storm_data, setSelectedStorm
     const selected = (is_selected) ? "selected_storm" : "";
     const storm_basin = get_storm_basin(last_point);
     return (
-        <div
-            className={"storm_card " + selected}
-            onClick={(e) => {
-                populateStormDetails(e, storm_data, setSelectedStorm, setStormPoints);
+        <div 
+            className={"storm_card " + selected }
+            onClick={(e) => { 
+                populateStormDetails(e, storm_data, setSelectedStorm, setStormPoints, setSelectedStation);
+                console.log(storm_data)
                 flyToPoint(storm_data, map, Leaflet);
             }}
         >

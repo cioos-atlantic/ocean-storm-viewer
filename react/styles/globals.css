@@ -163,24 +163,27 @@ footer {
 .station_dashboard {
   background: white;
   color: black;
-  border-top: 3px solid #e55162;
-  padding: 2rem;
+  /*border-top: 3px solid #e55162;*/
+  padding: 1rem;
   margin-left: 20%;
   position: absolute;
-  bottom: 50px;
+  bottom: 20px;
   z-index: 5000;
   width: 80%;
 }
 
-/* Styling for the dashboard header */
+/* Styling for the dashboard header 
+  */
 .station_dashboard .dash-header {
-  border: 1px solid darkgoldenrod;
+  /*border: 1px solid darkgoldenrod;*/
+  background-color: #eee;
+  padding:0.5rem;
 }
 
 /* Handles the styling of buttons in the header */
 .station_dashboard .dash-header button {
   float: right;
-  background-color: #fff;
+  background-color: #eee;
   border: 0;
   font-size: 1.5rem;
 }
@@ -190,12 +193,14 @@ footer {
   font-weight: bold;
 }
 
-/* Styling for the dashboard body */
+/* Styling for the dashboard body
 .station_dashboard .dash-body {
   border: 1px solid green;
 }
+  */
 
-/* Styling for the dashboard footer */
+/* Styling for the dashboard footer 
 .station_dashboard .dash-footer {
   border: 1px solid blue;
 }
+  */

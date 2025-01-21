@@ -1,6 +1,13 @@
 import { Icon, DivIcon, Point } from 'leaflet'
 
 
+/**
+ * The function `change_icon_url` asynchronously fetches an SVG file, replaces specific colors and
+ * strokes in the SVG content, and returns a new Icon object with the updated icon URL.
+ * @returns The `change_icon_url` function returns a new `Icon` object with updated icon URLs based on
+ * the provided SVG content and colors. If there is an error during the process, the function will log
+ * the error and return the original `icon` object as a fallback.
+ */
 export async function change_icon_url(icon, svgPath, arcColor, arcStroke, ellipseColor, textColor) {
     try {
         const response = await fetch(svgPath);

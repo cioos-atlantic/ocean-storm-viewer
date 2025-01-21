@@ -8,7 +8,13 @@ export function get_station_field_data(station_data, field_name, name_type = 'co
   const arrayColumn = (arr, n) => arr.map(x => x[n]);
   const field_position = get_station_field_position(station_data, field_name, name_type)
   const field_data = arrayColumn(station_data['rows'], field_position)
-  return field_data
+    const field_obj = {    
+    data: field_data || null,
+    standard_name: station_data?.['column_std_names']?.[field_position] || null,
+    long_name: station_data?.['column_long_names']?.[field_position] || null
+    };
+
+  return field_obj
 }
 
 export function get_recent_row_position(station_info, time) {
@@ -77,17 +83,64 @@ export function RecentStationData(data, time) {
     
   }
 
-export function getDisplayName(station_descriptions, station_name) {
-  let display_name;
-
-  const matchedDataset = station_descriptions?.find(station_description => station_description.id === station_name);
-
-  if (matchedDataset) {
-    display_name = matchedDataset.title;
-    console.log(`Match found! Dataset title is: ${display_name}`);
-  } else {
-    console.log("No match found.");
-    display_name = station_name
-  }
-  return display_name;
+/**
+ * The function `getDisplayName` retrieves the display name of a station from a dataset based on the
+ * station name provided.
+ * @param station_descriptions - An array of objects containing station descriptions. Each object has
+ * properties like `id` and `title`.
+ * @param station_name - station_name is the identifier of a station for which we want to retrieve the
+ * display name. It is used to search for a matching station description in the provided
+ * station_descriptions dataset.
+ * @returns The `getDisplayName` function returns the display name of a station based on the provided
+ * `station_descriptions` dataset and `station_name`. If a match is found in the `station_descriptions`
+ * dataset for the `station_name`, it returns the title of the matched dataset. If no match is found,
+ * it returns the original `station_name`.
+ */
+export function getDisplayName(station_descriptions, station_name){
+    let display_name;
+    const matchedDataset = station_descriptions?.find(station_description => station_description.id === station_name);
+    
+    if (matchedDataset) {
+      display_name = matchedDataset.title;
+      console.log(`Match found! Dataset title is: ${display_name}`);
+    } else {
+      console.log("No match found.");
+      display_name = station_name
+    }
+    return display_name;
 }
+
+export function getMatchedStation(station_descriptions, station_name){
+  const matchedDataset = station_descriptions?.find(station_description => station_description.id === station_name);
+  
+  if (matchedDataset) {
+    return matchedDataset
+  }
+  return null
+}
+
+
+export function getColumnNameList(column_std_names, column_names, variable){
+  const column_names_list = [];
+  
+  column_std_names.forEach((std_name, index) => {
+    if (std_name === variable){
+      column_names_list.push(column_names[index]);
+
+    };
+  });
+  console.log(column_names_list)
+  return column_names_list
+}
+
+
+export function getUniqueStdNamesList(column_std_names){
+  // using Set constructor
+  let s = new Set(column_std_names);
+
+  // Convert back the set to array
+  let uniqueColStdNames = [...s];
+
+  return uniqueColStdNames
+}
+

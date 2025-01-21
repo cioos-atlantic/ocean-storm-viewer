@@ -5,7 +5,7 @@ import RenderChart from './station_graph.js'
 import { flip_coords } from "@/lib/storm_utils";
 import { empty_station_obj } from "./layout"
 
-import { Marker, Popup } from "react-leaflet";
+import { Marker, Tooltip, Popup, Icon } from "react-leaflet";
 
 import { getDisplayName } from "./utils/station_data_format_util";
 import styles from './station_marker.module.css'
@@ -19,7 +19,15 @@ import styles from './station_marker.module.css'
  * @param {Date} time Time of the station data to retrieve. Defaults to most recent data if not provided
  * @returns StationMarker JavaScript snippet
  */
-export default function StationMarker(station_data, station_descriptions, time = new Date(), setSelectedStation, setSelectedTab) {
+export default function StationMarker(station_data, station_descriptions, time = new Date(), selected_station, setSelectedStation, setSelectedTab) {
+    // Turns selected marker red, others return as blue
+    function getMarkerIcon(){
+      if (station_name === selected_station[0]){
+        return redIcon
+      }
+      else return blueIcon
+    }
+
     if(isNaN(time))
       time= new Date()
 
@@ -40,23 +48,32 @@ export default function StationMarker(station_data, station_descriptions, time =
   //const display_name = (station_name in station_names) ? station_names[station_name]['display']:station_name
 
     // Data for station doesn't exist at the provided time
+    const redIcon = new L.Icon.Default({
+      iconUrl:'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/refs/heads/master/img/marker-icon-2x-red.png'
+    })
+
+    const blueIcon = new L.Icon.Default()
+    let selectedIcon = new L.Icon.Default()
+
     
+
 
     return (
       <Marker 
         key={station_name} 
-        position={flip_coords(station_values.geometry.coordinates)}
+        position={flip_coords(station_values?.geometry?.coordinates)}
+        icon={getMarkerIcon(station_name)}
         eventHandlers={{
           click: (e) => {
             console.log(e, "SETTING SELECTED STATION", station_data);
             setSelectedStation(station_data);
             setSelectedTab(0);
-          },
+          }
         }}
       >
-          <Popup > 
+          <Tooltip> 
             <h4>{display_name}</h4>
-          </Popup>
+          </Tooltip>
         </Marker>
     )
 }

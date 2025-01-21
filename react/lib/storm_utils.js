@@ -1,6 +1,7 @@
 
 import * as geolib from 'geolib';
 import { show_all_storms } from '../components/active_storm_list';
+import { empty_station_obj } from '@/components/layout';
 
 export const nmi_to_m = 1852.216;
 export const ft_to_m = 0.3048;
@@ -490,8 +491,9 @@ export function build_storm_features(storm_data) {
     return storm_features;
 }
 
-export function populateStormDetails(event, storm_data, setSelectedStorm, setStormPoints) {
+export function populateStormDetails(event, storm_data, setSelectedStorm, setStormPoints,  setSelectedStation) {
     setStormPoints(empty_storm_obj);
+    setSelectedStation(empty_station_obj);
 
     console.log("Set Selected storm to: " + storm_data.data[0].properties.NAME);
     setSelectedStorm(storm_data.data[0].properties.NAME);

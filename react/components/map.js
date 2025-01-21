@@ -72,6 +72,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             source_type={source_type}
             setStormPoints={setStormPoints}
             setStationPoints={setStationPoints}
+            setSelectedStation={setSelectedStation}
           />
 
           <TileLayer
@@ -98,7 +99,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                 {
                   Object.entries(station_data).map((station) => {
                     const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                    return StationMarker(station, allDatasetDescriptions, storm_timestamp, setSelectedStation, setSelectedTab)
+                    return StationMarker(station, allDatasetDescriptions, storm_timestamp, selected_station, setSelectedStation, setSelectedTab)
                   })
                 }
               </LayerGroup>
