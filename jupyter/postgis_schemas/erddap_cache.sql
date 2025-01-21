@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS public.erddap_cache
 TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.erddap_cache
-    OWNER to hurricane_dash;
+    OWNER to hurricane_dash_service;
 
 COMMENT ON TABLE public.erddap_cache
     IS 'A table for caching storm data stored on CIOOS Atlantic ERDDAP servers';
