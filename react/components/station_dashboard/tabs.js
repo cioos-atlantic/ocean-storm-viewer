@@ -120,12 +120,33 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
               display: 'block', // Ensure scroll buttons are visible
               },
           }}>
-          <Tab label="Summary" {...a11yProps(0)} />
-          <Tab label="Wind Speed" {...a11yProps(1)} disabled={!variablePresence['wind_speed']}/>
-          <Tab label="Wind Dir." {...a11yProps(2)} disabled={!variablePresence['wind_from_direction']} />
-          <Tab label="Temperature" {...a11yProps(3)} disabled={!variablePresence['temperature']}/>
-          <Tab label="Waves" {...a11yProps(4)} disabled={!variablePresence['wave']}/>
-          <Tab label="Pressure" {...a11yProps(5)} disabled={!variablePresence['air_pressure']}/>
+          <Tab label="Summary" sx={{
+              fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+            }} {...a11yProps(0)} />
+          <Tab label="Wind Speed"
+          sx={{
+            fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+          }} {...a11yProps(1)} disabled={!variablePresence['wind_speed']}/>
+          <Tab label="Wind Dir." 
+          sx={{
+            fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+          }}
+          {...a11yProps(2)} disabled={!variablePresence['wind_from_direction']} />
+          <Tab label="Temperature"
+          sx={{
+            fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+          }}
+          {...a11yProps(3)} disabled={!variablePresence['temperature']}/>
+          <Tab label="Waves"
+          sx={{
+            fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+          }}
+          {...a11yProps(4)} disabled={!variablePresence['wave']}/>
+          <Tab label="Pressure"
+          sx={{
+            fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+          }}
+          {...a11yProps(5)} disabled={!variablePresence['air_pressure']}/>
         </TabList>
       </Box>
       <CustomTabPanel value={selectedTab} index={0}>

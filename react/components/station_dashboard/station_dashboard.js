@@ -6,6 +6,7 @@ import { RecentStationData, getDisplayName, getMatchedStation } from "../utils/s
 import styles from '../station_marker.module.css'
 import RenderChart from '../station_graph.js'
 import { BlockquoteLeft } from "react-bootstrap-icons";
+import { Box } from "@mui/material";
 
 /**
  * The `StationDashboard` function renders a dashboard for a selected station with relevant data and
@@ -65,19 +66,33 @@ export default function StationDashboard({children, selected_station, setSelecte
       // Data for station doesn't exist at the provided time
 
     return (
-        <div key="01-station-dashboard" className={`station_dashboard ${isDrawerOpen ? 'drawerOpen' : 'drawerClosed'}`}>
-            <div className="dash-header">
+        <Box key="01-station-dashboard" 
+        className={`station_dashboard ${isDrawerOpen ? 'drawerOpen' : 'drawerClosed'}`}
+        sx={{
+          bottom:{ xs: '20px', sm: '30px', md: '35px', lg: '50px', xl: '50px', xxl: '50px' }, // if changed, remember to change the footer height in the layout.js
+        }}
+        >
+            <Box className="dash-header" sx={{
+               fontSize: { xs: '14px', sm: '16px', md: '18px', lg: '18px' },
+               
+            }}>
                 <button
                     className="close"
                     onClick={(e) => {
                         setSelectedStation(empty_station_obj)
                         setSelectedTab(0)
                     }}
+                    title="Close"
+                    aria-label="Close"
                 ><FaWindowClose/></button>
-                <h3>{display_name}</h3>
-                <h3><a href={institution_link} target="_blank" rel="noopener noreferrer">{institution}</a></h3>
-            </div>
-            <div className="dash-body">
+                <div> <strong>{display_name}</strong>
+                  </div>
+                <div><a href={institution_link || "#"} target="_blank" rel="noopener noreferrer">{institution || "Unknown Institution"}</a></div>
+            </Box>
+            <Box className="dash-body"
+            sx={{
+              fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '16px' }
+            }}>
                 <p>
                     <BasicTabs  
                     stationName = {stationName}
@@ -88,7 +103,7 @@ export default function StationDashboard({children, selected_station, setSelecte
                     setSelectedTab={setSelectedTab}
                     /> 
                 </p>
-            </div>
-        </div>
+            </Box>
+        </Box>
     )
 }

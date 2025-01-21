@@ -14,6 +14,7 @@ import dynamic from "next/dynamic";
 import ErddapHandler from "../pages/api/query_stations";
 import About from "@/pages/about_page";
 import Grid from '@mui/material/Grid2';
+import { Box } from "@mui/material";
 
 
 
@@ -156,7 +157,12 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
       </main>
       </>)}
       <footer>
+        <Box sx={{
+          height:{ xs: '20px', sm: '30px', md: '35px', lg: '50px', xl: '50px', xxl: '50px' }, // if changed, remember to change the station dashboard bottom in the station_dashboard.js
+        }}>
         <FooterNav></FooterNav>
+        </Box>
+        
       </footer>
     </div>
   )

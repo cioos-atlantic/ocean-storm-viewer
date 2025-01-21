@@ -65,7 +65,7 @@ header nav ul li:last-child a::after {
 footer {
   position: absolute; /* Stick footer to the bottom */
   width: 100%; /* Full-width footer */
-  height: 50px; /* absolute height */
+  /*height: 50px;  absolute height */
   bottom: 0px; /* Positioned at the very bottom */
   z-index: 8000; /* High z-index for visibility */
   background-color: black; /* Black footer background */
@@ -183,7 +183,7 @@ footer {
   padding: 2rem; /* Internal padding */
   margin-left: 20%; /* Offset from the left */
   position: absolute; /* Positioned at the bottom */
-  bottom: 50px; /* Above the footer */
+  /*bottom: 50px;  Above the footer */
   z-index: 5000; /* High z-index to overlay the map */
   width: 80%; /* 80% width for balance */
   max-height: 80%;
