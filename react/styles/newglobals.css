@@ -179,7 +179,7 @@ footer {
 .station_dashboard {
   background: white; /* White background for clarity */
   color: black; /* Black text for readability */
-  border-top: 3px solid #e55162; /* Red top border for emphasis */
+  /*border-top: 3px solid #e55162;   */
   padding: 2rem; /* Internal padding */
   margin-left: 20%; /* Offset from the left */
   position: absolute; /* Positioned at the bottom */
@@ -202,12 +202,14 @@ footer {
 }
 
 .station_dashboard .dash-header {
-  border: 1px solid darkgoldenrod; /* Gold border for the header */
+  /*border: 1px solid darkgoldenrod;   */
+  background-color: #eee;
+  padding:0.5rem;
 }
 
 .station_dashboard .dash-header button {
   float: right; /* Align button to the right */
-  background-color: #fff; /* White background for button */
+  background-color: #eee; /* White background for button */
   border: 0; /* No border */
   font-size: 1.5rem; /* Larger font size */
 }
@@ -216,12 +218,12 @@ footer {
   font-weight: bold; /* Bold close button */
 }
 
-.station_dashboard .dash-body {
-  border: 1px solid green; /* Green border for body */
+/*.station_dashboard .dash-body {
+  border: 1px solid green;  
 }
 
 .station_dashboard .dash-footer {
-  border: 1px solid blue; /* Blue border for footer */
-}
+  border: 1px solid blue;  
+}  */
 
 
