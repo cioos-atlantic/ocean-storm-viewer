@@ -44,7 +44,7 @@
 
 .closeButton:hover {
     background-color: #e55162; /* Change background color on hover */
-    color: white; /* Change text color on hover */
+    color: #ffffff; /* Change text color on hover */
 }
 .closeButton:focus {
     outline: none; /* Remove outline when focused */
