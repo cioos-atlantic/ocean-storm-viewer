@@ -6,6 +6,7 @@ import { getHistoricalStormList, parseStormData, makeStormList, isName, isYear, 
 import { useRouter } from 'next/router';
 
 import { empty_station_obj } from './layout.js';
+import { Button, Box } from '@mui/material';
 
 
 const otherStormList = [
@@ -85,22 +86,30 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
       <h2>Historical Storms: </h2>
       <hr style={{ height: '4px', backgroundColor: 'blue', border: 'none' }}/>  {/* Bold line */}
       <h4>Recent Storms: </h4>
-      <div id="storm_search_result">
-
-        <ul className="results">
-          {stormList.map((storm, index) => {
+      <Box id="storm_search_result"
+            className="historical_storm_search_result"
+            
+            >
+      {stormList.map((storm, index) => {
             return (
-              <li key={storm.storm_id} className={(storm.name)}>
-                <a onClick={(e) => { 
+              <div key={storm.storm_id} className={(storm.name)}>
+                <Button 
+                className='historical_storm_button'
+                sx={{
+                  fontSize: { xs: '10px', sm: '10px', md: '12px', lg: '12px' }
+                }}
+                onClick={(e) => { 
                   handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation);
 
                   //console.log(storm);
-                  }}>{`${storm.display_name}`}</a>
-              </li>
+                  }}>{`${storm.display_name}`}</Button>
+              </div>
             )
           })}
-        </ul>
-      </div>
+
+
+        
+      </Box>
 
       
 
@@ -113,19 +122,24 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
         <button type="submit">Search</button>
         </form>
 
-        <div id="storm_search_result">
-
-        <ul className="results">
+        <div id="storm_search_result"
+        className='historical_storm_search_result'
+        >
           {
           
           searchResult.length > 0 && searchResult.map((storm, index) => {
             return (
-              <li key={storm.storm_id} className={(storm.name)}>
-                <a onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation) }}>{`${storm.display_name}`}</a>
-              </li>
+
+              <div key={storm.storm_id} className={(storm.name)}>
+                <Button 
+                className='historical_storm_button'
+                sx={{
+                  fontSize: { xs: '10px', sm: '10px', md: '12px', lg: '12px' }
+                }}
+                onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation) }}>{`${storm.display_name}`}</Button>
+              </div>
             )
           })}
-        </ul>
       </div>
 
         
