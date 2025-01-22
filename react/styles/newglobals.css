@@ -63,7 +63,7 @@ header nav ul li:last-child a::after {
 
 /* Footer Styling */
 footer {
-  position: absolute; /* Stick footer to the bottom */
+  position: fixed; /* Stick footer to the bottom */
   width: 100%; /* Full-width footer */
   /*height: 50px;  absolute height */
   bottom: 0px; /* Positioned at the very bottom */
@@ -180,13 +180,15 @@ footer {
   background: white; /* White background for clarity */
   color: black; /* Black text for readability */
   /*border-top: 3px solid #e55162;   */
-  padding: 2rem; /* Internal padding */
+  padding: 1rem; /* Internal padding */
   margin-left: 20%; /* Offset from the left */
-  position: absolute; /* Positioned at the bottom */
+  position: fixed; /* Positioned at the bottom */
   /*bottom: 50px;  Above the footer */
   z-index: 5000; /* High z-index to overlay the map */
   width: 80%; /* 80% width for balance */
-  max-height: 80%;
+  display: flex;
+  flex-direction: column; /* Stack the header and body vertically*/
+
 }
 
 /* When drawer is open (add a class dynamically) */
@@ -218,10 +220,13 @@ footer {
   font-weight: bold; /* Bold close button */
 }
 
-/*.station_dashboard .dash-body {
-  border: 1px solid green;  
+.station_dashboard .dash-body {
+  overflow-y: auto; /* Enable scrolling within the body*/
+  padding: 1rem;
+  flex: 1; /* Allow the body to take up available space*/
 }
 
+/*
 .station_dashboard .dash-footer {
   border: 1px solid blue;  
 }  */
@@ -248,4 +253,32 @@ footer {
   padding-bottom : 3px;
   color:#f5f5f5;
 
+}
+
+.station_dashboard_small_screen_section{
+  margin-bottom : "1.5rem";
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: auto;
+
+}
+
+.station_dashboard_small_screen_section .section-header{
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+
+.station_dashboard_small_screen_section p { 
+  margin: 0;
+  line-height: 1.5;
+}
+.dash-header {
+  position: sticky;
+  top: 0;
+  z-index: 10; /* Ensure the header stays above other content */
+  background-color: transparent;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+  padding: 10px;
 }

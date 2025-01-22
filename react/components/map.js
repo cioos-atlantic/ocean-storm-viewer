@@ -18,6 +18,7 @@ import StormPointDetails, { empty_point_obj } from "@/components/storm_point_det
 import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
 import { empty_station_obj } from "./layout";
 import StationDashboard from "./station_dashboard/station_dashboard";
+import StationDashboardTest from "./station_dashboard/station_dashboard_test";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
@@ -49,7 +50,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
         )}
         
         {selected_station !== empty_station_obj && (
-          <StationDashboard
+          <StationDashboardTest
             selected_station={selected_station}
             setSelectedStation={setSelectedStation}
             stationsDescriptions={allDatasetDescriptions}
@@ -58,7 +59,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             selectedTab = {selected_tab}
             setSelectedTab = {setSelectedTab}
             isDrawerOpen= {isDrawerOpen}
-          ></StationDashboard>
+          ></StationDashboardTest>
         )}
         <MapContainer
           center={defaultPosition}

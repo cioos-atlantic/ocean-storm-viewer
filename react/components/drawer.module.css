@@ -51,19 +51,31 @@
     box-shadow: 0 0 0 3px rgba(229, 81, 98, 0.5); /* Add a glow around the button */
 }
 
-.openButton{position: absolute;
-    top: 0;
-    left: 0; /* For left drawer */
-    width: 20px; /* Adjust width of the bar */
-    height: 100%; /* Full height of the drawer */
+.openButton{
+    position: absolute;
+    top: 160px;
+    left: 10px;
     background-color: #e55162; /* Background color */
     border: none; /* Remove border */
     cursor: pointer; /* Pointer cursor */
     z-index: 7001; /* Above drawer */
     transition: background-color 0.3s ease; /* Smooth hover transition */
+    color: #ffffff;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 50%; /* This makes the button round */
+    width: 40px; /* Adjust the size */
+    height: 40px; /* Adjust the size */
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 18px; /* Adjust font size for the icon */
 }
 .openButton:hover {
-    background-color: hsl(348, 77%, 38%); /* Darker color on hover */
+    background-color: whitesmoke; /* Darker color on hover */
+    color: #e55162;
+    font-weight: bolder;
 }
 /* If the drawer is on the right */
 .drawer.right .openButton {
@@ -71,17 +83,6 @@
     right: 0; /* Align to the right edge */
 }
 /* Rotated Text Inside the Vertical Bar */
-.openButtonText {
-    color: white; /* Text color */
-    font-size: 12px; /* Font size */
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold; /* Bold text */
-    writing-mode: vertical-rl; /* Vertical text layout */
-    text-orientation: mixed; /* Orientation for better appearance */
-    transform: rotate(180deg); /* Flip text for proper reading direction */
-    text-align: center;
-    line-height: 1; /* Adjust line height for neat spacing */
-}
 
 
 @media (max-width: 1024px) {

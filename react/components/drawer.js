@@ -4,6 +4,7 @@ import ActiveStormList from "@/components/active_storm_list";
 import HistoricalStormList from "@/components/historical_storm_list";
 import Leaflet from 'leaflet';
 import React, { useState } from "react";
+import { Tooltip } from '@mui/material';
 
 
 /**
@@ -35,7 +36,10 @@ export default function Drawer({ children, element_id, classes, storm_data, sour
     return (
         <>
         {isDrawerOpen ? (        
-            <div id={element_id} className={styles.drawer + " h-100 " + sideClass}>
+            <div id={element_id} 
+                    className={styles.drawer + " h-100 " + sideClass}
+                    onClick={(e) => e.stopPropagation()} // Prevent closing on internal clicks
+            >
                 <button className={styles.closeButton}
                 onClick={() => setIsDrawerOpen(false)}
                 >
@@ -70,12 +74,20 @@ export default function Drawer({ children, element_id, classes, storm_data, sour
 
                 </div>
             </div>):
-        (<button
-            className={styles.openButton}
-            onClick={() => setIsDrawerOpen(true)} // Open the drawer
-        >
-            <span className={styles.openButtonText}>Open Drawer</span>
-        </button>)}
+        (<Tooltip title="Open storm menu" arrow
+            sx={{
+                "& .MuiTooltip-tooltip": {
+                  backgroundColor: "white", // Custom background color
+                  color: "#e55162", // Custom text color
+                  fontSize: "0.9rem", // Adjust font size
+                },
+              }}>
+            <button
+              className={styles.openButton}
+              onClick={() => setIsDrawerOpen(true)} // Open the drawer
+            >{'>'}
+            </button>
+          </Tooltip>)}
         </>
     )
 }

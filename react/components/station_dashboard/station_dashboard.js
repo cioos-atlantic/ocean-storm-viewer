@@ -7,6 +7,7 @@ import styles from '../station_marker.module.css'
 import RenderChart from '../station_graph.js'
 import { BlockquoteLeft } from "react-bootstrap-icons";
 import { Box } from "@mui/material";
+import StationDataLayout from "./station_layout_small_screen";
 
 /**
  * The `StationDashboard` function renders a dashboard for a selected station with relevant data and
@@ -74,6 +75,7 @@ export default function StationDashboard({children, selected_station, setSelecte
         >
             <Box className="dash-header" sx={{
                fontSize: { xs: '14px', sm: '16px', md: '18px', lg: '18px' },
+               padding:'10px'
                
             }}>
                 <button
@@ -91,9 +93,23 @@ export default function StationDashboard({children, selected_station, setSelecte
             </Box>
             <Box className="dash-body"
             sx={{
-              fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '16px' }
+              fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '16px' },
+              overflow: 'auto'
             }}>
                 <p>
+                    <StationDataLayout  
+                    stationName = {stationName}
+                    stationData={station_values?.properties?.station_data}
+                    stationSummaryText={data_text}
+                    variablePresence={variablePresence}
+                    /> 
+                </p>
+            </Box>
+        </Box>
+    )
+}
+
+/*
                     <BasicTabs  
                     stationName = {stationName}
                     stationData={station_values?.properties?.station_data}
@@ -102,8 +118,6 @@ export default function StationDashboard({children, selected_station, setSelecte
                     selectedTab={selectedTab}
                     setSelectedTab={setSelectedTab}
                     /> 
-                </p>
-            </Box>
-        </Box>
-    )
-}
+*/
+
+
