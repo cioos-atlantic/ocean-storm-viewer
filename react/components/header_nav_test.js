@@ -69,7 +69,8 @@ export default function HeaderNavTest({ children, navItems }) {
                                             //maxHeight: "100%", // Ensure it doesn't overflow the screen
                                             //height: "auto", // Automatically adjusts to the content height },
                                             backgroundColor:"#f5f5f5",
-                                            padding: "2px"}
+                                            padding: "2px"},
+                    zIndex: '8000',
                     
                 }}
             >
