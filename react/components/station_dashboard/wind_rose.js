@@ -60,14 +60,7 @@ export function RenderWindRose ( { sourceData, hasWindRoseData }){
       ) : (
         <div id="container" 
         ref={chartContainerRef}
-        style={{
-          width: '100%',
-          height: '100%',
-          overflow: 'auto', // Allow scroll if content overflows
-          position: 'relative',
-          //overflowX: 'scroll',
-          //overflowY: 'scroll',
-        }}
+        className='windrose_chart_container'
         />
       )}
     </div>
@@ -127,12 +120,17 @@ function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
     console.log(key);
     chartOption.push({
       type: "interval",
-      title: key,
+      title: {title: key, fontSize:'10px'},
       autoFit: true,
-      //height: "400",
+      //height: "350",
       //width: "100%",
-      padding: "0,0,0,0",
+      //padding: "0,0,0,0",
       //margin: "0,0,0,0",
+      paddingBottom: '0',
+      paddingTop:'35',
+      //margin:'30',
+      style: { inset: 0.5 },
+
       data: windChartData,
       encode: { x: "direction", y: "value", color: "windSpeedBin" },
       transform: [{ type: "stackY" }],
@@ -141,10 +139,10 @@ function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
           range: colorPalette,
           },
       },
-      label:{
-        position:"outside"
-      },
-      coordinate: { type: "polar" },
+      
+      coordinate: { type: "polar", 
+       
+       },
       axis: {
           x: { line: true, grid: true, gridLineDash: [0, 0], gridLineWidth: 1 },
           y: { title: false, line: true, gridLineWidth: 1 },
@@ -158,8 +156,11 @@ function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
               channel: "y",
           }),
           ],
+          
       },
-      interaction: { tooltip: { shared: true } },
+      interaction: { tooltip: { 
+        shared: true, 
+       } },
       })
     
   });
@@ -181,7 +182,8 @@ function renderChart(chartOptions) {
       //height: "auto", // Set the desired height of the chart
       //overflow: 'auto',
       //aspectRatio: "100 / 100",
-      height: 360
+      height: 360,
+      width: 780,
 
     });
 

@@ -12,6 +12,11 @@ export default function HeaderNavTest({ children, navItems }) {
         setDrawerOpen(open);
     };
 
+
+    function handleIconClick(){
+        setDrawerOpen((prevState) => !prevState); // Toggles the drawer open/close
+    }
+
     return (
         <Box
             component="nav"
@@ -27,7 +32,7 @@ export default function HeaderNavTest({ children, navItems }) {
             <IconButton
                 edge="start"
                 aria-label="menu"
-                onClick={toggleDrawer(true)}
+                onClick={handleIconClick} // Use the handleIconClick function
                 sx={{ display: { xs: "block", md: "none" },
                 color:"#ffffff",
                 fill:"#ffffff" }}
