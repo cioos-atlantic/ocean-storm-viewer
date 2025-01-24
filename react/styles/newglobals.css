@@ -32,6 +32,27 @@ header nav {
   width:100%
 
 }
+header_nav{
+  float: left; /* Align navigation links to the left */
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.1rem;
+  align-items: center;
+
+}
+.header_nav .menu_icon_small_screen{
+  color:#ffffff;
+  fill:#ffffff;
+}
+
+.header_nav ul{
+  margin: 0;
+  padding: 0;
+  gap: 1;
+}
+
+
 
 header nav ul {
   
@@ -310,6 +331,23 @@ footer {
   flex: 1; /* Allow the body to take up available space*/
   max-height: 40%;
   height: 240px;
+}
+.historical_page_drawer_header{
+  font-weight: bolder;
+  
+
+}
+
+.historical_page_drawer_subheader{
+  font-weight: bold;
+  color: #ec1632;
+}
+.historical_storm_search_header{
+  font-weight: bold;
+  color: #ec1632;
+}
+#search_button {
+
 }
 
 .windrose_chart_container{

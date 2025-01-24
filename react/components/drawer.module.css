@@ -4,8 +4,8 @@
     background-color: white;
     z-index: 7000;
     overflow: scroll;
-    max-width: 20%;
-    width: 20%;
+    
+    
 }
 
 .drawer.left {
@@ -20,7 +20,7 @@
 
 .drawer_interior {
     margin-top: 5rem;
-    padding: 2rem;
+    padding: 0.8rem;
 }
 
 
@@ -85,45 +85,7 @@
 /* Rotated Text Inside the Vertical Bar */
 
 
-@media (max-width: 1024px) {
-    .drawer {
-        max-width: 20%;
-        width: 20%;
-    }
-    .drawer_interior {
-        margin-top: 5rem;
-        padding: 0.8rem;
-    }
-}
 
-@media (max-width: 900px) {
-    .drawer {
-        max-width: 30%;
-        width: 30%;
-    }
-    .drawer_interior {
-        margin-top: 5rem;
-        padding: 0.8rem;
-    }
-}
-@media (max-width: 768px) {
-    .drawer {
-        max-width: 30%;
-        width: 30%;
-    }
-    .drawer_interior {
-        margin-top: 5rem;
-        padding: 0.8rem;
-    }
-}
-@media (max-width: 576px) {
-    .drawer {
-        max-width: 50%;
-        width: 50%;
-    }
-    .drawer_interior {
-        margin-top: 5rem;
-        padding: 0.8rem;
-    }
-}
+
+
 

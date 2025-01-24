@@ -83,9 +83,17 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
   // const [selected_storm, setSelectedStorm] = useState("");
   return (
     <>
-      <h2>Historical Storms: </h2>
+      <Box className='historical_page_drawer_header'
+      sx={{
+        fontSize: { xs: '20px', sm: '22px', md: '24px', lg: '24px' }
+      }}
+      >Historical Storms: </Box>
       <hr style={{ height: '4px', backgroundColor: 'blue', border: 'none' }}/>  {/* Bold line */}
-      <h4>Recent Storms: </h4>
+      <Box className='historical_page_drawer_subheader'
+      sx={{
+        fontSize: { xs: '16px', sm: '18px', md: '20px', lg: '20px' }
+      }}
+      >Recent Storms: </Box>
       <Box id="storm_search_result"
             className="historical_storm_search_result"
             
@@ -114,12 +122,20 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
       
 
       <hr style={{ height: '2px', backgroundColor: 'black', border: 'none' }}/> 
-      <h4>Storm Search: </h4>
-      <div id="storm_search">
+      <Box className='historical_storm_search_header'
+        sx={{
+          fontSize: { xs: '16px', sm: '18px', md: '20px', lg: '20px' }
+        }}
+      >Storm Search: </Box>
+      <div id="storm_search"
+      className="historical_storm_search">
         <form onSubmit={(e) => handleFormSubmit(e, setSearchResult, router)}>
-        <input type="text" id="historical_storm_search" name="historical_storm_search" required minLength="4" placeholder='Storm name or year'/> 
+        <input type="text" id="historical_storm_search" 
+        name="historical_storm_search" required minLength="4" placeholder='Storm name or year'/> 
         <br/>
-        <button type="submit">Search</button>
+        <button 
+        id='search_button'
+        type="submit">Search</button>
         </form>
 
         <div id="storm_search_result"

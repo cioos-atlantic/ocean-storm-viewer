@@ -20,22 +20,16 @@ export default function HeaderNavTest({ children, navItems }) {
     return (
         <Box
             component="nav"
-            sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "0.5rem",
-                width: "100%",
-            }}
+            className="header_nav"
+            
         >
             {/* Hamburger Menu Button for Small Screens */}
             <IconButton
                 edge="start"
                 aria-label="menu"
                 onClick={handleIconClick} // Use the handleIconClick function
-                sx={{ display: { xs: "block", md: "none" },
-                color:"#ffffff",
-                fill:"#ffffff" }}
+                sx={{ display: { xs: "block", md: "none" } }}
+                className="menu_icon_small_screen"
             >
                 <MenuIcon />
             </IconButton>
@@ -44,17 +38,13 @@ export default function HeaderNavTest({ children, navItems }) {
             <Box
                 component="ul"
                 sx={{
-                    display: { xs: "none", md: "flex" },
-                    listStyle: "none",
-                    margin: 0,
-                    padding: 0,
-                    gap: 1,
-                }}
+                    display: { xs: "none", md: "flex" },}}
             >
                 {navItems.map((link) => (
                     <Box component="li" key={link.href}>
                         <a
                             href={link.href}
+                            className="header-drawer-big-screens"
                             
                         >
                             {link.name}
@@ -71,8 +61,6 @@ export default function HeaderNavTest({ children, navItems }) {
                 sx={{
                     "& .MuiDrawer-paper": { width: 200, 
                                             marginTop: '75px',
-                                            //maxHeight: "100%", // Ensure it doesn't overflow the screen
-                                            //height: "auto", // Automatically adjusts to the content height },
                                             backgroundColor:"#f5f5f5",
                                             padding: "2px"},
                     zIndex: '8000',
@@ -82,12 +70,7 @@ export default function HeaderNavTest({ children, navItems }) {
                 <List onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
                     {navItems.map((link) => (
                         <ListItem button key={link.href}
-                        sx={{
-                            //paddingTop: "0.5px", // Remove padding for full-width effect
-                            //paddingLeft: "0px", 
-                            //paddingRight: "0px", 
-                            padding:'4px'
-                        }}>
+                        sx={{padding:'4px'}}>
                             <ListItemText
                                 primary={
                                     <a
