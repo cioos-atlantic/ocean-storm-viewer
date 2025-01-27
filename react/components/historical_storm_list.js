@@ -85,10 +85,10 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
     <>
       <Box className='historical_page_drawer_header'
       sx={{
-        fontSize: { xs: '20px', sm: '22px', md: '24px', lg: '24px' }
+        fontSize: { xs: '20px', sm: '20px', md: '24px', lg: '24px' }
       }}
       >Historical Storms: </Box>
-      <hr style={{ height: '4px', backgroundColor: 'blue', border: 'none' }}/>  {/* Bold line */}
+      <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>  {/* Bold line */}
       <Box className='historical_page_drawer_subheader'
       sx={{
         fontSize: { xs: '16px', sm: '18px', md: '20px', lg: '20px' }
