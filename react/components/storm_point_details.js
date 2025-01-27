@@ -49,10 +49,10 @@ export default function StormPointDetails({ storm_point_hover,  setIsStormDetOpe
         <Box className="info_pane"
         sx={{
             padding: 2,
-            fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '16px' }, // Adjust font size for different screen widths
+            fontSize: { xs: '12px', sm: '12px', md: '16px', lg: '16px' }, // Adjust font size for different screen widths
             marginTop:  { xs: '35%', sm: '18%', md: '15%', lg: '11%' } , // Adjust margin-top for different screen widths
-            '@media (min-width:500px) and (max-width:580px)': { marginTop: '27%' },
-            bottom: {md: '10%', lg: '10%'}
+            
+            bottom: {sm: '7%', md: '10%', lg: '10%'}
 
           }}>
             <div>
