@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box, IconButton, Drawer, List, ListItem, ListItemText } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { StormSearchQuery } from "./search_storm";
 
 export default function HeaderNavTest({ children, navItems }) {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -67,6 +68,7 @@ export default function HeaderNavTest({ children, navItems }) {
                     
                 }}
             >
+                <StormSearchQuery/>
                 <List onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
                     {navItems.map((link) => (
                         <ListItem button key={link.href}
