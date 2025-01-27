@@ -23,7 +23,7 @@ export function RenderWindRose ( { sourceData, hasWindRoseData }){
     console.log(sourceData)
     const stationDirData = get_station_field_data(sourceData, 'wind_from_direction', "column_std_names").data;
     console.log(stationDirData)
-    if (!stationDirData || stationDirData.every(item => item === undefined)) {
+    if (!stationDirData || stationDirData.every(element => element === undefined)) {
         console.log("stationDirData returned an array of undefined values");
         return; // Exit early
     }

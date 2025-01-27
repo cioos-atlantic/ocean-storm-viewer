@@ -13,14 +13,14 @@ header {
   top: 0;
   background-color: #e55162; /* Light red background for header */
   z-index: 9000; /* High z-index to ensure header stays on top */
-  height: 75px;
+  height: 60px;
 }
 
 header img.logo {
   float: left; /* Align logo to the left */
   background-color: white; /* White background for logo */
-  height: 76px; /* Matches header height */
-  width: 78%; /* absolute width for logo */
+  height: 60px; /* Matches header height */
+  width: 80%; /* absolute width for logo */
   padding-left: 1.5rem; /* Spacing on left */
   padding-right: 1.5rem; /* Spacing on right */
 }
@@ -35,7 +35,7 @@ header nav {
 header_nav{
   float: left; /* Align navigation links to the left */
   width: 100%;
-  display: flex;
+  display: block;
   justify-content: space-between;
   padding: 0.1rem;
   align-items: center;
@@ -147,7 +147,7 @@ footer {
 /* Info Pane Styling */
 .info_pane {
   position: absolute;
-  top: 0;
+   /*top: 0;*/
    /* margin-top: 10%; Add space from the top */
   right: 0;
   background-color: white; /* White background for better readability */
@@ -222,6 +222,15 @@ footer {
 .drawerClosed  {
   margin-left: 0%; /* No offset */
   width: 100%; /* Full width */
+}
+
+
+.stormDetOpen{
+  width: 50%
+}
+
+.stormDetOpen{
+  width: 50%
 }
 
 .station_dashboard .dash-header {
@@ -357,4 +366,11 @@ footer {
   position: relative;
   display:flex;
   justify-content: center;
+}
+
+.station_chart{
+  height: auto;
+  width: auto;
+  padding: 0px;
+  display: flex;
 }

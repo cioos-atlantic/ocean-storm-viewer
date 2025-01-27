@@ -78,13 +78,7 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
 
   function generateGraph(selectedVar){
     return (
-     <div className="station_chart" 
-     style={{
-     height: 'auto',
-     width: 'auto', // Adjust width based on content (chart)
-     padding: '0px', // Optional padding around chart
-     display:'flex',
-     }}>
+     <div className="station_chart" >
      <RenderChart  
          sourceData={stationData}
          stationName={stationName}

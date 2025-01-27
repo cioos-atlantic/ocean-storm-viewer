@@ -99,24 +99,25 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
         }}
         >
           {/* Logo Section */}
-          <Grid item xs={12} sm={6} md={4} lg={3} xl={2} xxl={1} >
-            <a href={logo.href}>
-              <Image
-                src={logo.src}
-                width={200}
-                height={100}
-                className="logo" // Preserving your existing class for the logo
-                alt="logo"
-                style={{
-                  maxWidth: '100%', // Ensures responsiveness
-                }}
-              />
-            </a>
+          <Grid size ='auto' >
+          
+              <a href={logo.href}>
+                <Image
+                  src={logo.src}
+                  width={200}
+                  height={100}
+                  className="logo" // Preserving your existing class for the logo
+                  alt="logo"
+                  
+                />
+              </a>
+            
           </Grid>
+          
 
           {/* Content Section */}
-          <Grid item xs={12} sm={6} md={4} lg={3} xl={2} xxl={1}
->
+          <Grid size ={{xs:12, sm:6, md:4, lg:3, xl:2, xxl:1}} >
+          
             {home ? (
               <>
                 {/* Home Page Header Content */}
@@ -126,20 +127,22 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
                 {/* Other Page Header Content */}
               </>
             )}
+
           </Grid>
+          
 
           {/* Navigation Section */}
-          <Grid item xs={12} sm={6} md={6} lg={4} xl={3} xxl={2}
-          sx={{
-            maxWidth: '100%', // Ensures responsiveness
-            overflow: 'visible', // 
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: 1, // Adds spacing between navigation items
-            fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '18px', xl: '20px', xxl: '22px' }, // Font size changes based on breakpoints
-          }}>
-            <HeaderNavTest navItems={topNav} />
+          <Grid size ='auto'
+            sx={{
+              maxWidth: '100%', // Ensures responsiveness
+              overflow: 'visible', // 
+              //display: 'flex',
+              //justifyContent: 'flex-end',
+              //gap: 1, // Adds spacing between navigation items
+              fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '18px', xl: '20px', xxl: '22px' }, // Font size changes based on breakpoints
+            }} ><HeaderNavTest navItems={topNav} />
           </Grid>
+          
         </Grid>
       </header>
       {about_page ? (

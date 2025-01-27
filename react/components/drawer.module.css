@@ -1,7 +1,7 @@
 .drawer {
     position: relative;
     top: 0;
-    background-color: white;
+    background-color: #f5f5f5;
     z-index: 7000;
     overflow: scroll;
     
