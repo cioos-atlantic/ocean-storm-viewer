@@ -246,7 +246,7 @@ export async function handleClick( storm, setStationPoints, setStormPoints, map,
  * from the `handleSearch` function after processing the input values for storm name and year. This
  * unique list is then set as the search result using the `setSearchResult` function.
  */
-async function handleFormSubmit(e, setSearchResult){
+export async function handleFormSubmit(e, setSearchResult){
   //prevent default behavior
   let storm_name = "";
   let storm_year = "";

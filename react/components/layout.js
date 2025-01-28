@@ -101,7 +101,8 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
         }}
         >
           {/* Logo Section */}
-          <Grid size ='auto' >
+          <Grid size ='auto' 
+                sx={{maxWidth: '50%'}} >
           
               <a href={logo.href}>
                 <Image
@@ -131,7 +132,15 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
             )}
 
           </Grid>
-          
+          {/* Search */}
+          <Grid size='grow'
+          sx={{
+            maxWidth: '100%', // Ensures responsiveness
+            overflow: 'visible', //
+            
+          }}>
+            <StormSearchQuery/>
+          </Grid>
 
           {/* Navigation Section */}
           <Grid size ='auto'
@@ -145,14 +154,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
             }} ><HeaderNavTest navItems={topNav} />
           </Grid>
 
-          <Grid size='grow'
-          sx={{
-            maxWidth: '100%', // Ensures responsiveness
-            overflow: 'visible', //
-            
-          }}>
-            <StormSearchQuery/>
-          </Grid>
+          
           
         </Grid>
       </header>

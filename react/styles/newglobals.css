@@ -374,13 +374,40 @@ footer {
   display: flex;
 }
 
-#storm_search_query{
+#storm_search_input{
   width: 70%;
   max-width: 180px;
+  padding: 4px;
+  margin-right: 8px;
+  background: #ddd;
+  font-size: 14px;
+  /*border: solid 2px white; */
+  cursor: text;
+  border-radius: 4px; 
 }
+
+
 #storm_search_form{
   width: 100%;
   padding: 0;
   overflow: hidden;
+  text-align: center;
+}
 
+.search-container{}
+
+.search-button {
+  padding: 2px;
+  background: transparent;
+  outline: solid 2px #ddd;;
+}
+.search-drawer-small-screens{
+  text-decoration: none;
+  background-color: #e55162;
+  display: block;        /* Ensures it takes full width for easier clicks */
+  border: 1px solid #e55162; /* Light grey border to outline the block */
+  border-radius: 4px;       /* Optional: adds rounded corners */
+  text-align: center;
+  width: 100%;
+  padding : 5px;
 }

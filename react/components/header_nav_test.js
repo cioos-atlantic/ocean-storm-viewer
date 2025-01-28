@@ -68,7 +68,7 @@ export default function HeaderNavTest({ children, navItems }) {
                     
                 }}
             >
-                <StormSearchQuery/>
+                
                 <List onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
                     {navItems.map((link) => (
                         <ListItem button key={link.href}
@@ -87,6 +87,11 @@ export default function HeaderNavTest({ children, navItems }) {
                         </ListItem>
                     ))}
                 </List>
+                <Box className='search-drawer-small-screens'>
+                    <StormSearchQuery/>
+                </Box>
+                
+
             </Drawer>
 
             {/* Children (Optional Extra Content) */}

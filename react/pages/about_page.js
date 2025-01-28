@@ -23,7 +23,7 @@ export default function About(){
         <link rel="icon" href="/favicon.ico" />
         <meta
           name="description"
-          content="Learn more about the Atlantic Hurricane Dashboard, its purpose, and the team behind it."
+          content="Learn more about the Ocean Storm Viewer, its purpose, and the team behind it."
         />
         <meta name="og:title" content={siteTitle} />
         <title>About - {siteTitle}</title>
