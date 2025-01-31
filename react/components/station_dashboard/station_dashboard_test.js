@@ -23,6 +23,8 @@ export default function StationDashboardTest({
   isStormDetOpen, 
   setIsStormDetOpen
 }) {
+
+ 
   const stationData = selected_station;
   
   const isExtraSmall = useMediaQuery("(max-width:600px)");
@@ -96,7 +98,7 @@ export default function StationDashboardTest({
           <FaWindowClose />
         </button>
         <div>
-          <strong>{displayName}</strong>
+          <strong key={displayName}>{displayName}</strong>
         </div>
         <div>
           <a href={institutionLink} target="_blank" rel="noopener noreferrer">
@@ -151,7 +153,7 @@ export default function StationDashboardTest({
           <FaWindowClose />
         </button>
         <div>
-          <strong>{displayName}</strong>
+          <strong key={displayName}>{displayName}</strong>
         </div>
         <div>
           <a href={institutionLink} target="_blank" rel="noopener noreferrer">
