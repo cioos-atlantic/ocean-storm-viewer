@@ -27,7 +27,7 @@
     "html-react-parser": "^5.2.2",
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.2",
-    "next": "^15.2.0-canary.13",
+    "next": "^15.2.0-canary.33",
     "path": "^0.12.7",
     "pg": "^8.13.1",
     "query-string": "^7.1.3",

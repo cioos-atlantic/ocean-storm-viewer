@@ -46,6 +46,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
   const [storm_points, setStormPoints] = useState(empty_storm_obj);
   const [station_points, setStationPoints] = useState(station_data);
   const [historicalStormData, setHistoricalStormData] = useState(empty_storm_obj); // State for storing historical storm data
+  
 
   const router = useRouter();
 
@@ -133,13 +134,17 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
 
           </Grid>
           {/* Search */}
-          <Grid size='grow'
-          sx={{
-            maxWidth: '100%', // Ensures responsiveness
-            overflow: 'visible', //
-            
-          }}>
-            <StormSearchQuery/>
+          <Grid
+            size="fixed"
+            sx={{
+              width: '200px', // Set to desired fixed width
+              height: '30px', // Set to desired fixed height
+              maxWidth: '100%', // Ensures it doesn't exceed container
+              overflow: 'visible',
+            }}
+          >
+            <StormSearchQuery
+             />
           </Grid>
 
           {/* Navigation Section */}
@@ -170,6 +175,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
           source_type={source_type}
           setStormPoints={setStormPoints}
           setStationPoints={setStationPoints}
+
         />
       </main>
       </>)}
