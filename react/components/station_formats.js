@@ -1,6 +1,7 @@
 import {windSpeedToKnots, windSpeedToKmh, tempToDegreeF, tempToDegreeC, pressureToKPa, pressureToInHg, windHeightToM, windHeightToFt} from './utils/unit_conversion.js'
 import Image from "next/image";
 import attributes from '../data/station/attributes.json'
+import { basePath } from '@/next.config.js';
 //TODO: Clean up
 
 
@@ -35,7 +36,7 @@ export function formatCioosStations(data_obj, children, row_position){
   if(wind_from_direction){
     const wind_direction = (180 + parseInt(wind_from_direction)) % 360
     children.push(<strong title={attributes.wind_from_direction.definition}>Wind Direction:  </strong>)
-    children.push(<Image className="wind_arrow" alt={wind_direction} src="arrow.svg" height={20} width={20} 
+    children.push(<Image className="wind_arrow" alt={wind_direction} src={`${basePath}/arrow.svg`} height={20} width={20} 
       style={{ transform: 'rotate(' + (wind_direction) + 'deg)' }}></Image>)
   }
   

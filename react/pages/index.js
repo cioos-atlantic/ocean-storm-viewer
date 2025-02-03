@@ -15,6 +15,8 @@
 import { useRouter } from 'next/router'
 import queryString from 'query-string';
 import Layout from '../components/layout'
+import { basePath } from '@/next.config';
+
 // import utilStyles from '../styles/utils.module.css'
 // import { getAllStormData } from '../lib/storms'
 
@@ -26,7 +28,7 @@ const top_nav = [
 ]
 
 const logo = {
-  src: "/cioos-atlantic_EN.svg",
+  src: `${basePath}/cioos-atlantic_EN.svg`,
   alt: "CIOOS Atlantic - Hurricane Dashboard",
   href: "https://cioosatlantic.ca/"
 }
@@ -38,7 +40,7 @@ export async function getServerSideProps() {
   let station_data = {};
 
   try{
-    const resource = await fetch(process.env.BASE_URL + '/api/active_storms')
+    const resource = await fetch(basePath + '/api/active_storms')
     active_storm_data = await resource.json();
   }
   catch (fetch_err) {
@@ -46,7 +48,7 @@ export async function getServerSideProps() {
   }
   
   try{
-    const station_resource = await fetch(process.env.BASE_URL + '/api/query_stations')
+    const station_resource = await fetch(basePath + '/api/query_stations')
     station_data = await station_resource.json();
   }
   catch (fetch_err) {

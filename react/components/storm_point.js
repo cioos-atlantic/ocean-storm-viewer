@@ -13,78 +13,78 @@ import TropicalDepressionIcon from '../public/storm_types/TD_icon.svg'
 import TropicalStormIcon2 from '../public/storm_types/TS_icon.svg'
 import { storm_categories, storm_type_info } from '@/lib/storm_class'
 import { change_icon_url } from "./utils/storm_display_utils";
-
+import { basePath } from "@/next.config";
 
 import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
 import {empty_point_obj} from "@/components/storm_point_details"
 
 
 export const hurricon = new Icon({
-    iconUrl: HurricaneIcon.src,
-    iconRetinaUrl: HurricaneIcon.src,
+    iconUrl:  basePath + HurricaneIcon.src,
+    iconRetinaUrl:  basePath + HurricaneIcon.src,
     iconSize: [70, 70],
     iconAnchor: [35, 70],
 });
 
 export const tropstrmicon = new Icon({
-    iconUrl: TropicalStormIcon.src,
-    iconRetinaUrl: TropicalStormIcon.src,
+    iconUrl:  basePath + TropicalStormIcon.src,
+    iconRetinaUrl:  basePath + TropicalStormIcon.src,
     iconSize: [70, 70],
     iconAnchor: [35, 35],
 });
 
 export const disticon = new Icon({
-    iconUrl: TropicalDisturbanceIcon.src,
-    iconRetinaUrl: TropicalDisturbanceIcon.src,
+    iconUrl:  basePath + TropicalDisturbanceIcon.src,
+    iconRetinaUrl:  basePath + TropicalDisturbanceIcon.src,
     iconSize: [70, 70],
     iconAnchor: [35, 35],
 });
 
 export const extratropicon = new Icon({
-    iconUrl: ExtratropicalIcon.src,
-    iconRetinaUrl: ExtratropicalIcon.src,
+    iconUrl:  basePath + ExtratropicalIcon.src,
+    iconRetinaUrl:  basePath + ExtratropicalIcon.src,
     iconSize: [42, 70],
     iconAnchor: [21, 35],
 });
 
 export const mixicon = new Icon({
-    iconUrl: MixtureIcon.src,
-    iconRetinaUrl: MixtureIcon.src,
+    iconUrl:  basePath + MixtureIcon.src,
+    iconRetinaUrl:  basePath + MixtureIcon.src,
     iconSize: [70, 70],
     iconAnchor: [35, 35],
 });
 
 export const notreportedicon = new Icon({
-    iconUrl: NotReportedIcon.src,
-    iconRetinaUrl: NotReportedIcon.src,
+    iconUrl:  basePath + NotReportedIcon.src,
+    iconRetinaUrl:  basePath + NotReportedIcon.src,
     iconSize: [70, 70],
     iconAnchor: [35, 35],
 });
 
 export const posttropicon = new Icon({
-    iconUrl: PostTropicalIcon.src,
-    iconRetinaUrl: PostTropicalIcon.src,
+    iconUrl:  basePath + PostTropicalIcon.src,
+    iconRetinaUrl:  basePath + PostTropicalIcon.src,
     iconSize: [70, 70],
     iconAnchor: [35, 35],
 });
 
 export const subtropicon = new Icon({
-    iconUrl: SubTropicalIcon.src,
-    iconRetinaUrl: SubTropicalIcon.src,
+    iconUrl:  basePath + SubTropicalIcon.src,
+    iconRetinaUrl:  basePath + SubTropicalIcon.src,
     iconSize: [42, 70],
     iconAnchor: [21, 35],
 });
 
 export const tropdepricon = new Icon({
-    iconUrl: TropicalDepressionIcon.src,
-    iconRetinaUrl: TropicalDepressionIcon.src,
+    iconUrl:  basePath + TropicalDepressionIcon.src,
+    iconRetinaUrl:  basePath + TropicalDepressionIcon.src,
     iconSize: [70, 70],
     iconAnchor: [35, 35],
 });
 
 export const tropstrmicon2 = new Icon({
-    iconUrl: TropicalStormIcon2.src,
-    iconRetinaUrl: TropicalStormIcon2.src,
+    iconUrl:  basePath + TropicalStormIcon2.src,
+    iconRetinaUrl:  basePath + TropicalStormIcon2.src,
     iconSize: [42, 70],
     iconAnchor: [21, 35],
 });

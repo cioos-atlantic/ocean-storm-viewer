@@ -4,22 +4,8 @@ import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
 import { useEffect, useState } from 'react';
 import { getHistoricalStormList, parseStormData, makeStormList, isName, isYear, parseForFlyToPoint, addSearchParams } from './utils/historical_storm_utils.js';
 import { useRouter } from 'next/router';
-
+import { basePath } from '@/next.config.js';
 import { empty_station_obj } from './layout.js';
-
-
-const otherStormList = [
-  { "name": "FIONA", "year": 2022, "source": "ibtracs" },
-  { "name": "ERNESTO", "year": 2018, "source": "ibtracs" },
-  { "name": "EARL", "year": 2022, "source": "ibtracs" },
-  { "name": "LEE", "year": 2017, "source": "ibtracs" },
-  { "name": "IRMA", "year": 2017, "source": "ibtracs" },
-  { "name": "BLAMMO", "year": 1999, "source": "ibtracs" },
-  { "name": "CLAUDETTE", "year": 2015, "source": "ibtracs" },
-
-]
-
-
 
 /**
  * The `HistoricalStormList` function fetches historical storm data, displays recent storms with
@@ -27,8 +13,6 @@ const otherStormList = [
  
  */
 export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation}) {
-
-  
   const [stormList, setStormList] = useState([]);
   const [searchResult, setSearchResult] = useState({})
   const router = useRouter();
@@ -39,7 +23,6 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
       try {
         const fetchedStormList = await getHistoricalStormList();
         setStormList(fetchedStormList);
-
 
         console.log(fetchedStormList);  // Log the returned storm list
       } catch (error) {
@@ -177,13 +160,13 @@ export async function handleClick( storm, setStationPoints, setStormPoints, map,
 
 
   try {
-    const resource = await fetch(`/api/historical_storms?${query}`);
+    const resource = await fetch(`${basePath}/api/historical_storms?${query}`);
     const storm_data = await resource.json();
 
     
 
     //console.log(historical_station_data)
-    const station_resource = await fetch(`/api/query_stations_historical?${query}`);
+    const station_resource = await fetch(`${basePath}/api/query_stations_historical?${query}`);
     const historical_station_data = await station_resource.json();
 
     //console.log(Leaflet);
@@ -265,7 +248,7 @@ export async function handleSearch(storm_name, storm_year){
   console.log(query)
 
   try {
-    const resource = await fetch(`/api/historical_storms?${query}`);
+    const resource = await fetch(`${basePath}/api/historical_storms?${query}`);
     const storm_data = await resource.json();
     //console.log(storm_data);
 
