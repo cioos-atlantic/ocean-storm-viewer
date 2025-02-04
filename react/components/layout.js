@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from './layout.module.css'
 import Link from 'next/link'
-import HeaderNav from './header_nav'
+
 import FooterNav from './footer_nav'
 //import StormSearch from "@/components/storm_search";
 import { useRouter } from 'next/router';
@@ -15,7 +15,7 @@ import ErddapHandler from "../pages/api/query_stations";
 import About from "@/pages/about_page";
 import Grid from '@mui/material/Grid2';
 import { Box } from "@mui/material";
-import HeaderNavTest from "./header_nav_test";
+import HeaderNav from "./header_nav";
 import { StormSearchQuery } from "./search_storm";
 
 
@@ -141,6 +141,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
               height: '30px', // Set to desired fixed height
               maxWidth: '100%', // Ensures it doesn't exceed container
               overflow: 'visible',
+              display: { xs: "none", md: "block" }
             }}
           >
             <StormSearchQuery
@@ -156,7 +157,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
               //justifyContent: 'flex-end',
               //gap: 1, // Adds spacing between navigation items
               fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '18px', xl: '20px', xxl: '22px' }, // Font size changes based on breakpoints
-            }} ><HeaderNavTest navItems={topNav} />
+            }} ><HeaderNav navItems={topNav} />
           </Grid>
 
           

@@ -3,7 +3,7 @@ import { Box, IconButton, Drawer, List, ListItem, ListItemText } from "@mui/mate
 import MenuIcon from "@mui/icons-material/Menu";
 import { StormSearchQuery } from "./search_storm";
 
-export default function HeaderNavTest({ children, navItems }) {
+export default function HeaderNav({ children, navItems }) {
     const [headerDrawerOpen, setHeaderDrawerOpen] = useState(false);
 
     const toggleDrawer = (open) => (event) => {

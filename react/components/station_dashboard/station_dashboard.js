@@ -12,7 +12,7 @@ import { RecentStationData, getMatchedStation } from "../utils/station_data_form
  */
 
 
-export default function StationDashboardTest({
+export default function StationDashboard({
   selected_station,
   setSelectedStation,
   station_descriptions,
