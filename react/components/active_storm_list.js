@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { populateStormDetails, populateAllStormDetails } from '../lib/storm_utils';
 import StormListItem from "./storm_list_item";
 import { parse, format } from 'date-fns';
@@ -38,48 +38,65 @@ export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
  */
 export default function ActiveStormList({ setStormPoints, map, Leaflet, setSelectedStation }) {
   const [selected_storm, setSelectedStorm] = useState("");
-  
+
   const [active_storm_data, setActiveStormData] = useState(null)
   const [active_station_data, setActiveStationData] = useState(null)
   const [is_loading_storm, setActiveStormLoading] = useState(true)
   const [is_loading_station, setActiveStationLoading] = useState(true)
- 
-  fetchData(`${basePath}/api/active_storms`, setActiveStormData, setActiveStormLoading);
-  fetchData(`${basePath}/api/query_stations`, setActiveStationData, setActiveStationLoading);
- 
+
+  // Fetch active storm data
+  useEffect(() => {
+    fetch(`${basePath}/api/active_storms`)
+      .then((res) => res.json())
+      .then((data) => {
+        setActiveStormData(data);
+        setActiveStormLoading(false);
+      })
+  }, []);
+
+  // Fetch active station data
+  useEffect(() => {
+    fetch(`${basePath}/api/query_stations`)
+      .then((res) => res.json())
+      .then((data) => {
+        setActiveStationData(data);
+        setActiveStationLoading(false);
+      })
+  }, []);
+
   let ib_storm_list = []
   let storm_details = {}
-  
+
   let active_storms = false;
 
   console.log("Selected Storm: " + selected_storm);
 
-  if(!is_loading_storm){
+  if (!is_loading_storm) {
     console.debug("IBTRACS Storm List: " + active_storm_data.ib_data?.features.length + " points");
     console.debug("ECCC Storm List: " + active_storm_data.eccc_data?.features.length + " points");
-  
-    if(active_storm_data.ib_data?.features.length > 0 || active_storm_data.eccc_data?.features.length > 0){
+
+    if (active_storm_data.ib_data?.features.length > 0 || active_storm_data.eccc_data?.features.length > 0) {
       active_storms = true;
 
       active_storm_data.ib_data?.features.map(storm_point => {
         if (!ib_storm_list.includes(storm_point.properties.NAME)) {
           ib_storm_list.push(storm_point.properties.NAME)
           storm_details[storm_point.properties.NAME] = {
-            source: "ibtracs", 
-            year: storm_point.properties.SEASON, 
+            source: "ibtracs",
+            year: storm_point.properties.SEASON,
             data: []
           }
         }
-    
+
         storm_details[storm_point.properties.NAME].data.push(storm_point)
       })
     }
   }
 
-  if(!is_loading_station){
+  if (!is_loading_station) {
     console.debug("Active Station Data: ", active_station_data);
   }
-  else{
+  else {
     console.debug("Waiting for station data to load...");
   }
 
@@ -92,15 +109,15 @@ export default function ActiveStormList({ setStormPoints, map, Leaflet, setSelec
             <li key={"show_all_storms"} >
               <a onClick={(e) => { populateAllStormDetails(e, storm_details, setSelectedStorm, setStormPoints) }}>Show All</a>
             </li>
-          ):(
+          ) : (
             <p>No data exists for active storms right now</p>
           )}
         </ul>
-        
+
         <div>
           {ib_storm_list.map(storm_name => {
             return (
-              <StormListItem 
+              <StormListItem
                 key={storm_name + storm_details[storm_name].year}
                 storm_name={storm_name}
                 storm_data={storm_details[storm_name]}
