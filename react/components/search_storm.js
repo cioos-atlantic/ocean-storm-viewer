@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 export  function StormSearchQuery(){
   const [searchResult, setSearchResult] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [hasReloaded, setHasReloaded] = useState(false); // Flag to track reload state
   const router = useRouter();
 
 
@@ -18,6 +19,13 @@ export  function StormSearchQuery(){
     handleFormSubmit(e, setSearchResult);
     setIsSubmitted(true); 
   };
+
+
+  function triggerReload() {
+    router.reload(); // Trigger a page reload when called
+  };
+  
+
   return(
     <>
 
@@ -43,6 +51,7 @@ export  function StormSearchQuery(){
               <RenderSearchResult 
                 searchResult={searchResult}
                 router={router}
+                triggerReload={triggerReload}
                  />}
           </Box> 
           
@@ -62,7 +71,7 @@ export  function StormSearchQuery(){
 
 
 
-function RenderSearchResult({searchResult, router}){
+function RenderSearchResult({searchResult, router, triggerReload}){
   return(
     <Box >
       
@@ -86,8 +95,9 @@ function RenderSearchResult({searchResult, router}){
           {searchResult.map((storm, index) => (
           <Paper
             key={storm.storm_id}
-            onClick={(e) => { 
+            onClick={(e) => { console.log()
                               handleClick(storm.name, storm.year, router);
+                              //triggerReload(); // Reload page when a storm is clicked
             
                               //console.log(storm);
                               }}      

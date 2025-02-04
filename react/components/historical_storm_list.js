@@ -33,8 +33,42 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
   const [stormList, setStormList] = useState([]);
   const [searchResult, setSearchResult] = useState({})
   const router = useRouter();
+  const [previousQuery, setPreviousQuery] = useState(null);
 
   console.log("Historical Storms Loading...");
+
+
+   // Check query parameters on mount and trigger `handleClick`
+   /* This `useEffect` hook is used to run a search query when the component mounts. Here's a breakdown
+   of what it does: */
+   useEffect(() => { 
+    if (!router.isReady) return; // Ensure router is ready
+    const { name, season } = router.query;
+    if (previousQuery?.name !== name || previousQuery?.season !== season) {
+    
+      async function searchQuery(){
+        
+        /* This code snippet is checking if both `name` and `season` are present in the query
+        parameters received from the router. If both parameters exist, it calls the `handleSearch`
+        function with the `name` and `season` values to fetch storm data based on the search
+        criteria. */
+        console.log('here')
+        if (name && season) {
+          const stormObjectList = await handleSearch(name, season);
+          console.log(stormObjectList);
+          const selectedStorm = stormObjectList[0];
+          console.log(selectedStorm);
+          if (selectedStorm) {
+            await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation);
+          }
+        }
+    }
+    searchQuery()
+    setPreviousQuery({ name, season });
+
+  }
+  }, [router.query, previousQuery]); // 
+
   useEffect(() => {
     async function fetchStormData() {
       try {
@@ -53,29 +87,6 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
     
     
   }, []); // Empty dependency array ensures it runs only once on mount
-
-   // Check query parameters on mount and trigger `handleClick`
-   /* This `useEffect` hook is used to run a search query when the component mounts. Here's a breakdown
-   of what it does: */
-   useEffect(() => { 
-    
-      async function searchQuery(){
-        const { name, season } = router.query;
-        /* This code snippet is checking if both `name` and `season` are present in the query
-        parameters received from the router. If both parameters exist, it calls the `handleSearch`
-        function with the `name` and `season` values to fetch storm data based on the search
-        criteria. */
-        if (name && season) {
-          const stormObjectList = await handleSearch(name, season)
-          const selectedStorm = stormObjectList[0];
-          console.log(selectedStorm);
-          if (selectedStorm) {
-            await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation);
-          }
-        }
-    }
-  searchQuery()
-  }, []); // 
 
 
   

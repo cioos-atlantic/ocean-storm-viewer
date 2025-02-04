@@ -15,6 +15,7 @@ import { faq } from '@/data/faq';
 */
 
 export default function About(){
+
   const router = useRouter();
 
   return(
@@ -139,4 +140,8 @@ export function handleClick(stormName, stormYear, router){
   const url = `/?storms=historical&name=${stormName}&season=${stormYear}`;
   console.log(url)
   router.push(url);
+  
+  /*router.push(url).then(() => {
+    window.location.reload(); // Force a full page reload after navigation
+  }); */
 }

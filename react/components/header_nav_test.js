@@ -4,18 +4,18 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { StormSearchQuery } from "./search_storm";
 
 export default function HeaderNavTest({ children, navItems }) {
-    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [headerDrawerOpen, setHeaderDrawerOpen] = useState(false);
 
     const toggleDrawer = (open) => (event) => {
         if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
             return;
         }
-        setDrawerOpen(open);
+        setHeaderDrawerOpen(open);
     };
 
 
     function handleIconClick(){
-        setDrawerOpen((prevState) => !prevState); // Toggles the drawer open/close
+        setHeaderDrawerOpen((prevState) => !prevState); // Toggles the drawer open/close
     }
 
     return (
@@ -57,7 +57,7 @@ export default function HeaderNavTest({ children, navItems }) {
             {/* Drawer for Small Screens */}
             <Drawer
                 anchor="right"
-                open={drawerOpen}
+                open={headerDrawerOpen}
                 onClose={toggleDrawer(false)}
                 sx={{
                     "& .MuiDrawer-paper": { width: 200, 
