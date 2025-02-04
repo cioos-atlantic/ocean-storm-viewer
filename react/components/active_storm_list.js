@@ -1,7 +1,9 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { populateStormDetails, populateAllStormDetails } from '../lib/storm_utils';
 import StormListItem from "./storm_list_item";
 import { parse, format } from 'date-fns';
+import { basePath } from "@/next.config";
+import { fetchData } from "./utils/general_utils";
 
 export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
 
@@ -26,7 +28,6 @@ export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
 // }
 
 
-
 /**
  * The ActiveStormList function displays a list of active storms with details and allows users to
  * select and view storm data.
@@ -35,33 +36,52 @@ export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
  * items with details for each storm. The component also conditionally renders a "Show All" link if
  * there are active storms available.
  */
-export default function ActiveStormList({ active_storm_data, setStormPoints, map, Leaflet, setSelectedStation }) {
+export default function ActiveStormList({ setStormPoints, map, Leaflet, setSelectedStation }) {
   const [selected_storm, setSelectedStorm] = useState("");
-
+  
+  const [active_storm_data, setActiveStormData] = useState(null)
+  const [active_station_data, setActiveStationData] = useState(null)
+  const [is_loading_storm, setActiveStormLoading] = useState(true)
+  const [is_loading_station, setActiveStationLoading] = useState(true)
+ 
+  fetchData(`${basePath}/api/active_storms`, setActiveStormData, setActiveStormLoading);
+  fetchData(`${basePath}/api/query_stations`, setActiveStationData, setActiveStationLoading);
+ 
   let ib_storm_list = []
   let storm_details = {}
+  
+  let active_storms = false;
 
   console.log("Selected Storm: " + selected_storm);
-  console.debug("IBTRACS Storm List: " + active_storm_data.ib_data.features.length + " points");
-  console.debug("ECCC Storm List: " + active_storm_data.eccc_data.features.length + " points");
 
-  let active_storms = false;
-  if(active_storm_data.ib_data.features.length > 0 || active_storm_data.eccc_data.features.length > 0){
-    active_storms = true;
+  if(!is_loading_storm){
+    console.debug("IBTRACS Storm List: " + active_storm_data.ib_data?.features.length + " points");
+    console.debug("ECCC Storm List: " + active_storm_data.eccc_data?.features.length + " points");
+  
+    if(active_storm_data.ib_data?.features.length > 0 || active_storm_data.eccc_data?.features.length > 0){
+      active_storms = true;
+
+      active_storm_data.ib_data?.features.map(storm_point => {
+        if (!ib_storm_list.includes(storm_point.properties.NAME)) {
+          ib_storm_list.push(storm_point.properties.NAME)
+          storm_details[storm_point.properties.NAME] = {
+            source: "ibtracs", 
+            year: storm_point.properties.SEASON, 
+            data: []
+          }
+        }
+    
+        storm_details[storm_point.properties.NAME].data.push(storm_point)
+      })
+    }
   }
 
-  active_storm_data.ib_data.features.map(storm_point => {
-    if (!ib_storm_list.includes(storm_point.properties.NAME)) {
-      ib_storm_list.push(storm_point.properties.NAME)
-      storm_details[storm_point.properties.NAME] = {
-        source: "ibtracs", 
-        year: storm_point.properties.SEASON, 
-        data: []
-      }
-    }
-
-    storm_details[storm_point.properties.NAME].data.push(storm_point)
-  })
+  if(!is_loading_station){
+    console.debug("Active Station Data: ", active_station_data);
+  }
+  else{
+    console.debug("Waiting for station data to load...");
+  }
 
   return (
     <>

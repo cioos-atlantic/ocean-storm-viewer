@@ -35,7 +35,6 @@ export default function Drawer({ children, element_id, classes, storm_data, sour
                 {
                     source_type == "active" ? (
                         <ActiveStormList
-                            active_storm_data={storm_data}
                             setStormPoints={setStormPoints}
                             map={map}
                             Leaflet={Leaflet}
