@@ -60,12 +60,12 @@
     cursor: pointer; /* Pointer cursor */
     z-index: 7001; /* Above drawer */
     transition: background-color 0.3s ease; /* Smooth hover transition */
-    color: #ffffff;
     font-weight: bold;
     color: white;
     border: none;
     border-radius: 50%; /* This makes the button round */
     width: 40px; /* Adjust the size */
+    min-width: auto;
     height: 40px; /* Adjust the size */
     justify-content: center;
     align-items: center;

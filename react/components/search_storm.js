@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 export  function StormSearchQuery(){
   const [searchResult, setSearchResult] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [hasReloaded, setHasReloaded] = useState(false); // Flag to track reload state
+  
   const router = useRouter();
 
 
