@@ -18,6 +18,7 @@ import StormPointDetails, { empty_point_obj } from "@/components/storm_point_det
 import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
 import { empty_station_obj } from "./layout";
 import StationDashboard from "./station_dashboard/station_dashboard";
+import { SearchSmallScreens } from "./search_small_screens";
 //import StationDashboardTest from "./station_dashboard/station_dashboard";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
@@ -52,6 +53,16 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             setHoverMarker= {setHoverMarker}
           />
         )}
+
+        {
+          <SearchSmallScreens
+            isSearchSubmitted = {isSearchSubmitted}
+            setIsSearchSubmitted= {setIsSearchSubmitted}
+            searchResult= {searchResult}
+            setSearchResult={setSearchResult}
+            setIsDrawerOpen= {setIsDrawerOpen}
+            isDrawerOpen= {isDrawerOpen}/>
+        }
         
         {selected_station !== empty_station_obj && (
           <StationDashboard

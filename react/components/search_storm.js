@@ -30,10 +30,10 @@ export  function StormSearchQuery({isSearchSubmitted, setIsSearchSubmitted, sear
         className="storm_search">
           
          <Box className="search-container">
-          <form id='storm_search_form'
+          <form className='storm_search_form'
           onSubmit={handleSubmit}>
               <input type="text" 
-                    id="storm_search_input" 
+                    className="storm_search_input" 
                     name="historical_storm_search"
                     required 
                     minLength="4" 
@@ -53,11 +53,6 @@ export  function StormSearchQuery({isSearchSubmitted, setIsSearchSubmitted, sear
               setIsDrawerOpen(true)}
           </Box> 
           
-          
-
-          
-          
-
         
         </div>
           
@@ -117,4 +112,5 @@ export function RenderSearchResult({searchResult, router}){
     </Box>
   )
 }
+
 

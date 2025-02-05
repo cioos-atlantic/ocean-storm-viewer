@@ -53,7 +53,7 @@
 
 .openButton{
     position: absolute;
-    top: 160px;
+    top: 78px;
     left: 10px;
     background-color: #e55162; /* Background color */
     border: none; /* Remove border */
@@ -71,6 +71,7 @@
     align-items: center;
     cursor: pointer;
     font-size: 18px; /* Adjust font size for the icon */
+    
 }
 .openButton:hover {
     background-color: whitesmoke; /* Darker color on hover */

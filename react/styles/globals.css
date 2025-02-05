@@ -107,7 +107,7 @@ footer {
 
 /* Leaflet Control Position Adjustments */
 .leaflet-control-container .leaflet-top {
-  top: 75px; /* Adjust top to avoid overlapping header */
+  top: 115px; /* Adjust top to avoid overlapping header */
 }
 
 .leaflet-control-container .leaflet-bottom {
@@ -374,7 +374,7 @@ footer {
   display: flex;
 }
 
-#storm_search_input{
+.storm_search_input{
   width: 77%;
   max-width: 180px;
   padding: 4px;
@@ -387,7 +387,7 @@ footer {
 }
 
 
-#storm_search_form{
+.storm_search_form{
   width: 100%;
   padding: 0;
   overflow: hidden;
@@ -422,7 +422,7 @@ footer {
   text-align: left;
   padding: 5px;
   background-color: #e55162;
-  height: 200px;
+  height: 300px;
   border-radius: 4px;
   border: 1px solid white;
   overflow: auto;
@@ -430,3 +430,15 @@ footer {
   width: 100%
 
 }
+
+.search-icon-small-screen{
+  z-index: 7200;
+  top: 75px;
+  right: 11px;
+  position: absolute;
+  background-color: white;
+  border-radius: 4px;
+  /*border: 1.8px solid rgba(155, 146, 146, 0.829); */
+
+}
+
