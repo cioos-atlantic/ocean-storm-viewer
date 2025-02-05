@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { basePath } from "@/next.config";
 import { populateStormDetails, populateAllStormDetails } from '../lib/storm_utils';
 import StormListItem from "./storm_list_item";
-import { parse, format } from 'date-fns';
-import { basePath } from "@/next.config";
-import { fetchData } from "./utils/general_utils";
+// import { parse, format } from 'date-fns';
 
 export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
 
