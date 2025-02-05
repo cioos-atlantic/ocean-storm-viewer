@@ -130,49 +130,6 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
         
       </Box>
 
-      
-
-      <hr style={{ height: '2px', backgroundColor: 'black', border: 'none' }}/> 
-      <Box className='historical_storm_search_header'
-        sx={{
-          fontSize: { xs: '16px', sm: '18px', md: '20px', lg: '20px' }
-        }}
-      >Storm Search: </Box>
-      <div id="storm_search"
-      className="historical_storm_search">
-        <form onSubmit={(e) => handleFormSubmit(e, setSearchResult, router)}>
-        <input type="text" id="historical_storm_search" 
-        name="historical_storm_search" required minLength="4" placeholder='Storm name or year'/> 
-        <br/>
-        <button 
-        id='search_button'
-        type="submit">Search</button>
-        </form>
-
-        <div id="storm_search_result"
-        className='historical_storm_search_result'
-        >
-          {
-          
-          searchResult.length > 0 && searchResult.map((storm, index) => {
-            return (
-
-              <div key={storm.storm_id} className={(storm.name)}>
-                <Button 
-                className='historical_storm_button'
-                sx={{
-                  fontSize: { xs: '10px', sm: '10px', md: '12px', lg: '12px' }
-                }}
-                onClick={(e) => { handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation) }}>{`${storm.display_name}`}</Button>
-              </div>
-            )
-          })}
-      </div>
-
-        
-           
-      </div>
-
        
     </>
   );
