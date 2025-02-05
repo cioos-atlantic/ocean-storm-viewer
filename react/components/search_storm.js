@@ -7,9 +7,10 @@ import {handleClick} from '../pages/about_page'
 import { useRouter } from 'next/router';
 
 
-export  function StormSearchQuery(){
-  const [searchResult, setSearchResult] = useState([]);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+export  function StormSearchQuery({isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, setIsDrawerOpen, isDrawerOpen,}){
+  //const [searchResult, setSearchResult] = useState([]);
+  //const [isSubmitted, setIsSubmitted] = useState(false);
+  
   
   const router = useRouter();
 
@@ -17,13 +18,9 @@ export  function StormSearchQuery(){
   function handleSubmit(e) {
     setSearchResult([]);
     handleFormSubmit(e, setSearchResult);
-    setIsSubmitted(true); 
+    setIsSearchSubmitted(true); 
   };
 
-
-  function triggerReload() {
-    router.reload(); // Trigger a page reload when called
-  };
   
 
   return(
@@ -41,18 +38,19 @@ export  function StormSearchQuery(){
                     required 
                     minLength="4" 
                     placeholder='Joan 2014 or Joan or 2014'
-                    onClick={() => setIsSubmitted(false)}/>
+                    onClick={() => setIsSearchSubmitted(false)}/>
               <IconButton type="submit" aria-label='search' className="search-button">
                 <Search/>
               </IconButton>
             </form>
              {/* Conditionally render search results after submission */}
-            {isSubmitted && 
-              <RenderSearchResult 
-                searchResult={searchResult}
-                router={router}
-                triggerReload={triggerReload}
-                 />}
+            {isSearchSubmitted && 
+              //<RenderSearchResult 
+              //  searchResult={searchResult}
+              //  router={router}
+                
+              //   />}
+              setIsDrawerOpen(true)}
           </Box> 
           
           
@@ -71,7 +69,7 @@ export  function StormSearchQuery(){
 
 
 
-function RenderSearchResult({searchResult, router, triggerReload}){
+export function RenderSearchResult({searchResult, router}){
   return(
     <Box >
       
@@ -83,7 +81,7 @@ function RenderSearchResult({searchResult, router, triggerReload}){
           
         }}
       >
-
+        {console.log(searchResult)}
         {searchResult.length > 0 ? (
           <>
           <Box

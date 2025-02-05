@@ -23,7 +23,7 @@ import StationDashboard from "./station_dashboard/station_dashboard";
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
 
-export default function Map({ children, storm_points, storm_data, station_data, source_type, setStormPoints, setStationPoints, setHistoricalStormData,  }) {
+export default function Map({ children, storm_points, storm_data, station_data, source_type, setStormPoints, setStationPoints, setHistoricalStormData, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, setIsDrawerOpen, isDrawerOpen,  }) {
 
   // The state variable that contains the storm point currently being hovered 
   // over or clicked on
@@ -32,7 +32,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   // The state variable that contains the station that was last clicked on
   
   const [selected_tab, setSelectedTab] = useState(0);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  //const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isStormDetOpen, setIsStormDetOpen] = useState(false); 
   const [selected_station, setSelectedStation] = useState(empty_station_obj);
 
@@ -84,6 +84,10 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             setIsDrawerOpen= {setIsDrawerOpen}
             isDrawerOpen= {isDrawerOpen}
             setSelectedStation={setSelectedStation}
+            isSearchSubmitted = {isSearchSubmitted}
+            setIsSearchSubmitted= {setIsSearchSubmitted}
+            searchResult= {searchResult}
+            setSearchResult={setSearchResult}
           />
 
           <TileLayer

@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 
 import { empty_station_obj } from './layout.js';
 import { Button, Box } from '@mui/material';
+import { RenderSearchResult } from './search_storm.js';
 
 
 const otherStormList = [
@@ -27,11 +28,11 @@ const otherStormList = [
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation}) {
+export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult }) {
 
   
   const [stormList, setStormList] = useState([]);
-  const [searchResult, setSearchResult] = useState({})
+  //const [searchResult, setSearchResult] = useState({})
   const router = useRouter();
   const [previousQuery, setPreviousQuery] = useState(null);
 
@@ -100,36 +101,17 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
       }}
       >Historical Storms: </Box>
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>  {/* Bold line */}
-      <Box className='historical_page_drawer_subheader'
-      sx={{
-        fontSize: { xs: '16px', sm: '18px', md: '20px', lg: '20px' }
-      }}
-      >Recent Storms: </Box>
-      <Box id="storm_search_result"
-            className="historical_storm_search_result"
-            
-            >
-      {stormList.map((storm, index) => {
-            return (
-              <div key={storm.storm_id} className={(storm.name)}>
-                <Button 
-                className='historical_storm_button'
-                sx={{
-                  fontSize: { xs: '10px', sm: '10px', md: '12px', lg: '12px' }
-                }}
-                onClick={(e) => { 
-                  handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation);
 
-                  //console.log(storm);
-                  }}>{`${storm.display_name}`}</Button>
-              </div>
-            )
-          })}
+      {console.log(searchResult)}
 
+      {isSearchSubmitted ? (<RenderSearchResult 
+                searchResult={searchResult}
+                router={router}
+                
+                 />):
+      (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation))}
 
-        
-      </Box>
-
+      
        
     </>
   );
@@ -288,3 +270,43 @@ export async function handleSearch(storm_name, storm_year){
   
   return uniqueList
 }
+
+function renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation){
+  return(
+    <>
+    <Box className='historical_page_drawer_subheader'
+      sx={{
+        fontSize: { xs: '16px', sm: '18px', md: '20px', lg: '20px' }
+      }}
+      >Recent Storms: </Box>
+      <Box id="storm_search_result"
+            className="historical_storm_search_result"
+            
+            >
+      {stormList.map((storm, index) => {
+            return (
+              <div key={storm.storm_id} className={(storm.name)}>
+                <Button 
+                className='historical_storm_button'
+                sx={{
+                  fontSize: { xs: '10px', sm: '10px', md: '12px', lg: '12px' }
+                }}
+                onClick={(e) => { 
+                  handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation);
+
+                  //console.log(storm);
+                  }}>{`${storm.display_name}`}</Button>
+              </div>
+            )
+          })}
+
+
+        
+      </Box>
+
+    </>
+    
+
+  )
+}
+

@@ -46,6 +46,11 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
   const [storm_points, setStormPoints] = useState(empty_storm_obj);
   const [station_points, setStationPoints] = useState(station_data);
   const [historicalStormData, setHistoricalStormData] = useState(empty_storm_obj); // State for storing historical storm data
+  const [isSearchSubmitted, setIsSearchSubmitted] = useState(false);
+  const [searchResult, setSearchResult] = useState([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+
   
 
   const router = useRouter();
@@ -145,6 +150,12 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
             }}
           >
             <StormSearchQuery
+            isSearchSubmitted = {isSearchSubmitted}
+            setIsSearchSubmitted= {setIsSearchSubmitted}
+            searchResult= {searchResult}
+            setSearchResult={setSearchResult}
+            setIsDrawerOpen= {setIsDrawerOpen}
+            isDrawerOpen= {isDrawerOpen}
              />
           </Grid>
 
@@ -176,6 +187,12 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
           source_type={source_type}
           setStormPoints={setStormPoints}
           setStationPoints={setStationPoints}
+          isSearchSubmitted = {isSearchSubmitted}
+          setIsSearchSubmitted= {setIsSearchSubmitted}
+          searchResult= {searchResult}
+          setSearchResult={setSearchResult}
+          setIsDrawerOpen= {setIsDrawerOpen}
+          isDrawerOpen= {isDrawerOpen}
 
         />
       </main>
