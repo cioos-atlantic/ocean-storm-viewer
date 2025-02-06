@@ -417,6 +417,8 @@ footer {
 .search-output{
   font-size: 12px;
   cursor: pointer;
+  text-align: center;
+  font-weight: 100;
 
 }
 .search-output-space{
