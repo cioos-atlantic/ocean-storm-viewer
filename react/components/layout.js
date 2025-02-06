@@ -16,7 +16,7 @@ import About from "@/pages/about_page";
 import Grid from '@mui/material/Grid2';
 import { Box } from "@mui/material";
 import HeaderNav from "./header_nav";
-import { StormSearchQuery } from "./search_storm";
+import { StormSearchQuery } from "./search_storm_header";
 
 
 
@@ -138,7 +138,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
             )}
 
           </Grid>
-          {/* Search */}
+          {/* Search 
           <Grid
             size="fixed"
             sx={{
@@ -157,7 +157,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
             setIsDrawerOpen= {setIsDrawerOpen}
             isDrawerOpen= {isDrawerOpen}
              />
-          </Grid>
+          </Grid> */}
 
           {/* Navigation Section */}
           <Grid size ='auto'

@@ -432,7 +432,7 @@ footer {
 }
 
 .search-icon-small-screen{
-  z-index: 7200;
+  z-index: 6999;
   top: 75px;
   right: 11px;
   position: absolute;
@@ -443,7 +443,7 @@ footer {
 }
 
 #close-search-icon-small-screen{
-  z-index: 7200;
+  z-index: 6999;
   top: 75px;
   right: 216px;
   position: absolute;
@@ -473,7 +473,7 @@ footer {
 
 .small_screen-storm_search_form{
   background-color: transparent;
-  z-index: 7200;
+  z-index: 6999;
   top: 75px;
   right: 11px;
   position: absolute;
@@ -485,4 +485,18 @@ footer {
 
 #small-screen-form-search-input{
   
+}
+
+.cancel-search{
+  text-align : center;
+  align-content : center;
+  width: 100%;
+  background-color: #e55162;
+  color: white;
+  font-weight: bold;
+
+}
+.cancel-search:hover{
+  background-color: white;
+  color: #e55162;
 }

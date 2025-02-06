@@ -1,14 +1,14 @@
 import { IconButton, TextField, Box, Typography, Paper, Button } from "@mui/material";
 import Search from "@mui/icons-material/Search";
-import { StormSearchQuery } from "./search_storm";
-import { handleFormSubmit } from "./historical_storm_list";
+//import { StormSearchQuery } from "./search_storm_header";
+import { handleFormSubmit } from "./utils/historical_storm_utils";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { changeUrlToHistorical } from "./search_storm";
 
 
 
-export function SearchSmallScreens({isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, setIsDrawerOpen, isDrawerOpen}){
+
+export function RenderStormSearch({isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, setIsDrawerOpen, isDrawerOpen}){
 
   const [showSearchForm, setShowSearchForm] = useState(false); 
 
@@ -57,6 +57,7 @@ function SearchForm({setIsSearchSubmitted, setIsDrawerOpen, isSearchSubmitted, s
     setSearchResult([]);
     handleFormSubmit(e, setSearchResult);
     setIsSearchSubmitted(true); 
+    setIsDrawerOpen(true)
   };
 
 
@@ -89,14 +90,8 @@ function SearchForm({setIsSearchSubmitted, setIsDrawerOpen, isSearchSubmitted, s
             <Search/>
           </IconButton>
         </form>
-          {/* Conditionally render search results after submission */}
-        {isSearchSubmitted && 
-          //<RenderSearchResult 
-          //  searchResult={searchResult}
-          //  router={router}
-            
-          //   />}
-          setIsDrawerOpen(true)}
+        
+        
       </Box>
      
         
@@ -107,5 +102,10 @@ function SearchForm({setIsSearchSubmitted, setIsDrawerOpen, isSearchSubmitted, s
 
     
   )
+}
+export function changeUrlToHistorical(router){
+  const url = `/?storms=historical`;
+  console.log(url)
+  router.push(url);
 }
 

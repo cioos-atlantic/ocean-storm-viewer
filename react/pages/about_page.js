@@ -84,10 +84,10 @@ export default function About(){
               role="button"
               tabIndex="0"
               onClick={() =>{console.log(`${storm.title} clicked`)
-                              handleClick(storm.name, storm.year, router)}}
+                              handleStormNameClick(storm.name, storm.year, router)}}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
-                  handleClick(storm.name, storm.year, router);
+                  handleStormNameClick(storm.name, storm.year, router);
                 }
                 }}> 
                   {storm.title}
@@ -136,7 +136,7 @@ export default function About(){
  
  */
 
-export function handleClick(stormName, stormYear, router){
+export function handleStormNameClick(stormName, stormYear, router){
   const url = `/?storms=historical&name=${stormName}&season=${stormYear}`;
   console.log(url)
   router.push(url);

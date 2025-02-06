@@ -39,8 +39,8 @@ export default function Drawer({ children, element_id, classes, storm_data, sour
             <Box id={element_id} 
                     className={styles.drawer + " h-100 " + sideClass}
                     sx={{
-                        maxWidth:{xs:'50%', sm:'30%', md:'25%', lg:'20%',},
-                        width:{xs:'50%', sm:'30%', md:'25%', lg:'20%',},
+                        maxWidth:{xs:'258px', sm:'258px', md:'258px', lg:'258px',},
+                        width:{xs:'100%', sm:'50%', md:'50%', lg:'50%',},
                         display: isDrawerOpen ? 'block' : 'none',
                     }}
                     onClick={(e) => e.stopPropagation()} // Prevent closing on internal clicks
