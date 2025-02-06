@@ -108,7 +108,7 @@ footer {
 
 /* Leaflet Control Position Adjustments */
 .leaflet-control-container .leaflet-top {
-  top: 115px; /* Adjust top to avoid overlapping header */
+  top: 165px; /* Adjust top to avoid overlapping header */
 }
 
 .leaflet-control-container .leaflet-bottom {
@@ -436,18 +436,24 @@ footer {
 
 .search-icon-small-screen{
   z-index: 6999;
-  top: 75px;
+  top: 125px;
   right: 11px;
   position: absolute;
   background-color: white;
   border-radius: 4px;
+  color: #e55162;
   /*border: 1.8px solid rgba(155, 146, 146, 0.829); */
 
 }
 
+.search-icon-small-screen:hover{
+  background-color: #e55162;
+  color: white;
+}
+
 #close-search-icon-small-screen{
   z-index: 6999;
-  top: 75px;
+  top: 125px;
   right: 216px;
   position: absolute;
   color: white;
@@ -477,7 +483,7 @@ footer {
 .small_screen-storm_search_form{
   background-color: transparent;
   z-index: 6999;
-  top: 75px;
+  top: 125px;
   right: 11px;
   position: absolute;
   border-radius: 4px;
@@ -504,3 +510,17 @@ footer {
   color: #e55162;
 }
 
+#filter-icon{
+  z-index: 6999;
+  top: 75px;
+  right: 11px;
+  position: absolute;
+  background-color: white;
+  border-radius: 4px;
+  color: #e55162;
+}
+
+#filter-icon:hover{
+  background-color: #e55162;
+  color: white;
+}

@@ -27,7 +27,7 @@ export function RenderStormSearch({isSearchSubmitted, setIsSearchSubmitted, sear
       <Search
       sx={{
         fontSize: 'larger',
-        color: '#e55162'
+        
       }}
       />
     </IconButton>}
