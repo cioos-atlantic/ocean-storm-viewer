@@ -15,7 +15,7 @@ import ErddapHandler from "../pages/api/query_stations";
 import About from "@/pages/about_page";
 import Grid from '@mui/material/Grid2';
 import { Box } from "@mui/material";
-import HeaderNavTest from "./header_nav_test";
+
 
 
 
@@ -140,7 +140,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
               //justifyContent: 'flex-end',
               //gap: 1, // Adds spacing between navigation items
               fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '18px', xl: '20px', xxl: '22px' }, // Font size changes based on breakpoints
-            }} ><HeaderNavTest navItems={topNav} />
+            }} ><HeaderNav navItems={topNav} />
           </Grid>
           
         </Grid>
