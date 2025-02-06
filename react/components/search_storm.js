@@ -16,6 +16,7 @@ export  function StormSearchQuery({isSearchSubmitted, setIsSearchSubmitted, sear
 
 
   function handleSubmit(e) {
+    changeUrlToHistorical(router)
     setSearchResult([]);
     handleFormSubmit(e, setSearchResult);
     setIsSearchSubmitted(true); 
@@ -31,14 +32,16 @@ export  function StormSearchQuery({isSearchSubmitted, setIsSearchSubmitted, sear
           
          <Box className="search-container">
           <form className='storm_search_form'
-          onSubmit={handleSubmit}>
+          onSubmit={
+            handleSubmit}>
               <input type="text" 
                     className="storm_search_input" 
                     name="historical_storm_search"
                     required 
                     minLength="4" 
                     placeholder='Joan 2014 or Joan or 2014'
-                    onClick={() => setIsSearchSubmitted(false)}/>
+                    onClick={() => {
+                      setIsSearchSubmitted(false)}}/>
               <IconButton type="submit" aria-label='search' className="search-button">
                 <Search/>
               </IconButton>
@@ -65,6 +68,7 @@ export  function StormSearchQuery({isSearchSubmitted, setIsSearchSubmitted, sear
 
 
 export function RenderSearchResult({searchResult, router}){
+  
   return(
     <Box >
       
@@ -113,4 +117,10 @@ export function RenderSearchResult({searchResult, router}){
   )
 }
 
+
+export function changeUrlToHistorical(router){
+  const url = `/?storms=historical`;
+  console.log(url)
+  router.push(url);
+}
 

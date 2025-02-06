@@ -1,8 +1,10 @@
-import { IconButton, TextField, Box, Typography, Paper } from "@mui/material";
+import { IconButton, TextField, Box, Typography, Paper, Button } from "@mui/material";
 import Search from "@mui/icons-material/Search";
 import { StormSearchQuery } from "./search_storm";
 import { handleFormSubmit } from "./historical_storm_list";
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { changeUrlToHistorical } from "./search_storm";
 
 
 
@@ -37,6 +39,7 @@ export function SearchSmallScreens({isSearchSubmitted, setIsSearchSubmitted, sea
         setIsDrawerOpen = {setIsDrawerOpen}
         isSearchSubmitted = {isSearchSubmitted}
         searchResult = {searchResult}
+        setShowSearchForm={setShowSearchForm}
 
       />
     )}
@@ -45,9 +48,12 @@ export function SearchSmallScreens({isSearchSubmitted, setIsSearchSubmitted, sea
   )
 }
 
-function SearchForm({setIsSearchSubmitted, setIsDrawerOpen, isSearchSubmitted, setSearchResult, searchResult}){
+function SearchForm({setIsSearchSubmitted, setIsDrawerOpen, isSearchSubmitted, setSearchResult, searchResult, setShowSearchForm}){
+
+  const router = useRouter();
   
   function handleSubmit(e) {
+    changeUrlToHistorical(router)
     setSearchResult([]);
     handleFormSubmit(e, setSearchResult);
     setIsSearchSubmitted(true); 
@@ -60,11 +66,14 @@ function SearchForm({setIsSearchSubmitted, setIsDrawerOpen, isSearchSubmitted, s
   
 
   return(
-    
-          
-      <Box 
-        className="search-icon-small-screen">
-        <form className='storm_search_form'
+    <>
+      <Button
+      id="close-search-icon-small-screen"
+      onClick={() => {setShowSearchForm(false)}}>
+      X
+      </Button>   
+      <Box className='small_screen-storm_search_form'>
+      <form 
         onSubmit={handleSubmit}>
           <input type="text" 
             className="storm_search_input" 
@@ -72,8 +81,11 @@ function SearchForm({setIsSearchSubmitted, setIsDrawerOpen, isSearchSubmitted, s
             required 
             minLength="4" 
             placeholder='Joan 2014 or Joan or 2014'
-            onClick={() => setIsSearchSubmitted(false)}/>
-          <IconButton type="submit" aria-label='search' className="search-button">
+            onClick={() => 
+              {setIsSearchSubmitted(false)
+                //setShowSearchForm(false)
+              }}/>
+          <IconButton type="submit" aria-label='search' className="small-screen-form-search-button">
             <Search/>
           </IconButton>
         </form>
@@ -85,10 +97,15 @@ function SearchForm({setIsSearchSubmitted, setIsDrawerOpen, isSearchSubmitted, s
             
           //   />}
           setIsDrawerOpen(true)}
-      </Box> 
+      </Box>
+     
+        
+
+    </>
           
       
 
     
   )
 }
+
