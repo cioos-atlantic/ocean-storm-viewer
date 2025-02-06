@@ -23,6 +23,7 @@ header img.logo {
   width: 80%; /* absolute width for logo */
   padding-left: 1.5rem; /* Spacing on left */
   padding-right: 1.5rem; /* Spacing on right */
+  min-width: 256px;
 
 }
 
@@ -500,3 +501,4 @@ footer {
   background-color: white;
   color: #e55162;
 }
+
