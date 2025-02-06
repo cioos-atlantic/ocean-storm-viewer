@@ -23,7 +23,7 @@ export function RenderWindRose ( { sourceData, hasWindRoseData }){
     console.log(sourceData)
     const stationDirData = get_station_field_data(sourceData, 'wind_from_direction', "column_std_names").data;
     console.log(stationDirData)
-    if (!stationDirData || stationDirData.every(item => item === undefined)) {
+    if (!stationDirData || stationDirData.every(element => element === undefined)) {
         console.log("stationDirData returned an array of undefined values");
         return; // Exit early
     }
@@ -58,7 +58,10 @@ export function RenderWindRose ( { sourceData, hasWindRoseData }){
       {!hasWindRoseData ? (
         <div>No data available</div>
       ) : (
-        <div id="container" ref={chartContainerRef} />
+        <div id="container" 
+        ref={chartContainerRef}
+        className='windrose_chart_container'
+        />
       )}
     </div>
   );
@@ -117,19 +120,29 @@ function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
     console.log(key);
     chartOption.push({
       type: "interval",
-      title: key,
+      title: {title: key, fontSize:'10px'},
       autoFit: true,
-      height: "360",
-      padding: "auto",
+      //height: "350",
+      //width: "100%",
+      //padding: "0,0,0,0",
+      //margin: "0,0,0,0",
+      paddingBottom: '0',
+      paddingTop:'35',
+      //margin:'30',
+      style: { inset: 0.5 },
+
       data: windChartData,
-      encode: { x: "direction", y: "value", color: "windSpeedBin", size: 18 },
+      encode: { x: "direction", y: "value", color: "windSpeedBin" },
       transform: [{ type: "stackY" }],
       scale: {
           color: {
           range: colorPalette,
           },
       },
-      coordinate: { type: "polar" },
+      
+      coordinate: { type: "polar", 
+       
+       },
       axis: {
           x: { line: true, grid: true, gridLineDash: [0, 0], gridLineWidth: 1 },
           y: { title: false, line: true, gridLineWidth: 1 },
@@ -143,8 +156,11 @@ function generateChartOption(windSpeeds, stationDirData, totalDataPoints){
               channel: "y",
           }),
           ],
+          
       },
-      interaction: { tooltip: { shared: true } },
+      interaction: { tooltip: { 
+        shared: true, 
+       } },
       })
     
   });
@@ -161,9 +177,14 @@ function renderChart(chartOptions) {
 
     chart.options({
       type: "spaceFlex",
-      width: 1000,
-      height: 400,
       children: chartOptions,
+      //width: "auto", // Set the desired width of the chart
+      //height: "auto", // Set the desired height of the chart
+      //overflow: 'auto',
+      //aspectRatio: "100 / 100",
+      height: 360,
+      width: 780,
+
     });
 
     chart.render();

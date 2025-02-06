@@ -19,6 +19,7 @@ import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
 import { empty_station_obj } from "./layout";
 import StationDashboard from "./station_dashboard/station_dashboard";
 
+
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
 
@@ -30,7 +31,9 @@ export default function Map({ children, storm_points, storm_data, station_data, 
 
   // The state variable that contains the station that was last clicked on
   const [selected_station, setSelectedStation] = useState(empty_station_obj);
-  const [selected_tab, setSelectedTab] = useState(0)
+  const [selected_tab, setSelectedTab] = useState(0);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isStormDetOpen, setIsStormDetOpen] = useState(false); 
 
   const allDatasetDescriptions = useDatasetDescriptions();
 
@@ -43,7 +46,9 @@ export default function Map({ children, storm_points, storm_data, station_data, 
         {hover_marker !== empty_point_obj && (
           <StormPointDetails
             storm_point_hover={hover_marker}
-            onClose={() => setHoverMarker(empty_point_obj)} // Close popup when the marker is reset
+            //onClose={() => setHoverMarker(empty_point_obj)} // Close popup when the marker is reset
+            setIsStormDetOpen= {setIsStormDetOpen}
+            setHoverMarker= {setHoverMarker}
           />
         )}
         
@@ -56,6 +61,10 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             storm_timestamp = {new Date()}
             selectedTab = {selected_tab}
             setSelectedTab = {setSelectedTab}
+            isDrawerOpen= {isDrawerOpen}
+            isStormDetOpen= {isStormDetOpen}
+            setIsStormDetOpen= {setIsStormDetOpen}
+            
           ></StationDashboard>
         )}
         <MapContainer
@@ -71,6 +80,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             source_type={source_type}
             setStormPoints={setStormPoints}
             setStationPoints={setStationPoints}
+            setIsDrawerOpen= {setIsDrawerOpen}
+            isDrawerOpen= {isDrawerOpen}
             setSelectedStation={setSelectedStation}
           />
 
@@ -127,6 +138,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                         key={point.id}
                         storm_point_data={point}
                         setHoverMarker={setHoverMarker}
+                        isStormDetOpen= {isStormDetOpen}
+                        setIsStormDetOpen= {setIsStormDetOpen}
                        
                       />
                     );
