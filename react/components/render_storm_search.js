@@ -1,7 +1,7 @@
 import { IconButton, TextField, Box, Typography, Paper, Button } from "@mui/material";
 import Search from "@mui/icons-material/Search";
 //import { StormSearchQuery } from "./search_storm_header";
-import { handleFormSubmit } from "./utils/historical_storm_utils";
+import { handleFormSubmit } from "./historical_storm/historical_storm_utils";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 

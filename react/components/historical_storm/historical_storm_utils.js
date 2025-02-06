@@ -309,98 +309,9 @@ export function addSearchParams(stormName, stormYear, router) {
 }
 
 
-export function RenderSearchResult({searchResult, router, setIsSearchSubmitted}){
-  
-  return(
-    <Box >
-      
-      <Stack
-      
-        spacing={1}
-        className='search-output-space'
-        sx={{
-          
-        }}
-      >
-        {console.log(searchResult)}
-        {searchResult.length > 0 ? (
-          <>
-          <Box
-          sx={{
-            color: "white",
-            position: "static"
-          }}>
-          Search Result...</Box>
-          {searchResult.map((storm, index) => (
-          <Paper
-            key={storm.storm_id}
-            onClick={(e) => { console.log()
-                              handleStormNameClick(storm.name, storm.year, router);
-                              //triggerReload(); // Reload page when a storm is clicked
-            
-                              //console.log(storm);
-                              }}      
-          >
-            <Typography className='search-output'>
-              <strong>{`${storm.display_name}`}</strong>
-            </Typography>
-            
-          </Paper>
-          
-        ))}
-        </>
-        ): (<Box
-          sx={{
-            color: "white"
-          }}>
-          ...</Box>)}
-      </Stack>
-      <Button
-      onClick={()=> {setIsSearchSubmitted(false)}}
-      className="cancel-search"
-      >Cancel Search</Button>
-    </Box>
-  )
-}
-
-export function renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation){
-  return(
-    <>
-    <Box className='historical_page_drawer_subheader'
-      sx={{
-        fontSize: { xs: '16px', sm: '18px', md: '20px', lg: '20px' }
-      }}
-      >Recent Storms: </Box>
-      <Box id="storm_search_result"
-            className="historical_storm_search_result"
-            
-            >
-      {stormList.map((storm, index) => {
-            return (
-              <div key={storm.storm_id} className={(storm.name)}>
-                <Button 
-                className='historical_storm_button'
-                sx={{
-                  fontSize: { xs: '10px', sm: '10px', md: '12px', lg: '12px' }
-                }}
-                onClick={(e) => { 
-                  handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation);
-
-                  //console.log(storm);
-                  }}>{`${storm.display_name}`}</Button>
-              </div>
-            )
-          })}
 
 
-        
-      </Box>
 
-    </>
-    
-
-  )
-}
 
 /**
  * The handleClick function handles a button click event, fetches historical storm and station data

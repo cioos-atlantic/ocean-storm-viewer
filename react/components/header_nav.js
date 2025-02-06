@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, IconButton, Drawer, List, ListItem, ListItemText } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { StormSearchQuery } from "./search_storm_header";
+import { StormSearchQuery } from "./search_storm_in_header";
 
 export default function HeaderNav({ children, navItems }) {
     const [headerDrawerOpen, setHeaderDrawerOpen] = useState(false);

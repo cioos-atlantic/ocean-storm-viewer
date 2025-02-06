@@ -16,7 +16,7 @@ import About from "@/pages/about_page";
 import Grid from '@mui/material/Grid2';
 import { Box } from "@mui/material";
 import HeaderNav from "./header_nav";
-import { StormSearchQuery } from "./search_storm_header";
+import { StormSearchQuery } from "./search_storm_in_header";
 
 
 

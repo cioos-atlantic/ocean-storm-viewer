@@ -1,13 +1,15 @@
-import CustomButton from '../custom/custom-button.js';
+import CustomButton from '../../custom/custom-button.js';
 import { addDays, subDays, lightFormat } from "date-fns";
 import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
 import { useEffect, useState } from 'react';
-import { getHistoricalStormList, parseStormData, makeStormList, isName, isYear, parseForFlyToPoint, addSearchParams } from './utils/historical_storm_utils.js';
+import { getHistoricalStormList, parseStormData, makeStormList, isName, isYear, parseForFlyToPoint, addSearchParams } from './historical_storm_utils.js';
 import { useRouter } from 'next/router';
 
-import { empty_station_obj } from './layout.js';
+import { empty_station_obj } from '../layout.js';
 import { Button, Box } from '@mui/material';
-import { RenderSearchResult, renderRecentStorms, handleClick, handleFormSubmit, handleSearch } from './utils/historical_storm_utils.js';
+import {  handleClick, handleFormSubmit, handleSearch } from './historical_storm_utils.js';
+import { RenderSearchResult } from './render_search_result.js';
+import { renderRecentStorms } from './render_recent_storms.js';
 
 
 const otherStormList = [

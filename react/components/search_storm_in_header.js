@@ -1,4 +1,4 @@
-import { handleSearch, handleFormSubmit } from "./historical_storm_list";
+import { handleSearch, handleFormSubmit } from "./historical_storm/historical_storm_list";
 import { IconButton, TextField, Box, Typography, Paper } from "@mui/material";
 import Search from "@mui/icons-material/Search";
 import { useEffect, useState } from 'react';
