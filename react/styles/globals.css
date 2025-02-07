@@ -518,9 +518,50 @@ footer {
   background-color: white;
   border-radius: 4px;
   color: #e55162;
+
 }
 
 #filter-icon:hover{
+  background-color: #e55162;
+  color: white;
+}
+#cancel-filter-icon{
+  background-color: white;
+  color: #e55162;
+  font-size: 20px;
+  min-width: 0px;
+  font-weight: bold;
+  width: 35px;
+
+}
+
+
+
+.filter-icons-list{
+  z-index: 6999;
+  top: 84px;
+  right: 11px;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  
+
+}
+
+
+.filter-icons{
+  background-color: white;
+  border-radius: 15px;
+  color: #e55162;
+  height: 35px;
+  font-size: 12px;
+  min-width: 0px;
+  padding: 6px;
+  border: 1px solid #e55162;
+  text-transform: none;
+}
+
+.filter-icons:hover{
   background-color: #e55162;
   color: white;
 }
