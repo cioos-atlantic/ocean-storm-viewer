@@ -593,3 +593,36 @@ footer {
 .filter-badge-icon{
   color:#e55162
 }
+.filter-group {
+  position: relative;
+  display: inline-block;  /* Keeps badges inline */
+}
+
+.filter-dropdown-menu {
+  position: absolute;
+  top: 100%;           /* Positions it directly below the button */
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 9024;
+  width: 100%;
+  border-radius: 8px;
+  padding: 10px;
+  
+}
+
+.filter-dropdown-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.filter-dropdown-menu li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.filter-dropdown-menu li:hover {
+  background-color: #f2f2f2;
+}

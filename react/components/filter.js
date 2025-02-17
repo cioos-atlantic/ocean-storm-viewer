@@ -24,6 +24,8 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CategoryIcon from '@mui/icons-material/Category';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 
 
@@ -41,13 +43,15 @@ const MenuProps = {
 const filters = [
   { 
     "name":'Year',
-    "option":[1996,1995,1998,1991,1990,1997],
-    'icon':<CalendarMonthOutlinedIcon className="filter-badge-icon"/>
+    "options":[1996,1995,1998,1991,1990,1997],
+    'icon':<CalendarMonthOutlinedIcon className="filter-badge-icon"/>,
+    
   },
   { 
     "name":'Storm Category',
-    "option":["Cat 1","Cat 2","Cat 3"],
-    'icon':<CategoryOutlinedIcon className="filter-badge-icon"/>
+    "options":["Cat 1","Cat 2","Cat 3"],
+    'icon':<CategoryOutlinedIcon className="filter-badge-icon"/>,
+    
   }
 
 ]
@@ -58,7 +62,7 @@ const closeOptionsArrow = <KeyboardDoubleArrowUpIcon/>;
 
 export function RenderFilter(){
   const [showFilterIcons, setShowFilterIcons] = useState(false); 
-  const [showFilterOptions, setShowFilterOptions] = useState(false); 
+  const [showFilterOptions, setShowFilterOptions] = useState({}); 
 
   function handleClick(){
     setShowFilterIcons((prev) => !prev); // Toggle form visibility
@@ -113,12 +117,15 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
               {/*<CheckboxesTags
               filterName={filter.name}
               options={filter.option}/>*/}
+              <div className="filter-group" key={index}>
 
               <Badges
               filter={filter}
               showFilterOptions={showFilterOptions}
               setShowFilterOptions={setShowFilterOptions}
               />
+
+              </div>
 
             </>
 
@@ -238,27 +245,76 @@ export function CheckboxesTags({filterName, options}) {
 }
 
 export function Badges({ filter, showFilterOptions, setShowFilterOptions}){
+  const [selectedOptions, setSelectedOptions] = useState([]); // State to keep track of selected options
+  const handleCheckboxChange = (option) => {
+    setSelectedOptions((prev) =>
+      prev.includes(option)
+        ? prev.filter((item) => item !== option) // Remove if already selected
+        : [...prev, option] // Add if not selected
+    );
+  };
+
+  function handleSubmit(e, name, )  {
+    e.preventDefault(); // Prevent default form submission behavior
+    console.log({[name]: selectedOptions}); // Log selected options
+  };
+  
   return(
     <>
     <Button
     className="filter-badge"
     onClick= {() => {
-      setShowFilterOptions(true)
-     }}>
-      {filter.icon}
+      setShowFilterOptions((prev) => ({
+        ...prev,
+        [filter.name]: !prev[filter.name],
+      }));
+     }}
+    startIcon={filter.icon}
+    endIcon={ !showFilterOptions[filter.name] ? (showOptionsArrow):(closeOptionsArrow)}>
+      
       {filter.name}
-      { !showFilterOptions ? (showOptionsArrow):(closeOptionsArrow)}
+      
+      {console.log(showFilterOptions)}
 
     </Button>
 
+    {showFilterOptions[filter.name] && (
+      <Box className="filter-dropdown-menu">
+        <FormGroup fullWidth>
+          <Box
+            
+            id="demo-simple-select"
+            value={filter.name}
+            
+          >
 
+            {filter.options.map((option, optIndex) => (
+
+              <FormControlLabel 
+                //onSubmit={console.log(selectedOptions)}
+                control={<Checkbox 
+                            defaultChecked 
+                            checked={selectedOptions.includes(option)}
+                            onChange={() => handleCheckboxChange(option)}
+                            sx= {{color:"#e55162",
+                                  '&.Mui-checked': {
+                                            color: 'grey',
+                                            }}}/>}
+                label={option}/>
+            ))}
+          </Box>
+          <Button type="summit" onClick={(e) =>{handleSubmit(e, filter.name)}}>Summit</Button>
+      </FormGroup>
+
+        
+        {console.log(filter.options)}
+        
+      </Box>
+    )}
+
+  </>
     
-
-
-</>
   )
+
 };
 
-function handleDropDown(filter){
-
-}
