@@ -26,6 +26,7 @@ import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { RenderDateFilter } from "./dateFilter";
 
 
 
@@ -100,6 +101,7 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
     direction="row"
     spacing={0.1}
     className='filter-icons-list'>
+
       
       {
         filters.map((filter, index) => {
@@ -118,12 +120,17 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
               filterName={filter.name}
               options={filter.option}/>*/}
               <div className="filter-group" key={index}>
+                <RenderDateFilter
+                showOptionsArrow={showOptionsArrow}
+                closeOptionsArrow={closeOptionsArrow}
+                filter={filter}
+                />
 
-              <Badges
-              filter={filter}
-              showFilterOptions={showFilterOptions}
-              setShowFilterOptions={setShowFilterOptions}
-              />
+                <Badges
+                filter={filter}
+                showFilterOptions={showFilterOptions}
+                setShowFilterOptions={setShowFilterOptions}
+                />
 
               </div>
 

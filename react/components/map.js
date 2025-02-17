@@ -19,7 +19,7 @@ import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
 import { empty_station_obj } from "./layout";
 import StationDashboard from "./station_dashboard/station_dashboard";
 import { RenderStormSearch } from "./render_storm_search";
-import { RenderFilter } from "./filter";
+import { RenderFilter } from "./Filter/filter";
 //import StationDashboardTest from "./station_dashboard/station_dashboard";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
