@@ -17,6 +17,14 @@ import Checkbox from '@mui/material/Checkbox';
 import Autocomplete from '@mui/material/Autocomplete';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import Avatar from '@mui/material/Avatar';
+import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import CategoryIcon from '@mui/icons-material/Category';
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+
 
 
 const ITEM_HEIGHT = 35;
@@ -34,24 +42,26 @@ const filters = [
   { 
     "name":'Year',
     "option":[1996,1995,1998,1991,1990,1997],
+    'icon':<CalendarMonthOutlinedIcon className="filter-badge-icon"/>
   },
   { 
     "name":'Storm Category',
     "option":["Cat 1","Cat 2","Cat 3"],
-  },
-  { 
-    "name":'Bounding Box',
-    "option":[1996,1995,1998],
-  },
-
+    'icon':<CategoryOutlinedIcon className="filter-badge-icon"/>
+  }
 
 ]
 
+const showOptionsArrow = <KeyboardDoubleArrowDownIcon/>; 
+const closeOptionsArrow = <KeyboardDoubleArrowUpIcon/>;
+
+
 export function RenderFilter(){
-  const [showFilterIcons, setShowfilterIcons] = useState(false); 
+  const [showFilterIcons, setShowFilterIcons] = useState(false); 
+  const [showFilterOptions, setShowFilterOptions] = useState(false); 
 
   function handleClick(){
-    setShowfilterIcons((prev) => !prev); // Toggle form visibility
+    setShowFilterIcons((prev) => !prev); // Toggle form visibility
   };
 
   return(
@@ -69,7 +79,9 @@ export function RenderFilter(){
       }
       {showFilterIcons && (
         <FilterIcons
-        setShowfilterIcons = {setShowfilterIcons}
+        setShowFilterIcons = {setShowFilterIcons}
+        showFilterOptions={showFilterOptions}
+        setShowFilterOptions={setShowFilterOptions}
         
         />
       )}
@@ -77,7 +89,7 @@ export function RenderFilter(){
   )
 }
 
-function FilterIcons({setShowfilterIcons}){
+function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOptions}){
   return(
     <>
     <Stack
@@ -94,13 +106,19 @@ function FilterIcons({setShowfilterIcons}){
               /> */}
 
               
-              <MultipleSelectChip
+              {/*<MultipleSelectChip
               filterName={filter.name}
-              options={filter.option}/> 
+              options={filter.option}/> */}
 
               {/*<CheckboxesTags
               filterName={filter.name}
               options={filter.option}/>*/}
+
+              <Badges
+              filter={filter}
+              showFilterOptions={showFilterOptions}
+              setShowFilterOptions={setShowFilterOptions}
+              />
 
             </>
 
@@ -113,7 +131,7 @@ function FilterIcons({setShowfilterIcons}){
       <Button
         id="cancel-filter-icon"
         className="filter-icons"
-        onClick={() => {setShowfilterIcons(false)}}>
+        onClick={() => {setShowFilterIcons(false)}}>
         X
       </Button> 
 
@@ -217,4 +235,30 @@ export function CheckboxesTags({filterName, options}) {
       )}
     />
   );
+}
+
+export function Badges({ filter, showFilterOptions, setShowFilterOptions}){
+  return(
+    <>
+    <Button
+    className="filter-badge"
+    onClick= {() => {
+      setShowFilterOptions(true)
+     }}>
+      {filter.icon}
+      {filter.name}
+      { !showFilterOptions ? (showOptionsArrow):(closeOptionsArrow)}
+
+    </Button>
+
+
+    
+
+
+</>
+  )
+};
+
+function handleDropDown(filter){
+
 }
