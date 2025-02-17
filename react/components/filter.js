@@ -33,7 +33,7 @@ const MenuProps = {
 const filters = [
   { 
     "name":'Year',
-    "option":[1996,1995,1998],
+    "option":[1996,1995,1998,1991,1990,1997],
   },
   { 
     "name":'Storm Category',
@@ -82,15 +82,9 @@ function FilterIcons({setShowfilterIcons}){
     <>
     <Stack
     direction="row"
-    spacing={0.5}
+    spacing={0.1}
     className='filter-icons-list'>
-      <Button
-      id="cancel-filter-icon"
-      className="filter-icons"
-      onClick={() => {setShowfilterIcons(false)}}>
-      X
-    </Button> 
-
+      
       {
         filters.map((filter, index) => {
           return(
@@ -98,13 +92,15 @@ function FilterIcons({setShowfilterIcons}){
               <Chip icon={<FilterListIcon />} label={filter.name}
               className="filter-icons"
               /> */}
+
+              
               <MultipleSelectChip
               filterName={filter.name}
-              options={filter.option}/>
+              options={filter.option}/> 
 
-              <CheckboxesTags
+              {/*<CheckboxesTags
               filterName={filter.name}
-              options={filter.option}/>
+              options={filter.option}/>*/}
 
             </>
 
@@ -114,10 +110,12 @@ function FilterIcons({setShowfilterIcons}){
         })
       }
 
-      {}
-      
-      
-
+      <Button
+        id="cancel-filter-icon"
+        className="filter-icons"
+        onClick={() => {setShowfilterIcons(false)}}>
+        X
+      </Button> 
 
 
     </Stack>
@@ -154,7 +152,7 @@ export  function MultipleSelectChip({filterName, options}) {
           onChange={handleChange}
           input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
           renderValue={(selected) => (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.1 }}>
               {selected.map((value) => (
                 <Chip key={value} label={value} />
               ))}
@@ -192,7 +190,7 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export function CheckboxesTags({filterName, options}) {
   return (
     <Autocomplete
-      sx={{paddingRight: '25px'}}
+      sx={{paddingRight: '6px'}}
   
       multiple
       id="checkboxes-tags-demo"
@@ -206,7 +204,7 @@ export function CheckboxesTags({filterName, options}) {
             <Checkbox
               icon={icon}
               checkedIcon={checkedIcon}
-              style={{ marginRight: 8 }}
+              style={{ marginRight: 4 }}
               checked={selected}
             />
             {options}

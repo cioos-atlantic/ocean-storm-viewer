@@ -108,7 +108,7 @@ footer {
 
 /* Leaflet Control Position Adjustments */
 .leaflet-control-container .leaflet-top {
-  top: 165px; /* Adjust top to avoid overlapping header */
+  top: 215px; /* Adjust top to avoid overlapping header */
 }
 
 .leaflet-control-container .leaflet-bottom {
@@ -436,7 +436,7 @@ footer {
 
 .search-icon-small-screen{
   z-index: 6999;
-  top: 125px;
+  top: 175px;
   right: 11px;
   position: absolute;
   background-color: white;
@@ -451,26 +451,36 @@ footer {
   color: white;
 }
 
-#close-search-icon-small-screen{
+.search-render{
+  top: 155px;
   z-index: 6999;
-  top: 125px;
-  right: 216px;
   position: absolute;
+  right: 11px;
+  padding: 0;
+  height: 32px;
+
+}
+
+.search-form{
+  width: 200px;
+}
+
+.close-search-icon-small-screen{
+  right: 40px;
   color: white;
   font-size: large;
-  padding: 0;
   cursor: pointer;
   border-radius: 30px;
   background-color: #e55162;
-  height: 32px;
   width: 32px;
   min-width: 30px;
+  height: 32px;
   
   /*border: 1.8px solid rgba(155, 146, 146, 0.829); */
 
 }
 
-#close-search-icon-small-screen:hover{
+.close-search-icon-small-screen:hover{
   background-color: transparent;
   color: #e55162;
 }
@@ -482,10 +492,6 @@ footer {
 
 .small_screen-storm_search_form{
   background-color: transparent;
-  z-index: 6999;
-  top: 125px;
-  right: 11px;
-  position: absolute;
   border-radius: 4px;
   width: 200px;
 
@@ -512,7 +518,7 @@ footer {
 
 #filter-icon{
   z-index: 6999;
-  top: 75px;
+  top: 125px;
   right: 11px;
   position: absolute;
   background-color: white;
@@ -539,8 +545,8 @@ footer {
 
 .filter-icons-list{
   z-index: 6999;
-  top: 84px;
-  right: 11px;
+  top: 65px;
+  right: 18px;
   position: absolute;
   justify-content: center;
   align-items: center;

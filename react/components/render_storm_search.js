@@ -67,15 +67,17 @@ function SearchForm({setIsSearchSubmitted, setIsDrawerOpen, isSearchSubmitted, s
   
 
   return(
-    <>
+    <Box className='search-render'>
       <Button
-      id="close-search-icon-small-screen"
-      onClick={() => {setShowSearchForm(false)}}>
+      className="close-search-icon-small-screen"
+      onClick={() => {setShowSearchForm(false)}}
+      aria-label="Close Search">
       X
       </Button>   
-      <Box className='small_screen-storm_search_form'>
+      
       <form 
-        onSubmit={handleSubmit}>
+        onSubmit={handleSubmit}
+        className='search-form'>
           <input type="text" 
             className="storm_search_input" 
             name="historical_storm_search"
@@ -86,17 +88,18 @@ function SearchForm({setIsSearchSubmitted, setIsDrawerOpen, isSearchSubmitted, s
               {setIsSearchSubmitted(false)
                 //setShowSearchForm(false)
               }}/>
-          <IconButton type="submit" aria-label='search' className="small-screen-form-search-button">
+          <IconButton type="submit" aria-label='search' className="small-screen-form-search-button"
+          >
             <Search/>
           </IconButton>
         </form>
         
         
-      </Box>
+      
      
         
 
-    </>
+    </Box>
           
       
 
