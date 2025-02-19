@@ -27,6 +27,7 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { RenderDateFilter } from "./dateFilter";
+import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
 
 
 
@@ -64,6 +65,7 @@ const closeOptionsArrow = <KeyboardDoubleArrowUpIcon/>;
 export function RenderFilter(){
   const [showFilterIcons, setShowFilterIcons] = useState(false); 
   const [showFilterOptions, setShowFilterOptions] = useState({}); 
+  const [selectedOptions, setSelectedOptions] = useState([]); // State to keep
 
   function handleClick(){
     setShowFilterIcons((prev) => !prev); // Toggle form visibility
@@ -72,7 +74,7 @@ export function RenderFilter(){
   return(
     <>
       {!showFilterIcons &&
-        (<IconButton  aria-label='search'
+        (<IconButton  aria-label='filter'
       id='filter-icon'
       onClick={() => handleClick()}>
         <FilterAltIcon
@@ -87,6 +89,9 @@ export function RenderFilter(){
         setShowFilterIcons = {setShowFilterIcons}
         showFilterOptions={showFilterOptions}
         setShowFilterOptions={setShowFilterOptions}
+        setSelectedOptions={setSelectedOptions}
+        selectedOptions={selectedOptions}
+
         
         />
       )}
@@ -94,7 +99,11 @@ export function RenderFilter(){
   )
 }
 
-function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOptions}){
+function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions}){
+  function handleFilterSubmit(){
+    console.log(selectedOptions)
+  }
+
   return(
     <>
     <Stack
@@ -102,52 +111,51 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
     spacing={0.1}
     className='filter-icons-list'>
 
+      <div className="filter-group">
+        <RenderDateFilter
+          showOptionsArrow={showOptionsArrow}
+          closeOptionsArrow={closeOptionsArrow}
+          setSelectedOptions={setSelectedOptions}
+        />
+
+      </div>
+
       
       {
         filters.map((filter, index) => {
           return(
-            <>{/* 
-              <Chip icon={<FilterListIcon />} label={filter.name}
-              className="filter-icons"
-              /> */}
 
-              
-              {/*<MultipleSelectChip
-              filterName={filter.name}
-              options={filter.option}/> */}
+            <div className="filter-group" key={index}>
+  
 
-              {/*<CheckboxesTags
-              filterName={filter.name}
-              options={filter.option}/>*/}
-              <div className="filter-group" key={index}>
-                <RenderDateFilter
-                showOptionsArrow={showOptionsArrow}
-                closeOptionsArrow={closeOptionsArrow}
-                filter={filter}
-                />
+              <Badges
+              filter={filter}
+              showFilterOptions={showFilterOptions}
+              setShowFilterOptions={setShowFilterOptions}
+              setSelectedOptions={setSelectedOptions}
+              selectedOptions={selectedOptions}
+              />
 
-                <Badges
-                filter={filter}
-                showFilterOptions={showFilterOptions}
-                setShowFilterOptions={setShowFilterOptions}
-                />
+            </div>
 
-              </div>
-
-            </>
-
-            
 
           )
         })
       }
 
       <Button
+        className="filter-submit-button"
+        onClick={() => {handleFilterSubmit}}
+        startIcon={<PublishRoundedIcon/>}>
+        Submit
+      </Button>
+      <Button
         id="cancel-filter-icon"
         className="filter-icons"
         onClick={() => {setShowFilterIcons(false)}}>
         X
       </Button> 
+       
 
 
     </Stack>
@@ -159,111 +167,33 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
   
 }
 
-export  function MultipleSelectChip({filterName, options}) {
-  const [selectedOption, setSelectedOption] = useState([]);
-
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setSelectedOption(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    );
-  };
-
-  return (
-    <div>
-      <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="demo-multiple-chip-label">{filterName}</InputLabel>
-        <Select
-          labelId="demo-multiple-chip-label"
-          id="demo-multiple-chip"
-          multiple
-          value={selectedOption}
-          onChange={handleChange}
-          input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-          renderValue={(selected) => (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.1 }}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} />
-              ))}
-            </Box>
-          )}
-          MenuProps={MenuProps}
-        >
-          {options.map((option) => (
-            <MenuItem
-              key={option}
-              value={option}
-              style={getStyles(option, selectedOption)}
-            >
-              {option}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </div>
-  );
-}
-function getStyles(option, selectedOption) {
-  return {
-    fontWeight: selectedOption.includes(option)
-      ? 'bold'
-      : 'normal',
-  };
-}
 
 
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
-
-
-export function CheckboxesTags({filterName, options}) {
-  return (
-    <Autocomplete
-      sx={{paddingRight: '6px'}}
-  
-      multiple
-      id="checkboxes-tags-demo"
-      options={options}
-      disableCloseOnSelect
-      getOptionLabel={(options) => options}
-      renderOption={(props, options, { selected }) => {
-        const { key, ...optionProps } = props;
-        return (
-          <li key={key} {...optionProps}>
-            <Checkbox
-              icon={icon}
-              checkedIcon={checkedIcon}
-              style={{ marginRight: 4 }}
-              checked={selected}
-            />
-            {options}
-          </li>
-        );
-      }}
-      style={{ width: 200 }}
-      renderInput={(params) => (
-        <TextField {...params} label={filterName} />
-      )}
-    />
-  );
-}
-
-export function Badges({ filter, showFilterOptions, setShowFilterOptions}){
-  const [selectedOptions, setSelectedOptions] = useState([]); // State to keep track of selected options
+export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions}){
+   
   const handleCheckboxChange = (option) => {
-    setSelectedOptions((prev) =>
-      prev.includes(option)
-        ? prev.filter((item) => item !== option) // Remove if already selected
-        : [...prev, option] // Add if not selected
-    );
+    setSelectedOptions((prev) => {
+      const currentOptions = prev[filter.name] || []; // Get current options for this filter
+      const isSelected = currentOptions.includes(option);
+  
+      // Toggle selection
+      const updatedOptions = isSelected
+        ? currentOptions.filter((item) => item !== option) // Remove if selected
+        : [...currentOptions, option];                    // Add if not selected
+  
+      return {
+        ...prev,
+        [filter.name]: updatedOptions // Set as name: options
+      };
+    });
   };
 
-  function handleSubmit(e, name, )  {
-    e.preventDefault(); // Prevent default form submission behavior
-    console.log({[name]: selectedOptions}); // Log selected options
+  function handleClear(name)  {
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [name]: [] // Clear the options for the specific filter name
+    }));
+    console.log({ [name]: [] }); // Log the cleared options
   };
   
   return(
@@ -286,37 +216,40 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions}){
     </Button>
 
     {showFilterOptions[filter.name] && (
-      <Box className="filter-dropdown-menu">
-        <FormGroup fullWidth>
-          <Box
-            
-            id="demo-simple-select"
-            value={filter.name}
-            
-          >
+      <Paper className="filter-dropdown-menu">
 
-            {filter.options.map((option, optIndex) => (
+        <Stack
+        direction="column"
+        spacing={1}>
+          {filter.options.map((option, optIndex) => {
+            return(
+              <FormControlLabel
+                key={optIndex}
+                label={option}
+                control={
+                  <Checkbox        
+                    checked={selectedOptions[filter.name]?.includes(option) || false}
+                    onChange={() => handleCheckboxChange(option)}
+                    sx= {{color:"#e55162",
+                          '&.Mui-checked': {color: 'grey',
+                        }}}
+                  />
+                }
+              />
+            )
+          })}
 
-              <FormControlLabel 
-                //onSubmit={console.log(selectedOptions)}
-                control={<Checkbox 
-                            defaultChecked 
-                            checked={selectedOptions.includes(option)}
-                            onChange={() => handleCheckboxChange(option)}
-                            sx= {{color:"#e55162",
-                                  '&.Mui-checked': {
-                                            color: 'grey',
-                                            }}}/>}
-                label={option}/>
-            ))}
-          </Box>
-          <Button type="summit" onClick={(e) =>{handleSubmit(e, filter.name)}}>Summit</Button>
-      </FormGroup>
+            <Button  onClick={() =>{handleClear(filter.name)}}
+            className="filter-submit-button">Clear</Button>
 
+        </Stack>
         
+        
+
+        {console.log(selectedOptions)}
         {console.log(filter.options)}
         
-      </Box>
+      </Paper>
     )}
 
   </>
