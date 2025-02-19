@@ -132,10 +132,12 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
      sx={{
       position: 'absolute',
       top: '100%',
-      width: '350px',
-            
+      width: '340px',
+      padding: '6px',
+
      }}>
-      <CardContent>
+      <CardContent
+      className='date-card-content'>
       <Box>
             {shortcutsItems.map((shortcut, indx) => {
               return(
@@ -149,7 +151,9 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
             })}
           </Box>
       </CardContent>
-      <CardContent>
+      <CardContent
+      className='date-card-content'>
+        
         <LocalizationProvider dateAdapter={AdapterDayjs}>
 
           <DatePicker 
@@ -157,16 +161,57 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
             label='Start Date' 
             className='filter-time-input'
             value={startDate}
-            onChange={(newDate) => setStartDate(newDate)}/>
+            onChange={(newDate) => setStartDate(newDate)}
+            slotProps={{
+              textField: {
+                sx: { 
+                  color: '#e55162', // Change text color
+                  '& label': { color: '#e55162' }, // Change label color
+                  //'& input': { color: 'black' }, // Change input text color
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': { borderColor: '#e55162' }, // Default border color
+                    '&:hover fieldset': { borderColor: '#d43b50' }, // Hover effect
+                    '&.Mui-focused fieldset': { borderColor: '#a32e3b' }, // Focused border color
+                  },
+                },
+              },
+              openPickerIcon: {
+                sx: {
+                  color: '#e55162', // Change icon color
+                  '&:hover': { color: '#d43b50' }, // Change color on hover
+                },
+              },
+            }}/>
           <DatePicker 
             defaultValue={dayjs()} 
             label='End Date' 
             className='filter-time-input'
             value={endDate}
-            onChange={(newDate) => setEndDate(newDate)} />
+            onChange={(newDate) => setEndDate(newDate)}
+            slotProps={{
+              textField: {
+                sx: { 
+                  color: '#e55162', // Change text color
+                  '& label': { color: '#e55162' }, // Change label color
+                  //'& input': { color: '#e55162' }, // Change input text color
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': { borderColor: '#e55162' }, // Default border color
+                    '&:hover fieldset': { borderColor: '#d43b50' }, // Hover effect
+                    '&.Mui-focused fieldset': { borderColor: '#a32e3b' }, // Focused border color
+                  },
+                },
+              },
+              openPickerIcon: {
+                sx: {
+                  color: '#e55162', // Change icon color
+                  '&:hover': { color: '#d43b50' }, // Change color on hover
+                },
+              },
+            }} />
         </LocalizationProvider>
       </CardContent>
-      <CardContent>
+      <CardContent
+      className='date-card-content'>
         <RangeSlider
           startDate={startDate}
           endDate={endDate}
@@ -174,15 +219,25 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
           setEndDate={setEndDate}/>
       </CardContent>
 
-      <CardActions>
-        <Button 
-          size="small"
-          className='filter-submit-button'
-          onClick={() => {
-            setStartDate(dayjs().startOf('year'));
-            setEndDate(dayjs().endOf('year'));
-          }}>Clear</Button>
-        <Button size="small" className='filter-submit-button' onClick={()=> {setShowDateSelection(false)}}>Close</Button>
+      <CardActions
+      className='date-card-content'>
+        <Box 
+          sx={{ display: 'flex', justifyContent: 'center', gap: '2px', width: '100%' }}>
+            <Button 
+              size="small"
+              className='filter-submit-button'
+              onClick={() => {
+                setStartDate(null); // Reset to empty string
+                setEndDate(null);   // Reset to empty string
+              }}>Clear</Button>
+            <Button 
+              size="small" 
+              className='filter-submit-button' 
+              onClick={()=> {setShowDateSelection(false)}}>Close</Button>
+
+
+        </Box>
+        
         
 
       </CardActions>
@@ -201,11 +256,10 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
 
 
 export function RangeSlider({ startDate, endDate, setStartDate, setEndDate }) {
-  const [value, setValue] = useState([startDate.year(), endDate.year()]);
-
-  useEffect(() => {
-    setValue([startDate.year(), endDate.year()]);
-  }, [startDate, endDate]);
+  const currentYear = dayjs().year();
+  
+  // Independent state for the slider's range
+  const [value, setValue] = useState([1960, currentYear]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -225,12 +279,12 @@ export function RangeSlider({ startDate, endDate, setStartDate, setEndDate }) {
         value={value}
         onChange={handleChange}
         valueLabelDisplay="auto"
-        min={1900}
-        max={dayjs().year()}
+        min={1960}
+        max={currentYear}
         marks={[
-          { value: 1900, label: '1900' },
-          { value: 1940, label: '1940' },
+          { value: 1960, label: '1960' },
           { value: 1980, label: '1980' },
+          { value: 2000, label: '2000' },
           { value: 2020, label: '2020' },
           
         ]}

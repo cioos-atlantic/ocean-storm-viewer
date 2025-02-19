@@ -45,12 +45,7 @@ const MenuProps = {
 };
 
 const filters = [
-  { 
-    "name":'Year',
-    "options":[1996,1995,1998,1991,1990,1997],
-    'icon':<CalendarMonthOutlinedIcon className="filter-badge-icon"/>,
-    
-  },
+  
   { 
     "name":'Storm Category',
     "options":["Cat 1","Cat 2","Cat 3"],
@@ -69,8 +64,8 @@ export function RenderFilter(){
   const [showFilterOptions, setShowFilterOptions] = useState({}); 
   const [selectedOptions, setSelectedOptions] = useState([]); 
   const [filterParameters, setFilterParameters] = useState([]); 
-  const [startDate, setStartDate] = useState(dayjs().startOf('year'));
-  const [endDate, setEndDate] = useState(dayjs().endOf('year'));
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
 
   function handleClick(){
@@ -246,27 +241,45 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
 
         <Stack
         direction="column"
+        sx={{
+          padding: '5px',
+        }}
         spacing={1}>
           {filter.options.map((option, optIndex) => {
             return(
               <FormControlLabel
+                
                 key={optIndex}
-                label={option}
+                label={<Typography sx={{ fontSize: '12px' }}>
+                          {option}
+                        </Typography>}
                 control={
                   <Checkbox        
                     checked={selectedOptions[filter.name]?.includes(option) || false}
                     onChange={() => handleCheckboxChange(option)}
                     sx= {{color:"#e55162",
-                          '&.Mui-checked': {color: 'grey',
-                        }}}
+                          '&.Mui-checked': {color: 'grey',}
+                        
+
+                      
+                      
+                      }}
+
                   />
                 }
               />
             )
           })}
 
-            <Button  onClick={() =>{handleClear(filter.name)}}
-            className="filter-submit-button">Clear</Button>
+          <Box 
+            sx={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
+                <Button 
+                  onClick={() => handleClear(filter.name)} 
+                  className="filter-submit-button"
+                >
+                  Clear
+                </Button>
+          </Box>
 
         </Stack>
         

@@ -651,12 +651,10 @@ footer {
   border: 1px solid #e55162;
   color: #e55162;
   margin: 0.8px;
+  padding: 10px;
   text-align: center;
   cursor: pointer;
-  align-items: center;
-  justify-content: center;
   position: relative;
-  display: inline-flex;
   max-width: 60%;
   font-size: 0.8125rem;
   height: 32px;
@@ -674,4 +672,10 @@ footer {
 
 .MuiPickersPopper-root {
   z-index: 9999 !important; /* Ensure it appears above other elements */
+}
+
+
+.date-card-content{
+  padding: 9px;
+  text-align: center;
 }
