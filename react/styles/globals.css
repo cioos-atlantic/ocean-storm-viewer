@@ -670,3 +670,8 @@ footer {
   color: #e55162;
   width: 150px
 }
+
+
+.MuiPickersPopper-root {
+  z-index: 9999 !important; /* Ensure it appears above other elements */
+}

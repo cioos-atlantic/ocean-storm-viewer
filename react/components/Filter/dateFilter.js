@@ -132,7 +132,8 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
      sx={{
       position: 'absolute',
       top: '100%',
-      width: '350px'      
+      width: '350px',
+            
      }}>
       <CardContent>
       <Box>
