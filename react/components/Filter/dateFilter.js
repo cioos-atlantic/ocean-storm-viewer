@@ -35,14 +35,7 @@ const shortcutsItems = [
       return [today.startOf('week'), today.endOf('week')];
     },
   },
-  {
-    label: 'Last Week',
-    getValue: () => {
-      const today = dayjs();
-      const prevWeek = today.subtract(7, 'day');
-      return [prevWeek.startOf('week'), prevWeek.endOf('week')];
-    },
-  },
+  
   {
     label: 'Last 7 Days',
     getValue: () => {
@@ -57,6 +50,28 @@ const shortcutsItems = [
       return [today.startOf('month'), today.endOf('month')];
     },
   },
+  {
+    label: 'Last 30 Days',
+    getValue: () => {
+      const today = dayjs();
+      return [today.subtract(30, 'day'), today];
+    },
+  },
+  {
+    label: 'Last 1 year',
+    getValue: () => {
+      const today = dayjs();
+      return [today.subtract(1, 'year'), today];
+    },
+  },
+  {
+    label: 'Last Decade',
+    getValue: () => {
+      const today = dayjs();
+      return [today.subtract(10, 'year'), today];
+    },
+  },
+  
   
   
 ];
@@ -66,11 +81,9 @@ const reset= { label: 'Reset', getValue: () => [null, null] };
 
 
 
-export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelectedOption}){
+export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelectedOption, startDate, endDate,setStartDate, setEndDate}){
   const [showDateSelection, setShowDateSelection] = useState(false); 
-  const [startDate, setStartDate] = useState(dayjs().startOf('year'));
-  const [endDate, setEndDate] = useState(dayjs().endOf('year'));
-
+  
 
 
 

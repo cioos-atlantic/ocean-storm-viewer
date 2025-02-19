@@ -28,6 +28,8 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { RenderDateFilter } from "./dateFilter";
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
+import dayjs from 'dayjs';
+
 
 
 
@@ -65,7 +67,11 @@ const closeOptionsArrow = <KeyboardDoubleArrowUpIcon/>;
 export function RenderFilter(){
   const [showFilterIcons, setShowFilterIcons] = useState(false); 
   const [showFilterOptions, setShowFilterOptions] = useState({}); 
-  const [selectedOptions, setSelectedOptions] = useState([]); // State to keep
+  const [selectedOptions, setSelectedOptions] = useState([]); 
+  const [filterParameters, setFilterParameters] = useState([]); 
+  const [startDate, setStartDate] = useState(dayjs().startOf('year'));
+  const [endDate, setEndDate] = useState(dayjs().endOf('year'));
+
 
   function handleClick(){
     setShowFilterIcons((prev) => !prev); // Toggle form visibility
@@ -91,6 +97,12 @@ export function RenderFilter(){
         setShowFilterOptions={setShowFilterOptions}
         setSelectedOptions={setSelectedOptions}
         selectedOptions={selectedOptions}
+        filterParameters={filterParameters}
+        setFilterParameters={setFilterParameters}
+        startDate={startDate}
+        endDate={endDate}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
 
         
         />
@@ -99,9 +111,19 @@ export function RenderFilter(){
   )
 }
 
-function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions}){
-  function handleFilterSubmit(){
-    console.log(selectedOptions)
+function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions, filterParameters, setFilterParameters, startDate, endDate,setStartDate, setEndDate,}){
+
+  function handleFilterSubmit() {
+    setFilterParameters((prev) => {
+      const updatedParams = {
+        ...prev,
+        ...selectedOptions, // Spread selected options correctly
+        startDate: startDate, // Ensure start and end dates are included
+        endDate: endDate
+      };
+      console.log(updatedParams); // Log the correct updated state
+      return updatedParams;
+    });
   }
 
   return(
@@ -116,6 +138,10 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
           showOptionsArrow={showOptionsArrow}
           closeOptionsArrow={closeOptionsArrow}
           setSelectedOptions={setSelectedOptions}
+          startDate={startDate}
+          endDate={endDate}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
         />
 
       </div>
@@ -145,7 +171,7 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
 
       <Button
         className="filter-submit-button"
-        onClick={() => {handleFilterSubmit}}
+        onClick={handleFilterSubmit}
         startIcon={<PublishRoundedIcon/>}>
         Submit
       </Button>
