@@ -8,24 +8,7 @@ import { IconButton, TextField, Box, Typography, Paper, Button, Stack, CardConte
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Slider from '@mui/material/Slider';
 
-const marks = [
-  {
-    value: 0,
-    label: '1900',
-  },
-  {
-    value: 20,
-    label: '1920',
-  },
-  {
-    value: 37,
-    label: '37°C',
-  },
-  {
-    value: 100,
-    label: '100°C',
-  },
-];
+
 
 const shortcutsItems = [
   {
@@ -83,6 +66,13 @@ const reset= { label: 'Reset', getValue: () => [null, null] };
 
 export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelectedOption, startDate, endDate,setStartDate, setEndDate}){
   const [showDateSelection, setShowDateSelection] = useState(false); 
+  const buttonStyle = {
+    backgroundColor: startDate && endDate && startDate.isValid() && endDate.isValid() ? '#e55162' : 'white',
+    color: startDate && endDate && startDate.isValid() && endDate.isValid() ? 'white' : '#e55162',
+    '&:hover': {
+      backgroundColor: startDate && endDate && startDate.isValid() && endDate.isValid() ? 'yellow' : '#bbb',
+    },
+  };
   
 
 
@@ -95,7 +85,8 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelect
       setShowDateSelection(prev => !prev)
      }}
     startIcon={<CalendarMonthOutlinedIcon/>}
-    endIcon={ !showDateSelection ? (showOptionsArrow):(closeOptionsArrow)}>
+    endIcon={ !showDateSelection ? (showOptionsArrow):(closeOptionsArrow)}
+    sx={buttonStyle}>
       
       Select Date Range
       
@@ -123,6 +114,26 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelect
 
 function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate, endDate}){
     // Update state when a shortcut is clicked
+  const slotProps={
+    textField: {
+      sx: { 
+        color: '#e55162', // Change text color
+        '& label': { color: '#e55162' }, // Change label color
+        //'& input': { color: '#e55162' }, // Change input text color
+        '& .MuiOutlinedInput-root': {
+          '& fieldset': { borderColor: '#e55162' }, // Default border color
+          '&:hover fieldset': { borderColor: '#d43b50' }, // Hover effect
+          '&.Mui-focused fieldset': { borderColor: '#a32e3b' }, // Focused border color
+        },
+      },
+    },
+    openPickerIcon: {
+      sx: {
+        color: '#e55162', // Change icon color
+        '&:hover': { color: '#d43b50' }, // Change color on hover
+      },
+    },
+    }
   const handleShortcutClick = (getValue) => {
     const [newStartDate, newEndDate] = getValue();    
     setStartDate(newStartDate);
@@ -161,53 +172,15 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
             label='Start Date' 
             className='filter-time-input'
             value={startDate}
-            onChange={(newDate) => setStartDate(newDate)}
-            slotProps={{
-              textField: {
-                sx: { 
-                  color: '#e55162', // Change text color
-                  '& label': { color: '#e55162' }, // Change label color
-                  //'& input': { color: 'black' }, // Change input text color
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': { borderColor: '#e55162' }, // Default border color
-                    '&:hover fieldset': { borderColor: '#d43b50' }, // Hover effect
-                    '&.Mui-focused fieldset': { borderColor: '#a32e3b' }, // Focused border color
-                  },
-                },
-              },
-              openPickerIcon: {
-                sx: {
-                  color: '#e55162', // Change icon color
-                  '&:hover': { color: '#d43b50' }, // Change color on hover
-                },
-              },
-            }}/>
+            onChange={setStartDate}
+            slotProps={slotProps}/>
           <DatePicker 
             defaultValue={dayjs()} 
             label='End Date' 
             className='filter-time-input'
             value={endDate}
-            onChange={(newDate) => setEndDate(newDate)}
-            slotProps={{
-              textField: {
-                sx: { 
-                  color: '#e55162', // Change text color
-                  '& label': { color: '#e55162' }, // Change label color
-                  //'& input': { color: '#e55162' }, // Change input text color
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': { borderColor: '#e55162' }, // Default border color
-                    '&:hover fieldset': { borderColor: '#d43b50' }, // Hover effect
-                    '&.Mui-focused fieldset': { borderColor: '#a32e3b' }, // Focused border color
-                  },
-                },
-              },
-              openPickerIcon: {
-                sx: {
-                  color: '#e55162', // Change icon color
-                  '&:hover': { color: '#d43b50' }, // Change color on hover
-                },
-              },
-            }} />
+            onChange={setEndDate}
+            slotProps={slotProps} />
         </LocalizationProvider>
       </CardContent>
       <CardContent

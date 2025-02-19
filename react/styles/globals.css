@@ -573,9 +573,9 @@ footer {
 }
 
 .filter-badge{
-  background-color: white;
+  
   border: 1px solid #e55162;
-  color: #e55162;
+  
   margin: 0.8px;
   cursor: pointer;
   align-items: center;
