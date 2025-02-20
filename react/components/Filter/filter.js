@@ -29,6 +29,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { RenderDateFilter } from "./dateFilter";
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
 import dayjs from 'dayjs';
+import { makeStormList } from "../historical_storm/historical_storm_utils";
+import { filters } from "@/components/Filter/filters_list";
 
 
 
@@ -44,16 +46,7 @@ const MenuProps = {
   },
 };
 
-const filters = [
-  
-  { 
-    "name":'Storm Category',
-    "options":["Cat 1","Cat 2","Cat 3"],
-    'icon':<CategoryOutlinedIcon />,
-    
-  }
 
-]
 
 const showOptionsArrow = <KeyboardDoubleArrowDownIcon/>; 
 const closeOptionsArrow = <KeyboardDoubleArrowUpIcon/>;
@@ -108,7 +101,7 @@ export function RenderFilter(){
 
 function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions, filterParameters, setFilterParameters, startDate, endDate,setStartDate, setEndDate,}){
 
-  function handleFilterSubmit() {
+  async function handleFilterSubmit() {
     setFilterParameters((prev) => {
       const updatedParams = {
         ...prev,
@@ -119,6 +112,10 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
       console.log(updatedParams); // Log the correct updated state
       return updatedParams;
     });
+
+    const stormResult = await processFilterRequest(filterParameters);
+    console.log(stormResult);
+
   }
 
   return(
@@ -203,12 +200,12 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
   const handleCheckboxChange = (option) => {
     setSelectedOptions((prev) => {
       const currentOptions = prev[filter.name] || []; // Get current options for this filter
-      const isSelected = currentOptions.includes(option);
+      const isSelected = currentOptions.includes(option.value);
   
       // Toggle selection
       const updatedOptions = isSelected
-        ? currentOptions.filter((item) => item !== option) // Remove if selected
-        : [...currentOptions, option];                    // Add if not selected
+        ? currentOptions.filter((item) => item !== option.value) // Remove if selected
+        : [...currentOptions, option.value];                    // Add if not selected
   
       return {
         ...prev,
@@ -260,11 +257,11 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
                 
                 key={optIndex}
                 label={<Typography sx={{ fontSize: '12px' }}>
-                          {option}
+                          {option.label}
                         </Typography>}
                 control={
                   <Checkbox        
-                    checked={selectedOptions[filter.name]?.includes(option) || false}
+                    checked={selectedOptions[filter.name]?.includes(option.value) || false}
                     onChange={() => handleCheckboxChange(option)}
                     sx= {{color:"#e55162",
                           '&.Mui-checked': {color: 'grey',}
@@ -306,16 +303,67 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
 
 };
 
-export function handleFilterSubmit(filterParameters){
+
+
+export async function processFilterRequest(filterParameters){
+  let uniqueList;
+  const stormCategory= formatStormCategory(filterParameters['stormCategory']);
+  const startDate = formatFilterDate(filterParameters['startDate']);
+  const endDate = formatFilterDate(filterParameters['endDate']);
+
+  console.log(stormCategory,startDate, endDate )
+
+
+
+  const query = new URLSearchParams({
+    storm_category: stormCategory, 
+    start_date: startDate,
+    end_date: endDate
+
+  }).toString();
+
+  console.log(query)
+  try {
+    const resource = await fetch(`/api/filter_storms?${query}`);
+    const storm_data = await resource.json();
+    //console.log(storm_data);
+
+    //const historical_storm_data = parseStormData(storm_data, storm.name);
+    // console.log(historical_station_data);
+
+    console.debug(`historical Storm Data for ${stormCategory} Between  ${startDate} and ${endDate}: `, storm_data);
+    // Create a set to track unique IDs and add objects to the result list
+    uniqueList = makeStormList(storm_data)
+    // Create a set to track unique IDs and add objects to the result list
+    
+
+    console.log(uniqueList);
+    if (uniqueList.length === 0) {
+      alert("No result found for this search, please try again...")
+    }
+      
+  
+  } catch (error) {
+    console.error('Error fetching storm or station data:', error);
+  }
+  return uniqueList
+
+
+
 
 }
 
-export function changeParametersFormat(filterParameters){
-
-
+export function formatFilterDate(date){
+  const formattedDate = date.format("YYYY-MM-DD").trim();
+  return formattedDate
 }
 
-const ibtracsName
+export function formatStormCategory(category_list){
+  const formattedCategoryList = category_list.join("_");
+  return formattedCategoryList;
+}
+
+
 
 
 
