@@ -49,7 +49,7 @@ const filters = [
   { 
     "name":'Storm Category',
     "options":["Cat 1","Cat 2","Cat 3"],
-    'icon':<CategoryOutlinedIcon className="filter-badge-icon"/>,
+    'icon':<CategoryOutlinedIcon />,
     
   }
 
@@ -191,6 +191,14 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
 
 
 export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions}){
+  const buttonStyle = {
+    backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#e55162' : 'white',
+    color: selectedOptions[filter.name]?.length > 0 ? 'white' : '#e55162',
+    '&:hover': {
+      backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#f1faee' : '#82ccdd', 
+      color: selectedOptions[filter.name]?.length > 0 ? 'black' : 'black',
+    },
+  };
    
   const handleCheckboxChange = (option) => {
     setSelectedOptions((prev) => {
@@ -228,7 +236,8 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
       }));
      }}
     startIcon={filter.icon}
-    endIcon={ !showFilterOptions[filter.name] ? (showOptionsArrow):(closeOptionsArrow)}>
+    endIcon={ !showFilterOptions[filter.name] ? (showOptionsArrow):(closeOptionsArrow)}
+    sx={buttonStyle}>
       
       {filter.name}
       
@@ -296,4 +305,17 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
   )
 
 };
+
+export function handleFilterSubmit(filterParameters){
+
+}
+
+export function changeParametersFormat(filterParameters){
+
+
+}
+
+const ibtracsName
+
+
 
