@@ -306,6 +306,8 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
 
 
 export async function processFilterRequest(filterParameters){
+
+  console.log(filterParameters);
   let uniqueList;
   const stormCategory= formatStormCategory(filterParameters['stormCategory']);
   const startDate = formatFilterDate(filterParameters['startDate']);
@@ -355,10 +357,11 @@ export async function processFilterRequest(filterParameters){
 
 export function formatFilterDate(date){
   const formattedDate = date.format("YYYY-MM-DD").trim();
-  return formattedDate
+  return formattedDate;
 }
 
 export function formatStormCategory(category_list){
+  console.log(category_list);
   const formattedCategoryList = category_list.join("_");
   return formattedCategoryList;
 }
