@@ -59,6 +59,9 @@ export function RenderFilter(){
   const [filterParameters, setFilterParameters] = useState([]); 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [filterResult, setFilterResult] = useState({}); 
+  const [returnFilterResult, setReturnFilterResult] = (false)
+
 
 
   function handleClick(){
@@ -112,6 +115,7 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
       console.log(updatedParams); // Log the correct updated state
       return updatedParams;
     });
+    console.log(filterParameters);
 
     const stormResult = await processFilterRequest(filterParameters);
     console.log(stormResult);
