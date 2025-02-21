@@ -52,15 +52,14 @@ const showOptionsArrow = <KeyboardDoubleArrowDownIcon/>;
 const closeOptionsArrow = <KeyboardDoubleArrowUpIcon/>;
 
 
-export function RenderFilter(){
+export function RenderFilter(filterResult, setFilterResult, returnFilterResult, setReturnFilterResult ){
   const [showFilterIcons, setShowFilterIcons] = useState(false); 
   const [showFilterOptions, setShowFilterOptions] = useState({}); 
   const [selectedOptions, setSelectedOptions] = useState([]); 
   const [filterParameters, setFilterParameters] = useState([]); 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [filterResult, setFilterResult] = useState({}); 
-  const [returnFilterResult, setReturnFilterResult] = (false)
+  
 
 
 

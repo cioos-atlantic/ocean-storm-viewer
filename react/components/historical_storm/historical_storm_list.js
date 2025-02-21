@@ -30,7 +30,7 @@ const otherStormList = [
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult }) {
+export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult }) {
 
   
   const [stormList, setStormList] = useState([]);

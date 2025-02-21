@@ -37,6 +37,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   //const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isStormDetOpen, setIsStormDetOpen] = useState(false); 
   const [selected_station, setSelectedStation] = useState(empty_station_obj);
+  const [filterResult, setFilterResult] = useState({}); 
+  const [returnFilterResult, setReturnFilterResult] = (false)
 
   const allDatasetDescriptions = useDatasetDescriptions();
 
@@ -65,7 +67,11 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             isDrawerOpen= {isDrawerOpen}/>
         }
         {
-          <RenderFilter/>
+          <RenderFilter
+          filterResult = {filterResult}
+          setFilterResult = {setFilterResult}
+          returnFilterResult= {returnFilterResult}
+          setReturnFilterResult = {setReturnFilterResult}/>
         }
         
         {selected_station !== empty_station_obj && (
@@ -103,6 +109,10 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             setIsSearchSubmitted= {setIsSearchSubmitted}
             searchResult= {searchResult}
             setSearchResult={setSearchResult}
+            filterResult = {filterResult}
+            setFilterResult = {setFilterResult}
+            returnFilterResult= {returnFilterResult}
+            setReturnFilterResult = {setReturnFilterResult}
           />
 
           <TileLayer
