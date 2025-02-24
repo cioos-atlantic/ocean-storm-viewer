@@ -1,16 +1,28 @@
-import {windSpeedToKnots, windSpeedToKmh, tempToDegreeF, tempToDegreeC, pressureToKPa, pressureToInHg, windHeightToM, windHeightToFt} from './utils/unit_conversion.js'
+import {convert_unit_data, windSpeedToKmh, pressureToKPa} from './utils/unit_conversion.js'
 import Image from "next/image";
 import attributes from '../data/station/attributes.json'
 //TODO: Clean up
 
 
-export function formatCioosStations(data_obj, children, row_position){
+export function formatCioosStations(data_obj, children, row_position, isHistorical=false){
   // Get the data value in the specified column in the object's row
   let data_value = (column_name) => {
     if(!row_data[row_position]) return null
     const col_index = column_data.indexOf(column_name)
     return col_index > -1 ? row_data[row_position][col_index] : null
   }
+
+  let max_value = (column_name) => {
+    const col_index = column_data.indexOf(column_name)
+    return col_index > -1 ? Math.max.apply(Math, row_data.map(v => v[col_index])) :
+      null
+  }
+
+  let min_value = (column_name) => {
+    const col_index = column_data.indexOf(column_name)
+    return col_index > -1 ? Math.min.apply(Math, row_data.map(v => v[col_index])) :
+      null
+  } 
 
   // Conversion handling, but just in case
   let column_units = (column_name) => {
@@ -26,9 +38,22 @@ export function formatCioosStations(data_obj, children, row_position){
   //Possible to do this in a loop?
 
   const datetime = data_value('time')
-  children.push(<strong>{formatCioosDateTime(datetime)}</strong>)
+
+  if(isHistorical){
+    children.push(<strong>Data Period: </strong>)
+    children.push(<br></br>)
+    children.push(<span>{formatCioosDateTime(min_value('time'))} to </span>)
+    children.push(<span>{formatCioosDateTime(max_value('time'))}</span>)
+  }
+  else{
+    children.push(<strong>Last Updated: </strong>)
+    children.push(<span>{formatCioosDateTime(datetime)}</span>)
+  }
   children.push(<br></br>)
   children.push(<br></br>)
+  
+  const historic_prefix_max = isHistorical ? "Highest " : ""
+  const historic_prefix_min = isHistorical ? "Lowest " : ""
 
   const wind_from_direction = data_value('wind_from_direction')
   wind_from_direction ? (180 + parseInt(wind_from_direction)) % 360 : null
@@ -39,83 +64,77 @@ export function formatCioosStations(data_obj, children, row_position){
       style={{ transform: 'rotate(' + (wind_direction) + 'deg)' }}></Image>)
   }
   
-  const wind_speed = data_value('wind_speed')
+  const wind_speed = isHistorical ? max_value('wind_speed') : data_value('wind_speed') 
   if(wind_speed){
     wind_from_direction ? children.push(<br />) : null
     children.push()
-    /*wind_from_direction ? children.push(<Image className="wind_arrow" alt={wind_from_direction} src="arrow.svg" height={20} width={20} 
-      style={{ transform: 'rotate(' + (wind_from_direction) + 'deg)' }}></Image>) : null
-      */
-    const resultKmh = windSpeedToKmh(wind_speed)
-    const resultKnots = windSpeedToKnots(wind_speed)
-    children.push(<span title={attributes.wind_speed.definition}><strong>Wind Speed:  </strong>{resultKnots.value} {resultKnots.unit} ({resultKmh.value} {resultKmh.unit})</span>)}
+    const resultKmh = convert_unit_data(wind_speed, column_units('wind_speed'), 'km/h')
+    const resultKnots = convert_unit_data(wind_speed, column_units('wind_speed'), 'knots')
+    children.push(<span title={attributes.wind_speed.definition}><strong>{historic_prefix_max}Wind Speed:  </strong>{resultKmh.value} {resultKmh.unit} ({resultKnots.value} {resultKnots.unit})</span>)}
   
-  const wind_speed_of_gust = data_value('wind_speed_of_gust')
+  const wind_speed_of_gust = isHistorical ? max_value('wind_speed_of_gust') : data_value('wind_speed_of_gust')
   if(wind_speed_of_gust){
-    //wind_from_direction ? null : children.push(<strong>Wind Speed (gust):  </strong>)
-    const resultKmh = windSpeedToKmh(wind_speed_of_gust)
-    const resultKnots = windSpeedToKnots(wind_speed_of_gust)
+    const resultKmh = convert_unit_data(wind_speed_of_gust, column_units('wind_speed_of_gust'), 'km/h')
+    const resultKnots = convert_unit_data(wind_speed_of_gust, column_units('wind_speed_of_gust'), 'knots')
     children.push(<br />)
-    children.push(<span title={attributes.wind_speed_of_gust.definition}><strong>Gust Speed: </strong>{resultKnots.value} {resultKnots.unit} ({resultKmh.value} {resultKmh.unit})</span>)}
+    children.push(<span title={attributes.wind_speed_of_gust.definition}><strong>{historic_prefix_max}Gust Speed: </strong>{resultKmh.value} {resultKmh.unit} ({resultKnots.value} {resultKnots.unit})</span>)}
   
-  const air_temperature = data_value('air_temperature')
+  const air_temperature = isHistorical ? max_value('air_temperature') : data_value('air_temperature')
   if(air_temperature){
-    const resultDegreeF = tempToDegreeF(air_temperature)
-    //Should already be in Celsius may not need? Maybe good for formatting though
-    const resultDegreeC = tempToDegreeC(air_temperature)
+    const resultDegreeF = convert_unit_data(air_temperature, column_units('air_temperature'),'°F')
+    const resultDegreeC = convert_unit_data(air_temperature, column_units('air_temperature'),'°C')
     children.push(<br />)
-    children.push(<span title={attributes.air_temperature.definition}><strong>Temperature (Air):</strong> {resultDegreeC.value} {resultDegreeC.unit}   ({resultDegreeF.value} {resultDegreeF.unit})</span>)}
+    children.push(<span title={attributes.air_temperature.definition}><strong>{historic_prefix_max}Temperature (Air):</strong> {resultDegreeC.value} {resultDegreeC.unit}   ({resultDegreeF.value} {resultDegreeF.unit})</span>)}
 
-  const sea_surface_temperature = data_value('sea_surface_temperature')
+  const sea_surface_temperature = isHistorical ? max_value('sea_surface_temperature') : data_value('sea_surface_temperature')
   if(sea_surface_temperature){
-    //console.log(data_obj['wind_speed']);
-    const resultDegreeF = tempToDegreeF(sea_surface_temperature)
-    const resultDegreeC = tempToDegreeC(sea_surface_temperature)
+    const resultDegreeF = convert_unit_data(sea_surface_temperature, column_units('sea_surface_temperature'),'°F')
+    const resultDegreeC = convert_unit_data(sea_surface_temperature, column_units('sea_surface_temperature'),'°C')
     children.push(<br />)
-    children.push(<span title={attributes.sea_surface_temperature.definition}><strong>Temperature (Sea Surface):</strong> {resultDegreeC.value} {resultDegreeC.unit} ({resultDegreeF.value} {resultDegreeF.unit})</span>)}
+    children.push(<span title={attributes.sea_surface_temperature.definition}><strong>{historic_prefix_max}Temperature (Sea Surface):</strong> {resultDegreeC.value} {resultDegreeC.unit} ({resultDegreeF.value} {resultDegreeF.unit})</span>)}
 
-  const sea_surface_wave_maximum_height = data_value('sea_surface_wave_maximum_height')
-    if(sea_surface_wave_maximum_height){
-      //console.log(data_obj['wind_speed']);
-      const resultM = windHeightToM(sea_surface_wave_maximum_height)
-      const resultFt = windHeightToFt(sea_surface_wave_maximum_height)
-      children.push(<br />)
-      children.push(<span title={attributes.sea_surface_wave_maximum_height.definition}><strong>Wave Height (Max):</strong> {resultM.value} {resultM.unit} ({resultFt.value} {resultFt.unit})</span>)}
+  const sea_surface_wave_maximum_height = isHistorical ? max_value('sea_surface_wave_maximum_height') : data_value('sea_surface_wave_maximum_height')
+  if(sea_surface_wave_maximum_height){
+    const resultM = convert_unit_data(sea_surface_wave_maximum_height, column_units('sea_surface_wave_maximum_height'),'m')
+    const resultFt = convert_unit_data(sea_surface_wave_maximum_height, column_units('sea_surface_wave_maximum_height'),'ft')
+    children.push(<br />)
+    children.push(<span title={attributes.sea_surface_wave_maximum_height.definition}><strong>{historic_prefix_max}Wave Height (Max):</strong> {resultM.value} {resultM.unit} ({resultFt.value} {resultFt.unit})</span>)}
   
-  const sea_surface_wave_significant_height = data_value('sea_surface_wave_significant_height')
-    if(sea_surface_wave_significant_height){
-      //console.log(data_obj['wind_speed']);
-      const resultM = windHeightToM(sea_surface_wave_significant_height)
-      const resultFt = windHeightToFt(sea_surface_wave_significant_height)
-      children.push(<br />)
-      children.push(<span title={attributes.sea_surface_wave_significant_height.definition}><strong>Wave Height (Avg):</strong> {resultM.value} {resultM.unit} ({resultFt.value} {resultFt.unit})</span>)}
-
-  const air_pressure = data_value('air_pressure')
-  if(air_pressure){
-    //console.log(data_obj['wind_speed']);
-    const resultKPa = pressureToKPa(air_pressure)
-    const resultInHg = pressureToInHg(air_pressure)
+  const sea_surface_wave_significant_height = isHistorical ? max_value('sea_surface_wave_significant_height') : data_value('sea_surface_wave_significant_height')
+  if(sea_surface_wave_significant_height){
+    const resultM = convert_unit_data(sea_surface_wave_significant_height, column_units('sea_surface_wave_significant_height'),'m')
+    const resultFt = convert_unit_data(sea_surface_wave_significant_height, column_units('sea_surface_wave_significant_height'),'ft')
     children.push(<br />)
-    children.push(<span title={attributes.air_pressure.definition}><strong>Air Pressure:</strong> {resultKPa.value} {resultKPa.unit} ({resultInHg.value} {resultInHg.unit})</span>)}
+    children.push(<span title={attributes.sea_surface_wave_significant_height.definition}><strong>{historic_prefix_max}Wave Height (Avg):</strong> {resultM.value} {resultM.unit} ({resultFt.value} {resultFt.unit})</span>)}
+
+  const air_pressure = isHistorical ? min_value('air_pressure') : data_value('air_pressure')
+  if(air_pressure){
+    const resultKPa = convert_unit_data(air_pressure, column_units('air_pressure'),'kPa')
+    const resultInHg = convert_unit_data(air_pressure, column_units('air_pressure'),'inHg')
+    children.push(<br />)
+    children.push(<span title={attributes.air_pressure.definition}><strong>{historic_prefix_min}Air Pressure:</strong> {resultKPa.value} {resultKPa.unit} ({resultInHg.value} {resultInHg.unit})</span>)}
 
     
-  const relative_humidity = data_value('relative_humidity')
+  const relative_humidity = isHistorical ? max_value('relative_humidity') : data_value('relative_humidity')
   if(data_obj['relative_humidity']){
     children.push(<br />)
-    children.push(<span title={attributes.relative_humidity.definition}><strong>Humidity:</strong> {parseInt(relative_humidity)}%</span>)}
+    children.push(<span title={attributes.relative_humidity.definition}><strong>Humidity:</strong> {parseInt(relative_humidity)}%</span>)
   }
-/**
+}
+
+
+  /**
  * Converts a Unix timestamp to a human-readable date and time string.//++
  */
 export function formatCioosDateTime(date_str){
   const date = new Date(date_str * 1);
   const options = { 
     year: 'numeric', 
-    month: 'long', 
+    month: 'short', 
     day: 'numeric', 
     hour: '2-digit', 
     minute: '2-digit',
-    timeZoneName: 'long'
+    timeZoneName: 'short'
   };
 
   const timestamp = date.toLocaleString('en-US', options);
@@ -128,6 +147,7 @@ export function formatCioosDateTime(date_str){
  */
 export function parseData(fullStationData) {
   console.log(fullStationData);
+  console.log("HI AM I BEING HIT BY SOMETHING? OR CAN I BE DELETED?")
   //console.log(JSON.parse(chartData));
   let stationDataTable = {}; 
 

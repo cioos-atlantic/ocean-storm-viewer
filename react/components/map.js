@@ -64,7 +64,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             isDrawerOpen= {isDrawerOpen}
             isStormDetOpen= {isStormDetOpen}
             setIsStormDetOpen= {setIsStormDetOpen}
-            
+            source_type = {source_type}
           ></StationDashboard>
         )}
         <MapContainer
