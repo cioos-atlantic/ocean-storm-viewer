@@ -55,14 +55,24 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       sx={{
         position: 'absolute',
         top: '100%',
-        width: '340px',
+        width: '220px',
         padding: '6px',
+        height: '110px',
+        '&.MuiCard-root': {
+      border: '2px solid #e55162', // Add a border color for the card
+      backgroundColor: '#f4f4f4', // Set the background color of the card
   
+       }
        }}>
-        <CardContent>
+        <CardContent
+        sx={{
+          height:'60%',
+          width: '100%',
+          padding: '10px'
+        }}
+        >
           <Box
             component="form"
-            sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
             noValidate
             autoComplete="off"
             onSubmit= {handleSubmit} >
@@ -73,6 +83,22 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
               placeholder={input_filter.placeholder} // Set the placeholder to "Joan"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)} // Add onChange handler
+              sx={{
+                width: '180px',
+                padding:'5px', // Set width (you can adjust the value as needed)
+                height: '35px', // Set height (you can adjust the value as needed)
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: '#e55162', // Set the outline color
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#ffd1dc', // Set outline color on hover
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'red', // Set outline color when focused
+                  },
+                },
+              }}
                />  
             <CardActions>
             
