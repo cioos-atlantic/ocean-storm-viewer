@@ -53,10 +53,11 @@ function SearchForm({setIsSearchSubmitted, setIsDrawerOpen, isSearchSubmitted, s
   const router = useRouter();
   
   function handleSubmit(e) {
-    changeUrlToHistorical(router)
+    
     setSearchResult([]);
     handleFormSubmit(e, setSearchResult);
     setIsSearchSubmitted(true); 
+    changeUrlToHistorical(router)
     setIsDrawerOpen(true)
   };
 

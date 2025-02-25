@@ -10,6 +10,7 @@ import { Button, Box } from '@mui/material';
 import {  handleClick, handleFormSubmit, handleSearch } from './historical_storm_utils.js';
 import { RenderSearchResult } from './render_search_result.js';
 import { renderRecentStorms } from './render_recent_storms.js';
+import { RenderFilterResult } from '../Filter/renderFilterResult.js';
 
 
 const otherStormList = [
@@ -113,6 +114,13 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
                 
                  />):
       (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation))}
+
+      {returnFilterResult && (<RenderFilterResult 
+                filterResult={filterResult}
+                router={router}
+                setReturnFilterResult={setReturnFilterResult}
+                
+                 />)}
 
       
        

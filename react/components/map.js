@@ -38,7 +38,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   const [isStormDetOpen, setIsStormDetOpen] = useState(false); 
   const [selected_station, setSelectedStation] = useState(empty_station_obj);
   const [filterResult, setFilterResult] = useState({}); 
-  const [returnFilterResult, setReturnFilterResult] = (false)
+  const [returnFilterResult, setReturnFilterResult] = useState(false);
 
   const allDatasetDescriptions = useDatasetDescriptions();
 
@@ -71,7 +71,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           filterResult = {filterResult}
           setFilterResult = {setFilterResult}
           returnFilterResult= {returnFilterResult}
-          setReturnFilterResult = {setReturnFilterResult}/>
+          setReturnFilterResult = {setReturnFilterResult}
+          setIsDrawerOpen= {setIsDrawerOpen}/>
         }
         
         {selected_station !== empty_station_obj && (

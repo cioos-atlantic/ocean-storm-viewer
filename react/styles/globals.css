@@ -546,7 +546,7 @@ footer {
 .filter-icons-list{
   z-index: 6999;
   top: 65px;
-  right: 18px;
+  right: 35%;
   position: absolute;
   justify-content: center;
   align-items: center;

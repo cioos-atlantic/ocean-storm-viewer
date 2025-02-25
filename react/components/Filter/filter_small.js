@@ -70,7 +70,7 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
 
   return(
     <>
-      {/*
+      
         {!showFilterIcons &&
           (<IconButton  aria-label='filter'
         id='filter-icon'
@@ -81,10 +81,10 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
           }}
           />
         </IconButton>)
-        } */
+      
       }
       
-      {//showFilterIcons && (
+      {showFilterIcons && (
         <FilterIcons
         setShowFilterIcons = {setShowFilterIcons}
         showFilterOptions={showFilterOptions}
@@ -103,7 +103,7 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
 
         
         />
-      //)
+      )
       }
     </>
   )
@@ -211,7 +211,7 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
     backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#e55162' : 'white',
     color: selectedOptions[filter.name]?.length > 0 ? 'white' : '#e55162',
     '&:hover': {
-      backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#ffd1dc' : '#82ccdd', 
+      backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#f1faee' : '#82ccdd', 
       color: selectedOptions[filter.name]?.length > 0 ? 'black' : 'black',
     },
   };

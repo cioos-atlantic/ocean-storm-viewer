@@ -70,7 +70,7 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelect
     backgroundColor: startDate && endDate && startDate.isValid() && endDate.isValid() ? '#e55162' : 'white',
     color: startDate && endDate && startDate.isValid() && endDate.isValid() ? 'white' : '#e55162',
     '&:hover': {
-      backgroundColor: startDate && endDate && startDate.isValid() && endDate.isValid() ? '#f1faee' : '#82ccdd',
+      backgroundColor: startDate && endDate && startDate.isValid() && endDate.isValid() ? '#ffd1dc' : '#82ccdd',
       color: startDate && endDate && startDate.isValid() && endDate.isValid() ? 'black' : 'black',
     },
   };
