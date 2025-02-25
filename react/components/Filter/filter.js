@@ -1,37 +1,20 @@
 import { IconButton, TextField, Box, Typography, Paper, Button } from "@mui/material";
-import FilterListIcon from '@mui/icons-material/FilterList';
-import Search from "@mui/icons-material/Search";
 import { useEffect, useState } from 'react';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import Stack from '@mui/material/Stack';
-import Chip from '@mui/material/Chip';
-import { FitScreen } from "@mui/icons-material";
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+
 //import Chip from '@mui/material/Chip';
 
 import Checkbox from '@mui/material/Checkbox';
-import Autocomplete from '@mui/material/Autocomplete';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import Avatar from '@mui/material/Avatar';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import CategoryIcon from '@mui/icons-material/Category';
-import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { RenderDateFilter } from "./dateFilter";
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
 import dayjs from 'dayjs';
 import { makeStormList } from "../historical_storm/historical_storm_utils";
-import { filters } from "@/components/Filter/filters_list";
+import { filters, input_filters } from "@/components/Filter/filters_list";
 import { useRouter } from 'next/router';
+import { InputFilter } from "./inputFilter";
 
 
 
@@ -143,6 +126,31 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
     direction="row"
     spacing={0.1}
     className='filter-icons-list'>
+      {
+        input_filters.map((input_filter, index) => {
+          return(
+
+            <div className="filter-group" key={index}>
+  
+
+              <InputFilter
+              input_filter={input_filter}
+              showOptionsArrow={showOptionsArrow}
+              closeOptionsArrow={closeOptionsArrow}
+              setSelectedOptions={setSelectedOptions}
+              selectedOptions={selectedOptions}
+              showFilterOptions={showFilterOptions}
+              setShowFilterOptions={setShowFilterOptions}
+              
+              />
+
+            </div>
+
+
+          )
+        })
+      }
+      
 
       <div className="filter-group">
         <RenderDateFilter
