@@ -8,7 +8,8 @@ import { empty_station_obj } from "./layout"
 import { Marker, Tooltip, Popup, Icon } from "react-leaflet";
 
 import { getDisplayName } from "./utils/station_data_format_util";
-import styles from './station_marker.module.css'
+//import styles from './station_marker.module.css'
+
 
 
 /**

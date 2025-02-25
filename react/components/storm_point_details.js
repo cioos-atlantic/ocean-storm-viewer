@@ -4,6 +4,8 @@ import React, {useState} from "react";
 import StormType from './Storm_popup/Storm_type';
 import StormCategory from './Storm_popup/storm_category';
 import StormPressure from './Storm_popup/storm_pressure';
+import { Box, useMediaQuery } from '@mui/material';
+
 
 export const empty_point_obj = { properties: {}, geometry: {} }
 
@@ -20,7 +22,7 @@ export const empty_point_obj = { properties: {}, geometry: {} }
  * 
  * The function then renders the storm point details in a JSX format, including the extracted information and any additional details.
  */
-export default function StormPointDetails({ storm_point_hover, onClose }) {
+export default function StormPointDetails({ storm_point_hover,  setIsStormDetOpen, setHoverMarker }) {
     // If properties has no items, it's an empty storm_point_hover object and should return
     // immediately
     if (Object.keys(storm_point_hover.properties).length == 0) {
@@ -29,7 +31,7 @@ export default function StormPointDetails({ storm_point_hover, onClose }) {
 
     // ECCC and IBTRACS have multiple ways to define a storm type, some overlap and others are unique
 
-
+    const isExtraSmall = useMediaQuery("(max-width:600px)");
 
     // ECCC and IBTRACS use different names for the same kinds of information.  Sometimes, within IBTRACS, several different fields may possibly contain the appropriate value
     // ECCC uses TIMESTAMP and IBTRACS uses ISO_TIME
@@ -43,10 +45,22 @@ export default function StormPointDetails({ storm_point_hover, onClose }) {
 
 
     return (
-        <div className="info_pane">
+        
+        <Box className="info_pane"
+        sx={{
+            padding: 2,
+            fontSize: { xs: '12px', sm: '12px', md: '16px', lg: '16px' }, // Adjust font size for different screen widths
+            marginTop:  { xs: '35%', sm: '18%', md: '15%', lg: '11%' } , // Adjust margin-top for different screen widths
+            
+            bottom: {sm: '7%', md: '10%', lg: '10%'}
+
+          }}>
             <div>
                 <button 
-                onClick={onClose} 
+                onClick={() =>{
+                    setHoverMarker(empty_point_obj)
+                    setIsStormDetOpen(false);}
+                    } 
                 style={{ float: "right", cursor: "pointer" }}
                 aria-label="Close Storm Details"
                 >✖
@@ -65,6 +79,8 @@ export default function StormPointDetails({ storm_point_hover, onClose }) {
                 }
             </div>
 
-        </div>
+        </Box>
+        
+        
     )
 }

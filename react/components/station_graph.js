@@ -57,7 +57,16 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
           //maintainAspectRatio: false,
           plugins: {
             legend: {
-              position: 'right'
+              position: 'right',
+              fullSize: true,
+              labels: {
+                padding: 5,
+                boxWidth: 10,
+                font: {
+                    size: 10,
+                }
+              }
+              
             },
             title: {
               display: false,
@@ -93,6 +102,8 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
         style={{
           top: 0,
           left: 0,
+          width: '100%',
+          //height: '200px', // You can adjust this based on your needs
           maxWidth: 'auto',
           maxHeight: '200px', // You can keep this if you want to maintain responsiveness
           aspectRatio: '100 / 100', // Maintain a 1:1 aspect ratio if you want
