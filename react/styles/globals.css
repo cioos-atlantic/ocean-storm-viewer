@@ -452,29 +452,40 @@ footer {
 }
 
 .search-render{
-  top: 155px;
+  top: 175px;
   z-index: 6999;
   position: absolute;
   right: 11px;
-  padding: 0;
   height: 32px;
+  padding: 10px; /* Adjust padding for more space */
+  height: auto; /* Allow height to grow with content */
+  display: flex; /* Flex to center form items vertically */
+  flex-direction: row;
+  width: 265px;
+  justify-content: space-between;
+
 
 }
 
 .search-form{
   width: 200px;
+  display: flex;
+  justify-content: space-between; /* Align input and button horizontally */
+  align-items: center; /* Vertically center the items */
+  align-self: flex-start;
 }
 
 .close-search-icon-small-screen{
-  right: 40px;
   color: white;
   font-size: large;
   cursor: pointer;
   border-radius: 30px;
   background-color: #e55162;
+  min-width: auto;
   width: 32px;
-  min-width: 30px;
   height: 32px;
+  align-self: flex-end;
+  padding: 6px;
   
   /*border: 1.8px solid rgba(155, 146, 146, 0.829); */
 
