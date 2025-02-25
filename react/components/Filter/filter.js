@@ -189,7 +189,10 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
       <Button
         id="cancel-filter-icon"
         className="filter-icons"
-        onClick={() => {setShowFilterIcons(false)}}>
+        onClick={() => {setSelectedOptions([]);
+          setStartDate(null); // Reset to empty string
+          setEndDate(null);   // Reset to empty string;
+        }}>
         X
       </Button> 
        
