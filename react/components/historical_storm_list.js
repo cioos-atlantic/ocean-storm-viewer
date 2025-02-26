@@ -58,7 +58,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
         }
     }
   searchQuery()
-  }, []); // 
+  }, [Leaflet, map, router, setSelectedStation, setStationPoints, setStormPoints]); // 
 
 
   
