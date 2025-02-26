@@ -266,7 +266,7 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
     endIcon={ !showFilterOptions[filter.name] ? (showOptionsArrow):(closeOptionsArrow)}
     sx={buttonStyle}>
       
-      {filter.name}
+      {filter.display_name}
       
       {console.log(showFilterOptions)}
 
@@ -340,15 +340,17 @@ export async function processFilterRequest(filterParameters){
   console.log(filterParameters);
   let uniqueList;
   const stormCategory= formatStormCategory(filterParameters['stormCategory']);
+  const stormNames= formatStormName(filterParameters['stormName']);
   const startDate = formatFilterDate(filterParameters['startDate']);
   const endDate = formatFilterDate(filterParameters['endDate']);
 
-  console.log(stormCategory,startDate, endDate )
+  console.log(stormCategory, stormNames, startDate, endDate )
 
 
 
   const query = new URLSearchParams({
     storm_category: stormCategory, 
+    name: stormNames,
     start_date: startDate,
     end_date: endDate
 
@@ -397,6 +399,14 @@ export function formatStormCategory(category_list=[]){
   console.log(category_list);
   const formattedCategoryList = category_list.join("_");
   return formattedCategoryList;
+}
+
+export function formatStormName(storm_names=""){
+  storm_names = storm_names.replace(/\s+/g, ''); // Remove all spaces
+  console.log(storm_names);
+  const storm_list= storm_names.split(",");
+  const formattedStormList = storm_list.join("_");
+  return formattedStormList;
 }
 
 

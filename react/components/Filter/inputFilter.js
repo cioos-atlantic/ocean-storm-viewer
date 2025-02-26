@@ -1,4 +1,4 @@
-import { Button, CardActions, CardContent, Stack, Card, Box, TextField, } from "@mui/material"
+import { Button, CardActions, CardContent, Stack, Card, Box, TextField, Paper,  OutlinedInput, Input, FormControl, InputLabel} from "@mui/material"
 import { input_filters } from "./filters_list"
 import { useEffect, useState } from 'react';
 
@@ -50,83 +50,100 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     >{input_filter.display_name}
 
     </Button>
+    {/* Filter Input Popup */}
     {showFilterOptions[input_filter.name] && (
-      <Card
+  <Paper
+    elevation={3}
+    sx={{
+      position: "absolute",
+      top: "100%",
+      width: "200px",
+      padding: "6px",
+      height: "auto",
+      minHeight: "100px",
+      border: "2px solid #e55162",
+      backgroundColor: "#f4f4f4",
+      borderRadius: "8px",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "8px",
+    }}
+  >
+    <Box
+      component="form"
+      noValidate
+      autoComplete="off"
+      onSubmit={handleSubmit}
       sx={{
-        position: 'absolute',
-        top: '100%',
-        width: '220px',
-        padding: '6px',
-        height: '110px',
-        '&.MuiCard-root': {
-      border: '2px solid #e55162', // Add a border color for the card
-      backgroundColor: '#f4f4f4', // Set the background color of the card
-  
-       }
-       }}>
-        <CardContent
-        sx={{
-          height:'60%',
-          width: '100%',
-          padding: '10px'
-        }}
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
+      }}
+    >
+      {/* Native Input Field */}
+      <FormControl variant="outlined" sx={{ width: "180px" }}>
+        <InputLabel
+          htmlFor="custom-outlined-input"
+          sx={{
+            color: "#e55162", // Default label color
+            fontSize: '14px',
+            padding:'0px',
+            "&.Mui-focused": {
+              color: "red", // Label color when focused
+              transform: "translate(11px, -6px) scale(1)",
+              fontSize:'12px'
+            },
+            transform: "translate(8px, 12px) scale(1)", // Adjust label position when not focused
+            
+          }}
         >
-          <Box
-            component="form"
-            noValidate
-            autoComplete="off"
-            onSubmit= {handleSubmit} >
-            <TextField 
-              id="outlined-basic" 
-              label={input_filter.display_name} 
-              variant="outlined"
-              placeholder={input_filter.placeholder} // Set the placeholder to "Joan"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)} // Add onChange handler
-              sx={{
-                width: '180px',
-                padding:'5px', // Set width (you can adjust the value as needed)
-                height: '35px', // Set height (you can adjust the value as needed)
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderColor: '#e55162', // Set the outline color
-                  },
-                  '&:hover fieldset': {
-                    borderColor: '#ffd1dc', // Set outline color on hover
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'red', // Set outline color when focused
-                  },
-                },
-              }}
-               />  
-            <CardActions>
-            
-              <Button 
-                size="small"
-                className='filter-submit-button'
-                type="submit"
-                
-                >Enter
-              </Button>
-              <Button 
-                size="small"
-                className='filter-submit-button'
-                onClick={handleClear}
-                >Clear
-              </Button>
+          {input_filter.display_name}
+        </InputLabel>
+        <OutlinedInput
+          id="custom-outlined-input"
+          type="text"
+          placeholder={input_filter.placeholder}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          label={input_filter.display_name}
+          sx={{
+            width:'170px',
+            height: "35px",
+            padding: "6px",
+            fontSize: "14px",
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#e55162", // Default outline color
+            },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#ffd1dc", // Outline color on hover
+            },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "red", // Outline color when focused
+            },
+            "& .MuiInputBase-input": {
+              padding: "8px", // Adjust text input padding
+            },
+          }}
+        />
+      </FormControl>
 
-            
-          </CardActions>
-          
-          </Box>
-          
-        </CardContent>
-        
-
-      </Card>
-      
-    )}
+      {/* Action Buttons */}
+      <Box sx={{ display: "flex", gap: "8px" }}>
+        <Button className="filter-submit-button" type="submit">
+          Enter
+        </Button>
+        <Button className="filter-submit-button" onClick={handleClear}>
+          Clear
+        </Button>
+      </Box>
+    </Box>
+  </Paper>
+)}
     </>
   )
 }

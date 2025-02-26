@@ -107,9 +107,9 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
             const filter_string = Object.entries(filters)
             .map(([key, value]) => {
                 return `${key}${value}`})
-            .join("&");
             
-            ib_filters.push(filter_string);
+            
+            ib_filters.push(...filter_string);
         }
         console.debug(ib_filters);
 
@@ -228,8 +228,10 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
 function build_wfs_query(source, filters, source_type, selected_features ="", output_format="application/json", base_url="https://dev.cioosatlantic.ca/geoserver/ows?service=wfs&version=2.0.0",  ){
     output_format = "&outputFormat=" + encodeURI(output_format);
     //Filter causes issues for ERDDAP cache
+    console.log(filters.join(" AND "));
     
     const final_filter = (source.includes("erddap") && source_type === "ACTIVE") ? (""):("&cql_filter=" + filters.join(" AND "))
+    console.log("final filter", final_filter)
 
     let url = '';
 
