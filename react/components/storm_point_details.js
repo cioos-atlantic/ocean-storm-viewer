@@ -31,7 +31,7 @@ export default function StormPointDetails({ storm_point_hover,  setIsStormDetOpe
 
     // ECCC and IBTRACS have multiple ways to define a storm type, some overlap and others are unique
 
-    const isExtraSmall = useMediaQuery("(max-width:600px)");
+    // const isExtraSmall = useMediaQuery("(max-width:600px)");
 
     // ECCC and IBTRACS use different names for the same kinds of information.  Sometimes, within IBTRACS, several different fields may possibly contain the appropriate value
     // ECCC uses TIMESTAMP and IBTRACS uses ISO_TIME
