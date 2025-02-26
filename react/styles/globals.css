@@ -728,3 +728,19 @@ footer {
   justify-content: center;
   width: 100%;
 }
+
+.spatial-filter-icon{
+  z-index: 6999;
+  right: 11px;
+  position: absolute;
+  background-color: white;
+  border-radius: 4px;
+  color: #e55162;
+
+}
+
+
+.spatial-filter-icon:hover{
+  background-color: #e55162;
+  color: white;
+}
