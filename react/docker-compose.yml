@@ -1,0 +1,16 @@
+version: '3'
+services:
+  ocean-storm-viewer:
+    container_name: ocean-storm-viewer
+    build:
+      context: .
+      # args:
+    ports:
+      - "3000:3000"
+    # environment:
+    # volumes:
+    healthcheck:
+      test: curl --fail "http://localhost:3000/ocean-storm-viewer" | exit 1
+      interval: 1m
+      retries: 3
+      timeout: 20s
