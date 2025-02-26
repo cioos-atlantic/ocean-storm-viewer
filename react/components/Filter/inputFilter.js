@@ -54,36 +54,14 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     {showFilterOptions[input_filter.name] && (
   <Paper
     elevation={3}
-    sx={{
-      position: "absolute",
-      top: "100%",
-      width: "200px",
-      padding: "6px",
-      height: "auto",
-      minHeight: "100px",
-      border: "2px solid #e55162",
-      backgroundColor: "#f4f4f4",
-      borderRadius: "8px",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "8px",
-    }}
+    className="input-filter"
   >
     <Box
       component="form"
       noValidate
       autoComplete="off"
       onSubmit={handleSubmit}
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "8px",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-      }}
+      className="input-filter-box"
     >
       {/* Native Input Field */}
       <FormControl variant="outlined" sx={{ width: "180px" }}>

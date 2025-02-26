@@ -42,12 +42,12 @@ export const input_filters = [
     
     
   },
-  { 
+  /*{ 
     "name":'stormYear',
     "display_name": 'Storm Year',
     'icon':<TodayOutlinedIcon />,
     "placeholder": "2024",
     
     
-  }
+  }*/
 ]

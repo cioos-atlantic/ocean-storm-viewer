@@ -234,7 +234,7 @@ export function RangeSlider({ startDate, endDate, setStartDate, setEndDate }) {
   const currentYear = dayjs().year();
   
   // Independent state for the slider's range
-  const [value, setValue] = useState([1960, currentYear]);
+  const [value, setValue] = useState([1860, currentYear]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -254,12 +254,12 @@ export function RangeSlider({ startDate, endDate, setStartDate, setEndDate }) {
         value={value}
         onChange={handleChange}
         valueLabelDisplay="auto"
-        min={1960}
+        min={1860}
         max={currentYear}
         marks={[
-          { value: 1960, label: '1960' },
+          { value: 1860, label: '1860' },
+          { value: 1900, label: '1900' },
           { value: 1980, label: '1980' },
-          { value: 2000, label: '2000' },
           { value: 2020, label: '2020' },
           
         ]}

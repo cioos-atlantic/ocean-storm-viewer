@@ -99,7 +99,7 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
 
 
   async function handleFilterSubmit() {
-    setFilterParameters((prev) => {
+    /*setFilterParameters((prev) => {
       const updatedParams = {
         ...prev,
         ...selectedOptions, // Spread selected options correctly
@@ -109,9 +109,17 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
       console.log(updatedParams); // Log the correct updated state
       return updatedParams;
     });
-    console.log(filterParameters);
+    console.log(filterParameters);*/
+    const updatedParams = {
+      ...selectedOptions, // Spread selected options correctly
+      startDate: startDate, // Ensure start and end dates are included
+      endDate: endDate
+    };
+  
+    console.log(updatedParams); // 
 
-    const stormResult = await processFilterRequest(filterParameters);
+
+    const stormResult = await processFilterRequest(updatedParams);
     console.log(stormResult);
     setFilterResult(stormResult);
     router.push(`/?storms=historical`);

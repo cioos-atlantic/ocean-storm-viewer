@@ -115,6 +115,8 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
                  />):
       (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation))}
 
+      <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
+
       {returnFilterResult && (<RenderFilterResult 
                 filterResult={filterResult}
                 router={router}
