@@ -20,8 +20,10 @@ import { empty_station_obj } from "./layout";
 import StationDashboard from "./station_dashboard/station_dashboard";
 import { RenderStormSearch } from "./render_storm_search";
 import { RenderFilter } from "./Filter/filter";
-import { RenderSpatialFilter } from "./Filter/boundingBox";
+import { RenderBoundingBox, RenderSpatialFilter } from "./Filter/boundingBox";
+//import EditFeature from "./Filter/Edit_spatial_filter";
 //import StationDashboardTest from "./station_dashboard/station_dashboard";
+import { renderSpatialFilter } from "./Filter/Edit_spatial_filter";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
@@ -75,9 +77,6 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           setReturnFilterResult = {setReturnFilterResult}
           setIsDrawerOpen= {setIsDrawerOpen}/>
         }
-        {
-          <RenderSpatialFilter/>
-        }
         
         {selected_station !== empty_station_obj && (
           <StationDashboard
@@ -99,6 +98,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           zoom={defaultZoom}
           style={{ height: "100%", width: "100%" }}
           worldCopyJump={true}
+          
         >
           <Drawer 
             element_id="left-side" 
@@ -231,6 +231,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
               </LayerGroup>
             </LayersControl.Overlay>
           </LayersControl>
+
+          {renderSpatialFilter()} {/* Calling the EditControl function here */}
         </MapContainer>
       </div>
     </div>
