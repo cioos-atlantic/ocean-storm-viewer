@@ -3,6 +3,7 @@ import { wfs_query } from "./wfs_query"
 export default async function handler(req, res) {
     
     const storm_category = (req.query["storm_category"]) ? req.query["storm_category"] : "";
+    const storm_bbox = (req.query["bbox"]) ? req.query["bbox"] : "";
     const storm_names = (req.query["name"]) ? req.query["name"] : "";
     const start_date = (req.query["start_date"]) ? req.query["start_date"] : "";
     const end_date = (req.query["end_date"]) ? req.query["end_date"] : "";

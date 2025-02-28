@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import L from "leaflet";
 import {
   
@@ -6,7 +6,23 @@ import {
 } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 
-export function renderSpatialFilter () {
+export function RenderSpatialFilter ({bboxFilterCoordinates, setBboxFilterCoordinates}) {
+  const featureGroupRef = useRef(null);
+  // Get the FeatureGroup reference
+  function clearShapes(){
+    const featureGroup = featureGroupRef.current;
+    if (featureGroup) {
+      // Remove all existing layers (only one shape allowed at a time)
+      featureGroup.eachLayer(existingLayer => {
+        featureGroup.removeLayer(existingLayer);
+      });
+    }
+
+  }
+  
+
+
+
   const _onEdited = e => {
     let numEdited = 0;
     e.layers.eachLayer(layer => {
@@ -18,30 +34,37 @@ export function renderSpatialFilter () {
   };
 
   const _onCreated = e => {
-    alert("test");
-
+    
     let type = e.layerType;
     let layer = e.layer;
-    const coords = layer.getLatLngs()
-    if (type === "marker") {
-      // Do marker specific actions
-      console.log("_onCreated: marker created", e);
-    } else if (type === "rectangle") {
-      console.log("_onCreated: Rectangle created:");
-      const bbox = ProcessRectangle(coords);
+    console.log(layer);
+    console.log(layer.getLatLngs())
 
+    featureGroupRef.current.addLayer(layer);
 
-    }
-    else if (type === "rectangle") {
-      console.log("_onCreated: something else created:", type, e);
-    }
     
+  
+     
+ 
+     // Add the new shape
+     //featureGroupRef.current.addLayer(layer);
 
-    console.log("Geojson", layer.toGeoJSON());
-    console.log("coords", layer.getLatLngs());
-    // Do whatever else you need to. (save to db; etc)
+  
+    if (type === "rectangle") {
+      console.log("_onCreated: Rectangle created");
+      const bbox = processRectangle(layer.getLatLngs());
+      setBboxFilterCoordinates(bbox);
+    } else if (type === "polygon") {
+      console.log("_onCreated: Polygon created");
+      setBboxFilterCoordinates(layer.getLatLngs());
+    } else if (type === "polyline") {
+      console.log("_onCreated: Line created");
+      setBboxFilterCoordinates(layer.getLatLngs());
+    }
+  
 
-    // this._onChange();
+  
+    console.log("GeoJSON", layer.toGeoJSON());
   };
 
   const _onDeleted = e => {
@@ -75,7 +98,9 @@ export function renderSpatialFilter () {
   };
 
   const _onDrawStart = e => {
+    clearShapes(); 
     console.log("_onDrawStart", e);
+    
   };
 
   /*onEdited	function	hook to leaflet-draw's draw:edited event
@@ -93,7 +118,7 @@ onEditMove	function	hook to leaflet-draw's draw:editmove event
 onEditResize	function	hook to leaflet-draw's draw:editresize event
 onEditVertex	function	hook to leaflet-draw's draw:editvertex event*/
   return (
-    <FeatureGroup>
+    <FeatureGroup ref={featureGroupRef}>
       <EditControl
         onDrawStart={_onDrawStart}
         position="topright"
@@ -123,9 +148,9 @@ onEditVertex	function	hook to leaflet-draw's draw:editvertex event*/
 };
 
 
-export function ProcessRectangle({coords}){
-  const latitudes = coords.map(coord => coord.lat);
-  const longitudes = coords.map(coord => coord.lng);
+export function processRectangle(coords){
+  const latitudes = coords.flat().map(coord => coord.lat);
+  const longitudes = coords.flat().map(coord => coord.lng);
 
 
   console.log(latitudes, longitudes);

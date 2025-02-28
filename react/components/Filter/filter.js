@@ -36,7 +36,7 @@ const showOptionsArrow = <KeyboardDoubleArrowDownIcon/>;
 const closeOptionsArrow = <KeyboardDoubleArrowUpIcon/>;
 
 
-export function RenderFilter({filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen} ){
+export function RenderFilter({filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates} ){
   const [showFilterIcons, setShowFilterIcons] = useState(false); 
   const [showFilterOptions, setShowFilterOptions] = useState({}); 
   const [selectedOptions, setSelectedOptions] = useState([]); 
@@ -83,6 +83,8 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
         setFilterResult = {setFilterResult}
         setReturnFilterResult = {setReturnFilterResult}
         setIsDrawerOpen= {setIsDrawerOpen}
+        bboxFilterCoordinates={bboxFilterCoordinates}
+        setBboxFilterCoordinates={setBboxFilterCoordinates}
 
         
         />
@@ -92,7 +94,7 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
   )
 }
 
-function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions, filterParameters, setFilterParameters, startDate, endDate,setStartDate, setEndDate, setFilterResult, setReturnFilterResult, setIsDrawerOpen  }){
+function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions, filterParameters, setFilterParameters, startDate, endDate,setStartDate, setEndDate, setFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates  }){
 
   const router = useRouter(); // Next.js useRouter
 
@@ -113,7 +115,9 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
     const updatedParams = {
       ...selectedOptions, // Spread selected options correctly
       startDate: startDate, // Ensure start and end dates are included
-      endDate: endDate
+      endDate: endDate,
+      bboxCoordinates:bboxFilterCoordinates,
+
     };
   
     console.log(updatedParams); // 
@@ -351,6 +355,7 @@ export async function processFilterRequest(filterParameters){
   const stormNames= formatStormName(filterParameters['stormName']);
   const startDate = formatFilterDate(filterParameters['startDate']);
   const endDate = formatFilterDate(filterParameters['endDate']);
+  const stormBbox= filterParameters['bboxCoordinates']
 
   console.log(stormCategory, stormNames, startDate, endDate )
 
@@ -360,7 +365,8 @@ export async function processFilterRequest(filterParameters){
     storm_category: stormCategory, 
     name: stormNames,
     start_date: startDate,
-    end_date: endDate
+    end_date: endDate,
+    bbox:stormBbox
 
   }).toString();
 

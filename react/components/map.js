@@ -20,10 +20,10 @@ import { empty_station_obj } from "./layout";
 import StationDashboard from "./station_dashboard/station_dashboard";
 import { RenderStormSearch } from "./render_storm_search";
 import { RenderFilter } from "./Filter/filter";
-import { RenderBoundingBox, RenderSpatialFilter } from "./Filter/boundingBox";
+import { RenderBoundingBox } from "./Filter/boundingBox";
 //import EditFeature from "./Filter/Edit_spatial_filter";
 //import StationDashboardTest from "./station_dashboard/station_dashboard";
-import { renderSpatialFilter } from "./Filter/Edit_spatial_filter";
+import { RenderSpatialFilter } from "./Filter/Edit_spatial_filter";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
@@ -42,6 +42,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   const [selected_station, setSelectedStation] = useState(empty_station_obj);
   const [filterResult, setFilterResult] = useState({}); 
   const [returnFilterResult, setReturnFilterResult] = useState(false);
+  const [bboxFilterCoordinates, setBboxFilterCoordinates]= useState('');
 
   const allDatasetDescriptions = useDatasetDescriptions();
 
@@ -75,7 +76,10 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           setFilterResult = {setFilterResult}
           returnFilterResult= {returnFilterResult}
           setReturnFilterResult = {setReturnFilterResult}
-          setIsDrawerOpen= {setIsDrawerOpen}/>
+          setIsDrawerOpen= {setIsDrawerOpen}
+          bboxFilterCoordinates={bboxFilterCoordinates}
+          setBboxFilterCoordinates={setBboxFilterCoordinates}
+          />
         }
         
         {selected_station !== empty_station_obj && (
@@ -232,7 +236,10 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             </LayersControl.Overlay>
           </LayersControl>
 
-          {renderSpatialFilter()} {/* Calling the EditControl function here */}
+          {<RenderSpatialFilter
+          bboxFilterCoordinates={bboxFilterCoordinates}
+          setBboxFilterCoordinates={setBboxFilterCoordinates}
+          />} {/* Calling the EditControl function here */}
         </MapContainer>
       </div>
     </div>
