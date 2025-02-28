@@ -116,6 +116,8 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
         let ib_features_url= '';
 
         if (selected_features){
+
+           
             ib_features_url = build_wfs_query("cioos-atlantic:" + ib_source, ib_filters, source_type, selected_features);
         }
         else{
@@ -225,7 +227,7 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
     return data;
 }
 
-function build_wfs_query(source, filters, source_type, selected_features ="", output_format="application/json", base_url="https://dev.cioosatlantic.ca/geoserver/ows?service=wfs&version=2.0.0",  ){
+function build_wfs_query(source, filters, source_type, selected_features ="", storm_bbox="", output_format="application/json", base_url="https://dev.cioosatlantic.ca/geoserver/ows?service=wfs&version=2.0.0",  ){
     output_format = "&outputFormat=" + encodeURI(output_format);
     //Filter causes issues for ERDDAP cache
     console.log(filters.join(" AND "));
@@ -236,7 +238,10 @@ function build_wfs_query(source, filters, source_type, selected_features ="", ou
     let url = '';
 
     if (selected_features)
-    {url = base_url + "&request=GetFeature&typeName=" + source + output_format + selected_features + final_filter;}
+    {
+        url = base_url + "&request=GetFeature&typeName=" + source + output_format + selected_features + final_filter;
+        
+        }
     else{url = base_url + "&request=GetFeature&typeName=" + source + output_format + final_filter;}
 
 

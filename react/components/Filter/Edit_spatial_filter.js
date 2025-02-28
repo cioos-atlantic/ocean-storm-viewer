@@ -163,7 +163,7 @@ export function processRectangle(coords){
   console.log("Max Latitude:", maxLat);
   console.log("Min Longitude:", minLng);
   console.log("Max Longitude:", maxLng);
-  return `${minLat},${minLng},${maxLat},${maxLng}`
+  return `${minLat}_${minLng}_${maxLat}_${maxLng}`
 
 };
 

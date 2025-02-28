@@ -31,6 +31,12 @@ export default async function handler(req, res) {
         
     }
 
+    if(storm_bbox !==""){
+        const storm_bbox_list = storm_bbox.split("_")
+        filters["(LAT BETWEEN "] = `${storm_bbox_list[0]} AND ${storm_bbox_list[2]})`;
+        filters["(LON BETWEEN "] = `${storm_bbox_list[1]} AND ${storm_bbox_list[3]})`;
+    }
+
 
 
     const source_type = "HISTORICAL";
