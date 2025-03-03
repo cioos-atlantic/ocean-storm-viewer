@@ -40,7 +40,7 @@ export default async function handler(req, res) {
 
 
     const source_type = "HISTORICAL";
-    const selected_features = '&propertyName=SID,NAME,SEASON';
+    const selected_features = '&propertyName=SID,NAME,SEASON,geom';
 
     console.log("handler", source, source_type,  filters);
 

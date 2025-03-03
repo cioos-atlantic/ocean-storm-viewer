@@ -245,7 +245,7 @@ function build_wfs_query(source, filters, source_type, selected_features ="", st
     else{url = base_url + "&request=GetFeature&typeName=" + source + output_format + final_filter;}
 
 
-    
+        
     
 
     return url;
