@@ -4,6 +4,7 @@ export default async function handler(req, res) {
     
     const storm_category = (req.query["storm_category"]) ? req.query["storm_category"] : "";
     const storm_bbox = (req.query["bbox"]) ? req.query["bbox"] : "";
+    const storm_poly = (req.query["polygon"]) ? req.query["polygon"] : "";
     const storm_names = (req.query["name"]) ? req.query["name"] : "";
     const start_date = (req.query["start_date"]) ? req.query["start_date"] : "";
     const end_date = (req.query["end_date"]) ? req.query["end_date"] : "";
@@ -35,6 +36,11 @@ export default async function handler(req, res) {
         const storm_bbox_list = storm_bbox.split("_")
         filters["(LAT BETWEEN "] = `${storm_bbox_list[0]} AND ${storm_bbox_list[2]})`;
         filters["(LON BETWEEN "] = `${storm_bbox_list[1]} AND ${storm_bbox_list[3]})`;
+    }
+    if(storm_poly !==""){
+        
+        filters["INTERSECTS(geom, POLYGON(("] = `${storm_poly})))`;
+        
     }
 
 

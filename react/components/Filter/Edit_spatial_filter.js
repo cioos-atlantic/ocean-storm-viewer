@@ -170,9 +170,13 @@ export function processPolygon(coords){
   const first_point = coords[0];
 
   polyList.push(`${first_point.lat} ${first_point.lng}`);
+  
+  const polyCoords = polyList.join(",")
+  
 
   console.log(polyList);
-  return polyList;
+  console.log(polyCoords);
+  return polyCoords;
 
   
 
