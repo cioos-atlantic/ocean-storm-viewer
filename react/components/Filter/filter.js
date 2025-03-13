@@ -43,6 +43,7 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
   const [filterParameters, setFilterParameters] = useState([]); 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [polyFilterCoords, setPolyFilterCoords] = useState('');
   
 
 
@@ -85,6 +86,8 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
         setIsDrawerOpen= {setIsDrawerOpen}
         bboxFilterCoordinates={bboxFilterCoordinates}
         setBboxFilterCoordinates={setBboxFilterCoordinates}
+        polyFilterCoords={polyFilterCoords}
+        setPolyFilterCoords={setPolyFilterCoords}
 
         
         />
@@ -94,7 +97,7 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
   )
 }
 
-function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions, filterParameters, setFilterParameters, startDate, endDate,setStartDate, setEndDate, setFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates  }){
+function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions, filterParameters, setFilterParameters, startDate, endDate,setStartDate, setEndDate, setFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords  }){
 
   const router = useRouter(); // Next.js useRouter
 
@@ -117,6 +120,7 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
       startDate: startDate, // Ensure start and end dates are included
       endDate: endDate,
       bboxCoordinates:bboxFilterCoordinates,
+      polyCoords:polyFilterCoords,
 
     };
   
@@ -212,6 +216,8 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
         onClick={() => {setSelectedOptions([]);
           setStartDate(null); // Reset to empty string
           setEndDate(null);   // Reset to empty string;
+          setBboxFilterCoordinates("");
+          setPolyFilterCoords("");
         }}>
         X
       </Button> 
@@ -355,7 +361,9 @@ export async function processFilterRequest(filterParameters){
   const stormNames= formatStormName(filterParameters['stormName']);
   const startDate = formatFilterDate(filterParameters['startDate']);
   const endDate = formatFilterDate(filterParameters['endDate']);
-  const stormBbox= filterParameters['bboxCoordinates']
+  const stormBbox= filterParameters['bboxCoordinates'];
+  const stormPoly= filterParameters['polyCoords'];
+
 
   console.log(stormCategory, stormNames, startDate, endDate )
 
@@ -366,7 +374,8 @@ export async function processFilterRequest(filterParameters){
     name: stormNames,
     start_date: startDate,
     end_date: endDate,
-    bbox:stormBbox
+    bbox:stormBbox,
+    polygon:stormPoly,
 
   }).toString();
 

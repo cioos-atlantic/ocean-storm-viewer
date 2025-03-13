@@ -56,11 +56,9 @@ export function RenderSpatialFilter ({bboxFilterCoordinates, setBboxFilterCoordi
       setBboxFilterCoordinates(bbox);
     } else if (type === "polygon") {
       console.log("_onCreated: Polygon created");
-      setBboxFilterCoordinates(layer.getLatLngs());
-    } else if (type === "polyline") {
-      console.log("_onCreated: Line created");
-      setBboxFilterCoordinates(layer.getLatLngs());
-    }
+      const poly = processPolygon(layer.getLatLngs())
+      setBboxFilterCoordinates(poly);
+    } 
   
 
   
@@ -126,17 +124,7 @@ onEditVertex	function	hook to leaflet-draw's draw:editvertex event*/
         onCreated={_onCreated}
         onDeleted={_onDeleted}
         draw={{
-          polyline: {
-            icon: new L.DivIcon({
-              iconSize: new L.Point(8, 8),
-              className: "leaflet-div-icon leaflet-editing-icon"
-            }),
-            shapeOptions: {
-              guidelineDistance: 10,
-              color: "navy",
-              weight: 3
-            }
-          },
+          polyline: false,
           rectangle: true,
           circlemarker: false,
           circle: false,
@@ -165,7 +153,25 @@ export function processRectangle(coords){
   console.log("Max Longitude:", maxLng);
   return `${minLat}_${minLng}_${maxLat}_${maxLng}`
 
-};
+}; 
 
 
 export function ProcessPolygon({}){};
+
+export function processPolygon(coords){
+  coords = coords.flat();
+  let polyList = [];
+  coords.forEach(point => {
+    polyList.push(`${point.lat} ${point.lng}`)
+  });
+
+  const first_point = coords[0];
+
+  polyList.push(`${first_point.lat} ${first_point.lng}`);
+
+  console.log(polyList);
+  return polyList;
+
+  
+
+};
