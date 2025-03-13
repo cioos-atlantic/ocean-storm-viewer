@@ -43,6 +43,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   const [filterResult, setFilterResult] = useState({}); 
   const [returnFilterResult, setReturnFilterResult] = useState(false);
   const [bboxFilterCoordinates, setBboxFilterCoordinates]= useState('');
+  const [polyFilterCoords, setPolyFilterCoords] = useState('');
 
   const allDatasetDescriptions = useDatasetDescriptions();
 
@@ -79,6 +80,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           setIsDrawerOpen= {setIsDrawerOpen}
           bboxFilterCoordinates={bboxFilterCoordinates}
           setBboxFilterCoordinates={setBboxFilterCoordinates}
+          polyFilterCoords={polyFilterCoords}
+          setPolyFilterCoords={setPolyFilterCoords}
           />
         }
         
@@ -239,6 +242,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           {<RenderSpatialFilter
           bboxFilterCoordinates={bboxFilterCoordinates}
           setBboxFilterCoordinates={setBboxFilterCoordinates}
+          polyFilterCoords={polyFilterCoords}
+          setPolyFilterCoords={setPolyFilterCoords}
           />} {/* Calling the EditControl function here */}
         </MapContainer>
       </div>

@@ -36,14 +36,14 @@ const showOptionsArrow = <KeyboardDoubleArrowDownIcon/>;
 const closeOptionsArrow = <KeyboardDoubleArrowUpIcon/>;
 
 
-export function RenderFilter({filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates} ){
+export function RenderFilter({filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords} ){
   const [showFilterIcons, setShowFilterIcons] = useState(false); 
   const [showFilterOptions, setShowFilterOptions] = useState({}); 
   const [selectedOptions, setSelectedOptions] = useState([]); 
   const [filterParameters, setFilterParameters] = useState([]); 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [polyFilterCoords, setPolyFilterCoords] = useState('');
+  
   
 
 

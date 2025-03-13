@@ -6,7 +6,7 @@ import {
 } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 
-export function RenderSpatialFilter ({bboxFilterCoordinates, setBboxFilterCoordinates}) {
+export function RenderSpatialFilter ({bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords}) {
   const featureGroupRef = useRef(null);
   // Get the FeatureGroup reference
   function clearShapes(){
@@ -53,11 +53,13 @@ export function RenderSpatialFilter ({bboxFilterCoordinates, setBboxFilterCoordi
     if (type === "rectangle") {
       console.log("_onCreated: Rectangle created");
       const bbox = processRectangle(layer.getLatLngs());
+      setPolyFilterCoords('');
       setBboxFilterCoordinates(bbox);
     } else if (type === "polygon") {
       console.log("_onCreated: Polygon created");
       const poly = processPolygon(layer.getLatLngs())
-      setBboxFilterCoordinates(poly);
+      setBboxFilterCoordinates('');
+      setPolyFilterCoords(poly);
     } 
   
 
