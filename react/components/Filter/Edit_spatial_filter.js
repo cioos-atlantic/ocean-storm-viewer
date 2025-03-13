@@ -38,7 +38,7 @@ export function RenderSpatialFilter ({bboxFilterCoordinates, setBboxFilterCoordi
     let type = e.layerType;
     let layer = e.layer;
     console.log(layer);
-    console.log(layer.getLatLngs())
+    
 
     featureGroupRef.current.addLayer(layer);
 
