@@ -29,6 +29,8 @@ export function RenderSpatialFilter ({bboxFilterCoordinates, setBboxFilterCoordi
       numEdited += 1;
     });
     console.log(`_onEdited: edited ${numEdited} layers`, e);
+     
+    
 
     // this._onChange();
   };
@@ -87,6 +89,25 @@ export function RenderSpatialFilter ({bboxFilterCoordinates, setBboxFilterCoordi
 
   const _onEditStop = e => {
     console.log("_onEditStop", e);
+    const featureGroup = featureGroupRef.current;
+
+    if (featureGroup) {
+        featureGroup.eachLayer((layer) => {
+            if (layer instanceof L.Rectangle) {
+                const bbox = processRectangle(layer.getLatLngs());
+                setPolyFilterCoords('');
+                setBboxFilterCoordinates(bbox);
+                console.log("Updated BBOX Coordinates:", bbox);
+
+            } else if (layer instanceof L.Polygon) {
+                const poly = processPolygon(layer.getLatLngs());
+                setBboxFilterCoordinates('');
+                setPolyFilterCoords(poly);
+                console.log("Updated Polygon Coordinates:", poly);
+            }
+        });
+    }
+    
   };
 
   const _onDeleteStart = e => {
@@ -123,6 +144,7 @@ onEditVertex	function	hook to leaflet-draw's draw:editvertex event*/
         onDrawStart={_onDrawStart}
         position="topright"
         onEdited={_onEdited}
+        onEditStop={_onEditStop}
         onCreated={_onCreated}
         onDeleted={_onDeleted}
         draw={{
