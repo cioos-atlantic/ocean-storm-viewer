@@ -64,7 +64,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           />
         )}
 
-        {
+        {/*
           <RenderStormSearch
             isSearchSubmitted = {isSearchSubmitted}
             setIsSearchSubmitted= {setIsSearchSubmitted}
@@ -72,7 +72,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             setSearchResult={setSearchResult}
             setIsDrawerOpen= {setIsDrawerOpen}
             isDrawerOpen= {isDrawerOpen}/>
-        }
+         */}
         {
           <RenderFilter
           filterResult = {filterResult}
