@@ -1,5 +1,5 @@
 // https://iconoir.com/ icon library that can be installed via npm
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup, Marker, Popup } from 'react-leaflet'
 import Drawer from '@/components/drawer';
 
@@ -29,6 +29,8 @@ const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
 
 export default function Map({ children, storm_points, storm_data, station_data, source_type, setStormPoints, setStationPoints, setHistoricalStormData, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, setIsDrawerOpen, isDrawerOpen,  }) {
+
+  const clearShapesRef = useRef(null);
 
   // The state variable that contains the storm point currently being hovered 
   // over or clicked on
@@ -82,6 +84,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           setBboxFilterCoordinates={setBboxFilterCoordinates}
           polyFilterCoords={polyFilterCoords}
           setPolyFilterCoords={setPolyFilterCoords}
+          clearShapesRef={clearShapesRef} // Pass the ref to RenderFilter
           />
         }
         
@@ -240,6 +243,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           </LayersControl>
 
           {<RenderSpatialFilter
+          ref={clearShapesRef} 
           bboxFilterCoordinates={bboxFilterCoordinates}
           setBboxFilterCoordinates={setBboxFilterCoordinates}
           polyFilterCoords={polyFilterCoords}

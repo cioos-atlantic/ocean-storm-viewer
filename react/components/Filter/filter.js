@@ -36,7 +36,7 @@ const showOptionsArrow = <KeyboardDoubleArrowDownIcon/>;
 const closeOptionsArrow = <KeyboardDoubleArrowUpIcon/>;
 
 
-export function RenderFilter({filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords} ){
+export function RenderFilter({filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords, clearShapesRef} ){
   const [showFilterIcons, setShowFilterIcons] = useState(false); 
   const [showFilterOptions, setShowFilterOptions] = useState({}); 
   const [selectedOptions, setSelectedOptions] = useState([]); 
@@ -88,6 +88,7 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
         setBboxFilterCoordinates={setBboxFilterCoordinates}
         polyFilterCoords={polyFilterCoords}
         setPolyFilterCoords={setPolyFilterCoords}
+        clearShapesRef={clearShapesRef}
 
         
         />
@@ -97,9 +98,27 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
   )
 }
 
-function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions, filterParameters, setFilterParameters, startDate, endDate,setStartDate, setEndDate, setFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords  }){
+function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions, filterParameters, setFilterParameters, startDate, endDate,setStartDate, setEndDate, setFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords, clearShapesRef  }){
 
   const router = useRouter(); // Next.js useRouter
+
+  // Function to clear all filters and shapes
+  function handleClearAll() {
+    setSelectedOptions([]);
+    setStartDate(null); // Reset to empty string
+    setEndDate(null);   // Reset to empty string;
+    setFilterResult([]);         // Clear filter results
+    setReturnFilterResult(false); // Reset return state
+    setBboxFilterCoordinates(''); // Clear BBOX filter
+    setPolyFilterCoords('');      // Clear polygon filter
+
+    // Clear shapes via reference
+    if (clearShapesRef && clearShapesRef.current) {
+      clearShapesRef.current.clearShapes();
+    }
+
+    console.log("All filters and shapes cleared!");
+  }
 
 
 
@@ -213,12 +232,7 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
       <Button
         id="cancel-filter-icon"
         className="filter-icons"
-        onClick={() => {setSelectedOptions([]);
-          setStartDate(null); // Reset to empty string
-          setEndDate(null);   // Reset to empty string;
-          setBboxFilterCoordinates("");
-          setPolyFilterCoords("");
-        }}>
+        onClick={handleClearAll}>
         X
       </Button> 
        
