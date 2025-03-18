@@ -1,6 +1,7 @@
 import { subYears } from "date-fns";
 import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
 import { flyToPoint } from "../storm_list_item";
+import { basePath } from "@/next.config";
 
 /**
  * This JavaScript function fetches historical storm data from an API based on a specified time range
@@ -24,7 +25,7 @@ export async function getHistoricalStormList(){
 
   
   try {
-    const resource = await fetch(`/api/historical_storms?${query}`);
+    const resource = await fetch(`${basePath}/api/historical_storms?${query}`);
     const storm_data = await resource.json();
     //console.log(storm_data);
 
@@ -147,7 +148,7 @@ export async function getStationData(min_lon, min_lat, max_lon, max_lat, max_sto
   // process.env reading empty
 
   //console.log(process)
-  const resource = await fetch(`/api/query_stations_historical?${query}`);
+  const resource = await fetch(`${basePath}/api/query_stations_historical?${query}`);
 
   const historical_station_data = await resource.json();
 
@@ -299,5 +300,8 @@ export function addSearchParams(stormName, stormYear, router) {
   const currentUrlParams = new URLSearchParams(window.location.search);
   currentUrlParams.set('name', stormName);
   currentUrlParams.set('season', stormYear);
-  router.push(`${window.location.pathname}?${currentUrlParams.toString()}`);
+  
+  console.debug(`window.location.pathname = ${window.location.pathname}`);
+
+  router.push(`/?${currentUrlParams.toString()}`);
 }
