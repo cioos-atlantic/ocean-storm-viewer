@@ -4,7 +4,7 @@ import { empty_station_obj } from "../layout";
 import { useMediaQuery, Box } from "@mui/material";
 import StationDataLayout from "./station_layout_small_screen";
 import BasicTabs from "./tabs";
-import { RecentStationData, getMatchedStation } from "../utils/station_data_format_util";
+import { getStationDataText, getMatchedStation } from "../utils/station_data_format_util";
 
 /**
  * The `StationDashboard` function renders a dashboard for a selected station with relevant data and
@@ -21,10 +21,10 @@ export default function StationDashboard({
   setSelectedTab,
   isDrawerOpen,
   isStormDetOpen, 
-  setIsStormDetOpen
+  setIsStormDetOpen,
+  source_type
 }) {
 
- 
   const stationData = selected_station;
   
   const isExtraSmall = useMediaQuery("(max-width:600px)");
@@ -32,7 +32,9 @@ export default function StationDashboard({
 
   const stationName = stationData[0];
   const stationValues = stationData[1];
-  const dataText = RecentStationData(stationValues, time);
+  // Determine if active or historic
+  const isHistorical = source_type == "historical" ? true : false
+  const dataText = getStationDataText(stationValues, time, isHistorical);
 
   if (!dataText) return null;
 

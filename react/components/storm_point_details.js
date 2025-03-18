@@ -31,6 +31,7 @@ export default function StormPointDetails({ storm_point_hover,  setIsStormDetOpe
 
     // ECCC and IBTRACS have multiple ways to define a storm type, some overlap and others are unique
 
+
     // ****************
     // Disabled this use of useMediaQuery because it was causing the following 
     // linting error:
