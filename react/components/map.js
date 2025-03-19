@@ -100,7 +100,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             isDrawerOpen= {isDrawerOpen}
             isStormDetOpen= {isStormDetOpen}
             setIsStormDetOpen= {setIsStormDetOpen}
-            
+            source_type = {source_type}
           ></StationDashboard>
         )}
         <MapContainer
@@ -110,8 +110,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           worldCopyJump={true}
           
         >
-          <Drawer 
-            element_id="left-side" 
+          <Drawer
+            element_id="left-side"
             classes="left"
             storm_data={storm_data}
             source_type={source_type}
@@ -152,10 +152,14 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             <LayersControl.Overlay checked name="Stations">
               <LayerGroup>
                 {
-                  Object.entries(station_data).map((station) => {
-                    const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                    return StationMarker(station, allDatasetDescriptions, storm_timestamp, selected_station, setSelectedStation, setSelectedTab)
-                  })
+                  station_data ? (
+                    Object.entries(station_data).map((station) => {
+                      const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
+                      return StationMarker(station, allDatasetDescriptions, storm_timestamp, selected_station, setSelectedStation, setSelectedTab)
+                    })
+                  ) : (
+                    <></>
+                  )
                 }
               </LayerGroup>
             </LayersControl.Overlay>
@@ -178,7 +182,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                 {
                   storm_points.pts.features.map(point => {
                     return (
-                      
+
                       <StormMarker
                         key={point.id}
                         storm_point_data={point}

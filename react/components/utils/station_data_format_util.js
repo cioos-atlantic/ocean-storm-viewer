@@ -65,13 +65,13 @@ export function get_station_data_value(station_data, row_position, column_name, 
 // most recent row from the data before that time
 
 // state can select a standard variable?
-export function RecentStationData(data, time) {
+export function getStationDataText(data, time, isHistorical=false) {
     let station_data = data?.properties?.station_data;
 
     const row_position = get_recent_row_position(data,time)
     if(row_position < 0) return 
     let children = []
-    formatCioosStations(station_data, children, row_position)
+    formatCioosStations(station_data, children, row_position, isHistorical)
   
     let station_info = (
       <div className="station_pane">

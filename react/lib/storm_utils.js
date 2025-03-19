@@ -2,6 +2,7 @@
 import * as geolib from 'geolib';
 import { show_all_storms } from '../components/active_storm_list';
 import { empty_station_obj } from '@/components/layout';
+import { basePath } from '@/next.config.js';
 
 export const nmi_to_m = 1852.216;
 export const ft_to_m = 0.3048;
@@ -20,43 +21,43 @@ const hurricane_categories = {
         "min": 157,
         "max": null,
         "name": { "en": "Category 5", "fr": "catégorie 5" },
-        "img" : "../data/img/storm_categories/Category_5_hurricane_icon.svg"
+        "img" : `${basePath}/data/img/storm_categories/Category_5_hurricane_icon.svg`
     },
     "4": {
         "min": 113,
         "max": 136,
         "name": { "en": "Category 4", "fr": "catégorie 4" },
-        "img" : "../data/img/storm_categories/Category_4_hurricane_icon.svg"
+        "img" : `${basePath}/data/img/storm_categories/Category_4_hurricane_icon.svg`
     },
     "3": {
         "min": 96,
         "max": 112,
         "name": { "en": "Category 3", "fr": "catégorie 3" },
-        "img" : "../data/img/storm_categories/Category_3_hurricane_icon.svg"
+        "img" : `${basePath}/data/img/storm_categories/Category_3_hurricane_icon.svg`
     },
     "2": {
         "min": 83,
         "max": 95,
         "name": { "en": "Category 2", "fr": "catégorie 2" },
-        "img" : "../data/img/storm_categories/Category_2_hurricane_icon.svg"
+        "img" : `${basePath}/data/img/storm_categories/Category_2_hurricane_icon.svg`
     },
     "1": {
         "min": 64,
         "max": 82,
         "name": { "en": "Category 1", "fr": "catégorie 1" },
-        "img" : "../data/img/storm_categories/Category_1_hurricane_icon.svg"
+        "img" : `${basePath}/data/img/storm_categories/Category_1_hurricane_icon.svg`
     },
     "TS": {
         "min": 34,
         "max": 63,
         "name": { "en": "Tropical Storm", "fr": "Tempête tropicale" },
-        "img" : "../data/img/storm_categories/Category_TS_hurricane_icon.svg"
+        "img" : `${basePath}/data/img/storm_categories/Category_TS_hurricane_icon.svg`
     },
     "TD": {
         "min": 33,
         "max": null,
         "name": { "en": "Tropical Depression", "fr": "Dépression tropicale" },
-        "img" : "../data/img/storm_categories/Category_TD_hurricane_icon.svg"
+        "img" : `${basePath}/data/img/storm_categories/Category_TD_hurricane_icon.svg`
         
     },
 }

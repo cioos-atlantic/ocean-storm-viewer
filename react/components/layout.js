@@ -23,13 +23,6 @@ import { StormSearchQuery } from "./search_storm_in_header";
 
 export const siteTitle = 'Atlantic Hurricane Dashboard'
 
-
-export const empty_station_obj = {
-  pts: { features: [] }
-};
-
-// export const empty_station_obj = {pts:[]};
-
 /**
  * The Layout function in JavaScript sets up a webpage layout with header, main content, and footer,
  * displaying different content based on query parameters.
@@ -38,13 +31,13 @@ export const empty_station_obj = {
  * The content and components rendered within the `Layout` component depend on the values of `home`,
  * `topNav`, `logo`, `active_storm_data`, `station_data`, and `querystring`
  */
-export default function Layout({ children, home, topNav, logo, active_storm_data, station_data, querystring }) {
+export default function Layout({ children, home, topNav, logo, querystring }) {
 
   const [storms, setStorms] = useState([]);
   const [selected_forecast, setSelectedForecast] = useState({});
   const [storm_timeline, setStormTimeline] = useState([]);
   const [storm_points, setStormPoints] = useState(empty_storm_obj);
-  const [station_points, setStationPoints] = useState(station_data);
+  const [station_points, setStationPoints] = useState({});
   const [historicalStormData, setHistoricalStormData] = useState(empty_storm_obj); // State for storing historical storm data
   const [isSearchSubmitted, setIsSearchSubmitted] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
@@ -58,10 +51,6 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
   const active_storms = querystring.query.storms == "active";
   const historical_storms = querystring.query.storms == "historical";
   const about_page = querystring.query.storms == "hurricanes";
-
-  //const allDatasetDescriptions = useDatasetDescriptions();
-  //console.log(allDatasetDescriptions);
-  
 
   // useMemo() tells React to "memorize" the map component.
   // Without this, the map will get redrawn by many interactions 
@@ -78,7 +67,7 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
   let source_type = "";
 
   if (active_storms) {
-    storm_data_pass = active_storm_data;
+    storm_data_pass = empty_storm_obj;
     source_type = "active";
   }
 
@@ -87,13 +76,11 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
     source_type = "historical";
     console.debug("Historical Storm Data in Layout.js: ", historicalStormData);
   }
-  
-  console.debug("Storm_data_pass in Layout.js: ", storm_data_pass);
 
   return (
     <div className={styles.body}>
       <Head>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href={`${basePath}/favicon.ico`} />
         <meta
           name="description"
           content=""

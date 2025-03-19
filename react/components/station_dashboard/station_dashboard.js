@@ -2,13 +2,15 @@ import React from "react";
 import { FaWindowClose } from "react-icons/fa";
 import { empty_station_obj } from "../layout";
 import { useMediaQuery, Box } from "@mui/material";
-import { empty_station_obj } from "../layout";
-import { useMediaQuery, Box } from "@mui/material";
+//import { empty_station_obj } from "../layout";
+//import { useMediaQuery, Box } from "@mui/material";
 import StationDataLayout from "./station_layout_small_screen";
 import BasicTabs from "./tabs";
-import { RecentStationData, getMatchedStation } from "../utils/station_data_format_util";
-import BasicTabs from "./tabs";
-import { RecentStationData, getMatchedStation } from "../utils/station_data_format_util";
+//import { RecentStationData, getMatchedStation } from "../utils/station_data_format_util";
+//import BasicTabs from "./tabs";
+import { RecentStationData, getMatchedStation, getStationDataText, } from "../utils/station_data_format_util";
+//import BasicTabs from "./tabs";
+
 
 /**
  * The `StationDashboard` function renders a dashboard for a selected station with relevant data and
@@ -25,8 +27,10 @@ export default function StationDashboard({
   setSelectedTab,
   isDrawerOpen,
   isStormDetOpen, 
-  setIsStormDetOpen
+  setIsStormDetOpen,
+  source_type
 }) {
+
   const stationData = selected_station;
   
   const isExtraSmall = useMediaQuery("(max-width:600px)");
@@ -34,7 +38,9 @@ export default function StationDashboard({
 
   const stationName = stationData[0];
   const stationValues = stationData[1];
-  const dataText = RecentStationData(stationValues, time);
+  // Determine if active or historic
+  const isHistorical = source_type == "historical" ? true : false
+  const dataText = getStationDataText(stationValues, time, isHistorical);
 
   if (!dataText) return null;
 
@@ -187,5 +193,4 @@ export default function StationDashboard({
 
   );
 }
-  );
-}
+  

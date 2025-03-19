@@ -1,3 +1,5 @@
+import { basePath } from "@/next.config";
+
 /**
  * The function `handleStormHoveredData` extracts information from a point object representing a storm
  * and logs the storm's time.
@@ -42,7 +44,7 @@ export async function passStormData(stormTime, stormLat, stormLon ){
   // process.env reading empty
 
   //console.log(process)
-  const resource = await fetch(`/api/query_stations_historical?${query}`);
+  const resource = await fetch(`${basePath}/api/query_stations_historical?${query}`);
   
   const historical_station_data = await resource.json();
 
