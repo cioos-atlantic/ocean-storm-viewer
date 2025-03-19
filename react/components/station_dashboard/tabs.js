@@ -74,7 +74,8 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
    * "station_chart" and some inline styles for height, width, and padding. Inside the `div`, there is
    * a `RenderChart` component with props `sourceData`, `stationName`, and `varCategory`.
    */
-  console.log(stationData)
+  
+  //console.log(stationName, stationData, stationSummaryText, variablePresence, selectedTab, setSelectedTab)
 
   function generateGraph(selectedVar){
     return (
@@ -93,17 +94,18 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
 
   const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + stationName + ".html"
   const handleChange = (event, newValue) => {
+    console.log(newValue)
     setSelectedTab(newValue);
   };
 
   return (
     <Box sx={{ width: '100%'}}>
-      <TabContext value={String(selectedTab)}>
+      <TabContext value={(selectedTab)}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <TabList 
           value={selectedTab} 
           onChange={handleChange} 
-          aria-label="basic tabs example"
+          aria-label="station data tabs"
           variant="scrollable"
           scrollButtons="auto"
           allowScrollButtonsMobile // Ensures scroll buttons appear on mobile devices

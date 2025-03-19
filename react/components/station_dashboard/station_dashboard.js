@@ -2,7 +2,11 @@ import React from "react";
 import { FaWindowClose } from "react-icons/fa";
 import { empty_station_obj } from "../layout";
 import { useMediaQuery, Box } from "@mui/material";
+import { empty_station_obj } from "../layout";
+import { useMediaQuery, Box } from "@mui/material";
 import StationDataLayout from "./station_layout_small_screen";
+import BasicTabs from "./tabs";
+import { RecentStationData, getMatchedStation } from "../utils/station_data_format_util";
 import BasicTabs from "./tabs";
 import { RecentStationData, getMatchedStation } from "../utils/station_data_format_util";
 
@@ -82,6 +86,8 @@ export default function StationDashboard({
         sx={{
           fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
           padding: "10px",
+          fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
+          padding: "10px",
         }}
       >
         <button
@@ -96,7 +102,7 @@ export default function StationDashboard({
           <FaWindowClose />
         </button>
         <div>
-          <strong>{displayName}</strong>
+          <strong key={displayName}>{displayName}</strong>
         </div>
         <div>
           <a href={institutionLink} target="_blank" rel="noopener noreferrer">
@@ -151,7 +157,7 @@ export default function StationDashboard({
           <FaWindowClose />
         </button>
         <div>
-          <strong>{displayName}</strong>
+          <strong key={displayName}>{displayName}</strong>
         </div>
         <div>
           <a href={institutionLink} target="_blank" rel="noopener noreferrer">
@@ -179,5 +185,7 @@ export default function StationDashboard({
     </Box>
     )
 
+  );
+}
   );
 }
