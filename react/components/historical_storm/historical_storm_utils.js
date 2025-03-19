@@ -7,6 +7,7 @@ import Search from "@mui/icons-material/Search";
 import { Stack } from "@mui/system";
 import { empty_station_obj } from "../layout";
 import { handleStormNameClick } from "@/pages/about_page";
+import { basePath } from "@/next.config";
 
 /**
  * This JavaScript function fetches historical storm data from an API based on a specified time range
@@ -305,7 +306,7 @@ export function addSearchParams(stormName, stormYear, router) {
   const currentUrlParams = new URLSearchParams(window.location.search);
   currentUrlParams.set('name', stormName);
   currentUrlParams.set('season', stormYear);
-  router.push(`${window.location.pathname}?${currentUrlParams.toString()}`);
+  router.push(`?${currentUrlParams.toString()}`);
 }
 
 
@@ -351,13 +352,13 @@ export async function handleClick( storm, setStationPoints, setStormPoints, map,
 
 
   try {
-    const resource = await fetch(`/api/historical_storms?${query}`);
+    const resource = await fetch(`${basePath}/api/historical_storms?${query}`);
     const storm_data = await resource.json();
 
     
 
     //console.log(historical_station_data)
-    const station_resource = await fetch(`/api/query_stations_historical?${query}`);
+    const station_resource = await fetch(`${basePath}/api/query_stations_historical?${query}`);
     const historical_station_data = await station_resource.json();
 
     //console.log(Leaflet);
@@ -437,7 +438,7 @@ export async function handleSearch(storm_name, storm_year){
   console.log(query)
 
   try {
-    const resource = await fetch(`/api/historical_storms?${query}`);
+    const resource = await fetch(`${basePath}/api/historical_storms?${query}`);
     const storm_data = await resource.json();
     //console.log(storm_data);
 

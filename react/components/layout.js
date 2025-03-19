@@ -19,7 +19,7 @@ import HeaderNav from "./header_nav";
 import { StormSearchQuery } from "./search_storm_in_header";
 
 
-
+import { basePath } from "@/next.config";
 
 export const siteTitle = 'Atlantic Hurricane Dashboard'
 

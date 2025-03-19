@@ -7,6 +7,8 @@ import Image from "next/image";
 import { pastAtlStorms } from '@/data/pastStormsDetails';
 import parse from 'html-react-parser';
 import { faq } from '@/data/faq';
+import { basePath } from "@/next.config";
+
 
 
 /**

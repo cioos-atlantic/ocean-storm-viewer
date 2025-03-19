@@ -59,9 +59,6 @@ header_nav{
   margin: 0;
   padding: 0;
   gap: 1;
-}
-
-
   float: left; /* Align navigation links to the left */
   /*font-size: 1.25rem;  Slightly larger font for readability */
   width:100%
@@ -322,11 +319,7 @@ footer {
 
 
 .stormDetOpen{
-  width: 55%
-}
-
-
-
+  width: 55%;
   background: white; /* White background for clarity */
   color: black; /* Black text for readability */
   /*border-top: 3px solid #e55162;   */
@@ -376,8 +369,6 @@ footer {
 
 .station_dashboard .dash-header button.close {
   font-weight: bold; /* Bold close button */
-}
-
   float: right; /* Align button to the right */
   background-color: #eee; /* White background for button */
   border: 0; /* No border */
