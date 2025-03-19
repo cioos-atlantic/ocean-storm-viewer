@@ -67,16 +67,19 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       <FormControl variant="outlined" sx={{ width: "180px" }}>
         <InputLabel
           htmlFor="custom-outlined-input"
+          //shrink
           sx={{
             color: "#e55162", // Default label color
             fontSize: '14px',
             padding:'0px',
+            display: "none", // Hidden by default
             "&.Mui-focused": {
+              display: "block",
               color: "red", // Label color when focused
               transform: "translate(11px, -6px) scale(1)",
               fontSize:'12px'
             },
-            transform: "translate(8px, 12px) scale(1)", // Adjust label position when not focused
+            //transform: "translate(8px, 12px) scale(1)", // Adjust label position when not focused
             
           }}
         >
@@ -104,7 +107,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
               borderColor: "red", // Outline color when focused
             },
             "& .MuiInputBase-input": {
-              padding: "8px", // Adjust text input padding
+              padding: "9px 14px", // Adjust text input padding
             },
           }}
         />
