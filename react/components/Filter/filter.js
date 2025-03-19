@@ -15,6 +15,7 @@ import { makeStormList } from "../historical_storm/historical_storm_utils";
 import { filters, input_filters } from "@/components/Filter/filters_list";
 import { useRouter } from 'next/router';
 import { InputFilter } from "./inputFilter";
+import { basePath } from "@/next.config";
 
 
 
@@ -395,7 +396,7 @@ export async function processFilterRequest(filterParameters){
 
   console.log(query)
   try {
-    const resource = await fetch(`/api/filter_storms?${query}`);
+    const resource = await fetch(`${basePath}/api/filter_storms?${query}`);
     const storm_data = await resource.json();
     //console.log(storm_data);
 
