@@ -6,7 +6,8 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import { useEffect, useState } from 'react';
 import { IconButton, TextField, Box, Typography, Paper, Button, Stack, CardContent, Card, CardActions } from "@mui/material";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import Slider from '@mui/material/Slider';
+import {Slider, Tooltip} from '@mui/material';
+import { smallScreenIconButton } from './filter_utils';
 
 
 
@@ -74,6 +75,10 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelect
       color: startDate && endDate && startDate.isValid() && endDate.isValid() ? 'black' : 'black',
     },
   };
+
+  function handleIconClick(){
+    setShowDateSelection(prev => !prev);
+  }
   
 
 
@@ -87,13 +92,18 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelect
      }}
     startIcon={<CalendarMonthOutlinedIcon/>}
     endIcon={ !showDateSelection ? (showOptionsArrow):(closeOptionsArrow)}
-    sx={buttonStyle}>
+    sx={{...buttonStyle,
+      display: { xs: "none", md: "inline-flex" }, }
+    }>
       
       Select Date Range
       
       
 
     </Button>
+    {smallScreenIconButton('Select Date Range', handleIconClick, buttonStyle, <CalendarMonthOutlinedIcon/>)}
+    
+
     {showDateSelection && 
       (<DateDisplay 
         startDate={startDate}

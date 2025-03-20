@@ -725,7 +725,6 @@ footer {
   align-items: center;
   justify-content: center;
   position: relative;
-  display: inline-flex;
   max-width: 100%;
   font-size: 0.8125rem;
   height: 32px;
@@ -883,3 +882,23 @@ footer {
 }
 
 /* Adjust the width of the Draw Control toolbar */
+
+.filters-speed-dial{
+  color: #e55162;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  margin: 8px;
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, opacity 0.8s;
+  opacity: 1;
+  cursor: pointer;
+  transition-delay: 30ms;
+  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 
+              0px 6px 10px 0px rgba(0, 0, 0, 0.14), 
+              0px 1px 18px 0px rgba(0, 0, 0, 0.12);}
+
+  .filters-speed-dial:hover{
+    color: white;
+    background-color: #e55162;}

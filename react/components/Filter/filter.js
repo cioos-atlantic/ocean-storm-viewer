@@ -1,5 +1,5 @@
-import { IconButton, TextField, Box, Typography, Paper, Button } from "@mui/material";
-import { useEffect, useState } from 'react';
+import { IconButton, TextField, Box, Typography, Paper, Button, SpeedDial,  SpeedDialIcon, SpeedDialAction, Tooltip } from "@mui/material";
+import { useEffect, useState, Fragment } from 'react';
 import Stack from '@mui/material/Stack';
 
 //import Chip from '@mui/material/Chip';
@@ -16,6 +16,10 @@ import { filters, input_filters } from "@/components/Filter/filters_list";
 import { useRouter } from 'next/router';
 import { InputFilter } from "./inputFilter";
 import { basePath } from "@/next.config";
+import { smallScreenIconButton } from "./filter_utils";
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+
+
 
 
 
@@ -44,62 +48,11 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
   const [filterParameters, setFilterParameters] = useState([]); 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  
-  
 
+  const [openSpeedDial, setOpenSpeedDial] = useState(false);
 
+  const handleSpeedDialToggle = () => setOpenSpeedDial(prev => !prev);
 
-  function handleClick(){
-    setShowFilterIcons((prev) => !prev); // Toggle form visibility
-  };
-
-  return(
-    <>
-      {/*
-        {!showFilterIcons &&
-          (<IconButton  aria-label='filter'
-        id='filter-icon'
-        onClick={() => handleClick()}>
-          <FilterAltIcon
-          sx={{
-            fontSize: 'larger',          
-          }}
-          />
-        </IconButton>)
-        } */
-      }
-      
-      {//showFilterIcons && (
-        <FilterIcons
-        setShowFilterIcons = {setShowFilterIcons}
-        showFilterOptions={showFilterOptions}
-        setShowFilterOptions={setShowFilterOptions}
-        setSelectedOptions={setSelectedOptions}
-        selectedOptions={selectedOptions}
-        filterParameters={filterParameters}
-        setFilterParameters={setFilterParameters}
-        startDate={startDate}
-        endDate={endDate}
-        setStartDate={setStartDate}
-        setEndDate={setEndDate}
-        setFilterResult = {setFilterResult}
-        setReturnFilterResult = {setReturnFilterResult}
-        setIsDrawerOpen= {setIsDrawerOpen}
-        bboxFilterCoordinates={bboxFilterCoordinates}
-        setBboxFilterCoordinates={setBboxFilterCoordinates}
-        polyFilterCoords={polyFilterCoords}
-        setPolyFilterCoords={setPolyFilterCoords}
-        clearShapesRef={clearShapesRef}
-
-        
-        />
-      //)
-      }
-    </>
-  )
-}
-
-function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions, filterParameters, setFilterParameters, startDate, endDate,setStartDate, setEndDate, setFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords, clearShapesRef  }){
 
   const router = useRouter(); // Next.js useRouter
 
@@ -155,16 +108,115 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
     setReturnFilterResult(true);
 
   }
+  
+  
 
   return(
+
     <>
-    <Stack
-    direction="row"
-    spacing={0.1}
-    className='filter-icons-list'>
-      {
-        input_filters.map((input_filter, index) => {
+      <SpeedDial
+      
+        ariaLabel="Filter Options"
+        sx={{ position: 'absolute', bottom: 16, right: 16, display: { xs: "block", md: "none" } }}
+        icon={<FilterAltIcon openIcon={<KeyboardDoubleArrowDownIcon />} />}
+        onClick={handleSpeedDialToggle}
+        open={openSpeedDial}
+      >
+       
+
+       <SpeedDialAction
+          
+          icon={<IconButton className="filters-speed-dial">X</IconButton>}
+          tooltipTitle="Clear Filters"
+          onClick={(e) => {
+            e.stopPropagation(); 
+            handleClearAll()}}
+        />
+        <SpeedDialAction
+        className="filters-speed-dial"
+          icon={<PublishRoundedIcon />}
+          tooltipTitle="Submit"
+          onClick={(e) => {
+            e.stopPropagation(); 
+            handleFilterSubmit()}}
+        />
+
+        
+        { openSpeedDial && (input_filters.map((input_filter, index) => {
+            return(
+
+            <div className="filter-group" key={index}>
+  
+
+              <InputFilter
+              input_filter={input_filter}
+              showOptionsArrow={showOptionsArrow}
+              closeOptionsArrow={closeOptionsArrow}
+              setSelectedOptions={setSelectedOptions}
+              selectedOptions={selectedOptions}
+              showFilterOptions={showFilterOptions}
+              setShowFilterOptions={setShowFilterOptions}
+              
+              />
+
+            </div>
+
+
+          )
+        }))
+          
+      }
+      { openSpeedDial && (<div className="filter-group">
+        <RenderDateFilter
+          showOptionsArrow={showOptionsArrow}
+          closeOptionsArrow={closeOptionsArrow}
+          setSelectedOptions={setSelectedOptions}
+          startDate={startDate}
+          endDate={endDate}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+        />
+
+      </div>
+)
+          
+      }
+      { openSpeedDial && (filters.map((filter, index) => {
           return(
+
+            <div className="filter-group" key={index}>
+  
+
+              <Badges
+              filter={filter}
+              showFilterOptions={showFilterOptions}
+              setShowFilterOptions={setShowFilterOptions}
+              setSelectedOptions={setSelectedOptions}
+              selectedOptions={selectedOptions}
+              />
+
+            </div>
+
+
+          )
+        }))
+          
+      }
+        
+
+
+        
+      </SpeedDial>
+      
+      
+      <Stack
+        direction="row"
+        spacing={0.1}
+        sx={{display: { xs: "none", md: "flex" },}}
+        className='filter-icons-list'>
+        {
+          input_filters.map((input_filter, index) => {
+            return(
 
             <div className="filter-group" key={index}>
   
@@ -240,13 +292,11 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
 
 
     </Stack>
-    
-
-
-  </>
+    </>
   )
-  
 }
+
+
 
 
 
@@ -284,9 +334,15 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
     }));
     console.log({ [name]: [] }); // Log the cleared options
   };
+
+  function handleIconClick(){setShowFilterOptions((prev) => ({
+    ...prev,
+    [filter.name]: !prev[filter.name],
+  }));}
   
   return(
     <>
+
     <Button
     className="filter-badge"
     onClick= {() => {
@@ -297,13 +353,19 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
      }}
     startIcon={filter.icon}
     endIcon={ !showFilterOptions[filter.name] ? (showOptionsArrow):(closeOptionsArrow)}
-    sx={buttonStyle}>
+    sx={{...buttonStyle,
+      display: { xs: "none", md: "inline-flex" }}
+    }>
       
       {filter.display_name}
       
       {console.log(showFilterOptions)}
 
     </Button>
+
+    {smallScreenIconButton(filter.display_name, handleIconClick, buttonStyle, filter.icon)}
+    
+    
 
     {showFilterOptions[filter.name] && (
       <Paper className="filter-dropdown-menu">

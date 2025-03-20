@@ -1,6 +1,7 @@
-import { Button, CardActions, CardContent, Stack, Card, Box, TextField, Paper,  OutlinedInput, Input, FormControl, InputLabel} from "@mui/material"
+import { Button, CardActions, CardContent, Stack, Card, Box, TextField, Paper,  OutlinedInput, Input, FormControl, InputLabel, IconButton, Tooltip} from "@mui/material"
 import { input_filters } from "./filters_list"
 import { useEffect, useState } from 'react';
+import { smallScreenIconButton } from "./filter_utils";
 
 
 
@@ -34,6 +35,13 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     }));
     setInputValue(""); // Reset input field
   };
+
+  function handleIconClick(){
+    setShowFilterOptions((prev) => ({
+      ...prev,
+      [input_filter.name]: !prev[input_filter.name],
+    }));
+  }
   return(
     <>
     <Button
@@ -46,10 +54,17 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       }}
       startIcon={input_filter.icon}
       endIcon={ !showFilterOptions[input_filter.name] ? (showOptionsArrow):(closeOptionsArrow)}
-      sx={buttonStyle}
+      sx={{...buttonStyle,
+        display: { xs: "none", md: "inline-flex" }}
+      }
     >{input_filter.display_name}
 
     </Button>
+
+    {smallScreenIconButton(input_filter.display_name, handleIconClick, buttonStyle, input_filter.icon)}
+
+    
+    
     {/* Filter Input Popup */}
     {showFilterOptions[input_filter.name] && (
   <Paper
