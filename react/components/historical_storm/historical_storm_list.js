@@ -134,7 +134,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           
           
         </>
-         )};
+         )}
     </>
   );
 
