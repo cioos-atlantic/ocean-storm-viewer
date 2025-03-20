@@ -3,6 +3,7 @@ import { basePath } from "@/next.config";
 import { populateStormDetails, populateAllStormDetails } from '../lib/storm_utils';
 import StormListItem from "./storm_list_item";
 // import { parse, format } from 'date-fns';
+import LoadingScreen from "./loading_screen";
 
 export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
 
@@ -42,6 +43,7 @@ export default function ActiveStormList({ setStormPoints, map, Leaflet, setSelec
   const [active_station_data, setActiveStationData] = useState(null)
   const [is_loading_storm, setActiveStormLoading] = useState(true)
   const [is_loading_station, setActiveStationLoading] = useState(true)
+  const [pageLoading, setPageLoading] = useState(false);
 
   // Fetch active storm data
   useEffect(() => {
@@ -100,37 +102,44 @@ export default function ActiveStormList({ setStormPoints, map, Leaflet, setSelec
   }
 
   return (
-    <>
-      <h2>Active Storms: </h2>
-      <div id="storm_search_result">
-        <ul className="results">
-          {active_storms ? (
-            <li key={"show_all_storms"} >
-              <a onClick={(e) => { populateAllStormDetails(e, storm_details, setSelectedStorm, setStormPoints) }}>Show All</a>
-            </li>
-          ) : (
-            <p>No data exists for active storms right now</p>
-          )}
-        </ul>
+     <>
+        {pageLoading ? (
+            <LoadingScreen/>
+            ) : (
+              <>
+                <h2>Active Storms: </h2>
+                <div id="storm_search_result">
+                  <ul className="results">
+                    {active_storms ? (
+                      <li key={"show_all_storms"} >
+                        <a onClick={(e) => { setPageLoading(true);
+                          populateAllStormDetails(e, storm_details, setSelectedStorm, setStormPoints); setPageLoading(false);}}>Show All</a>
+                      </li>
+                    ) : (
+                      <p>No data exists for active storms right now</p>
+                    )}
+                  </ul>
 
-        <div>
-          {ib_storm_list.map(storm_name => {
-            return (
-              <StormListItem
-                key={storm_name + storm_details[storm_name].year}
-                storm_name={storm_name}
-                storm_data={storm_details[storm_name]}
-                setSelectedStorm={setSelectedStorm}
-                setStormPoints={setStormPoints}
-                is_selected={(storm_name == selected_storm)}
-                map={map}
-                Leaflet={Leaflet}
-                setSelectedStation={setSelectedStation}
-              />
-            )
-          })}
-        </div>
-      </div>
+                  <div>
+                    {ib_storm_list.map(storm_name => {
+                      return (
+                        <StormListItem
+                          key={storm_name + storm_details[storm_name].year}
+                          storm_name={storm_name}
+                          storm_data={storm_details[storm_name]}
+                          setSelectedStorm={setSelectedStorm}
+                          setStormPoints={setStormPoints}
+                          is_selected={(storm_name == selected_storm)}
+                          map={map}
+                          Leaflet={Leaflet}
+                          setSelectedStation={setSelectedStation}
+                        />
+                      )
+                    })}
+                  </div>
+                </div>
+              </>
+          )};
     </>
   )
 }
