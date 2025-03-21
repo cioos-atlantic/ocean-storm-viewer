@@ -148,13 +148,15 @@ footer {
 /* Leaflet Control Position Adjustments */
 
 .leaflet-control-container .leaflet-top {
-  top: 75px; /* Adjust top to avoid overlapping header */
+  top: 150px; /* Adjust top to avoid overlapping header */
 }
 
 .leaflet-control-container .leaflet-bottom {
   bottom: 50px; /* Adjust bottom to avoid overlapping footer */
   
 }
+
+
 
 
 /* Map Layer Styling */
@@ -711,13 +713,10 @@ footer {
 
 .filter-dropdown-menu {
   position: absolute;
-  top: 100%;           /* Positions it directly below the button */
-  left: 0;
   background-color: white;
   border: 1px solid #ccc;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 9024;
-  width: 100%;
   border-radius: 8px;
   padding: 0px;
   
@@ -798,6 +797,7 @@ footer {
 .date-card-content{
   padding: 9px;
   text-align: center;
+  overflow: scroll;
 }
 
 

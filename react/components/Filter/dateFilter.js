@@ -154,14 +154,19 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
     <Card
      sx={{
       position: 'absolute',
-      top: '100%',
-      width: '340px',
+      top:{xs: '6px', md: '100%',},
+      right:{xs: '100%', md: '0px',},
+      width:{xs: '220px', md: '340px',},
+      height:{xs: '210px',  md: 'inherit',},
+      overflow:{xs: 'scroll', md: 'auto', },
       padding: '6px',
+      
 
      }}>
       <CardContent
-      className='date-card-content'>
-      <Box>
+      className='date-card-content'
+      sx={{display: { xs: "none", md: "block" },}}>
+      <Box >
             {shortcutsItems.map((shortcut, indx) => {
               return(
                 <Button
@@ -178,6 +183,13 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
       className='date-card-content'>
         
         <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Box 
+          display="flex" 
+          flexDirection={{ xs: "column", md: "row" }} // Column on small screens, row on medium
+          gap={2} 
+          justifyContent="center" // Centers horizontally
+          alignItems="center" // Centers vertically
+          >
 
           <DatePicker 
             defaultValue={dayjs()} 
@@ -185,18 +197,24 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
             className='filter-time-input'
             value={startDate}
             onChange={setStartDate}
-            slotProps={slotProps}/>
+            slotProps={slotProps}
+            />
           <DatePicker 
             defaultValue={dayjs()} 
             label='End Date' 
             className='filter-time-input'
             value={endDate}
             onChange={setEndDate}
-            slotProps={slotProps} />
+            slotProps={slotProps}
+            
+             />
+            </Box>
         </LocalizationProvider>
       </CardContent>
+      
       <CardContent
-      className='date-card-content'>
+      className='date-card-content'
+      >
         <RangeSlider
           startDate={startDate}
           endDate={endDate}
@@ -253,13 +271,56 @@ export function RangeSlider({ startDate, endDate, setStartDate, setEndDate }) {
   };
 
   return (
-    <Box sx={{ width: 300 }}>
+    <Box sx={{ width: {sx: 150, md: 300} }}>
       <Slider
       sx={{
         width: '100%',
         color: '#e55162',
         
       }}
+        getAriaLabel={() => 'Year range'}
+        value={value}
+        onChange={handleChange}
+        valueLabelDisplay="auto"
+        min={1860}
+        max={currentYear}
+        marks={[
+          { value: 1860, label: '1860' },
+          { value: 1900, label: '1900' },
+          { value: 1980, label: '1980' },
+          { value: 2020, label: '2020' },
+          
+        ]}
+      />
+    </Box>
+  );
+}
+
+export function VerticalSlider({ startDate, endDate, setStartDate, setEndDate }) {
+  const currentYear = dayjs().year();
+  
+  // Independent state for the slider's range
+  const [value, setValue] = useState([1860, currentYear]);
+
+  const handleChange = (event, newValue) => {
+    event.propagation;
+    setValue(newValue);
+    setStartDate(dayjs().year(newValue[0]));
+    setEndDate(dayjs().year(newValue[1]));
+  };
+  function getAriaValueText(value) {
+    return `${value}°C`;
+  }
+
+  return (
+    <Box >
+
+      <Slider
+      sx={{
+        height: '200px',
+        color: '#e55162',
+      }}
+        orientation='vertical'
         getAriaLabel={() => 'Year range'}
         value={value}
         onChange={handleChange}

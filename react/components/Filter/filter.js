@@ -368,12 +368,20 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
     
 
     {showFilterOptions[filter.name] && (
-      <Paper className="filter-dropdown-menu">
+      <Paper className="filter-dropdown-menu"
+      sx={{top:{xs: '6px', md: '100%',},
+          right:{xs: '100%', md: '0px',},
+          //transform:{xs: 'translateX(-100%)', },
+          width:{xs: '150px', md: '100%' }}}>
 
         <Stack
         direction="column"
         sx={{
           padding: '5px',
+          height: '200px',
+          overflow: 'scroll',
+          width: '100%',
+
         }}
         spacing={1}>
           {filter.options.map((option, optIndex) => {
