@@ -107,7 +107,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
 
       {console.log(searchResult)}
 
-      {isSearchSubmitted ? (<RenderSearchResult 
+      {/*{isSearchSubmitted ? (<RenderSearchResult 
                 searchResult={searchResult}
                 router={router}
                 setIsSearchSubmitted={setIsSearchSubmitted}
@@ -116,13 +116,17 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
       (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation))}
 
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
+      */}
 
-      {returnFilterResult && (<RenderFilterResult 
-                filterResult={filterResult}
-                router={router}
-                setReturnFilterResult={setReturnFilterResult}
+      {returnFilterResult ? 
+        (<RenderFilterResult 
+          filterResult={filterResult}
+          router={router}
+          setReturnFilterResult={setReturnFilterResult}
                 
-                 />)}
+        />):
+        (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation))}
+      <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
 
       
        

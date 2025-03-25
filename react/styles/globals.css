@@ -521,11 +521,12 @@ footer {
   cursor: pointer;
   text-align: center;
   font-weight: 100;
+  padding: 1.5px;
 
 }
 .search-output-space{
   text-align: left;
-  padding: 5px;
+  padding: 12px;
   background-color: #e55162;
   height: 300px;
   border-radius: 4px;
