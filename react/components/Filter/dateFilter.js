@@ -127,23 +127,25 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
    
 
   const slotProps={
+    popper:{ sx: { zIndex: 9999 },},
+    
     textField: {
       sx: { 
         color: '#e55162', // Change text color
         '& label': { color: '#e55162' }, // Change label color
         //'& input': { color: '#e55162' }, // Change input text color
         '& .MuiOutlinedInput-root': {
-          height:{sm:'40px !important', md:'50px !important'},
-          fontSize:{sm:'12px !important', md:'14px !important'},
+          height:{sm:'40px ', md:'50px'},
+          fontSize:{sm:'12px ', md:'14px '},
           '& fieldset': { borderColor: '#e55162' }, // Default border color
           '&:hover fieldset': { borderColor: '#d43b50' }, // Hover effect
           '&.Mui-focused fieldset': { borderColor: '#a32e3b' }, // Focused border color
         },
         '& .MuiOutlinedInput-notchedOutline': {
-          height:'inherit !important',
+          height:'inherit',
         },
         '& .MuiInputLabel-root': {
-          fontSize:{sm:'14px !important', md:'16px !important'},
+          fontSize:{sm:'14px', md:'16px'},
           left: {sm:'-2px', md:'-3px'},
         }
       },

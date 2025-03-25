@@ -148,7 +148,7 @@ footer {
 /* Leaflet Control Position Adjustments */
 
 .leaflet-control-container .leaflet-top {
-  top: 150px; /* Adjust top to avoid overlapping header */
+  top: 70px; /* Adjust top to avoid overlapping header */
 }
 
 .leaflet-control-container .leaflet-bottom {
@@ -796,9 +796,9 @@ footer {
 
 
 
-.MuiPickersPopper-root {
-  z-index: 9999 !important; /* Ensure it appears above other elements */
-}
+ /*.MuiPickersPopper-root {
+  z-index: 9999 !important; /* Ensure it appears above other elements 
+ }*/
 
 
 .date-card-content{
