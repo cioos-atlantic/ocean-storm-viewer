@@ -72,7 +72,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     className="input-filter"
     sx={{top:{xs: '6px', md: '100%',},
     right:{xs: '100%', md: '0px',},
-    width:{xs: '150px', md: '200px' } }}      
+    width:{xs: '150px', md: '180px' } }}      
   >
     <Box
       component="form"
@@ -82,7 +82,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       className="input-filter-box"
     >
       {/* Native Input Field */}
-      <FormControl variant="outlined" sx={{ width:{xs: '130px', md: '180px' } }}>
+      <FormControl variant="outlined" sx={{ width:{xs: '130px', md: '160px' } }}>
         <InputLabel
           htmlFor="custom-outlined-input"
           //shrink

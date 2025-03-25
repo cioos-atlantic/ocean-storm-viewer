@@ -716,7 +716,9 @@ footer {
   position: absolute;
   /*background-color: white;*/
   background-color: #f4f4f4;
-  border: 1px solid #ccc;
+  /*border: 1px solid #ccc;*/
+  border: 2px solid #e55162;
+  border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 9024;
   border-radius: 8px;

@@ -165,12 +165,15 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
       position: 'absolute',
       top:{xs: '6px', md: '100%',},
       right:{xs: '100%', md: '0px',},
-      width:{xs: '220px', md: '340px',},
+      width:{xs: '220px', md: '320px',},
       height:{xs: '200px',  md: 'inherit',},
       overflow:{xs: 'scroll', md: 'auto', },
       padding: '6px',
       backgroundColor: "#f4f4f4",
       alignContent: 'center',
+      border: '2px solid #e55162',
+      borderRadius: '10px',
+      zIndex:'9001',
       
 
      }}>
