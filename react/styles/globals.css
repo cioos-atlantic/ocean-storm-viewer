@@ -713,7 +713,8 @@ footer {
 
 .filter-dropdown-menu {
   position: absolute;
-  background-color: white;
+  /*background-color: white;*/
+  background-color: #f4f4f4;
   border: 1px solid #ccc;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 9024;

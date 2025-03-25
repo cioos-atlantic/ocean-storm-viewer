@@ -166,9 +166,11 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
       top:{xs: '6px', md: '100%',},
       right:{xs: '100%', md: '0px',},
       width:{xs: '220px', md: '340px',},
-      height:{xs: '210px',  md: 'inherit',},
+      height:{xs: '200px',  md: 'inherit',},
       overflow:{xs: 'scroll', md: 'auto', },
       padding: '6px',
+      backgroundColor: "#f4f4f4",
+      alignContent: 'center',
       
 
      }}>
