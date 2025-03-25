@@ -133,10 +133,19 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
         '& label': { color: '#e55162' }, // Change label color
         //'& input': { color: '#e55162' }, // Change input text color
         '& .MuiOutlinedInput-root': {
+          height:{sm:'40px !important', md:'50px !important'},
+          fontSize:{sm:'12px !important', md:'14px !important'},
           '& fieldset': { borderColor: '#e55162' }, // Default border color
           '&:hover fieldset': { borderColor: '#d43b50' }, // Hover effect
           '&.Mui-focused fieldset': { borderColor: '#a32e3b' }, // Focused border color
         },
+        '& .MuiOutlinedInput-notchedOutline': {
+          height:'inherit !important',
+        },
+        '& .MuiInputLabel-root': {
+          fontSize:{sm:'14px !important', md:'16px !important'},
+          left: {sm:'-2px', md:'-3px'},
+        }
       },
     },
     openPickerIcon: {

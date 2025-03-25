@@ -70,6 +70,9 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
   <Paper
     elevation={3}
     className="input-filter"
+    sx={{top:{xs: '6px', md: '100%',},
+    right:{xs: '100%', md: '0px',},
+    width:{xs: '150px', md: '200px' } }}      
   >
     <Box
       component="form"
@@ -79,7 +82,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       className="input-filter-box"
     >
       {/* Native Input Field */}
-      <FormControl variant="outlined" sx={{ width: "180px" }}>
+      <FormControl variant="outlined" sx={{ width:{xs: '130px', md: '180px' } }}>
         <InputLabel
           htmlFor="custom-outlined-input"
           //shrink
@@ -108,7 +111,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
           onChange={(e) => setInputValue(e.target.value)}
           label={input_filter.display_name}
           sx={{
-            width:'170px',
+            width:'100%',
             height: "35px",
             padding: "6px",
             fontSize: "14px",
