@@ -90,7 +90,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
             color: "#e55162", // Default label color
             fontSize: '14px',
             padding:'0px',
-            display: "none", // Hidden by default
+            display: inputValue ? "block" : "none", // Show if input has value
             "&.Mui-focused": {
               display: "block",
               color: "red", // Label color when focused

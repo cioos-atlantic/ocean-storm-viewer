@@ -51,7 +51,15 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
 
   const [openSpeedDial, setOpenSpeedDial] = useState(false);
 
-  const handleSpeedDialToggle = () => setOpenSpeedDial(prev => !prev);
+  //const handleSpeedDialToggle = () => setOpenSpeedDial(prev => !prev);
+  const handleOpen = () => setOpenSpeedDial(true);
+  const handleClose = (event, reason) => {
+    if (reason !== "toggle") {
+      setOpenSpeedDial(false);
+    }
+  };
+
+
 
 
   const router = useRouter(); // Next.js useRouter
@@ -119,8 +127,10 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
         ariaLabel="Filter Options"
         sx={{ position: 'absolute', bottom: 16, right: 16, display: { xs: "block", md: "none" } }}
         icon={<FilterAltIcon openIcon={<KeyboardDoubleArrowDownIcon />} />}
-        onClick={handleSpeedDialToggle}
+        //onClick={handleSpeedDialToggle}
         open={openSpeedDial}
+        onOpen={handleOpen}
+        onClose={handleClose}
       >
        
 
