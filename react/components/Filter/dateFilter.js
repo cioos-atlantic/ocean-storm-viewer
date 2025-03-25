@@ -185,7 +185,7 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
         <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Box 
           display="flex" 
-          flexDirection={{ xs: "column", md: "row" }} // Column on small screens, row on medium
+          flexDirection={{ xs: "row", md: "row" }} // Column on small screens, row on medium
           gap={2} 
           justifyContent="center" // Centers horizontally
           alignItems="center" // Centers vertically
@@ -198,6 +198,7 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
             value={startDate}
             onChange={setStartDate}
             slotProps={slotProps}
+            
             />
           <DatePicker 
             defaultValue={dayjs()} 
@@ -206,6 +207,8 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
             value={endDate}
             onChange={setEndDate}
             slotProps={slotProps}
+            
+            
             
              />
             </Box>
@@ -271,17 +274,17 @@ export function RangeSlider({ startDate, endDate, setStartDate, setEndDate }) {
   };
 
   return (
-    <Box sx={{ width: {sx: 150, md: 300} }}>
+    <Box sx={{ width: {sx: 130, md: 300} }}>
       <Slider
       sx={{
-        width: '100%',
+        width: '85%',
         color: '#e55162',
         
       }}
         getAriaLabel={() => 'Year range'}
         value={value}
         onChange={handleChange}
-        valueLabelDisplay="auto"
+        //valueLabelDisplay="auto"
         min={1860}
         max={currentYear}
         marks={[
