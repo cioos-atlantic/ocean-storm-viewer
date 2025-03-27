@@ -791,7 +791,9 @@ footer {
   width: 140px !important;
 }
 
-
+.filter-time-input .MuiInputLabel-root.Mui-focused {
+  color: black; /* Change label color on focus */
+}
 
 
 
@@ -804,7 +806,7 @@ footer {
 .date-card-content{
   padding: 9px;
   text-align: center;
-  overflow: scroll;
+  overflow: hidden;
 }
 
 

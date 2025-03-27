@@ -135,18 +135,20 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
         '& label': { color: '#e55162' }, // Change label color
         //'& input': { color: '#e55162' }, // Change input text color
         '& .MuiOutlinedInput-root': {
-          height:{sm:'40px ', md:'50px'},
-          fontSize:{sm:'12px ', md:'14px '},
+          height:{sm:'40px !important', md:'50px !important'},
+          fontSize:{sm:'12px !important', md:'14px !important'},
           '& fieldset': { borderColor: '#e55162' }, // Default border color
           '&:hover fieldset': { borderColor: '#d43b50' }, // Hover effect
-          '&.Mui-focused fieldset': { borderColor: '#a32e3b' }, // Focused border color
+          '&.Mui-focused fieldset': { borderColor: 'red' }, // Focused border color
         },
         '& .MuiOutlinedInput-notchedOutline': {
-          height:'inherit',
+          height:'inherit !important',
         },
         '& .MuiInputLabel-root': {
-          fontSize:{sm:'14px', md:'16px'},
-          left: {sm:'-2px', md:'-3px'},
+          fontSize:{sm:'14px !important', md:'16px !important'},
+          left: {sm:'-2px !important', md:'-3px !important'},
+          
+          
         }
       },
     },
@@ -169,7 +171,7 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
       right:{xs: '100%', md: '0px',},
       width:{xs: '220px', md: '320px',},
       height:{xs: '200px',  md: 'inherit',},
-      overflow:{xs: 'scroll', md: 'auto', },
+      overflow:{xs: 'scroll', md: 'hidden', },
       padding: '6px',
       backgroundColor: "#f4f4f4",
       alignContent: 'center',
