@@ -24,6 +24,7 @@ import { RenderBoundingBox } from "./Filter/boundingBox";
 //import EditFeature from "./Filter/Edit_spatial_filter";
 //import StationDashboardTest from "./station_dashboard/station_dashboard";
 import { RenderSpatialFilter } from "./Filter/Edit_spatial_filter";
+import StormDashboard from "./storm_dashboard/storm_dashboard";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
@@ -73,6 +74,14 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             setIsDrawerOpen= {setIsDrawerOpen}
             isDrawerOpen= {isDrawerOpen}/>
          */}
+        {hover_marker !== empty_point_obj && (
+          <StormDashboard
+            storm_data={storm_data}
+            storm_points={storm_points}
+            source_type={source_type}
+            hover_point={hover_marker}
+            isDrawerOpen={isDrawerOpen}/>
+         )}
         {
           <RenderFilter
           filterResult = {filterResult}
