@@ -125,7 +125,7 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
       <SpeedDial
       
         ariaLabel="Filter Options"
-        sx={{ position: 'absolute', bottom: 16, right: 16, display: { xs: "block", md: "none" } }}
+        sx={{ position: 'absolute', bottom: 25, right: 7, display: { xs: "block", md: "none" } }}
         icon={<FilterAltIcon openIcon={<KeyboardDoubleArrowDownIcon />} />}
         //onClick={handleSpeedDialToggle}
         open={openSpeedDial}
