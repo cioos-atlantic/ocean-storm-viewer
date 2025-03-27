@@ -122,11 +122,19 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
   return(
 
     <>
+    
       <SpeedDial
       
         ariaLabel="Filter Options"
-        sx={{ position: 'absolute', bottom: 25, right: 7, display: { xs: "block", md: "none" } }}
-        icon={<FilterAltIcon openIcon={<KeyboardDoubleArrowDownIcon />} />}
+        sx={{ position: 'absolute', bottom: 25, right: 7, 
+         display: { xs: "block", md: "none" },  '& .MuiSpeedDial-fab': {
+          backgroundColor: '#e55162',  // Change SpeedDial button background color
+          '&:hover': {
+            backgroundColor: '#b9acac', // Change SpeedDial button hover color
+          }
+        }}}
+        icon={<FilterAltIcon openIcon={<KeyboardDoubleArrowDownIcon />}/>}
+        
         //onClick={handleSpeedDialToggle}
         open={openSpeedDial}
         onOpen={handleOpen}
