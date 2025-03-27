@@ -118,6 +118,13 @@ const storm_types = {
  * @returns {JSX.Element} - A React Marker component with event handlers and custom icon.
  */
 export default function StormMarker({ storm_point_data, setHoverMarker, setShowPopup, isStormDetOpen, setIsStormDetOpen, storm_point_hover }) {
+    const [isMounted, setIsMounted] = useState(false);
+
+    // Ensure component is mounted
+    useEffect(() => {
+        setIsMounted(true);
+        return () => setIsMounted(false);
+    }, []);
 
     const position = flip_coords(storm_point_data.geometry.coordinates);
     const theme = useTheme();
@@ -176,6 +183,8 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setShowP
         })();
     }, [storm_category, svgPath, storm_icon]);
 
+    if (!isMounted) return null; // Prevent rendering before the component is mounted
+
     return (
         
         <Marker
@@ -195,7 +204,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setShowP
                 }
             }}
             icon={customIcon}
-        >{isSmallScreen && (
+        >{isSmallScreen ? (
             <Tooltip direction="top" offset={[0, -10]} permanent={false}>
                 {<StormPointDetailsSmallScreen
                     storm_point_hover={storm_point_hover}
@@ -203,7 +212,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setShowP
                     setHoverMarker={setHoverMarker}
                     />}
             </Tooltip>
-        )}
+        ):(null)}
         </Marker>
     );
 }
