@@ -1,5 +1,5 @@
 // https://iconoir.com/ icon library that can be installed via npm
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup, Marker, Popup } from 'react-leaflet'
 import Drawer from '@/components/drawer';
 
@@ -18,22 +18,34 @@ import StormPointDetails, { empty_point_obj } from "@/components/storm_point_det
 import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
 import { empty_station_obj } from "./layout";
 import StationDashboard from "./station_dashboard/station_dashboard";
-
+import { RenderStormSearch } from "./render_storm_search";
+import { RenderFilter } from "./Filter/filter";
+import { RenderBoundingBox } from "./Filter/boundingBox";
+//import EditFeature from "./Filter/Edit_spatial_filter";
+//import StationDashboardTest from "./station_dashboard/station_dashboard";
+import { RenderSpatialFilter } from "./Filter/Edit_spatial_filter";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
 
-export default function Map({ children, storm_points, storm_data, station_data, source_type, setStormPoints, setStationPoints, setHistoricalStormData }) {
+export default function Map({ children, storm_points, storm_data, station_data, source_type, setStormPoints, setStationPoints, setHistoricalStormData, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, setIsDrawerOpen, isDrawerOpen,  }) {
+
+  const clearShapesRef = useRef(null);
 
   // The state variable that contains the storm point currently being hovered 
   // over or clicked on
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
 
   // The state variable that contains the station that was last clicked on
-  const [selected_station, setSelectedStation] = useState(empty_station_obj);
+  
   const [selected_tab, setSelectedTab] = useState(0);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  //const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isStormDetOpen, setIsStormDetOpen] = useState(false); 
+  const [selected_station, setSelectedStation] = useState(empty_station_obj);
+  const [filterResult, setFilterResult] = useState({}); 
+  const [returnFilterResult, setReturnFilterResult] = useState(false);
+  const [bboxFilterCoordinates, setBboxFilterCoordinates]= useState('');
+  const [polyFilterCoords, setPolyFilterCoords] = useState('');
 
   const allDatasetDescriptions = useDatasetDescriptions();
 
@@ -52,6 +64,30 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           />
         )}
 
+        {/*
+          <RenderStormSearch
+            isSearchSubmitted = {isSearchSubmitted}
+            setIsSearchSubmitted= {setIsSearchSubmitted}
+            searchResult= {searchResult}
+            setSearchResult={setSearchResult}
+            setIsDrawerOpen= {setIsDrawerOpen}
+            isDrawerOpen= {isDrawerOpen}/>
+         */}
+        {
+          <RenderFilter
+          filterResult = {filterResult}
+          setFilterResult = {setFilterResult}
+          returnFilterResult= {returnFilterResult}
+          setReturnFilterResult = {setReturnFilterResult}
+          setIsDrawerOpen= {setIsDrawerOpen}
+          bboxFilterCoordinates={bboxFilterCoordinates}
+          setBboxFilterCoordinates={setBboxFilterCoordinates}
+          polyFilterCoords={polyFilterCoords}
+          setPolyFilterCoords={setPolyFilterCoords}
+          clearShapesRef={clearShapesRef} // Pass the ref to RenderFilter
+          />
+        }
+        
         {selected_station !== empty_station_obj && (
           <StationDashboard
             selected_station={selected_station}
@@ -72,6 +108,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           zoom={defaultZoom}
           style={{ height: "100%", width: "100%" }}
           worldCopyJump={true}
+          
         >
           <Drawer
             element_id="left-side"
@@ -83,6 +120,14 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             setIsDrawerOpen= {setIsDrawerOpen}
             isDrawerOpen= {isDrawerOpen}
             setSelectedStation={setSelectedStation}
+            isSearchSubmitted = {isSearchSubmitted}
+            setIsSearchSubmitted= {setIsSearchSubmitted}
+            searchResult= {searchResult}
+            setSearchResult={setSearchResult}
+            filterResult = {filterResult}
+            setFilterResult = {setFilterResult}
+            returnFilterResult= {returnFilterResult}
+            setReturnFilterResult = {setReturnFilterResult}
           />
 
           <TileLayer
@@ -200,6 +245,14 @@ export default function Map({ children, storm_points, storm_data, station_data, 
               </LayerGroup>
             </LayersControl.Overlay>
           </LayersControl>
+
+          {<RenderSpatialFilter
+          ref={clearShapesRef} 
+          bboxFilterCoordinates={bboxFilterCoordinates}
+          setBboxFilterCoordinates={setBboxFilterCoordinates}
+          polyFilterCoords={polyFilterCoords}
+          setPolyFilterCoords={setPolyFilterCoords}
+          />} {/* Calling the EditControl function here */}
         </MapContainer>
       </div>
     </div>

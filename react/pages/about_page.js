@@ -7,6 +7,8 @@ import Image from "next/image";
 import { pastAtlStorms } from '@/data/pastStormsDetails';
 import parse from 'html-react-parser';
 import { faq } from '@/data/faq';
+import { basePath } from "@/next.config";
+
 
 
 /**
@@ -15,6 +17,7 @@ import { faq } from '@/data/faq';
 */
 
 export default function About(){
+
   const router = useRouter();
 
   return(
@@ -23,7 +26,7 @@ export default function About(){
         <link rel="icon" href="/favicon.ico" />
         <meta
           name="description"
-          content="Learn more about the Atlantic Hurricane Dashboard, its purpose, and the team behind it."
+          content="Learn more about the Ocean Storm Viewer, its purpose, and the team behind it."
         />
         <meta name="og:title" content={siteTitle} />
         <title>About - {siteTitle}</title>
@@ -83,10 +86,10 @@ export default function About(){
               role="button"
               tabIndex="0"
               onClick={() =>{console.log(`${storm.title} clicked`)
-                              handleClick(storm.name, storm.year, router)}}
+                              handleStormNameClick(storm.name, storm.year, router)}}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
-                  handleClick(storm.name, storm.year, router);
+                  handleStormNameClick(storm.name, storm.year, router);
                 }
                 }}> 
                   {storm.title}
@@ -135,7 +138,12 @@ export default function About(){
  
  */
 
-function handleClick(stormName, stormYear, router){
+export function handleStormNameClick(stormName, stormYear, router){
   const url = `/?storms=historical&name=${stormName}&season=${stormYear}`;
+  console.log(url)
   router.push(url);
+  
+  /*router.push(url).then(() => {
+    window.location.reload(); // Force a full page reload after navigation
+  }); */
 }

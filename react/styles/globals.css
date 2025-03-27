@@ -1,4 +1,5 @@
 /* General Body Styling */
+/* General Body Styling */
 body {
   padding: 0;
   margin: 0;
@@ -7,10 +8,15 @@ body {
 }
 
 /* Header Styling */
+/* Header Styling */
 header {
   width: 100%;
   position: absolute;
+  position: absolute;
   top: 0;
+  background-color: #e55162; /* Light red background for header */
+  z-index: 9000; /* High z-index to ensure header stays on top */
+  height: 60px;
   background-color: #e55162; /* Light red background for header */
   z-index: 9000; /* High z-index to ensure header stays on top */
   height: 60px;
@@ -23,10 +29,36 @@ header img.logo {
   width: 80%; /* absolute width for logo */
   padding-left: 1.5rem; /* Spacing on left */
   padding-right: 1.5rem; /* Spacing on right */
+  min-width: 256px;
+
 }
 
 /* Navigation Styling */
+/* Navigation Styling */
 header nav {
+  float: left; /* Align navigation links to the left */
+  /*font-size: 1.25rem;  Slightly larger font for readability */
+  width:100%
+
+}
+header_nav{
+  float: left; /* Align navigation links to the left */
+  width: 100%;
+  display: block;
+  justify-content: space-between;
+  padding: 0.1rem;
+  align-items: center;
+
+}
+.header_nav .menu_icon_small_screen{
+  color:#ffffff;
+  fill:#ffffff;
+}
+
+.header_nav ul{
+  margin: 0;
+  padding: 0;
+  gap: 1;
   float: left; /* Align navigation links to the left */
   /*font-size: 1.25rem;  Slightly larger font for readability */
   width:100%
@@ -56,9 +88,14 @@ header_nav{
 
 header nav ul {
   
+  
 }
 
 header nav ul li {
+  float: left; /* Display navigation items inline */
+  margin-right: 0.5rem; /* Space between links */
+  list-style-type: none; /* Remove bullets from list items */
+  
   float: left; /* Display navigation items inline */
   margin-right: 0.5rem; /* Space between links */
   list-style-type: none; /* Remove bullets from list items */
@@ -68,17 +105,22 @@ header nav ul li {
 header nav ul li a {
   color: white; /* White text for links */
   text-decoration: none; /* Remove underline by default */
+  color: white; /* White text for links */
+  text-decoration: none; /* Remove underline by default */
 }
 
 header nav ul li a:hover {
+  text-decoration: underline; /* Underline on hover for clarity */
   text-decoration: underline; /* Underline on hover for clarity */
 }
 
 header nav ul li a::after {
   content: " /"; /* Add slash separator between links */
+  content: " /"; /* Add slash separator between links */
 }
 
 header nav ul li:last-child a::after {
+  content: ""; /* Remove separator for the last link */
   content: ""; /* Remove separator for the last link */
 }
 
@@ -90,10 +132,20 @@ footer {
   bottom: 0px; /* Positioned at the very bottom */
   z-index: 8000; /* High z-index for visibility */
   background-color: black; /* Black footer background */
+  position: fixed; /* Stick footer to the bottom */
+  width: 100%; /* Full-width footer */
+  /*height: 50px;  absolute height */
+  bottom: 0px; /* Positioned at the very bottom */
+  z-index: 8000; /* High z-index for visibility */
+  background-color: black; /* Black footer background */
 }
 
 /* Map Container Styling */
+/* Map Container Styling */
 .map_container {
+  height: 100vh; /* Full viewport height for map */
+  width: 100%; /* Full width for map container */
+  overflow: hidden;
   height: 100vh; /* Full viewport height for map */
   width: 100%; /* Full width for map container */
   overflow: hidden;
@@ -102,8 +154,11 @@ footer {
 .inner_container {
   height: 100%; /* Fill height of the parent container */
   width: 100%; /* Fill width of the parent container */
+  height: 100%; /* Fill height of the parent container */
+  width: 100%; /* Fill width of the parent container */
 }
 
+/* Leaflet Control Position Adjustments */
 /* Leaflet Control Position Adjustments */
 .leaflet-control-container .leaflet-top {
   top: 75px; /* Adjust top to avoid overlapping header */
@@ -111,11 +166,14 @@ footer {
 
 .leaflet-control-container .leaflet-bottom {
   bottom: 50px; /* Adjust bottom to avoid overlapping footer */
+  bottom: 50px; /* Adjust bottom to avoid overlapping footer */
 }
 
 /* Map Layer Styling */
+/* Map Layer Styling */
 .line-of-travel {
   position: relative;
+  stroke: green; /* Green color for travel path */
   stroke: green; /* Green color for travel path */
 }
 
@@ -123,10 +181,14 @@ footer {
   position: relative;
   stroke: navy; /* Navy blue outline for sea height */
   fill: navy; /* Navy blue fill */
+  stroke: navy; /* Navy blue outline for sea height */
+  fill: navy; /* Navy blue fill */
 }
 
 .wind-rad-34 {
   position: relative;
+  stroke: yellow; /* Yellow color for wind radius of 34 knots */
+  fill: yellow; /* Fill with yellow */
   stroke: yellow; /* Yellow color for wind radius of 34 knots */
   fill: yellow; /* Fill with yellow */
 }
@@ -136,17 +198,24 @@ footer {
   position: relative;
   stroke: orange; /* Orange for 48/50 knot wind radius */
   fill: orange; /* Fill with orange */
+  stroke: orange; /* Orange for 48/50 knot wind radius */
+  fill: orange; /* Fill with orange */
 }
 
 .wind-rad-64 {
   position: relative;
   stroke: red; /* Red for 64 knot wind radius */
   fill: red; /* Fill with red */
+  stroke: red; /* Red for 64 knot wind radius */
+  fill: red; /* Fill with red */
 }
 
 /* Info Pane Styling */
+/* Info Pane Styling */
 .info_pane {
   position: absolute;
+   /*top: 0;*/
+   /* margin-top: 10%; Add space from the top */
    /*top: 0;*/
    /* margin-top: 10%; Add space from the top */
   right: 0;
@@ -159,8 +228,18 @@ footer {
   border-top-left-radius: 1rem; /* Rounded top-left corner */
   border-bottom-left-radius: 1rem; /* Rounded bottom-left corner */
   overflow: auto;
+  background-color: white; /* White background for better readability */
+  color: black; /* Black text */
+  border: 3px solid gray; /* Gray border for distinction */
+  border-right: 0; /* No border on the right edge */
+  z-index: 500; /* Layer above map but below header/footer */
+  padding: 1rem; /* Internal padding */
+  border-top-left-radius: 1rem; /* Rounded top-left corner */
+  border-bottom-left-radius: 1rem; /* Rounded bottom-left corner */
+  overflow: auto;
 }
 
+/* Storm Timeline Styling */
 /* Storm Timeline Styling */
 #storm_timeline ul li {
   padding: 2px; /* Space within each list item */
@@ -170,9 +249,13 @@ footer {
 
 #storm_timeline ul li ul li:hover {
   background-color: #DDD; /* Highlight background on hover */
+  background-color: #DDD; /* Highlight background on hover */
 }
 
 #storm_timeline ul li.selected {
+  font-weight: bold; /* Bold text for selected item */
+  border: 1px solid gray; /* Add border for clarity */
+  background-color: #DDD; /* Slight gray background */
   font-weight: bold; /* Bold text for selected item */
   border: 1px solid gray; /* Add border for clarity */
   background-color: #DDD; /* Slight gray background */
@@ -180,10 +263,16 @@ footer {
 
 .selected_storm a {
   font-weight: bold; /* Bold text for selected storms */
+  font-weight: bold; /* Bold text for selected storms */
 }
 
 /* Storm Card Styling */
+/* Storm Card Styling */
 .storm_card {
+  margin-bottom: 1.5rem; /* Space below each card */
+  border-top: 1px solid black; /* Top border for separation */
+  border-bottom: 1px solid black; /* Bottom border for separation */
+  font-size: 0.9rem; /* Slightly smaller font */
   margin-bottom: 1.5rem; /* Space below each card */
   border-top: 1px solid black; /* Top border for separation */
   border-bottom: 1px solid black; /* Bottom border for separation */
@@ -194,10 +283,43 @@ footer {
   background-color: #EEE; /* Light gray background for selected storm */
   padding-left: 0.5rem; /* Indent selected storm card */
   font-size: 1.1rem; /* Slightly larger font for emphasis */
+  background-color: #EEE; /* Light gray background for selected storm */
+  padding-left: 0.5rem; /* Indent selected storm card */
+  font-size: 1.1rem; /* Slightly larger font for emphasis */
 }
 
 /* Station Dashboard Styling */
+/* Station Dashboard Styling */
 .station_dashboard {
+  background: white; /* White background for clarity */
+  color: black; /* Black text for readability */
+  /*border-top: 3px solid #e55162;   */
+  padding: 1rem; /* Internal padding */
+  margin-left: 20%; /* Offset from the left */
+  position: fixed; /* Positioned at the bottom */
+  /*bottom: 50px;  Above the footer */
+  z-index: 5000; /* High z-index to overlay the map */
+  width: 80%; /* 80% width for balance */
+  display: flex;
+  flex-direction: column; /* Stack the header and body vertically*/
+
+}
+
+/* When drawer is open (add a class dynamically) */
+.drawerOpen {
+  width: 80%; /* 80% width for balance */
+
+}
+
+/* When drawer is closed */
+.drawerClosed  {
+  margin-left: 0%; /* No offset */
+  width: 100%; /* Full width */
+}
+
+
+.stormDetOpen{
+  width: 55%;
   background: white; /* White background for clarity */
   color: black; /* Black text for readability */
   /*border-top: 3px solid #e55162;   */
@@ -233,11 +355,20 @@ footer {
 
 .station_dashboard .dash-header {
   /*border: 1px solid darkgoldenrod;   */
+  /*border: 1px solid darkgoldenrod;   */
   background-color: #eee;
   padding:0.5rem;
 }
 
 .station_dashboard .dash-header button {
+  float: right; /* Align button to the right */
+  background-color: #eee; /* White background for button */
+  border: 0; /* No border */
+  font-size: 1.5rem; /* Larger font size */
+}
+
+.station_dashboard .dash-header button.close {
+  font-weight: bold; /* Bold close button */
   float: right; /* Align button to the right */
   background-color: #eee; /* White background for button */
   border: 0; /* No border */
@@ -252,8 +383,12 @@ footer {
   overflow-y: auto; /* Enable scrolling within the body*/
   padding: 1rem;
   flex: 1; /* Allow the body to take up available space*/
+  overflow-y: auto; /* Enable scrolling within the body*/
+  padding: 1rem;
+  flex: 1; /* Allow the body to take up available space*/
 }
 
+/*
 /*
 .station_dashboard .dash-footer {
   border: 1px solid blue;  
@@ -372,3 +507,379 @@ footer {
   padding: 0px;
   display: flex;
 }
+
+.storm_search_input{
+  width: 77%;
+  max-width: 180px;
+  padding: 4px;
+  margin-right: 8px;
+  background: #ddd;
+  font-size: 14px;
+  /*border: solid 2px white; */
+  cursor: text;
+  border-radius: 4px; 
+}
+
+
+.storm_search_form{
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  text-align: center;
+}
+
+.search-container{
+  width: 100%;
+}
+
+.search-button {
+  padding: 2px;
+  background: transparent;
+  outline: solid 2px #ddd;;
+}
+.search-drawer-small-screens{
+  text-decoration: none;
+  background-color: #e55162;
+  display: block;        /* Ensures it takes full width for easier clicks */
+  border: 1px solid #e55162; /* Light grey border to outline the block */
+  border-radius: 4px;       /* Optional: adds rounded corners */
+  text-align: center;
+  width: 100%;
+  padding : 5px;
+}
+.search-output{
+  font-size: 12px;
+  cursor: pointer;
+  text-align: center;
+  font-weight: 100;
+
+}
+.search-output-space{
+  text-align: left;
+  padding: 5px;
+  background-color: #e55162;
+  height: 300px;
+  border-radius: 4px;
+  border: 1px solid white;
+  overflow: auto;
+  max-height: 500;
+  width: 100%
+
+}
+
+.search-icon-small-screen{
+  z-index: 6999;
+  top: 175px;
+  right: 11px;
+  position: absolute;
+  background-color: white;
+  border-radius: 4px;
+  color: #e55162;
+  /*border: 1.8px solid rgba(155, 146, 146, 0.829); */
+
+}
+
+.search-icon-small-screen:hover{
+  background-color: #e55162;
+  color: white;
+}
+
+.search-render{
+  top: 175px;
+  z-index: 6999;
+  position: absolute;
+  right: 11px;
+  height: 32px;
+  padding: 10px; /* Adjust padding for more space */
+  height: auto; /* Allow height to grow with content */
+  display: flex; /* Flex to center form items vertically */
+  flex-direction: row;
+  width: 265px;
+  justify-content: space-between;
+
+
+}
+
+.search-form{
+  width: 200px;
+  display: flex;
+  justify-content: space-between; /* Align input and button horizontally */
+  align-items: center; /* Vertically center the items */
+  align-self: flex-start;
+}
+
+.close-search-icon-small-screen{
+  color: white;
+  font-size: large;
+  cursor: pointer;
+  border-radius: 30px;
+  background-color: #e55162;
+  min-width: auto;
+  width: 32px;
+  height: 32px;
+  align-self: flex-end;
+  padding: 6px;
+  
+  /*border: 1.8px solid rgba(155, 146, 146, 0.829); */
+
+}
+
+.close-search-icon-small-screen:hover{
+  background-color: transparent;
+  color: #e55162;
+}
+
+.small-screen-form-search-button{
+  outline: solid 2px #e55162;
+  padding: 3px;
+}
+
+.small_screen-storm_search_form{
+  background-color: transparent;
+  border-radius: 4px;
+  width: 200px;
+
+
+}
+
+#small-screen-form-search-input{
+  
+}
+
+.cancel-search{
+  text-align : center;
+  align-content : center;
+  width: 100%;
+  background-color: #e55162;
+  color: white;
+  font-weight: bold;
+
+}
+.cancel-search:hover{
+  background-color: white;
+  color: #e55162;
+}
+
+#filter-icon{
+  z-index: 6999;
+  top: 125px;
+  right: 11px;
+  position: absolute;
+  background-color: white;
+  border-radius: 4px;
+  color: #e55162;
+
+}
+
+#filter-icon:hover{
+  background-color: #e55162;
+  color: white;
+}
+#cancel-filter-icon{
+  background-color: white;
+  color: #e55162;
+  font-size: 20px;
+  min-width: 0px;
+  font-weight: bold;
+  width: 35px;
+
+}
+
+
+
+.filter-icons-list{
+  z-index: 6999;
+  top: 65px;
+  right: 25%;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  
+
+}
+
+
+.filter-icons{
+  background-color: white;
+  border-radius: 15px;
+  color: #e55162;
+  height: 35px;
+  font-size: 12px;
+  min-width: 0px;
+  padding: 6px;
+  border: 1px solid #e55162;
+  text-transform: none;
+}
+
+.filter-icons:hover{
+  background-color: #e55162;
+  color: white;
+}
+
+.filter-badge{
+  
+  border: 1px solid #e55162;
+  
+  margin: 0.8px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  display: inline-flex;
+  max-width: 100%;
+  font-size: 0.8125rem;
+  height: 32px;
+  border-radius: 16px;
+  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  text-transform: none;
+}
+
+
+.filter-badge-icon{
+  color:#e55162
+}
+.filter-group {
+  position: relative;
+  display: inline-block;  /* Keeps badges inline */
+}
+
+.filter-dropdown-menu {
+  position: absolute;
+  top: 100%;           /* Positions it directly below the button */
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 9024;
+  width: 100%;
+  border-radius: 8px;
+  padding: 0px;
+  
+}
+
+.filter-dropdown-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.filter-dropdown-menu li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.filter-dropdown-menu li:hover {
+  background-color: #f2f2f2;
+}
+
+.shortcut-button{
+  background-color: white;
+  border: 1px solid #e55162;
+  color: #e55162;
+  margin: 0.8px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  display: inline-flex;
+  max-width: 100%;
+  font-size: 0.8125rem;
+  height: 32px;
+  border-radius: 16px;
+  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  text-transform: none;
+}
+
+.shortcut-button:hover{
+  background-color: #e55162;
+  color: white;
+}
+
+.filter-submit-button{
+  background-color: white;
+  border: 1px solid #e55162;
+  color: #e55162;
+  margin: 0.8px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  max-width: 60%;
+  font-size: 0.8125rem;
+  height: 32px;
+  border-radius: 16px;
+  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  text-transform: none;
+}
+
+.filter-submit-button:hover{
+  background-color: #e55162;
+  color: white;
+}
+
+
+.filter-time-input{
+  color: #e55162;
+  width: 150px
+}
+
+
+.MuiPickersPopper-root {
+  z-index: 9999 !important; /* Ensure it appears above other elements */
+}
+
+
+.date-card-content{
+  padding: 9px;
+  text-align: center;
+}
+
+
+.input-filter{
+  position: absolute;
+  top: 100%;
+  width: 200px;
+  padding: 6px;
+  height: auto;
+  min-height: 100px;
+  border: 2px solid #e55162;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+
+.input-filter-box{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.spatial-filter-icon{
+  z-index: 6999;
+  right: 11px;
+  position: absolute;
+  background-color: white;
+  border-radius: 4px;
+  color: #e55162;
+
+}
+
+
+.spatial-filter-icon:hover{
+  background-color: #e55162;
+  color: white;
+}
+
+.leaflet-control-container .leaflet-draw-section {
+  z-index: 9999;
+}
+
+/* Adjust the width of the Draw Control toolbar */

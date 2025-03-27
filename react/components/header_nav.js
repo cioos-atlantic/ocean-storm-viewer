@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 import { Box, IconButton, Drawer, List, ListItem, ListItemText } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { StormSearchQuery } from "./search_storm_in_header";
 
 export default function HeaderNav({ children, navItems }) {
-    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [headerDrawerOpen, setHeaderDrawerOpen] = useState(false);
 
     const toggleDrawer = (open) => (event) => {
         if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
             return;
         }
-        setDrawerOpen(open);
+        setHeaderDrawerOpen(open);
     };
 
 
     function handleIconClick(){
-        setDrawerOpen((prevState) => !prevState); // Toggles the drawer open/close
+        setHeaderDrawerOpen((prevState) => !prevState); // Toggles the drawer open/close
     }
 
     return (
@@ -56,7 +57,7 @@ export default function HeaderNav({ children, navItems }) {
             {/* Drawer for Small Screens */}
             <Drawer
                 anchor="right"
-                open={drawerOpen}
+                open={headerDrawerOpen}
                 onClose={toggleDrawer(false)}
                 sx={{
                     "& .MuiDrawer-paper": { width: 200, 
@@ -67,6 +68,7 @@ export default function HeaderNav({ children, navItems }) {
                     
                 }}
             >
+                
                 <List onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
                     {navItems.map((link) => (
                         <ListItem button key={link.href}
@@ -85,6 +87,9 @@ export default function HeaderNav({ children, navItems }) {
                         </ListItem>
                     ))}
                 </List>
+                
+                
+
             </Drawer>
 
             {/* Children (Optional Extra Content) */}

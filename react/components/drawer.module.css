@@ -53,24 +53,25 @@
 
 .openButton{
     position: absolute;
-    top: 160px;
+    top: 78px;
     left: 10px;
     background-color: #e55162; /* Background color */
     border: none; /* Remove border */
     cursor: pointer; /* Pointer cursor */
     z-index: 7001; /* Above drawer */
     transition: background-color 0.3s ease; /* Smooth hover transition */
-    color: #ffffff;
     font-weight: bold;
     color: white;
     border: none;
     border-radius: 50%; /* This makes the button round */
     width: 40px; /* Adjust the size */
+    min-width: auto;
     height: 40px; /* Adjust the size */
     justify-content: center;
     align-items: center;
     cursor: pointer;
     font-size: 18px; /* Adjust font size for the icon */
+    
 }
 .openButton:hover {
     background-color: whitesmoke; /* Darker color on hover */
