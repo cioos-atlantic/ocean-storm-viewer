@@ -1,7 +1,7 @@
 import React from "react";
 import { FaWindowClose } from "react-icons/fa";
 import { empty_station_obj } from "../layout";
-import { useMediaQuery, Box } from "@mui/material";
+import { useMediaQuery, Box, useTheme } from "@mui/material";
 //import { empty_station_obj } from "../layout";
 //import { useMediaQuery, Box } from "@mui/material";
 import StationDataLayout from "./station_layout_small_screen";
@@ -32,8 +32,8 @@ export default function StationDashboard({
 }) {
 
   const stationData = selected_station;
-  
-  const isExtraSmall = useMediaQuery("(max-width:600px)");
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down('md')); // `md` in MUI = 960px
   if (!stationData) return null;
 
   const stationName = stationData[0];
@@ -77,7 +77,7 @@ export default function StationDashboard({
   });
 
   return (
-    isExtraSmall ? (
+    isSmall ? (
       <Box
       key="01-station-dashboard"
       className={`station_dashboard ${isDrawerOpen ? "drawerOpen" : "drawerClosed"}`}

@@ -31,13 +31,13 @@ export default function StormCategory({ STORMFORCE }) {
 
     return (
         <>
-            <p>
+            <div>
                 <strong>Storm Category:</strong> {STORMFORCE || "Unknown"}{" "}
                 <FaInfoCircle
                     style={{ cursor: "pointer", marginLeft: "5px" }}
                     onClick={togglePopup}
                 />
-            </p>
+            </div>
             {showPopup && (
                 <Popup title={stormCategoryTitle} onClose={togglePopup}>
                     <p>{stormCategoryInfo}</p>
