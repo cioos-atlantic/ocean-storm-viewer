@@ -127,7 +127,7 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
           ><BasicTabs
                       stormName={stormName}
                       stormData={storm_data_dict}
-                      stormSummaryText={<StormSummaryText/>}
+                      stormSummaryText={<StormSummaryText storm_point_hover={hover_point}/>}
                       variablePresence={variablePresence}
                       selectedStormTab={selectedStormTab}
                       setSelectedStormTab={setSelectedStormTab}
