@@ -5,7 +5,7 @@ import Tab from '@mui/material/Tab';
 import TabList from '@mui/lab/TabList';
 import TabContext from '@mui/lab/TabContext';
 import Box from '@mui/material/Box';
-import { RenderWindRose } from './wind_rose';
+//import { RenderWindRose } from './wind_rose';
 import RenderStormChart from "./storm_graph";
 
 /**
@@ -66,7 +66,7 @@ function a11yProps(index) {
  * selected category. The Summary tab includes station summary text and a link to view full data. The
  * Wind Speed, Temperature, Waves, and
  */
-export default function BasicTabs({stormName, stormData, stormSummaryText, variablePresence, selectedStormTab, setSelectedStormTab}) {
+export default function BasicTabs({stormName, stormData, stormSummaryText, variablePresence, selectedStormTab, setSelectedStormTab, stormTime}) {
   /**
    * The function `generateGraph` returns a JSX element containing a chart component with specified
    * data and styling.
@@ -81,7 +81,7 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
     return (
      <div className="station_chart" >
      <RenderStormChart   
-         sourceData={sourceData[selectedVar].data}
+         sourceData={stormData[selectedVar].data}
          varCategory={selectedVar}
           timeData={stormTime}
           displayName={displayName}
@@ -90,13 +90,13 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
     )
    }
 
-  const [value, setValue] = React.useState(0);
+  //const [value, setValue] = React.useState(0);
   //const [hasData, setHasData] = React.useState(true); // State to track if data is available
 
-  const data_link = "https://cioosatlantic.ca/erddap/tabledap/" + stationName + ".html"
+  
   const handleChange = (event, newValue) => {
     console.log(newValue)
-    setSelectedTab(newValue);
+    setSelectedStormTab(newValue);
   };
 
   return (
@@ -140,14 +140,14 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
             }
         </TabList>
       </Box>
-      <CustomTabPanel value={selectedTab} index={0}>
+      <CustomTabPanel value={selectedStormTab} index={0}>
         {stormSummaryText}
       </CustomTabPanel>
       {
             Object.entries(stormData).map(([key, value], index) => {
               
               return(
-                <CustomTabPanel value={selectedTab} index={index + 1}>
+                <CustomTabPanel value={selectedStormTab} index={index + 1}>
                   {generateGraph(key, value['name'])}
                 </CustomTabPanel>
               )

@@ -80,7 +80,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             storm_points={storm_points}
             source_type={source_type}
             hover_point={hover_marker}
-            isDrawerOpen={isDrawerOpen}/>
+            isDrawerOpen={isDrawerOpen}
+            setHoverMarker={setHoverMarker}/>
          )}
         {
           <RenderFilter

@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState, useRef } from"react";
 import { FaWindowClose } from "react-icons/fa";
 import { empty_station_obj } from "../layout";
 import { useMediaQuery, Box } from "@mui/material";
 import { fetch_value } from "@/lib/storm_utils";
 import RenderStormChart from "./storm_graph";
+import BasicTabs from "./tabs";
+import { StormSummaryText } from "./storm_details";
 
 
 //import BasicTabs from "./tabs";
@@ -16,9 +18,9 @@ import RenderStormChart from "./storm_graph";
  */
 
 
-export default function StormDashboard({ storm_data, storm_points, source_type, hover_point, isDrawerOpen
-  
-}) {
+export default function StormDashboard({ storm_data, storm_points, source_type, hover_point, isDrawerOpen, setHoverMarker}) {
+
+  const [selectedStormTab, setSelectedStormTab] = useState(0);
   console.log(storm_data, storm_points, source_type, hover_point);
   console.log(storm_points.pts.features)
 
@@ -41,18 +43,18 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
 
   stormPoints.forEach((storm_point)=> {
     
-    console.log(storm_point);
+    //console.log(storm_point);
     stormNameList.push(fetch_value(storm_point, ["STORMNAME", "NAME"]));
     stormTime.push(fetch_value(storm_point, ["TIMESTAMP", "ISO_TIME"]));
-    storm_data_dict.stormDir.data.push(storm_point.STORM_DIR);
-    storm_data_dict.stormSpeed.data.push(storm_point.STORM_SPEED);
+    storm_data_dict.stormDir.data.push(storm_point.properties.STORM_DIR);
+    storm_data_dict.stormSpeed.data.push(storm_point.properties.STORM_SPEED);
     storm_data_dict.stormCategory.data.push(fetch_value(storm_point, ["STORMFORCE", "USA_SSHS"]));
-    storm_data_dict.stormGust.data.push(storm_point.USA_GUST);
+    storm_data_dict.stormGust.data.push(storm_point.properties.USA_GUST);
     storm_data_dict.stormWindSpeed.data.push(fetch_value(storm_point, ["MAXWIND", "WMO_WIND", "USA_WIND"]));
     storm_data_dict.stormPressure.data.push(fetch_value(storm_point, ["MSLP", "WMO_PRES", "USA_PRES"]));
     
     storm_data_dict.stormType.data.push(fetch_value(storm_point, ["STORMTYPE", "NATURE"]));
-    storm_data_dict.stormSeaHgt.data.push(storm_point.USA_SEAHGT)
+    storm_data_dict.stormSeaHgt.data.push(storm_point.properties.USA_SEAHGT)
   
   })
   const stormNameUniqueValues= [...new Set(stormNameList)];
@@ -69,9 +71,14 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
     variablePresence[key]= false;
   });
 
-  Object.entries(storm_data_dict).forEach(([key, value]) =>{
-    variablePresence[key] = value['data'] && value['data'].length > 0;
-  })
+
+
+  Object.entries(storm_data_dict).forEach(([key, value]) => {
+    variablePresence[key] = 
+        Array.isArray(value['data']) && 
+        value['data'].length > 0 && 
+        value['data'].some(item => item !== undefined);
+  });
 
 
 
@@ -98,6 +105,8 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
               className="close"
               onClick={() => {
                 console.log("closed")
+                //setHoverMarker(empty_station_obj);
+                setSelectedStormTab(0);
               }}
               title="Close"
               aria-label="Close"
@@ -118,10 +127,11 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
           ><BasicTabs
                       stormName={stormName}
                       stormData={storm_data_dict}
-                      stationSummaryText={dataText}
+                      stormSummaryText={<StormSummaryText/>}
                       variablePresence={variablePresence}
                       selectedStormTab={selectedStormTab}
                       setSelectedStormTab={setSelectedStormTab}
+                      stormTime={stormTime}
                     />
             
           </Box>
@@ -133,43 +143,7 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
 
 
 
-export function processStormData(storm_points){
-  console.log(storm_points.pts.features)
+//do graphh seperate for  storm type because it is categorical
 
-  const stormPoints = storm_points.pts.features;
-  console.log(stormPoints)
 
-  const stormNameList = [];
-  const stormDir = [];
-  const stormSpeed = [];
-  const stormCategory = [];
-  const stormGust = [];
-  const stormWindSpeed = [];
-  const stormPressure = [];
-  const stormTime = [];
-  const stormType = [];
-  const stormSeaHgt = [];
-
-  stormPoints.forEach((storm_point)=> {
-    
-    console.log(storm_point);
-    stormNameList.push(fetch_value(storm_point, ["STORMNAME", "NAME"]));
-    stormDir.push(storm_point.STORM_DIR);
-    stormSpeed.push(storm_point.STORM_SPEED);
-    stormCategory.push(fetch_value(storm_point, ["STORMFORCE", "USA_SSHS"]));
-    stormGust.push(storm_point.USA_GUST);
-    stormWindSpeed.push(fetch_value(storm_point, ["MAXWIND", "WMO_WIND", "USA_WIND"]));
-    stormPressure.push(fetch_value(storm_point, ["MSLP", "WMO_PRES", "USA_PRES"]));
-    stormTime.push(fetch_value(storm_point, ["TIMESTAMP", "ISO_TIME"]));
-    stormType.push(fetch_value(storm_point, ["STORMTYPE", "NATURE"]));
-    stormSeaHgt.push(storm_point.USA_SEAHGT)
-  
-  })
-  const stormNameUniqueValues= [...new Set(stormNameList)];
-  const stormName = stormNameUniqueValues[0];
-  // Add on to check if more than one storm name exists in data
-
-  console.log(stormName);
-}
-  
 
