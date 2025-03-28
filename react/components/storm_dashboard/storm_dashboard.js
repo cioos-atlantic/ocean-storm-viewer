@@ -26,29 +26,33 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
   console.log(stormPoints)
 
   const stormNameList = [];
-  const stormDir = [];
-  const stormSpeed = [];
-  const stormCategory = [];
-  const stormGust = [];
-  const stormWindSpeed = [];
-  const stormPressure = [];
   const stormTime = [];
-  const stormType = [];
-  const stormSeaHgt = [];
+
+  let storm_data_dict = {
+    stormCategory:{data:[], name:'Storm Category'},
+    stormDir:{data:[], name:'Storm Direction'},
+    stormGust:{data:[], name:'Storm Gust'},
+    stormPressure:{data:[], name:'Storm Pressure'},
+    stormType:{data:[], name:'Storm Type'},
+    stormSpeed:{data:[], name:'Storm Speed'},
+    stormWindSpeed:{data:[], name:'Storm Wind Speed'},
+    stormSeaHgt:{data:[], name:'Storm Sea Height'}
+  };
 
   stormPoints.forEach((storm_point)=> {
     
     console.log(storm_point);
     stormNameList.push(fetch_value(storm_point, ["STORMNAME", "NAME"]));
-    stormDir.push(storm_point.STORM_DIR);
-    stormSpeed.push(storm_point.STORM_SPEED);
-    stormCategory.push(fetch_value(storm_point, ["STORMFORCE", "USA_SSHS"]));
-    stormGust.push(storm_point.USA_GUST);
-    stormWindSpeed.push(fetch_value(storm_point, ["MAXWIND", "WMO_WIND", "USA_WIND"]));
-    stormPressure.push(fetch_value(storm_point, ["MSLP", "WMO_PRES", "USA_PRES"]));
     stormTime.push(fetch_value(storm_point, ["TIMESTAMP", "ISO_TIME"]));
-    stormType.push(fetch_value(storm_point, ["STORMTYPE", "NATURE"]));
-    stormSeaHgt.push(storm_point.USA_SEAHGT)
+    storm_data_dict.stormDir.data.push(storm_point.STORM_DIR);
+    storm_data_dict.stormSpeed.data.push(storm_point.STORM_SPEED);
+    storm_data_dict.stormCategory.data.push(fetch_value(storm_point, ["STORMFORCE", "USA_SSHS"]));
+    storm_data_dict.stormGust.data.push(storm_point.USA_GUST);
+    storm_data_dict.stormWindSpeed.data.push(fetch_value(storm_point, ["MAXWIND", "WMO_WIND", "USA_WIND"]));
+    storm_data_dict.stormPressure.data.push(fetch_value(storm_point, ["MSLP", "WMO_PRES", "USA_PRES"]));
+    
+    storm_data_dict.stormType.data.push(fetch_value(storm_point, ["STORMTYPE", "NATURE"]));
+    storm_data_dict.stormSeaHgt.data.push(storm_point.USA_SEAHGT)
   
   })
   const stormNameUniqueValues= [...new Set(stormNameList)];
@@ -57,19 +61,19 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
 
   console.log(stormName);
 
-  let storm_data_dict = {
-    stormName,
-    stormCategory,
-    stormDir,
-    stormGust,
-    stormPressure,
-    stormType,
-    stormTime,
-    stormSpeed,
-    stormWindSpeed,
-    stormSeaHgt
-  };
+
   console.log(storm_data_dict);
+
+  const variablePresence={};
+  Object.keys(storm_data_dict).forEach((key) => {
+    variablePresence[key]= false;
+  });
+
+  Object.entries(storm_data_dict).forEach(([key, value]) =>{
+    variablePresence[key] = value['data'] && value['data'].length > 0;
+  })
+
+
 
   return(
     <Box
@@ -101,7 +105,7 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
               <FaWindowClose />
             </button>
             <div>
-              <strong key='storm name'>Storm Name</strong>
+              <strong key='storm name'>{stormName}</strong>
             </div>
             
           </Box>
@@ -111,10 +115,14 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
               fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
               
             }}
-          >{<RenderStormChart
-            sourceData={stormCategory}
-            varCategory={'StormSpeed'}
-            timeData={stormTime} />}
+          ><BasicTabs
+                      stormName={stormName}
+                      stormData={storm_data_dict}
+                      stationSummaryText={dataText}
+                      variablePresence={variablePresence}
+                      selectedStormTab={selectedStormTab}
+                      setSelectedStormTab={setSelectedStormTab}
+                    />
             
           </Box>
         </Box>

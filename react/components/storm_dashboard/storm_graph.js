@@ -10,12 +10,12 @@ Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryS
 /**
  * Renders a line chart using Chart.js to display station data.
  */
-function RenderStormChart({ sourceData,  varCategory, timeData }) {
+function RenderStormChart({ sourceData,  varCategory, timeData, displayName }) {
 
   let chartTimeData = timeData;
   const chartRef = useRef(null); // Reference to the canvas element
 
-  const startAtZero = varCategory === 'air_pressure' ? false : true
+  const startAtZero = varCategory === 'stormPressure' ? false : true
 
   useEffect(() => {
     // Check if chartData is available
@@ -32,7 +32,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData }) {
 
     let datasets = [];
     datasets.push({
-            label: `${varCategory}` , //  std_name if available
+            label: `${displayName}` , //  std_name if available
             data: sourceData || [], // Ensure that value exists
             borderColor:  getRandomColor(), // Generate random colors for each line
             backgroundColor: 'rgba(0, 0, 0, 0)',

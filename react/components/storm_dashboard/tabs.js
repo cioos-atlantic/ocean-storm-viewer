@@ -6,7 +6,7 @@ import TabList from '@mui/lab/TabList';
 import TabContext from '@mui/lab/TabContext';
 import Box from '@mui/material/Box';
 import { RenderWindRose } from './wind_rose';
-import RenderChart from '../station_graph.js'
+import RenderStormChart from "./storm_graph";
 
 /**
  * The CustomTabPanel function renders children based on the value and index props.
@@ -66,7 +66,7 @@ function a11yProps(index) {
  * selected category. The Summary tab includes station summary text and a link to view full data. The
  * Wind Speed, Temperature, Waves, and
  */
-export default function BasicTabs({stationName, stationData, stationSummaryText, variablePresence, selectedTab, setSelectedTab}) {
+export default function BasicTabs({stormName, stormData, stormSummaryText, variablePresence, selectedStormTab, setSelectedStormTab}) {
   /**
    * The function `generateGraph` returns a JSX element containing a chart component with specified
    * data and styling.
@@ -77,13 +77,14 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
   
   //console.log(stationName, stationData, stationSummaryText, variablePresence, selectedTab, setSelectedTab)
 
-  function generateGraph(selectedVar){
+  function generateGraph(selectedVar, displayName){
     return (
      <div className="station_chart" >
-     <RenderChart  
-         sourceData={stationData}
-         stationName={stationName}
+     <RenderStormChart   
+         sourceData={sourceData[selectedVar].data}
          varCategory={selectedVar}
+          timeData={stormTime}
+          displayName={displayName}
        />
    </div>
     )
@@ -100,12 +101,12 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
 
   return (
     <Box sx={{ width: '100%'}}>
-      <TabContext value={(selectedTab)}>
+      <TabContext value={(selectedStormTab)}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <TabList 
-          value={selectedTab} 
+          value={selectedStormTab} 
           onChange={handleChange} 
-          aria-label="station data tabs"
+          aria-label="storm data tabs"
           variant="scrollable"
           scrollButtons="auto"
           allowScrollButtonsMobile // Ensures scroll buttons appear on mobile devices
@@ -116,59 +117,42 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
               display: 'block', // Ensure scroll buttons are visible
               },
           }}>
-          <Tab label="Summary" sx={{
+            <Tab label="Summary" sx={{
               fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
             }} {...a11yProps(0)} />
-          <Tab label="Wind Speed"
-          sx={{
-            fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
-          }} {...a11yProps(1)} disabled={!variablePresence['wind_speed']}/>
-          <Tab label="Wind Dir." 
-          sx={{
-            fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
-          }}
-          {...a11yProps(2)} disabled={!variablePresence['wind_from_direction']} />
-          <Tab label="Temperature"
-          sx={{
-            fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
-          }}
-          {...a11yProps(3)} disabled={!variablePresence['temperature']}/>
-          <Tab label="Waves"
-          sx={{
-            fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
-          }}
-          {...a11yProps(4)} disabled={!variablePresence['wave']}/>
-          <Tab label="Pressure"
-          sx={{
-            fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
-          }}
-          {...a11yProps(5)} disabled={!variablePresence['air_pressure']}/>
+            
+  
+            {
+            Object.entries(stormData).map(([key, value], index) => {
+              
+              return(
+                <Tab 
+                key={key}
+                label={value['name']}
+                sx={{
+                    fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+                  }}
+               {...a11yProps(index + 1)}
+                disabled={!variablePresence?.[key]}/>
+              )
+              
+            })
+            }
         </TabList>
       </Box>
       <CustomTabPanel value={selectedTab} index={0}>
-        {stationSummaryText}
-        <div className="data-footer">
-                <a href={data_link} target="_blank">Full data</a>
-        </div>
+        {stormSummaryText}
       </CustomTabPanel>
-      <CustomTabPanel value={selectedTab} index={1}>
-        {generateGraph("wind_speed")}
-      </CustomTabPanel>
-      <CustomTabPanel value={selectedTab} index={2}>
-      <RenderWindRose  
-                sourceData={stationData}
-                hasWindRoseData={variablePresence['wind_from_direction']}
-                /> 
-      </CustomTabPanel>
-      <CustomTabPanel value={selectedTab} index={3}>
-        {generateGraph("temperature")}
-      </CustomTabPanel>
-      <CustomTabPanel value={selectedTab} index={4}>
-        {generateGraph("wave")}
-      </CustomTabPanel>
-      <CustomTabPanel value={selectedTab} index={5}>
-        {generateGraph("air_pressure")}
-      </CustomTabPanel>
+      {
+            Object.entries(stormData).map(([key, value], index) => {
+              
+              return(
+                <CustomTabPanel value={selectedTab} index={index + 1}>
+                  {generateGraph(key, value['name'])}
+                </CustomTabPanel>
+              )
+            })
+      }
       </TabContext>
     </Box>
   );
