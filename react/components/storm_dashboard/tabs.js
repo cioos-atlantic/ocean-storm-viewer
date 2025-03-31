@@ -66,7 +66,7 @@ function a11yProps(index) {
  * selected category. The Summary tab includes station summary text and a link to view full data. The
  * Wind Speed, Temperature, Waves, and
  */
-export default function BasicTabs({stormName, stormData, stormSummaryText, variablePresence, selectedStormTab, setSelectedStormTab, stormTime}) {
+export default function BasicTabs({stormName, stormData, stormSummaryText, variablePresence, selectedStormTab, setSelectedStormTab, stormTime, hoverPointTime}) {
   /**
    * The function `generateGraph` returns a JSX element containing a chart component with specified
    * data and styling.
@@ -78,13 +78,15 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
   //console.log(stationName, stationData, stationSummaryText, variablePresence, selectedTab, setSelectedTab)
 
   function generateGraph(selectedVar, displayName){
+    console.log('plotting charts');
     return (
-     <div className="station_chart" >
+     <div className="station_chart" key='chart01' >
      <RenderStormChart   
-         sourceData={stormData[selectedVar].data}
+         sourceData={stormData[selectedVar]}
          varCategory={selectedVar}
           timeData={stormTime}
           displayName={displayName}
+          hoverPointTime={hoverPointTime}
        />
    </div>
     )
@@ -100,7 +102,7 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
   };
 
   return (
-    <Box sx={{ width: '100%'}}>
+    <Box sx={{ width: '100%'}} key='tabs 01'>
       <TabContext value={(selectedStormTab)}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <TabList 

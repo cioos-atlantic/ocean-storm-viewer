@@ -3,49 +3,63 @@ import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, 
 
 //import { graph_colour } from './station_dashboard/station_graph/graph_config.js'
 
+
+
+
 // Register necessary components, including the Line controller
-Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend);
+Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, );
 
 
 /**
  * Renders a line chart using Chart.js to display station data.
  */
-function RenderStormChart({ sourceData,  varCategory, timeData, displayName }) {
+function RenderStormChart({ sourceData,  varCategory, timeData, displayName, hoverPointTime }) {
+  console.log(sourceData);
+  
 
   let chartTimeData = timeData;
   const chartRef = useRef(null); // Reference to the canvas element
+  const chartInstance = useRef(null); // Store Chart.js instance
 
   const startAtZero = varCategory === 'stormPressure' ? false : true
 
+  const highlightTime = new Date(hoverPointTime).toLocaleString('en-US', {
+    hour: '2-digit',
+    day: '2-digit',
+    month: '2-digit',
+
+  });
+
+// Find the index of the given time dynamically
+//const highlightIndex = chartTimeData.indexOf(highlightTime);
+
+  const formattedTimeData = chartTimeData.map((timestamp) => new Date(timestamp).toLocaleString('en-US', {
+  hour: '2-digit',
+  //minute: '2-digit',
+  day: '2-digit',
+  month: '2-digit',
+  //year: 'numeric'
+  }));
+
   useEffect(() => {
     // Check if chartData is available
-    if (sourceData && sourceData.length > 0) {
+    if (sourceData) {
       const ctx = chartRef.current.getContext('2d'); // Get context for the canvas
-      const timeData = chartTimeData.map((timestamp) => new Date(timestamp).toLocaleString('en-US', {
-        hour: '2-digit',
-        //minute: '2-digit',
-        day: '2-digit',
-        month: '2-digit',
-        //year: 'numeric'
-    }));
+      
+    
+      console.log(sourceData);
+      const datasets = makeDataset([sourceData], formattedTimeData, highlightTime);
+
+      console.log(datasets);
     
 
-    let datasets = [];
-    datasets.push({
-            label: `${displayName}` , //  std_name if available
-            data: sourceData || [], // Ensure that value exists
-            borderColor:  getRandomColor(), // Generate random colors for each line
-            backgroundColor: 'rgba(0, 0, 0, 0)',
-            fill: false,
-          })
-
- 
+      
         
       // Chart.js configuration
       const chartConfig = {
         type: 'line',
         data: {
-          labels: timeData, // Set the labels (time)
+          labels: formattedTimeData, // Set the labels (time)
           datasets: datasets, // Set the datasets
         },
         
@@ -80,36 +94,32 @@ function RenderStormChart({ sourceData,  varCategory, timeData, displayName }) {
                 font: {
                     size: 10,
                 }
-              }
+              },
               
             },
-            title: {
-              display: false,
-              text: `Data for `,
-            },
 
+            
           },
+          
         },
       };
 
-      // Destroy the previous chart if it exists
-      //console.log(chartRef.current.chart);
-      if (chartRef.current.chart) {
-        chartRef.current.chart.destroy();
-      }
+     
 
       // Create a new chart
-      chartRef.current.chart = new Chart(ctx, chartConfig);
+      chartInstance.current = new Chart(ctx, chartConfig);
     }
 
     // Cleanup function to destroy the chart on unmount
     return () => {
-      if (chartRef?.current?.chart) {
-        chartRef.current.chart.destroy();
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
       }
     };
-  }, [sourceData, varCategory, startAtZero]); // Re-run effect if chartData or stationName changes
+  }, [sourceData, varCategory, startAtZero, hoverPointTime]); // Re-run effect if chartData or stationName changes
 
+
+  console.log("here")
   return (
 
       <canvas
@@ -147,5 +157,32 @@ function getColour(graph_colour_list, var_name){
 }
 
 
-export default React.memo(RenderStormChart);
 
+
+//Generate datasets
+function makeDataset(dataList, formattedTimeData, highlightTime) {
+  const datasets=[];
+  dataList.forEach((dataDict) => {console.log(dataDict);
+
+    datasets.push({
+    label: dataDict.name,
+    data: dataDict.data,
+    borderColor: getRandomColor(),
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    fill: false,
+    pointRadius: (context) => (formattedTimeData[context.dataIndex] === highlightTime ? 10 : 0),
+    pointBackgroundColor: (context) => (formattedTimeData[context.dataIndex] === highlightTime ? 'red' : 'blue'),
+  })})
+    
+
+
+  
+
+  console.log(datasets);
+  return datasets;
+}
+
+
+
+
+export default React.memo(RenderStormChart);

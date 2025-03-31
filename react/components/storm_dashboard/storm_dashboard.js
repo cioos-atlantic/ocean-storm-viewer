@@ -63,6 +63,8 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
 
   console.log(stormName);
 
+  const hoverPointTime = fetch_value(hover_point, ["TIMESTAMP", "ISO_TIME"]);
+
 
   console.log(storm_data_dict);
 
@@ -79,6 +81,8 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
         value['data'].length > 0 && 
         value['data'].some(item => item !== undefined);
   });
+
+  console.log(hover_point);
 
 
 
@@ -132,6 +136,7 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
                       selectedStormTab={selectedStormTab}
                       setSelectedStormTab={setSelectedStormTab}
                       stormTime={stormTime}
+                      hoverPointTime={hoverPointTime}
                     />
             
           </Box>
