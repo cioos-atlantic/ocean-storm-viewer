@@ -7,6 +7,8 @@ import TabContext from '@mui/lab/TabContext';
 import Box from '@mui/material/Box';
 //import { RenderWindRose } from './wind_rose';
 import RenderStormChart from "./storm_graph";
+import StormTypeChart from './storm_type_chart';
+import StormCategoryChart from './storm_cat_chart';
 
 /**
  * The CustomTabPanel function renders children based on the value and index props.
@@ -66,7 +68,7 @@ function a11yProps(index) {
  * selected category. The Summary tab includes station summary text and a link to view full data. The
  * Wind Speed, Temperature, Waves, and
  */
-export default function BasicTabs({stormName, stormData, stormSummaryText, variablePresence, selectedStormTab, setSelectedStormTab, stormTime, hoverPointTime}) {
+export default function BasicTabs({stormName, stormData, stormSummaryText, variablePresence, selectedStormTab, setSelectedStormTab, stormTime, hoverPointTime, stormType, stormCategory}) {
   /**
    * The function `generateGraph` returns a JSX element containing a chart component with specified
    * data and styling.
@@ -122,6 +124,14 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
             <Tab label="Summary" sx={{
               fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
             }} {...a11yProps(0)} />
+            <Tab label={stormType['name']}
+             sx={{
+              fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+            }} {...a11yProps(1)} />
+            <Tab label={stormCategory['name']}
+             sx={{
+              fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+            }} {...a11yProps(2)} />
             
   
             {
@@ -134,7 +144,7 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
                 sx={{
                     fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
                   }}
-               {...a11yProps(index + 1)}
+               {...a11yProps(index + 3)}
                 disabled={!variablePresence?.[key]}/>
               )
               
@@ -145,11 +155,17 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
       <CustomTabPanel value={selectedStormTab} index={0}>
         {stormSummaryText}
       </CustomTabPanel>
+      <CustomTabPanel value={selectedStormTab} index={1} >
+        {<StormTypeChart chartData={stormType}/>}
+      </CustomTabPanel>
+      <CustomTabPanel value={selectedStormTab} index={2}>
+        {<StormCategoryChart chartData={stormCategory}/>}
+      </CustomTabPanel>
       {
             Object.entries(stormData).map(([key, value], index) => {
               
               return(
-                <CustomTabPanel value={selectedStormTab} index={index + 1}>
+                <CustomTabPanel value={selectedStormTab} index={index + 3}>
                   {generateGraph(key, value['name'])}
                 </CustomTabPanel>
               )
@@ -159,3 +175,7 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
     </Box>
   );
 }
+
+
+
+

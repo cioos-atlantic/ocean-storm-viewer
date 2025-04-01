@@ -29,13 +29,17 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
 
   const stormNameList = [];
   const stormTime = [];
+  const stormType={
+    data:[], 
+    name:'Storm Type'
+  }
+
+  const stormCategory={data:[], name:'Storm Category'}
 
   let storm_data_dict = {
-    stormCategory:{data:[], name:'Storm Category'},
     stormDir:{data:[], name:'Storm Direction'},
     stormGust:{data:[], name:'Storm Gust'},
     stormPressure:{data:[], name:'Storm Pressure'},
-    stormType:{data:[], name:'Storm Type'},
     stormSpeed:{data:[], name:'Storm Speed'},
     stormWindSpeed:{data:[], name:'Storm Wind Speed'},
     stormSeaHgt:{data:[], name:'Storm Sea Height'}
@@ -48,12 +52,12 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
     stormTime.push(fetch_value(storm_point, ["TIMESTAMP", "ISO_TIME"]));
     storm_data_dict.stormDir.data.push(storm_point.properties.STORM_DIR);
     storm_data_dict.stormSpeed.data.push(storm_point.properties.STORM_SPEED);
-    storm_data_dict.stormCategory.data.push(fetch_value(storm_point, ["STORMFORCE", "USA_SSHS"]));
+    stormCategory.data.push(fetch_value(storm_point, ["STORMFORCE", "USA_SSHS"]));
     storm_data_dict.stormGust.data.push(storm_point.properties.USA_GUST);
     storm_data_dict.stormWindSpeed.data.push(fetch_value(storm_point, ["MAXWIND", "WMO_WIND", "USA_WIND"]));
     storm_data_dict.stormPressure.data.push(fetch_value(storm_point, ["MSLP", "WMO_PRES", "USA_PRES"]));
     
-    storm_data_dict.stormType.data.push(fetch_value(storm_point, ["STORMTYPE", "NATURE"]));
+    stormType.data.push(fetch_value(storm_point, ["STORMTYPE", "NATURE"]));
     storm_data_dict.stormSeaHgt.data.push(storm_point.properties.USA_SEAHGT)
   
   })
@@ -72,6 +76,18 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
   Object.keys(storm_data_dict).forEach((key) => {
     variablePresence[key]= false;
   });
+
+
+  variablePresence[stormType] = 
+        Array.isArray(stormType['data']) && 
+        stormType['data'].length > 0 && 
+        stormType['data'].some(item => item !== undefined);
+
+
+  variablePresence[stormType] = 
+        Array.isArray(stormCategory['data']) && 
+        stormCategory['data'].length > 0 && 
+        stormCategory['data'].some(item => item !== undefined);
 
 
 
@@ -137,6 +153,8 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
                       setSelectedStormTab={setSelectedStormTab}
                       stormTime={stormTime}
                       hoverPointTime={hoverPointTime}
+                      stormType={stormType}
+                      stormCategory={stormCategory}
                     />
             
           </Box>
