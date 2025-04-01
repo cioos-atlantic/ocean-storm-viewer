@@ -2,9 +2,15 @@ import React from "react";
 import { FaWindowClose } from "react-icons/fa";
 import { empty_station_obj } from "../layout";
 import { useMediaQuery, Box } from "@mui/material";
+//import { empty_station_obj } from "../layout";
+//import { useMediaQuery, Box } from "@mui/material";
 import StationDataLayout from "./station_layout_small_screen";
 import BasicTabs from "./tabs";
-import { getStationDataText, getMatchedStation } from "../utils/station_data_format_util";
+//import { RecentStationData, getMatchedStation } from "../utils/station_data_format_util";
+//import BasicTabs from "./tabs";
+import { RecentStationData, getMatchedStation, getStationDataText, } from "../utils/station_data_format_util";
+//import BasicTabs from "./tabs";
+
 
 /**
  * The `StationDashboard` function renders a dashboard for a selected station with relevant data and
@@ -84,6 +90,8 @@ export default function StationDashboard({
       <Box
         className="dash-header"
         sx={{
+          fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
+          padding: "10px",
           fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
           padding: "10px",
         }}
@@ -185,3 +193,4 @@ export default function StationDashboard({
 
   );
 }
+  

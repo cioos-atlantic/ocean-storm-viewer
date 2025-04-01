@@ -3,9 +3,9 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from './layout.module.css'
 import Link from 'next/link'
-import HeaderNav from './header_nav'
+
 import FooterNav from './footer_nav'
-import StormSearch from "@/components/storm_search";
+//import StormSearch from "@/components/storm_search";
 import { useRouter } from 'next/router';
 
 import { empty_storm_obj } from '../lib/storm_utils';
@@ -15,6 +15,8 @@ import ErddapHandler from "../pages/api/query_stations";
 import About from "@/pages/about_page";
 import Grid from '@mui/material/Grid2';
 import { Box } from "@mui/material";
+import HeaderNav from "./header_nav";
+import { StormSearchQuery } from "./search_storm_in_header";
 
 
 import { basePath } from "@/next.config";
@@ -37,6 +39,12 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
   const [storm_points, setStormPoints] = useState(empty_storm_obj);
   const [station_points, setStationPoints] = useState({});
   const [historicalStormData, setHistoricalStormData] = useState(empty_storm_obj); // State for storing historical storm data
+  const [isSearchSubmitted, setIsSearchSubmitted] = useState(false);
+  const [searchResult, setSearchResult] = useState([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+
+  
 
   const router = useRouter();
 
@@ -81,11 +89,13 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
       </Head>
       <header className={styles.header}>
         <Grid container alignItems="center" spacing={1}  
-        sx={{ justifyContent: 'space-between', flexWrap: 'nowrap',  maxHeight: { xs: '80px', sm: '100px', md: '120px', lg: '140px' } // Responsive max height for the header 
+        sx={{ justifyContent: 'space-between', flexWrap: 'nowrap',  maxHeight: { xs: '80px', sm: '100px', md: '120px', lg: '140px' }, // Responsive max height for the header 
+        //maxWidth: '50%'
         }}
         >
           {/* Logo Section */}
-          <Grid size ='auto' >
+          <Grid size ='auto' 
+                sx={{maxWidth: '50%'}} >
           
               <a href={logo.href}>
                 <Image
@@ -102,7 +112,7 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
           
 
           {/* Content Section */}
-          <Grid size ={{xs:12, sm:6, md:4, lg:3, xl:2, xxl:1}} >
+          <Grid size ='auto' >
           
             {home ? (
               <>
@@ -115,7 +125,26 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
             )}
 
           </Grid>
-          
+          {/* Search 
+          <Grid
+            size="fixed"
+            sx={{
+              width: '200px', // Set to desired fixed width
+              height: '30px', // Set to desired fixed height
+              maxWidth: '100%', // Ensures it doesn't exceed container
+              overflow: 'visible',
+              display: { xs: "none", md: "block" }
+            }}
+          >
+            <StormSearchQuery
+            isSearchSubmitted = {isSearchSubmitted}
+            setIsSearchSubmitted= {setIsSearchSubmitted}
+            searchResult= {searchResult}
+            setSearchResult={setSearchResult}
+            setIsDrawerOpen= {setIsDrawerOpen}
+            isDrawerOpen= {isDrawerOpen}
+             />
+          </Grid> */}
 
           {/* Navigation Section */}
           <Grid size ='auto'
@@ -128,26 +157,33 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
               fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '18px', xl: '20px', xxl: '22px' }, // Font size changes based on breakpoints
             }} ><HeaderNav navItems={topNav} />
           </Grid>
+
+          
           
         </Grid>
       </header>
       {about_page ? (
-        <About />
-      ) : (
-        <>
-          <main className="body">
-            <MapWithNoSSR
-              storm_points={storm_points}
-              storm_data={storm_data_pass}
-              station_data={station_points}
-              source_type={source_type}
-              setStormPoints={setStormPoints}
-              setStationPoints={setStationPoints}
-            />
-          </main>
-        </>
-      )
-      }
+        <About
+            
+            />):(<>
+      <main className="body">
+        <MapWithNoSSR
+          storm_points={storm_points}
+          storm_data={storm_data_pass}
+          station_data={station_points}
+          source_type={source_type}
+          setStormPoints={setStormPoints}
+          setStationPoints={setStationPoints}
+          isSearchSubmitted = {isSearchSubmitted}
+          setIsSearchSubmitted= {setIsSearchSubmitted}
+          searchResult= {searchResult}
+          setSearchResult={setSearchResult}
+          setIsDrawerOpen= {setIsDrawerOpen}
+          isDrawerOpen= {isDrawerOpen}
+
+        />
+      </main>
+      </>)}
       <footer>
         <Box sx={{
           height:{ xs: '20px', sm: '30px', md: '35px', lg: '50px', xl: '50px', xxl: '50px' }, // if changed, remember to change the station dashboard bottom in the station_dashboard.js
