@@ -37,12 +37,14 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
   const stormCategory={data:[], name:'Storm Category'}
 
   let storm_data_dict = {
-    stormDir:{data:[], name:'Storm Direction'},
-    stormGust:{data:[], name:'Storm Gust'},
-    stormPressure:{data:[], name:'Storm Pressure'},
-    stormSpeed:{data:[], name:'Storm Speed'},
-    stormWindSpeed:{data:[], name:'Storm Wind Speed'},
-    stormSeaHgt:{data:[], name:'Storm Sea Height'}
+    stormDir: { data: [], name: "Storm Direction" },
+    stormPressure: { data: [], name: "Storm Pressure" },
+    stormSpeed: { data: [], name: "Storm Speed" },
+    stormSeaHgt: { data: [], name: "Storm Sea Height" },
+    Wind: {data: [{stormWindSpeed: { data: [], name: "Storm Wind Speed" }},
+    {stormGust: { data: [], name: "Storm Gust" }}], name: "Wind"
+      
+    }
   };
 
   stormPoints.forEach((storm_point)=> {
@@ -53,8 +55,8 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
     storm_data_dict.stormDir.data.push(storm_point.properties.STORM_DIR);
     storm_data_dict.stormSpeed.data.push(storm_point.properties.STORM_SPEED);
     stormCategory.data.push(fetch_value(storm_point, ["STORMFORCE", "USA_SSHS"]));
-    storm_data_dict.stormGust.data.push(storm_point.properties.USA_GUST);
-    storm_data_dict.stormWindSpeed.data.push(fetch_value(storm_point, ["MAXWIND", "WMO_WIND", "USA_WIND"]));
+    storm_data_dict.Wind.data[1].stormGust.data.push(storm_point.properties.USA_GUST);
+    storm_data_dict.Wind.data[0].stormWindSpeed.data.push(fetch_value(storm_point, ["MAXWIND", "WMO_WIND", "USA_WIND"]));
     storm_data_dict.stormPressure.data.push(fetch_value(storm_point, ["MSLP", "WMO_PRES", "USA_PRES"]));
     
     stormType.data.push(fetch_value(storm_point, ["STORMTYPE", "NATURE"]));
