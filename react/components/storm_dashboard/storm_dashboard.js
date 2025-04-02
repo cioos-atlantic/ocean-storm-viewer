@@ -6,6 +6,7 @@ import { fetch_value } from "@/lib/storm_utils";
 import RenderStormChart from "./storm_graph";
 import BasicTabs from "./tabs";
 import { StormSummaryText } from "./storm_details";
+import StormDataLayout from "./storm_layout_small_screen";
 
 
 //import BasicTabs from "./tabs";
@@ -69,6 +70,7 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
   // Add on to check if more than one storm name exists in data
 
   console.log(stormName);
+  const isExtraSmall = useMediaQuery("(max-width:600px)");
 
   const hoverPointTime = fetch_value(hover_point, ["TIMESTAMP", "ISO_TIME"]);
 
@@ -108,65 +110,125 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
 
 
   return(
-    <Box
-          key="storm-dashboard"
-          className={`station_dashboard ${isDrawerOpen ? "drawerOpen" : "drawerClosed"}`}
-          sx={{
-            bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
-            maxHeight:  "45%", // Adjust max height for extra-small screens
-            display: isStormDashOpen ? 'flex':'none',
-            
-            
+    isExtraSmall ? (
+      <Box
+      key="storm-dashboard"
+      className={`station_dashboard ${isDrawerOpen ? "drawerOpen" : "drawerClosed"}`}
+      sx={{
+        bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
+        maxHeight:  "45%", // Adjust max height for extra-small screens
+        display: isStormDashOpen ? 'flex':'none',
+        
+        
+      }}
+    >
+      <Box
+        className="dash-header"
+        sx={{
+          fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
+          padding: "10px",
+          fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
+          padding: "10px",
+        }}
+      >
+        <button
+          className="close"
+          onClick={() => {
+            console.log("closed")
+            //setHoverMarker(empty_station_obj);
+            setSelectedStormTab(0);
+            setIsStormDashOpen(false)
           }}
+          title="Close"
+          aria-label="Close"
         >
-          <Box
-            className="dash-header"
-            sx={{
-              fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
-              padding: "10px",
-              fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
-              padding: "10px",
-            }}
-          >
-            <button
-              className="close"
-              onClick={() => {
-                console.log("closed")
-                //setHoverMarker(empty_station_obj);
-                setSelectedStormTab(0);
-                setIsStormDashOpen(false)
-              }}
-              title="Close"
-              aria-label="Close"
-            >
-              <FaWindowClose />
-            </button>
-            <div>
-              <strong key='storm name'>{stormName}</strong>
-            </div>
-            
-          </Box>
-          <Box
-            className="dash-body"
-            sx={{
-              fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
-              
-            }}
-          ><BasicTabs
-                      stormName={stormName}
-                      stormData={storm_data_dict}
-                      stormSummaryText={<StormSummaryText storm_point_hover={hover_point}/>}
-                      variablePresence={variablePresence}
-                      selectedStormTab={selectedStormTab}
-                      setSelectedStormTab={setSelectedStormTab}
-                      stormTime={stormTime}
-                      hoverPointTime={hoverPointTime}
-                      stormType={stormType}
-                      stormCategory={stormCategory}
-                    />
-            
-          </Box>
-        </Box>
+          <FaWindowClose />
+        </button>
+        <div>
+          <strong key='storm name'>{stormName}</strong>
+        </div>
+        
+      </Box>
+      <Box
+        className="dash-body"
+        sx={{
+          fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
+          
+        }}
+      ><StormDataLayout
+                  stormData={storm_data_dict}
+                  stormSummaryText={<StormSummaryText storm_point_hover={hover_point}/>}
+                  variablePresence={variablePresence}
+                  stormTime={stormTime}
+                  hoverPointTime={hoverPointTime}
+                  stormType={stormType}
+                  stormCategory={stormCategory}
+                />
+        
+      </Box>
+    </Box>
+    ):(
+      <Box
+      key="storm-dashboard"
+      className={`station_dashboard ${isDrawerOpen ? "drawerOpen" : "drawerClosed"}`}
+      sx={{
+        bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
+        maxHeight:  "45%", // Adjust max height for extra-small screens
+        display: isStormDashOpen ? 'flex':'none',
+        
+        
+      }}
+    >
+      <Box
+        className="dash-header"
+        sx={{
+          fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
+          padding: "10px",
+          fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
+          padding: "10px",
+        }}
+      >
+        <button
+          className="close"
+          onClick={() => {
+            console.log("closed")
+            //setHoverMarker(empty_station_obj);
+            setSelectedStormTab(0);
+            setIsStormDashOpen(false)
+          }}
+          title="Close"
+          aria-label="Close"
+        >
+          <FaWindowClose />
+        </button>
+        <div>
+          <strong key='storm name'>{stormName}</strong>
+        </div>
+        
+      </Box>
+      <Box
+        className="dash-body"
+        sx={{
+          fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
+          
+        }}
+      ><BasicTabs
+                  stormName={stormName}
+                  stormData={storm_data_dict}
+                  stormSummaryText={<StormSummaryText storm_point_hover={hover_point}/>}
+                  variablePresence={variablePresence}
+                  selectedStormTab={selectedStormTab}
+                  setSelectedStormTab={setSelectedStormTab}
+                  stormTime={stormTime}
+                  hoverPointTime={hoverPointTime}
+                  stormType={stormType}
+                  stormCategory={stormCategory}
+                />
+        
+      </Box>
+    </Box>
+  )
+    
   )
 
   

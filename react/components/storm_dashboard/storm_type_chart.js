@@ -63,7 +63,7 @@ function StormTypeChart({ chartData }) {
   }, [chartData]);
 
   return (
-    <div style={{ width: "400px", height: "400px" }}> {/* Set container size */}
+    <div style={{ width: "100%", maxHeight: "400px"  }}> {/* Set container size */}
       <canvas ref={chartRef} id="stormTypeChart" width="400" height="400"></canvas> {/* Set explicit canvas size */}
     </div>
   );
