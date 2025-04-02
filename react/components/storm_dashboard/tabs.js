@@ -79,7 +79,7 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
   
   //console.log(stationName, stationData, stationSummaryText, variablePresence, selectedTab, setSelectedTab)
 
-  function generateGraph(selectedVar, displayName){
+  function generateGraph(selectedVar){
     console.log('plotting charts');
     return (
      <div className="station_chart" key='chart01' >
@@ -87,7 +87,6 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
          sourceData={stormData[selectedVar]}
          varCategory={selectedVar}
           timeData={stormTime}
-          displayName={displayName}
           hoverPointTime={hoverPointTime}
        />
    </div>
@@ -140,7 +139,7 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
               return(
                 <Tab 
                 key={key}
-                label={value['name']}
+                label={key}
                 sx={{
                     fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
                   }}
@@ -166,7 +165,7 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
               
               return(
                 <CustomTabPanel value={selectedStormTab} index={index + 3}>
-                  {generateGraph(key, value['name'])}
+                  {generateGraph(key)}
                 </CustomTabPanel>
               )
             })

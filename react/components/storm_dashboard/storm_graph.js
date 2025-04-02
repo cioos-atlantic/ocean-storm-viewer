@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController, BarController, BarElement, Filler } from 'chart.js';
 import { storm_graph_color, } from './storm_color';
+import { keyframes } from '@emotion/react';
 
 //import { graph_colour } from './station_dashboard/station_graph/graph_config.js'
 
@@ -14,7 +15,7 @@ Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryS
 /**
  * Renders a line chart using Chart.js to display station data.
  */
-function RenderStormChart({ sourceData,  varCategory, timeData, displayName, hoverPointTime }) {
+function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }) {
   console.log(sourceData);
   
 
@@ -49,7 +50,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, displayName, hov
       
     
       console.log(sourceData);
-      const datasets = makeDataset([sourceData], formattedTimeData, highlightTime);
+      const datasets = makeDataset(sourceData, formattedTimeData, highlightTime);
 
       console.log(datasets);
     
@@ -167,16 +168,20 @@ function getColour(var_name){
 function makeDataset(dataList, formattedTimeData, highlightTime) {
   const datasets=[];
   dataList.forEach((dataDict) => {console.log(dataDict);
+    Object.entries(dataDict).forEach(([key, value]) => {console.log(key)
+      datasets.push({
+        label: value.name,
+        data: value.data,
+        borderColor: getColour(value.name),
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        fill: true,
+        pointRadius: (context) => (formattedTimeData[context.dataIndex] === highlightTime ? 10 : 0),
+        pointBackgroundColor: (context) => (formattedTimeData[context.dataIndex] === highlightTime ? 'red' : 'blue'),
+      })
 
-    datasets.push({
-    label: dataDict.name,
-    data: dataDict.data,
-    borderColor: getColour(dataDict.name),
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    fill: true,
-    pointRadius: (context) => (formattedTimeData[context.dataIndex] === highlightTime ? 10 : 0),
-    pointBackgroundColor: (context) => (formattedTimeData[context.dataIndex] === highlightTime ? 'red' : 'blue'),
-  })})
+    })
+
+    })
     
 
 

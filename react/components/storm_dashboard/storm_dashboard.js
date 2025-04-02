@@ -35,32 +35,32 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
   }
 
   const stormCategory={data:[], name:'Storm Category'}
+  const storm_data_dict ={
+    direction: [{stormDir: { data: [], name: "Storm Direction" }}],
+    Pressure: [{stormPressure: { data: [], name: "Storm Pressure" }}],
+    speed: [{stormSpeed: { data: [], name: "Storm Speed" }}],
+    seaHeight: [{stormSeaHgt: { data: [], name: "Storm Sea Height" }}],
+    Wind: [{stormWindSpeed: { data: [], name: "Storm Wind Speed" }},
+    {stormGust: { data: [], name: "Storm Gust" }}],
 
-  let storm_data_dict = {
-    stormDir: { data: [], name: "Storm Direction" },
-    stormPressure: { data: [], name: "Storm Pressure" },
-    stormSpeed: { data: [], name: "Storm Speed" },
-    stormSeaHgt: { data: [], name: "Storm Sea Height" },
-    Wind: {data: [{stormWindSpeed: { data: [], name: "Storm Wind Speed" }},
-    {stormGust: { data: [], name: "Storm Gust" }}], name: "Wind"
-      
-    }
-  };
+  }
+
+
 
   stormPoints.forEach((storm_point)=> {
     
     //console.log(storm_point);
     stormNameList.push(fetch_value(storm_point, ["STORMNAME", "NAME"]));
     stormTime.push(fetch_value(storm_point, ["TIMESTAMP", "ISO_TIME"]));
-    storm_data_dict.stormDir.data.push(storm_point.properties.STORM_DIR);
-    storm_data_dict.stormSpeed.data.push(storm_point.properties.STORM_SPEED);
+    storm_data_dict.direction[0].stormDir.data.push(storm_point.properties.STORM_DIR);
+    storm_data_dict.speed[0].stormSpeed.data.push(storm_point.properties.STORM_SPEED);
     stormCategory.data.push(fetch_value(storm_point, ["STORMFORCE", "USA_SSHS"]));
-    storm_data_dict.Wind.data[1].stormGust.data.push(storm_point.properties.USA_GUST);
-    storm_data_dict.Wind.data[0].stormWindSpeed.data.push(fetch_value(storm_point, ["MAXWIND", "WMO_WIND", "USA_WIND"]));
-    storm_data_dict.stormPressure.data.push(fetch_value(storm_point, ["MSLP", "WMO_PRES", "USA_PRES"]));
+    storm_data_dict.Wind[1].stormGust.data.push(storm_point.properties.USA_GUST);
+    storm_data_dict.Wind[0].stormWindSpeed.data.push(fetch_value(storm_point, ["MAXWIND", "WMO_WIND", "USA_WIND"]));
+    storm_data_dict.Pressure[0].stormPressure.data.push(fetch_value(storm_point, ["MSLP", "WMO_PRES", "USA_PRES"]));
     
     stormType.data.push(fetch_value(storm_point, ["STORMTYPE", "NATURE"]));
-    storm_data_dict.stormSeaHgt.data.push(storm_point.properties.USA_SEAHGT)
+    storm_data_dict.seaHeight[0].stormSeaHgt.data.push(storm_point.properties.USA_SEAHGT);
   
   })
   const stormNameUniqueValues= [...new Set(stormNameList)];
@@ -95,9 +95,11 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
 
   Object.entries(storm_data_dict).forEach(([key, value]) => {
     variablePresence[key] = 
-        Array.isArray(value['data']) && 
-        value['data'].length > 0 && 
-        value['data'].some(item => item !== undefined);
+      Array.isArray(value) && 
+      value.some(obj => {
+        const [innerKey, innerValue] = Object.entries(obj)[0]; // Extract the key-value pair
+        return innerValue?.data?.length > 0 && innerValue.data.some(item => item !== undefined && item !== null);
+      });
   });
 
   console.log(hover_point);
