@@ -115,8 +115,7 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
       key="storm-dashboard"
       className={`station_dashboard ${isDrawerOpen ? "drawerOpen" : "drawerClosed"}`}
       sx={{
-        bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
-        maxHeight:  "45%", // Adjust max height for extra-small screens
+        //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
         display: isStormDashOpen ? 'flex':'none',
         
         
@@ -170,10 +169,9 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
     ):(
       <Box
       key="storm-dashboard"
-      className={`station_dashboard ${isDrawerOpen ? "drawerOpen" : "drawerClosed"}`}
+      className={`station_dashboard`}
       sx={{
-        bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
-        maxHeight:  "45%", // Adjust max height for extra-small screens
+        //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
         display: isStormDashOpen ? 'flex':'none',
         
         

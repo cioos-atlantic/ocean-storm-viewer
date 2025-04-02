@@ -25,6 +25,7 @@ import { RenderBoundingBox } from "./Filter/boundingBox";
 //import StationDashboardTest from "./station_dashboard/station_dashboard";
 import { RenderSpatialFilter } from "./Filter/Edit_spatial_filter";
 import StormDashboard from "./storm_dashboard/storm_dashboard";
+import { RenderDashboards } from "./Dashboard/dashboard";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
@@ -74,7 +75,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             setIsDrawerOpen= {setIsDrawerOpen}
             isDrawerOpen= {isDrawerOpen}/>
          */}
-        {hover_marker !== empty_point_obj && (
+        {/*hover_marker !== empty_point_obj && (
           <StormDashboard
             storm_data={storm_data}
             storm_points={storm_points}
@@ -82,7 +83,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             hover_point={hover_marker}
             isDrawerOpen={isDrawerOpen}
             setHoverMarker={setHoverMarker}/>
-         )}
+         )*/}
         {
           <RenderFilter
           filterResult = {filterResult}
@@ -97,8 +98,26 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           clearShapesRef={clearShapesRef} // Pass the ref to RenderFilter
           />
         }
+        {
+          <RenderDashboards
+            storm_data={storm_data}
+            storm_points={storm_points}
+            source_type={source_type}
+            hover_point={hover_marker}
+            isDrawerOpen={isDrawerOpen}
+            setHoverMarker={setHoverMarker}
+            selected_station={selected_station}
+            setSelectedStation={setSelectedStation}
+            station_descriptions={allDatasetDescriptions}
+            storm_timestamp = {new Date()}
+            selectedTab = {selected_tab}
+            setSelectedTab = {setSelectedTab}
+            isStormDetOpen= {isStormDetOpen}
+            setIsStormDetOpen= {setIsStormDetOpen}
+            />
+        }
         
-        {selected_station !== empty_station_obj && (
+        {/*selected_station !== empty_station_obj && (
           <StationDashboard
             selected_station={selected_station}
             setSelectedStation={setSelectedStation}
@@ -112,7 +131,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             setIsStormDetOpen= {setIsStormDetOpen}
             source_type = {source_type}
           ></StationDashboard>
-        )}
+        )*/}
         <MapContainer
           center={defaultPosition}
           zoom={defaultZoom}

@@ -82,8 +82,7 @@ export default function StationDashboard({
       key="01-station-dashboard"
       className={`station_dashboard ${isDrawerOpen ? "drawerOpen" : "drawerClosed"}`}
       sx={{
-        bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
-        maxHeight:  "45%", // Adjust max height for extra-small screens
+        //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
         display:  'flex',
         
       }}
@@ -138,10 +137,10 @@ export default function StationDashboard({
     ):(
       <Box
       key="01-station-dashboard"
-      className={`station_dashboard ${isDrawerOpen ? "drawerOpen" : "drawerClosed"} ${isStormDetOpen ? "stormDetOpen" : ""} `}
+      className={`station_dashboard`}
       sx={{
-        bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
-        maxHeight: "80%", 
+        //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
+        
         
       }}
     >

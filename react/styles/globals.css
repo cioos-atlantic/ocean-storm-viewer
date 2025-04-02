@@ -295,25 +295,35 @@ footer {
   color: black; /* Black text for readability */
   /*border-top: 3px solid #e55162;   */
   padding: 1rem; /* Internal padding */
-  margin-left: 20%; /* Offset from the left */
+ /*  margin-left: 20%; Offset from the left */
+  position: relative; 
+  /*bottom: 50px;  Above the footer */
+  z-index: 5000; /* High z-index to overlay the map */
+  /*width: 80%;  80% width for balance */
+  flex-direction: column; /* Stack the header and body vertically*/
+  height: 100%;
+
+}
+.dashboards {
+  /*border-top: 3px solid #e55162;   */
+  padding: 1rem; /* Internal padding */
   position: fixed; /* Positioned at the bottom */
   /*bottom: 50px;  Above the footer */
   z-index: 5000; /* High z-index to overlay the map */
-  width: 80%; /* 80% width for balance */
-  flex-direction: column; /* Stack the header and body vertically*/
-
+  /*width: 80%;  80% width for balance */
+  
 }
 
 /* When drawer is open (add a class dynamically) */
 .drawerOpen {
-  width: 80%; /* 80% width for balance */
+  /*width: 80%;  80% width for balance */
 
 }
 
 /* When drawer is closed */
 .drawerClosed  {
   margin-left: 0%; /* No offset */
-  width: 100%; /* Full width */
+  /* width: 100%; Full width */
 }
 
 
