@@ -84,6 +84,7 @@ export default function StationDashboard({
       sx={{
         bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
         maxHeight:  "45%", // Adjust max height for extra-small screens
+        display:  'flex',
         
       }}
     >

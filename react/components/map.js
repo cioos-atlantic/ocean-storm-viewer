@@ -56,14 +56,14 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   return (
     <div className="map_container">
       <div className='inner_container'>
-        {hover_marker !== empty_point_obj && (
+        {/*hover_marker !== empty_point_obj && (
           <StormPointDetails
             storm_point_hover={hover_marker}
             //onClose={() => setHoverMarker(empty_point_obj)} // Close popup when the marker is reset
             setIsStormDetOpen= {setIsStormDetOpen}
             setHoverMarker= {setHoverMarker}
           />
-        )}
+        )*/}
 
         {/*
           <RenderStormSearch

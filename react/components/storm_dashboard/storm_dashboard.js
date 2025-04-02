@@ -21,6 +21,7 @@ import { StormSummaryText } from "./storm_details";
 export default function StormDashboard({ storm_data, storm_points, source_type, hover_point, isDrawerOpen, setHoverMarker}) {
 
   const [selectedStormTab, setSelectedStormTab] = useState(0);
+  const [isStormDashOpen, setIsStormDashOpen] = useState(true);
   console.log(storm_data, storm_points, source_type, hover_point);
   console.log(storm_points.pts.features)
 
@@ -113,6 +114,8 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
           sx={{
             bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
             maxHeight:  "45%", // Adjust max height for extra-small screens
+            display: isStormDashOpen ? 'flex':'none',
+            
             
           }}
         >
@@ -131,6 +134,7 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
                 console.log("closed")
                 //setHoverMarker(empty_station_obj);
                 setSelectedStormTab(0);
+                setIsStormDashOpen(false)
               }}
               title="Close"
               aria-label="Close"
