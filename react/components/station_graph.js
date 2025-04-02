@@ -97,18 +97,18 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
 
   return (
 
+    <div  style={{position: 'relative', height:'60%', width:'100%'}}>
       <canvas
         ref={chartRef}
         style={{
           top: 0,
           left: 0,
-          width: '100%',
-          //height: '200px', // 
-          maxWidth: 'auto',
-          maxHeight: '200px', // 
-          aspectRatio: '100 / 100', // Maintain a 1:1 aspect ratio if you want
+          
         }}
       />
+    </div>
+
+      
 
   );
 }

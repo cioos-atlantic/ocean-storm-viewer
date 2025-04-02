@@ -127,18 +127,16 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
   console.log("here")
   return (
 
-      <canvas
-        ref={chartRef}
-        style={{
-          top: 0,
-          left: 0,
-          width: '100%',
-          //height: '200px', // You can adjust this based on your needs
-          maxWidth: 'auto',
-          maxHeight: '200px', // You can keep this if you want to maintain responsiveness
-          aspectRatio: '100 / 100', // Maintain a 1:1 aspect ratio if you want
-        }}
-      />
+    <div  style={{position: 'relative', height:'100%', width:'100%'}}>
+    <canvas
+      ref={chartRef}
+      style={{
+        top: 0,
+        left: 0,
+        
+      }}
+    />
+  </div>
 
   );
 }

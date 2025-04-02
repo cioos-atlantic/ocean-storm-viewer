@@ -306,7 +306,7 @@ footer {
 }
 .dashboards {
   /*border-top: 3px solid #e55162;   */
-  padding: 1rem; /* Internal padding */
+
   position: fixed; /* Positioned at the bottom */
   /*bottom: 50px;  Above the footer */
   z-index: 5000; /* High z-index to overlay the map */
