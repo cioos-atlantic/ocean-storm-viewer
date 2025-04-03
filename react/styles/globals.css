@@ -311,6 +311,7 @@ footer {
   /*bottom: 50px;  Above the footer */
   z-index: 5000; /* High z-index to overlay the map */
   /*width: 80%;  80% width for balance */
+  max-height: 60%;
   
 }
 
