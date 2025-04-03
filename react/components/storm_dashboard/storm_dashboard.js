@@ -41,7 +41,7 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
     Pressure: [{stormPressure: { data: [], name: "Storm Pressure" }}],
     speed: [{stormSpeed: { data: [], name: "Storm Speed" }}],
     seaHeight: [{stormSeaHgt: { data: [], name: "Storm Sea Height" }}],
-    Wind: [{stormWindSpeed: { data: [], name: "Storm Wind Speed" }},
+    'Wind Speed': [{stormWindSpeed: { data: [], name: "Storm Wind Speed" }},
     {stormGust: { data: [], name: "Storm Gust" }}],
 
   }
@@ -56,8 +56,8 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
     storm_data_dict.direction[0].stormDir.data.push(storm_point.properties.STORM_DIR);
     storm_data_dict.speed[0].stormSpeed.data.push(storm_point.properties.STORM_SPEED);
     stormCategory.data.push(fetch_value(storm_point, ["STORMFORCE", "USA_SSHS"]));
-    storm_data_dict.Wind[1].stormGust.data.push(storm_point.properties.USA_GUST);
-    storm_data_dict.Wind[0].stormWindSpeed.data.push(fetch_value(storm_point, ["MAXWIND", "WMO_WIND", "USA_WIND"]));
+    storm_data_dict['Wind Speed'][1].stormGust.data.push(storm_point.properties.USA_GUST);
+    storm_data_dict['Wind Speed'][0].stormWindSpeed.data.push(fetch_value(storm_point, ["MAXWIND", "WMO_WIND", "USA_WIND"]));
     storm_data_dict.Pressure[0].stormPressure.data.push(fetch_value(storm_point, ["MSLP", "WMO_PRES", "USA_PRES"]));
     
     stormType.data.push(fetch_value(storm_point, ["STORMTYPE", "NATURE"]));
