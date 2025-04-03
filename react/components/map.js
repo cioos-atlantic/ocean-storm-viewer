@@ -48,8 +48,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   const [returnFilterResult, setReturnFilterResult] = useState(false);
   const [bboxFilterCoordinates, setBboxFilterCoordinates]= useState('');
   const [polyFilterCoords, setPolyFilterCoords] = useState('');
-  const [isStormDashOpen, setIsStormDashOpen] = useState(true);
-  const [isStationDashOpen, setIsStationDashOpen] = useState(true);
+  const [isStormDashOpen, setIsStormDashOpen] = useState(false);
+  const [isStationDashOpen, setIsStationDashOpen] = useState(false);
 
   const allDatasetDescriptions = useDatasetDescriptions();
 
