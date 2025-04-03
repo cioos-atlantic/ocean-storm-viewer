@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Box from '@mui/material/Box';
 import StormDashboard from '../storm_dashboard/storm_dashboard';
 import StationDashboard from '../station_dashboard/station_dashboard';
@@ -14,11 +14,15 @@ export function RenderDashboards({storm_data, storm_points, source_type, hover_p
     time,
     selectedTab,
     setSelectedTab,
-    isStormDetOpen, 
-    setIsStormDetOpen,
+    isStormDashOpen, 
+    setIsStormDashOpen,
+    isStationDashOpen, 
+    setIsStationDashOpen
     }){
-        const showStorm = hover_point !== empty_point_obj;
-        const showStation = selected_station !== empty_station_obj;
+        
+
+        const showStorm = isStormDashOpen;
+        const showStation = isStationDashOpen;
             // Determine width dynamically
         const flexValue = showStorm && showStation ? 1 : 2; // 50% if both, 100% if one
     
@@ -45,6 +49,8 @@ export function RenderDashboards({storm_data, storm_points, source_type, hover_p
                             hover_point={hover_point}
                             isDrawerOpen={isDrawerOpen}
                             setHoverMarker={setHoverMarker}
+                            isStormDashOpen={isStormDashOpen}
+                            setIsStormDashOpen={setIsStormDashOpen}
                         />
                     </Box>
                 )}
@@ -59,10 +65,9 @@ export function RenderDashboards({storm_data, storm_points, source_type, hover_p
                             storm_timestamp={new Date()}
                             selectedTab={selectedTab}
                             setSelectedTab={setSelectedTab}
-                            isDrawerOpen={isDrawerOpen}
-                            isStormDetOpen={isStormDetOpen}
-                            setIsStormDetOpen={setIsStormDetOpen}
                             source_type={source_type}
+                            isStationDashOpen={isStationDashOpen}
+                            setIsStationDashOpen={setIsStationDashOpen}
                         />
                     </Box>
                 )}

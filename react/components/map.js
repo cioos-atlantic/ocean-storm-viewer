@@ -48,6 +48,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   const [returnFilterResult, setReturnFilterResult] = useState(false);
   const [bboxFilterCoordinates, setBboxFilterCoordinates]= useState('');
   const [polyFilterCoords, setPolyFilterCoords] = useState('');
+  const [isStormDashOpen, setIsStormDashOpen] = useState(true);
+  const [isStationDashOpen, setIsStationDashOpen] = useState(true);
 
   const allDatasetDescriptions = useDatasetDescriptions();
 
@@ -112,8 +114,10 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             storm_timestamp = {new Date()}
             selectedTab = {selected_tab}
             setSelectedTab = {setSelectedTab}
-            isStormDetOpen= {isStormDetOpen}
-            setIsStormDetOpen= {setIsStormDetOpen}
+            isStormDashOpen={isStormDashOpen}
+            setIsStormDashOpen={setIsStormDashOpen}
+            isStationDashOpen={isStationDashOpen}
+            setIsStationDashOpen={setIsStationDashOpen}
             />
         }
         
@@ -184,7 +188,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                   station_data ? (
                     Object.entries(station_data).map((station) => {
                       const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                      return StationMarker(station, allDatasetDescriptions, storm_timestamp, selected_station, setSelectedStation, setSelectedTab)
+                      return StationMarker(station, allDatasetDescriptions, storm_timestamp, selected_station, setSelectedStation, setSelectedTab, setIsStationDashOpen)
                     })
                   ) : (
                     <></>
@@ -216,8 +220,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                         key={point.id}
                         storm_point_data={point}
                         setHoverMarker={setHoverMarker}
-                        isStormDetOpen= {isStormDetOpen}
-                        setIsStormDetOpen= {setIsStormDetOpen}
+                        setIsStormDashOpen={setIsStormDashOpen}
                        
                       />
                     );

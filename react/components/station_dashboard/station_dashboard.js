@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef } from"react";
 import { FaWindowClose } from "react-icons/fa";
 import { empty_station_obj } from "../layout";
 import { useMediaQuery, Box } from "@mui/material";
@@ -25,13 +25,12 @@ export default function StationDashboard({
   time,
   selectedTab,
   setSelectedTab,
-  isDrawerOpen,
-  isStormDetOpen, 
-  setIsStormDetOpen,
-  source_type
+  source_type,
+  isStationDashOpen, setIsStationDashOpen
 }) {
 
   const stationData = selected_station;
+  
   
   const isExtraSmall = useMediaQuery("(max-width:600px)");
   if (!stationData) return null;
@@ -80,7 +79,7 @@ export default function StationDashboard({
     isExtraSmall ? (
       <Box
       key="01-station-dashboard"
-      className={`station_dashboard ${isDrawerOpen ? "drawerOpen" : "drawerClosed"}`}
+      className={`station_dashboard`}
       sx={{
         //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
         display:  'flex',
@@ -138,7 +137,7 @@ export default function StationDashboard({
       <Box
       key="01-station-dashboard"
       className={`station_dashboard`}
-      sx={{
+      sx={{display: isStationDashOpen ? 'flex':'none',
         //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
         
         
@@ -156,6 +155,7 @@ export default function StationDashboard({
           onClick={() => {
             setSelectedStation(empty_station_obj);
             setSelectedTab(0);
+            setIsStationDashOpen(false);
           }}
           title="Close"
           aria-label="Close"

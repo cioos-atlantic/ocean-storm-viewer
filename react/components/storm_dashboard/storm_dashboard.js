@@ -19,10 +19,9 @@ import StormDataLayout from "./storm_layout_small_screen";
  */
 
 
-export default function StormDashboard({ storm_data, storm_points, source_type, hover_point, isDrawerOpen, setHoverMarker}) {
+export default function StormDashboard({ storm_data, storm_points, source_type, hover_point, isDrawerOpen, setHoverMarker, isStormDashOpen, setIsStormDashOpen}) {
 
   const [selectedStormTab, setSelectedStormTab] = useState(0);
-  const [isStormDashOpen, setIsStormDashOpen] = useState(true);
   console.log(storm_data, storm_points, source_type, hover_point);
   console.log(storm_points.pts.features)
 

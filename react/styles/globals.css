@@ -316,14 +316,15 @@ footer {
 
 /* When drawer is open (add a class dynamically) */
 .drawerOpen {
-  /*width: 80%;  80% width for balance */
+  width: 82%;  /*80% width for balance */
+  margin-left: 18%;
 
 }
 
 /* When drawer is closed */
 .drawerClosed  {
   margin-left: 0%; /* No offset */
-  /* width: 100%; Full width */
+  width: 100%; /* Full width */
 }
 
 
@@ -343,22 +344,6 @@ footer {
 
 }
 
-/* When drawer is open (add a class dynamically) */
-.drawerOpen {
-  width: 80%; /* 80% width for balance */
-
-}
-
-/* When drawer is closed */
-.drawerClosed  {
-  margin-left: 0%; /* No offset */
-  width: 100%; /* Full width */
-}
-
-
-.stormDetOpen{
-  width: 55%
-}
 
 
 

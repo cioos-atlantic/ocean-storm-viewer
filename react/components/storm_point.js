@@ -114,7 +114,7 @@ const storm_types = {
  *
  * @returns {JSX.Element} - A React Marker component with event handlers and custom icon.
  */
-export default function StormMarker({ storm_point_data, setHoverMarker, setShowPopup, isStormDetOpen, setIsStormDetOpen }) {
+export default function StormMarker({ storm_point_data, setHoverMarker, setShowPopup, setIsStormDashOpen }) {
 
     const position = flip_coords(storm_point_data.geometry.coordinates);
 
@@ -176,15 +176,16 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setShowP
             key={storm_point_data.id}
             position={position}
             eventHandlers={{
-                mouseover: (event) => setHoverMarker(storm_point_data),
+                mouseover: (event) => {setHoverMarker(storm_point_data); setIsStormDashOpen(true);},
                 click: (event) => {
                     setHoverMarker(storm_point_data);
                     clicked = true;
-                    setIsStormDetOpen(true)
+                    setIsStormDashOpen(true);
                 },
                 mouseout: (event) => {
                     if (!clicked) {
                         setHoverMarker(empty_point_obj);
+                        setIsStormDashOpen(false);
                     }
                 }
             }}
