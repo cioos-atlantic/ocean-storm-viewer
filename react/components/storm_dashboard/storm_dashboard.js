@@ -116,6 +116,7 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
       sx={{
         //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
         display: isStormDashOpen ? 'flex':'none',
+        maxHeight: '45%'
         
         
       }}

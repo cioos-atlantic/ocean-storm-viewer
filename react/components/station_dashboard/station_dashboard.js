@@ -81,8 +81,9 @@ export default function StationDashboard({
       key="01-station-dashboard"
       className={`station_dashboard`}
       sx={{
-        //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
+        bottom: { xs: "20px", sm: "30px", },
         display:  'flex',
+        maxHeight: '45%'
         
       }}
     >
