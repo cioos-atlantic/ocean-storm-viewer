@@ -50,8 +50,8 @@ export function formatCioosStations(data_obj, children, row_position, isHistoric
     children.push(<strong>Last Updated: </strong>)
     children.push(<span>{formatCioosDateTime(datetime)}</span>)
   }
-  children.push(<br></br>)
-  children.push(<br></br>)
+  //children.push(<br></br>)
+  children.push(<p></p>)
   
   const historic_prefix_max = isHistorical ? "Highest " : ""
   const historic_prefix_min = isHistorical ? "Lowest " : ""
@@ -63,7 +63,7 @@ export function formatCioosStations(data_obj, children, row_position, isHistoric
     children.push(<strong title={attributes.wind_from_direction.definition}>Wind Direction:  </strong>)
     children.push(<Image className="wind_arrow" alt={wind_direction} src={`${basePath}/arrow.svg`} height={20} width={20} 
       style={{ transform: 'rotate(' + (wind_direction) + 'deg)' }}></Image>)
-    children.push(<br></br>)
+    children.push(<p></p>)
     //children.push(<br></br>)
   }
   
