@@ -64,7 +64,7 @@ export function formatCioosStations(data_obj, children, row_position, isHistoric
     children.push(<Image className="wind_arrow" alt={wind_direction} src={`${basePath}/arrow.svg`} height={20} width={20} 
       style={{ transform: 'rotate(' + (wind_direction) + 'deg)' }}></Image>)
     children.push(<br></br>)
-    children.push(<br></br>)
+    //children.push(<br></br>)
   }
   
   const wind_speed = isHistorical ? max_value('wind_speed') : data_value('wind_speed') 

@@ -3,6 +3,7 @@ import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, 
 import { get_station_field_data, get_station_field_units, get_station_field_position, getColumnNameList, getUniqueStdNamesList } from './utils/station_data_format_util';
 import { convert_unit_data, windSpeedToKmh, windSpeedToKnots } from './utils/unit_conversion';
 import { graph_colour } from './station_dashboard/station_graph/graph_config.js'
+import { ProgressiveAnimation } from './storm_dashboard/utils';
 
 // Register necessary components, including the Line controller
 Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend);
@@ -35,6 +36,7 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
           datasets: datasets, // Set the datasets
         },
         options: {
+          animation:ProgressiveAnimation(datasets),
           interaction: {
             intersect: false,
             mode: 'index',

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController, BarController, BarElement, Filler } from 'chart.js';
 import { storm_graph_color, } from './storm_color';
 import { keyframes } from '@emotion/react';
+import { ProgressiveAnimation } from './utils';
 
 //import { graph_colour } from './station_dashboard/station_graph/graph_config.js'
 
@@ -56,20 +57,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
     
 
       
-      let delayed;
-      const delayAnimation = {
-        onComplete: () => {
-          delayed = true;
-        },
-        delay: (context) => {
-          let delay = 0;
-          
-          if (context.type === 'data' && context.mode === 'default' && !delayed) {
-            delay = context.dataIndex * 30 + context.datasetIndex * 100;
-          }
-          return delay;
-        },
-      }  
+      
       // Chart.js configuration
       const chartConfig = {
         type: 'line',
@@ -79,7 +67,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
         },
         
         options: {
-          animation: delayAnimation,
+          animation:ProgressiveAnimation(datasets),
           interaction: {
             intersect: false,
             mode: 'index',
