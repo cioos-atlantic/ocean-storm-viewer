@@ -37,7 +37,7 @@ export function RenderDashboards({storm_data, storm_points, source_type, hover_p
                     gap: 0,
                     display: "flex",
                     alignItems: "stretch", // Ensures both boxes are equal height
-                    maxHeight: "80%", 
+                    maxHeight: "55%", 
                 }}
             >
                 {showStorm && (

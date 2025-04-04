@@ -84,6 +84,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
             },
           },
           responsive: true,
+          maintainAspectRatio: true,
           spanGaps:true,
           //maintainAspectRatio: false,
           plugins: {
@@ -127,7 +128,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
   console.log("here")
   return (
 
-    <div  style={{position: 'relative', height:'100%', width:'100%'}}>
+    <div  style={{position: 'relative', width:'100%', display:'flex ', justifyContent: 'center' }}>
     <canvas
       ref={chartRef}
       style={{
