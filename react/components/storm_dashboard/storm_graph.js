@@ -56,7 +56,20 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
     
 
       
-        
+      let delayed;
+      const delayAnimation = {
+        onComplete: () => {
+          delayed = true;
+        },
+        delay: (context) => {
+          let delay = 0;
+          
+          if (context.type === 'data' && context.mode === 'default' && !delayed) {
+            delay = context.dataIndex * 30 + context.datasetIndex * 100;
+          }
+          return delay;
+        },
+      }  
       // Chart.js configuration
       const chartConfig = {
         type: 'line',
@@ -66,6 +79,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
         },
         
         options: {
+          animation: delayAnimation,
           interaction: {
             intersect: false,
             mode: 'index',
