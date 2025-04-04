@@ -60,7 +60,7 @@ export function RenderWindRose ( { sourceData, hasWindRoseData }){
       ) : (
         <div id="container" 
         ref={chartContainerRef}
-        className='windrose_chart_container'
+        className='chart-render'
         />
       )}
     </div>
@@ -182,8 +182,8 @@ function renderChart(chartOptions) {
       //height: "auto", // Set the desired height of the chart
       //overflow: 'auto',
       //aspectRatio: "100 / 100",
-      height: 360,
-      width: 780,
+      //height: 360,
+      //width: 780,
 
     });
 

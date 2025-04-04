@@ -128,7 +128,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
   console.log("here")
   return (
 
-    <div  style={{position: 'relative', width:'100%', display:'flex ', justifyContent: 'center' }}>
+    <div className='chart-render'>
     <canvas
       ref={chartRef}
       style={{

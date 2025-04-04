@@ -63,7 +63,7 @@ function StormCategoryChart({ chartData }) {
   }, [chartData]);
 
   return (
-    <div style={{ width: "100%", maxHeight: "300px", position: 'relative', display:'flex ', justifyContent: 'center' }}> {/* Set container size */}
+    <div className='chart-render'> {/* Set container size */}
       <canvas ref={chartRef} id="stormCategoryChart"></canvas> {/* Set explicit canvas size */}
     </div>
   );

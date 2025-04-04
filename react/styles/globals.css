@@ -878,3 +878,11 @@ footer {
 }
 
 /* Adjust the width of the Draw Control toolbar */
+
+.chart-render{
+  width: 100%;
+  max-height: 300px;
+  position: relative;
+  display:flex;
+  justify-content: center;
+}

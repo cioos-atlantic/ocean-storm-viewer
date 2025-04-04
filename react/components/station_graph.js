@@ -97,7 +97,7 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
 
   return (
 
-    <div  style={{position: 'relative', height:'60%', width:'100%'}}>
+    <div  className='chart-render'>
       <canvas
         ref={chartRef}
         style={{
