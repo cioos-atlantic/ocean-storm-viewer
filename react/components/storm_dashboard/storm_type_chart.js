@@ -42,6 +42,7 @@ function StormTypeChart({ chartData }) {
         responsive: true,
         maintainAspectRatio: true,
         plugins: {
+          
           legend: { position: 'top' },
           title: { display: true, text: 'Storm Type Distribution' },
         },

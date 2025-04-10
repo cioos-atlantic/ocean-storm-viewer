@@ -3,6 +3,7 @@ import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, 
 import { storm_graph_color, } from './storm_color';
 import { keyframes } from '@emotion/react';
 import { ProgressiveAnimation } from './utils';
+import annotationPlugin from 'chartjs-plugin-annotation';
 
 //import { graph_colour } from './station_dashboard/station_graph/graph_config.js'
 
@@ -10,7 +11,7 @@ import { ProgressiveAnimation } from './utils';
 
 
 // Register necessary components, including the Line controller
-Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, BarController, BarElement, Filler  );
+Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, BarController, BarElement, Filler, annotationPlugin );
 
 
 /**
@@ -90,6 +91,17 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
           spanGaps:true,
           //maintainAspectRatio: false,
           plugins: {
+            annotation: {
+              annotations: {
+                line1: {
+                  type: 'line',
+                  xMin: highlightTime,
+                  xMax: highlightTime,
+                  borderColor: 'rgb(255, 99, 132)',
+                  borderWidth: 2,
+                }
+              }
+            },
             filler: {
               propagate: false,
             },
