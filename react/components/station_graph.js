@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController} from 'chart.js';
+import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController, TimeScale} from 'chart.js';
 import { get_station_field_data, get_station_field_units, get_station_field_position, getColumnNameList, getUniqueStdNamesList } from './utils/station_data_format_util';
 import { convert_unit_data, windSpeedToKmh, windSpeedToKnots } from './utils/unit_conversion';
 import { graph_colour } from './station_dashboard/station_graph/graph_config.js'
 import { ProgressiveAnimation } from './storm_dashboard/utils';
 import annotationPlugin from 'chartjs-plugin-annotation';
+import 'chartjs-adapter-luxon';
 
 // Register necessary components, including the Line controller
 Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, annotationPlugin);
@@ -57,13 +58,25 @@ function RenderChart({ sourceData, position, stationName, varCategory, hoverPoin
               grid: {
                 display: true, // Show grid on the x-axis
               },
+              type: "time",
+              time: {
+                parser: 'yyyy/MM/dd t',
+                tooltipFormat: 'yyyy/MM/dd t',
+                unit: "day",
+                displayFormats: {
+                  'hour':'MM/dd'
+                }
+              },
+              ticks:{
+                stepSize: 1
+              }
             },
             y: {
               grid: {
                 display: true, // Show grid on the y-axis
               },
               beginAtZero: startAtZero,
-            },
+            }
           },
           responsive: true,
           spanGaps:true,
@@ -197,14 +210,7 @@ function parseChartData(sourceData, varCategory, highlightTime){
   const uniqueColStdNames= getUniqueStdNamesList(column_std_names);
   console.log(uniqueColStdNames);
 
-  const station_timeData = get_station_field_data(sourceData,"time", "column_std_names")?.data
-  const timeData = station_timeData.map((timestamp) => new Date(timestamp).toLocaleString('en-US', {
-                            hour: '2-digit',
-                            //minute: '2-digit',
-                            day: '2-digit',
-                            month: '2-digit',
-                            //year: 'numeric'
-  }));
+  const timeData = get_station_field_data(sourceData,"time", "column_std_names")?.data
 
   // Move this to config later
   const exclude_var = ['time', 'latitude', 'longitude', 'wind_from_direction', 'relative_humidity',
