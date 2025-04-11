@@ -164,6 +164,11 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
         <div>
           <strong key='storm name'>{stormName}</strong>
         </div>
+        <div>
+          <a href={ibtracs_link} target="_blank" rel="noopener noreferrer">
+          International Best Track Archive for Climate Stewardship (IBTrACS) Project
+          </a>
+        </div>
         
       </Box>
       <Box

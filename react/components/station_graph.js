@@ -4,29 +4,40 @@ import { get_station_field_data, get_station_field_units, get_station_field_posi
 import { convert_unit_data, windSpeedToKmh, windSpeedToKnots } from './utils/unit_conversion';
 import { graph_colour } from './station_dashboard/station_graph/graph_config.js'
 import { ProgressiveAnimation } from './storm_dashboard/utils';
+import annotationPlugin from 'chartjs-plugin-annotation';
 
 // Register necessary components, including the Line controller
-Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend);
+Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, annotationPlugin);
 
 
 /**
  * Renders a line chart using Chart.js to display station data.
  */
-function RenderChart({ sourceData, position, stationName, varCategory }) {
+function RenderChart({ sourceData, position, stationName, varCategory, hoverPointTime }) {
 
 
   const chartRef = useRef(null); // Reference to the canvas element
 
   const startAtZero = varCategory === 'air_pressure' ? false : true
-
+  
   useEffect(() => {
     // Check if chartData is available
     if (sourceData && sourceData.rows.length > 0) {
       const ctx = chartRef.current.getContext('2d'); // Get context for the canvas
-      const chartData = parseChartData(sourceData, varCategory);
+      const highlightTime = new Date(hoverPointTime).toLocaleString('en-US', {
+        hour: '2-digit',
+        day: '2-digit',
+        month: '2-digit',
+    
+      });
+      
+      const chartData = parseChartData(sourceData, varCategory, highlightTime);
       console.log(chartData);
       const datasets = chartData.datasets;
       const timeData = chartData.timeData;
+
+      
+    
         
       // Chart.js configuration
       const chartConfig = {
@@ -56,8 +67,14 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
           },
           responsive: true,
           spanGaps:true,
-          //maintainAspectRatio: false,
+          maintainAspectRatio: true,
+          
           plugins: {
+            annotation: {
+            annotations: {
+              
+            }
+          },
             legend: {
               position: 'right',
               fullSize: true,
@@ -87,6 +104,42 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
 
       // Create a new chart
       chartRef.current.chart = new Chart(ctx, chartConfig);
+
+      setTimeout(() => {
+        const chart = chartRef.current.chart;
+        if (!chart) return;
+  
+        const yScale = chart.scales.y;
+        const yMin = yScale.min;
+        const yMax = yScale.max;
+  
+        // Add annotation using yMin/yMax
+        chart.options.plugins.annotation.annotations.line1 = {
+          drawTime: 'afterDraw',
+          type: 'line',
+          xMin: highlightTime,
+          xMax: highlightTime,
+          yMin: yMin,
+          yMax: yMax,
+          borderColor: 'rgb(255, 99, 132)',
+          borderWidth: 2,
+          borderDash: [5,2],
+          label: {
+            display: true,
+            content: `Hovered Date ${highlightTime}`,
+            position: 'end', // options: 'start', 'center', 'end'
+            backgroundColor: 'rgba(255,99,132,0.8)',
+            color: '#fff',
+            font: {
+              weight: 'bold',
+              size: 10
+            },
+            padding: 4
+          }
+        }
+       chart.update();
+      }, 500) // set delay to heart's content. Set to anything above 250, 20 cause a very interesting bug
+  
     }
 
     // Cleanup function to destroy the chart on unmount
@@ -95,7 +148,7 @@ function RenderChart({ sourceData, position, stationName, varCategory }) {
         chartRef.current.chart.destroy();
       }
     };
-  }, [sourceData, varCategory, stationName, startAtZero]); // Re-run effect if chartData or stationName changes
+  }, [sourceData, varCategory, stationName, startAtZero, hoverPointTime]); // Re-run effect if chartData or stationName changes
 
   return (
 
@@ -136,7 +189,7 @@ function getColour(graph_colour_list, var_name){
 
 export default React.memo(RenderChart);
 
-function parseChartData(sourceData, varCategory){
+function parseChartData(sourceData, varCategory, highlightTime){
   console.log(sourceData);
   const  column_names = sourceData.column_names;
   
@@ -180,6 +233,8 @@ function parseChartData(sourceData, varCategory){
         borderColor: getColour(graph_colour_list, variable), // Generate random colors for each line
         backgroundColor: 'rgba(0, 0, 0, 0)',
         fill: false,
+        pointRadius: (context) => (timeData[context.dataIndex] === highlightTime ? 10 : 0),
+        pointBackgroundColor: (context) => (timeData[context.dataIndex] === highlightTime ? 'red' : 'blue'),
       })}
       
     });

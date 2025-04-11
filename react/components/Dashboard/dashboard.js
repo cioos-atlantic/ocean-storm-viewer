@@ -68,6 +68,7 @@ export function RenderDashboards({storm_data, storm_points, source_type, hover_p
                             source_type={source_type}
                             isStationDashOpen={isStationDashOpen}
                             setIsStationDashOpen={setIsStationDashOpen}
+                            hover_point={hover_point}
                         />
                     </Box>
                 )}

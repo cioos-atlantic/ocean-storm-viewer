@@ -28,12 +28,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
 
   const startAtZero = varCategory === 'Pressure' || 'seaHeight' ? false : true
 
-  const highlightTime = new Date(hoverPointTime).toLocaleString('en-US', {
-    hour: '2-digit',
-    day: '2-digit',
-    month: '2-digit',
-
-  });
+  
 
 // Find the index of the given time dynamically
 //const highlightIndex = chartTimeData.indexOf(highlightTime);
@@ -47,6 +42,13 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
   }));
 
   useEffect(() => {
+
+    const highlightTime = new Date(hoverPointTime).toLocaleString('en-US', {
+      hour: '2-digit',
+      day: '2-digit',
+      month: '2-digit',
+  
+    });
 
     // Check if the canvas and data are available
     const canvas = chartRef.current;
@@ -170,7 +172,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
         }
       }
      chart.update();
-    }, 20) // set delay to heart's content
+    }, 500) // set delay to heart's content. Set to anything above 250, 20 cause a very interesting bug
 
  
     

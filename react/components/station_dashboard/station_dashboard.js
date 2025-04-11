@@ -10,6 +10,7 @@ import BasicTabs from "./tabs";
 //import BasicTabs from "./tabs";
 import { RecentStationData, getMatchedStation, getStationDataText, } from "../utils/station_data_format_util";
 //import BasicTabs from "./tabs";
+import { fetch_value } from "@/lib/storm_utils";
 
 
 /**
@@ -26,7 +27,7 @@ export default function StationDashboard({
   selectedTab,
   setSelectedTab,
   source_type,
-  isStationDashOpen, setIsStationDashOpen
+  isStationDashOpen, setIsStationDashOpen, hover_point
 }) {
 
   const stationData = selected_station;
@@ -65,6 +66,8 @@ export default function StationDashboard({
     air_pressure: false,
   };
 
+
+
   standardNames.forEach((varName) => {
     if (!excludeVars.includes(varName)) {
       variablePresence.wind_speed ||= varName.includes("wind_speed");
@@ -74,6 +77,8 @@ export default function StationDashboard({
       variablePresence.air_pressure ||= varName.includes("air_pressure");
     }
   });
+
+  const hoverPointTime = fetch_value(hover_point, ["TIMESTAMP", "ISO_TIME"]);
 
   return (
     isExtraSmall ? (
@@ -129,6 +134,7 @@ export default function StationDashboard({
             stationData={stationValues?.properties?.station_data}
             stationSummaryText={dataText}
             variablePresence={variablePresence}
+            hoverPointTime={hoverPointTime}
           />
         
         
@@ -176,7 +182,7 @@ export default function StationDashboard({
         className="dash-body"
         sx={{
           fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
-          
+           
         }}
       >
           <BasicTabs
@@ -186,6 +192,7 @@ export default function StationDashboard({
             variablePresence={variablePresence}
             selectedTab={selectedTab}
             setSelectedTab={setSelectedTab}
+            hoverPointTime={hoverPointTime}
           />
         
       </Box>

@@ -66,7 +66,7 @@ function a11yProps(index) {
  * selected category. The Summary tab includes station summary text and a link to view full data. The
  * Wind Speed, Temperature, Waves, and
  */
-export default function BasicTabs({stationName, stationData, stationSummaryText, variablePresence, selectedTab, setSelectedTab}) {
+export default function BasicTabs({stationName, stationData, stationSummaryText, variablePresence, selectedTab, setSelectedTab, hoverPointTime}) {
   /**
    * The function `generateGraph` returns a JSX element containing a chart component with specified
    * data and styling.
@@ -84,6 +84,7 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
          sourceData={stationData}
          stationName={stationName}
          varCategory={selectedVar}
+         hoverPointTime={hoverPointTime}
        />
    </div>
     )
