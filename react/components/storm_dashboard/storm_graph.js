@@ -19,13 +19,14 @@ Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryS
  */
 function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }) {
   console.log(sourceData);
+  console.log(varCategory);
   
 
   let chartTimeData = timeData;
   const chartRef = useRef(null); // Reference to the canvas element
   const chartInstance = useRef(null); // Store Chart.js instance
 
-  const startAtZero = varCategory === 'stormPressure' ? false : true
+  const startAtZero = varCategory === 'Pressure' || 'seaHeight' ? false : true
 
   const highlightTime = new Date(hoverPointTime).toLocaleString('en-US', {
     hour: '2-digit',
@@ -46,97 +47,142 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
   }));
 
   useEffect(() => {
-    // Check if chartData is available
-    if (sourceData) {
-      const ctx = chartRef.current.getContext('2d'); // Get context for the canvas
-      
-    
-      console.log(sourceData);
-      const datasets = makeDataset(sourceData, formattedTimeData, highlightTime);
 
-      console.log(datasets);
+    // Check if the canvas and data are available
+    const canvas = chartRef.current;
+    if (!canvas || !sourceData) return;
+
+
+    // Always destroy the existing chart before creating a new one
+    if (chartInstance.current) {
+      chartInstance.current.destroy();
+      chartInstance.current = null;
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+
     
+    
+    console.log(sourceData);
+    const datasets = makeDataset(sourceData, formattedTimeData, highlightTime);
+
+    console.log(datasets);
+  
 
       
       
       // Chart.js configuration
-      const chartConfig = {
-        type: 'line',
-        data: {
-          labels: formattedTimeData, // Set the labels (time)
-          datasets: datasets, // Set the datasets
+    const chartConfig = {
+      type: 'line',
+      data: {
+        labels: formattedTimeData, // Set the labels (time)
+        datasets: datasets, // Set the datasets
+      },
+      
+      options: {
+        animation:ProgressiveAnimation(datasets),
+        interaction: {
+          intersect: false,
+          mode: 'index',
         },
-        
-        options: {
-          animation:ProgressiveAnimation(datasets),
-          interaction: {
-            intersect: false,
-            mode: 'index',
-          },
-          scales: {
-            x: {
-              grid: {
-                display: true, // Show grid on the x-axis
-              },
-            },
-            y: {
-              grid: {
-                display: true, // Show grid on the y-axis
-              },
-              beginAtZero: startAtZero,
+        scales: {
+          x: {
+            grid: {
+              display: true, // Show grid on the x-axis
             },
           },
-          responsive: true,
-          maintainAspectRatio: true,
-          spanGaps:true,
-          //maintainAspectRatio: false,
-          plugins: {
-            annotation: {
-              annotations: {
-                line1: {
-                  type: 'line',
-                  xMin: highlightTime,
-                  xMax: highlightTime,
-                  borderColor: 'rgb(255, 99, 132)',
-                  borderWidth: 2,
-                }
+          y: {
+            grid: {
+              display: true, // Show grid on the y-axis
+            },
+            beginAtZero: startAtZero,
+          },
+        },
+        responsive: true,
+        maintainAspectRatio: true,
+        spanGaps:true,
+        //maintainAspectRatio: false,
+        plugins: {
+          annotation: {
+            annotations: {
+              
+            }
+          },
+          filler: {
+            propagate: false,
+          },
+          legend: {
+            position: 'right',
+            fullSize: true,
+            labels: {
+              padding: 5,
+              boxWidth: 10,
+              font: {
+                  size: 10,
               }
             },
-            filler: {
-              propagate: false,
-            },
-            legend: {
-              position: 'right',
-              fullSize: true,
-              labels: {
-                padding: 5,
-                boxWidth: 10,
-                font: {
-                    size: 10,
-                }
-              },
-              
-            },
-
             
           },
+
           
         },
-      };
+        
+      },
+    };
 
      
 
-      // Create a new chart
-      chartInstance.current = new Chart(ctx, chartConfig);
-    }
+
+    // Create a new chart
+    chartInstance.current = new Chart(ctx, chartConfig);
+    setTimeout(() => {
+      const chart = chartInstance.current;
+      if (!chart) return;
+
+      const yScale = chart.scales.y;
+      const yMin = yScale.min;
+      const yMax = yScale.max;
+
+      // Add annotation using yMin/yMax
+      chart.options.plugins.annotation.annotations.line1 = {
+        drawTime: 'afterDraw',
+        type: 'line',
+        xMin: highlightTime,
+        xMax: highlightTime,
+        yMin: yMin,
+        yMax: yMax,
+        borderColor: 'rgb(255, 99, 132)',
+        borderWidth: 2,
+        borderDash: [5,2],
+        label: {
+          display: true,
+          content: `Hovered Date ${highlightTime}`,
+          position: 'end', // options: 'start', 'center', 'end'
+          backgroundColor: 'rgba(255,99,132,0.8)',
+          color: '#fff',
+          font: {
+            weight: 'bold',
+            size: 10
+          },
+          padding: 4
+        }
+      }
+     chart.update();
+    }, 20) // set delay to heart's content
+
+ 
+    
 
     // Cleanup function to destroy the chart on unmount
     return () => {
       if (chartInstance.current) {
         chartInstance.current.destroy();
+        chartInstance.current = null;
       }
     };
-  }, [sourceData, varCategory, startAtZero, hoverPointTime]); // Re-run effect if chartData or stationName changes
+  }, [sourceData, varCategory, hoverPointTime]); // Re-run effect if chartData or stationName changes
 
 
   console.log("here")

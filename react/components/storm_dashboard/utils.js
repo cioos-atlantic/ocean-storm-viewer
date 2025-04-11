@@ -2,13 +2,27 @@ export function ProgressiveAnimation(data) {
     const delayPerPoint = 50; // ms delay between points
   
     const previousY = (ctx) =>
-      ctx.index === 0
-        ? ctx.chart.scales.y.getPixelForValue(100)
-        : ctx.chart
-            .getDatasetMeta(ctx.datasetIndex)
-            .data[ctx.index - 1]
-            .getProps(['y'], true).y;
-  
+      {
+        try {
+          if (ctx.index === 0) {
+            // Use the base line value (can be adjusted)
+            return ctx.chart.scales.y.getPixelForValue(100);
+          }
+      
+          const meta = ctx.chart.getDatasetMeta(ctx.datasetIndex);
+          const previousElement = meta.data[ctx.index - 1];
+      
+          if (previousElement && previousElement.getProps) {
+            return previousElement.getProps(['y'], true).y;
+          }
+      
+          // Fallback if previous point is undefined
+          return ctx.chart.scales.y.getPixelForValue(100);
+        } catch (err) {
+          console.error("Error in animation 'previousY':", err);
+          return ctx.chart.scales.y.getPixelForValue(100);
+        }
+      };
     const animation = {
       x: {
         type: 'number',

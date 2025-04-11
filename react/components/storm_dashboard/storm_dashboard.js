@@ -7,6 +7,7 @@ import RenderStormChart from "./storm_graph";
 import BasicTabs from "./tabs";
 import { StormSummaryText } from "./storm_details";
 import StormDataLayout from "./storm_layout_small_screen";
+import { convert_unit_data } from "../utils/unit_conversion";
 
 
 //import BasicTabs from "./tabs";
@@ -37,12 +38,12 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
 
   const stormCategory={data:[], name:'Storm Category'}
   const storm_data_dict ={
-    direction: [{stormDir: { data: [], name: "Storm Direction" }}],
-    Pressure: [{stormPressure: { data: [], name: "Storm Pressure" }}],
-    speed: [{stormSpeed: { data: [], name: "Storm Speed" }}],
-    seaHeight: [{stormSeaHgt: { data: [], name: "Storm Sea Height" }}],
-    'Wind Speed': [{stormWindSpeed: { data: [], name: "Storm Wind Speed" }},
-    {stormGust: { data: [], name: "Storm Gust" }}],
+    direction: [{stormDir: { data: [], name: "Storm Direction (degree)" }}],
+    Pressure: [{stormPressure: { data: [], name: "Storm Pressure (kPa)" }}],
+    speed: [{stormSpeed: { data: [], name: "Storm Speed (km/h)" }}],
+    seaHeight: [{stormSeaHgt: { data: [], name: "Storm Sea Height (m)" }}],
+    'Wind Speed': [{stormWindSpeed: { data: [], name: "Storm Wind Speed (km/h)" }},
+    {stormGust: { data: [], name: "Storm Gust (km/h)" }}],
 
   }
 
@@ -54,14 +55,30 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
     stormNameList.push(fetch_value(storm_point, ["STORMNAME", "NAME"]));
     stormTime.push(fetch_value(storm_point, ["TIMESTAMP", "ISO_TIME"]));
     storm_data_dict.direction[0].stormDir.data.push(storm_point.properties.STORM_DIR);
-    storm_data_dict.speed[0].stormSpeed.data.push(storm_point.properties.STORM_SPEED);
+    
     stormCategory.data.push(fetch_value(storm_point, ["STORMFORCE", "USA_SSHS"]));
-    storm_data_dict['Wind Speed'][1].stormGust.data.push(storm_point.properties.USA_GUST);
-    storm_data_dict['Wind Speed'][0].stormWindSpeed.data.push(fetch_value(storm_point, ["MAXWIND", "WMO_WIND", "USA_WIND"]));
-    storm_data_dict.Pressure[0].stormPressure.data.push(fetch_value(storm_point, ["MSLP", "WMO_PRES", "USA_PRES"]));
+
+
+    // convert gust, storm speed and wind speed from knots to Kmh to synchronize with station chart
+    const gust_in_Kmh = convert_unit_data(storm_point.properties.USA_GUST, 'knots', 'km/h')
+    const stormWindSpeed_in_knots = fetch_value(storm_point, ["MAXWIND", "WMO_WIND", "USA_WIND"])
+    const stormWindSpeed_in_Kmh = convert_unit_data(stormWindSpeed_in_knots, 'knots', 'km/h')
+    const stormSpeed_in_Kmh = convert_unit_data(storm_point.properties.STORM_SPEED, 'knots', 'km/h')
+    
+
+    storm_data_dict.speed[0].stormSpeed.data.push(stormSpeed_in_Kmh.value);
+    storm_data_dict['Wind Speed'][1].stormGust.data.push(gust_in_Kmh.value);
+    storm_data_dict['Wind Speed'][0].stormWindSpeed.data.push(stormWindSpeed_in_Kmh.value);
+    const pressure_in_mb = fetch_value(storm_point, ["MSLP", "WMO_PRES", "USA_PRES"])|| []
+    
+    const pressure_in_kpa= convert_unit_data(pressure_in_mb, 'mbar', 'kPa')
+                             
+    storm_data_dict.Pressure[0].stormPressure.data.push(pressure_in_kpa.value);
     
     stormType.data.push(fetch_value(storm_point, ["STORMTYPE", "NATURE"]));
-    storm_data_dict.seaHeight[0].stormSeaHgt.data.push(storm_point.properties.USA_SEAHGT);
+
+    const seaHeight_in_m = convert_unit_data(storm_point.properties.USA_SEAHGT, 'ft', 'm');
+    storm_data_dict.seaHeight[0].stormSeaHgt.data.push(seaHeight_in_m.value);
   
   })
   const stormNameUniqueValues= [...new Set(stormNameList)];
