@@ -11,6 +11,7 @@ import {  handleClick, handleFormSubmit, handleSearch } from './historical_storm
 import { RenderSearchResult } from './render_search_result.js';
 import { renderRecentStorms } from './render_recent_storms.js';
 import { RenderFilterResult } from '../Filter/renderFilterResult.js';
+import LoadingScreen from '../loading_screen.js';
 
 
 const otherStormList = [
@@ -32,6 +33,8 @@ const otherStormList = [
  
  */
 export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult }) {
+
+  const [loading, setLoading] = useState(false);
 
   
   const [stormList, setStormList] = useState([]);
@@ -63,7 +66,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           const selectedStorm = stormObjectList[0];
           console.log(selectedStorm);
           if (selectedStorm) {
-            await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation);
+            await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation,setLoading);
           }
         }
     }
@@ -98,14 +101,18 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
   // const [selected_storm, setSelectedStorm] = useState("");
   return (
     <>
-      <Box className='historical_page_drawer_header'
-      sx={{
-        fontSize: { xs: '20px', sm: '20px', md: '24px', lg: '24px' }
-      }}
-      >Historical Storms: </Box>
-      <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>  {/* Bold line */}
+    {loading ? (
+        <LoadingScreen/>
+        ) : (
+        <>
+          <Box className='historical_page_drawer_header'
+          sx={{
+            fontSize: { xs: '20px', sm: '20px', md: '24px', lg: '24px' }
+          }}
+          >Historical Storms: </Box>
+          <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>  {/* Bold line */}
 
-      {console.log(searchResult)}
+          {console.log(searchResult)}
 
       {/*{isSearchSubmitted ? (<RenderSearchResult 
                 searchResult={searchResult}
@@ -125,11 +132,13 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           setReturnFilterResult={setReturnFilterResult}
                 
         />):
-        (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation))}
+        (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading))}
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
 
-      
-       
+          
+          
+        </>
+         )}
     </>
   );
 

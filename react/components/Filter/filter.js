@@ -1,4 +1,4 @@
-import { IconButton, TextField, Box, Typography, Paper, Button, SpeedDial,  SpeedDialIcon, SpeedDialAction, Tooltip } from "@mui/material";
+import { IconButton, TextField, Box, Typography, Paper, Button, SpeedDial, SpeedDialIcon, SpeedDialAction, Tooltip } from "@mui/material";
 import { useEffect, useState, Fragment } from 'react';
 import Stack from '@mui/material/Stack';
 
@@ -16,12 +16,9 @@ import { filters, input_filters } from "@/components/Filter/filters_list";
 import { useRouter } from 'next/router';
 import { InputFilter } from "./inputFilter";
 import { basePath } from "@/next.config";
+import LoadingScreen from "../loading_screen";
 import { smallScreenIconButton } from "./filter_utils";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-
-
-
-
 
 
 const ITEM_HEIGHT = 35;
@@ -37,15 +34,15 @@ const MenuProps = {
 
 
 
-const showOptionsArrow = <KeyboardDoubleArrowDownIcon/>; 
-const closeOptionsArrow = <KeyboardDoubleArrowUpIcon/>;
+const showOptionsArrow = <KeyboardDoubleArrowDownIcon />;
+const closeOptionsArrow = <KeyboardDoubleArrowUpIcon />;
 
 
-export function RenderFilter({filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords, clearShapesRef} ){
-  const [showFilterIcons, setShowFilterIcons] = useState(false); 
-  const [showFilterOptions, setShowFilterOptions] = useState({}); 
-  const [selectedOptions, setSelectedOptions] = useState([]); 
-  const [filterParameters, setFilterParameters] = useState([]); 
+export function RenderFilter({ filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords, clearShapesRef }) {
+  const [showFilterIcons, setShowFilterIcons] = useState(false);
+  const [showFilterOptions, setShowFilterOptions] = useState({});
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [filterParameters, setFilterParameters] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
@@ -61,8 +58,10 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
 
 
 
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter(); // Next.js useRouter
+
 
   // Function to clear all filters and shapes
   function handleClearAll() {
@@ -100,15 +99,15 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
       ...selectedOptions, // Spread selected options correctly
       startDate: startDate, // Ensure start and end dates are included
       endDate: endDate,
-      bboxCoordinates:bboxFilterCoordinates,
-      polyCoords:polyFilterCoords,
+      bboxCoordinates: bboxFilterCoordinates,
+      polyCoords: polyFilterCoords,
 
     };
-  
+
     console.log(updatedParams); // 
 
 
-    const stormResult = await processFilterRequest(updatedParams);
+    const stormResult = await processFilterRequest(updatedParams, setLoading);
     console.log(stormResult);
     setFilterResult(stormResult);
     router.push(`/?storms=historical`);
@@ -116,228 +115,205 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
     setReturnFilterResult(true);
 
   }
-  
-  
 
-  return(
 
+
+  return (
     <>
-    
-      <SpeedDial
-      
-        ariaLabel="Filter Options"
-        sx={{ position: 'absolute', bottom: 25, right: 7, 
-         display: { xs: "block", md: "none" },  '& .MuiSpeedDial-fab': {
-          backgroundColor: '#e55162',  // Change SpeedDial button background color
-          '&:hover': {
-            backgroundColor: '#b9acac', // Change SpeedDial button hover color
-          }
-        }}}
-        icon={<FilterAltIcon openIcon={<KeyboardDoubleArrowDownIcon />}/>}
-        
-        //onClick={handleSpeedDialToggle}
-        open={openSpeedDial}
-        onOpen={handleOpen}
-        onClose={handleClose}
-      >
-       
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <>
+          <SpeedDial
+            ariaLabel="Filter Options"
+            sx={{
+              position: 'absolute', bottom: 25, right: 7,
+              display: { xs: "block", md: "none" }, '& .MuiSpeedDial-fab': {
+                backgroundColor: '#e55162',  // Change SpeedDial button background color
+                '&:hover': {
+                  backgroundColor: '#b9acac', // Change SpeedDial button hover color
+                }
+              }
+            }}
+            icon={<FilterAltIcon openIcon={<KeyboardDoubleArrowDownIcon />} />}
 
-       <SpeedDialAction
-          
-          icon={<IconButton className="filters-speed-dial">X</IconButton>}
-          tooltipTitle="Clear Filters"
-          onClick={(e) => {
-            e.stopPropagation(); 
-            handleClearAll()}}
-        />
-        <SpeedDialAction
-        className="filters-speed-dial"
-          icon={<PublishRoundedIcon />}
-          tooltipTitle="Submit"
-          onClick={(e) => {
-            e.stopPropagation(); 
-            handleFilterSubmit()}}
-        />
+            //onClick={handleSpeedDialToggle}
+            open={openSpeedDial}
+            onOpen={handleOpen}
+            onClose={handleClose}
+          >
 
-        
-        { openSpeedDial && (input_filters.map((input_filter, index) => {
-            return(
+            <SpeedDialAction
+              icon={<IconButton className="filters-speed-dial">X</IconButton>}
+              tooltipTitle="Clear Filters"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClearAll()
+              }}
+            />
+            <SpeedDialAction
+              className="filters-speed-dial"
+              icon={<PublishRoundedIcon />}
+              tooltipTitle="Submit"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleFilterSubmit()
+              }}
+            />
 
-            <div className="filter-group" key={index}>
-  
+            {openSpeedDial && (input_filters.map((input_filter, index) => {
+              return (
+                <div className="filter-group" key={index}>
+                  <InputFilter
+                    input_filter={input_filter}
+                    showOptionsArrow={showOptionsArrow}
+                    closeOptionsArrow={closeOptionsArrow}
+                    setSelectedOptions={setSelectedOptions}
+                    selectedOptions={selectedOptions}
+                    showFilterOptions={showFilterOptions}
+                    setShowFilterOptions={setShowFilterOptions}
+                  />
+                </div>
+              )
+            }))
 
-              <InputFilter
-              input_filter={input_filter}
-              showOptionsArrow={showOptionsArrow}
-              closeOptionsArrow={closeOptionsArrow}
-              setSelectedOptions={setSelectedOptions}
-              selectedOptions={selectedOptions}
-              showFilterOptions={showFilterOptions}
-              setShowFilterOptions={setShowFilterOptions}
-              
+            }
+            {openSpeedDial && (<div className="filter-group">
+              <RenderDateFilter
+                showOptionsArrow={showOptionsArrow}
+                closeOptionsArrow={closeOptionsArrow}
+                setSelectedOptions={setSelectedOptions}
+                startDate={startDate}
+                endDate={endDate}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
               />
 
             </div>
+            )
+
+            }
+            {openSpeedDial && (filters.map((filter, index) => {
+              return (
+
+                <div className="filter-group" key={index}>
 
 
-          )
-        }))
-          
-      }
-      { openSpeedDial && (<div className="filter-group">
-        <RenderDateFilter
-          showOptionsArrow={showOptionsArrow}
-          closeOptionsArrow={closeOptionsArrow}
-          setSelectedOptions={setSelectedOptions}
-          startDate={startDate}
-          endDate={endDate}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
-        />
+                  <Badges
+                    filter={filter}
+                    showFilterOptions={showFilterOptions}
+                    setShowFilterOptions={setShowFilterOptions}
+                    setSelectedOptions={setSelectedOptions}
+                    selectedOptions={selectedOptions}
+                  />
 
-      </div>
-)
-          
-      }
-      { openSpeedDial && (filters.map((filter, index) => {
-          return(
+                </div>
 
-            <div className="filter-group" key={index}>
-  
 
-              <Badges
-              filter={filter}
-              showFilterOptions={showFilterOptions}
-              setShowFilterOptions={setShowFilterOptions}
-              setSelectedOptions={setSelectedOptions}
-              selectedOptions={selectedOptions}
+              )
+            }))
+
+            }
+
+          </SpeedDial>
+
+          <Stack
+            direction="row"
+            spacing={0.1}
+            sx={{ display: { xs: "none", md: "flex" }, }}
+            className='filter-icons-list'>
+            {
+              input_filters.map((input_filter, index) => {
+                return (
+
+                  <div className="filter-group" key={index}>
+                    <InputFilter
+                      input_filter={input_filter}
+                      showOptionsArrow={showOptionsArrow}
+                      closeOptionsArrow={closeOptionsArrow}
+                      setSelectedOptions={setSelectedOptions}
+                      selectedOptions={selectedOptions}
+                      showFilterOptions={showFilterOptions}
+                      setShowFilterOptions={setShowFilterOptions}
+                    />
+
+                  </div>
+                )
+              })
+            }
+
+
+            <div className="filter-group">
+              <RenderDateFilter
+                showOptionsArrow={showOptionsArrow}
+                closeOptionsArrow={closeOptionsArrow}
+                setSelectedOptions={setSelectedOptions}
+                startDate={startDate}
+                endDate={endDate}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
               />
-
             </div>
 
+            {
+              filters.map((filter, index) => {
+                return (
 
-          )
-        }))
-          
-      }
-        
+                  <div className="filter-group" key={index}>
+                    <Badges
+                      filter={filter}
+                      showFilterOptions={showFilterOptions}
+                      setShowFilterOptions={setShowFilterOptions}
+                      setSelectedOptions={setSelectedOptions}
+                      selectedOptions={selectedOptions}
+                    />
+                  </div>
+                )
+              })
+            }
 
-
-        
-      </SpeedDial>
-      
-      
-      <Stack
-        direction="row"
-        spacing={0.1}
-        sx={{display: { xs: "none", md: "flex" },}}
-        className='filter-icons-list'>
-        {
-          input_filters.map((input_filter, index) => {
-            return(
-
-            <div className="filter-group" key={index}>
-  
-
-              <InputFilter
-              input_filter={input_filter}
-              showOptionsArrow={showOptionsArrow}
-              closeOptionsArrow={closeOptionsArrow}
-              setSelectedOptions={setSelectedOptions}
-              selectedOptions={selectedOptions}
-              showFilterOptions={showFilterOptions}
-              setShowFilterOptions={setShowFilterOptions}
-              
-              />
-
-            </div>
-
-
-          )
-        })
-      }
-      
-
-      <div className="filter-group">
-        <RenderDateFilter
-          showOptionsArrow={showOptionsArrow}
-          closeOptionsArrow={closeOptionsArrow}
-          setSelectedOptions={setSelectedOptions}
-          startDate={startDate}
-          endDate={endDate}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
-        />
-
-      </div>
-
-      
-      {
-        filters.map((filter, index) => {
-          return(
-
-            <div className="filter-group" key={index}>
-  
-
-              <Badges
-              filter={filter}
-              showFilterOptions={showFilterOptions}
-              setShowFilterOptions={setShowFilterOptions}
-              setSelectedOptions={setSelectedOptions}
-              selectedOptions={selectedOptions}
-              />
-
-            </div>
-
-
-          )
-        })
-      }
-
-      <Button
-        className="filter-submit-button"
-        onClick={handleFilterSubmit}
-        startIcon={<PublishRoundedIcon/>}>
-        Submit
-      </Button>
-      <Button
-        id="cancel-filter-icon"
-        className="filter-icons"
-        onClick={handleClearAll}>
-        X
-      </Button> 
-       
-
-
-    </Stack>
+            <Button
+              className="filter-submit-button"
+              onClick={handleFilterSubmit}
+              startIcon={<PublishRoundedIcon />}>
+              Submit
+            </Button>
+            <Button
+              id="cancel-filter-icon"
+              className="filter-icons"
+              onClick={handleClearAll}>
+              X
+            </Button>
+          </Stack>
+        </>
+      )
+      };
     </>
   )
 }
 
 
 
-
-
-export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions}){
+export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions }) {
   const buttonStyle = {
     backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#e55162' : 'white',
     color: selectedOptions[filter.name]?.length > 0 ? 'white' : '#e55162',
     '&:hover': {
-      backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#ffd1dc' : '#82ccdd', 
+      backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#ffd1dc' : '#82ccdd',
       color: selectedOptions[filter.name]?.length > 0 ? 'black' : 'black',
     },
   };
-   
+
   const handleCheckboxChange = (option) => {
     setSelectedOptions((prev) => {
       const currentOptions = prev[filter.name] || []; // Get current options for this filter
       const isSelected = currentOptions.includes(option.value);
-  
+
       // Toggle selection
       const updatedOptions = isSelected
         ? currentOptions.filter((item) => item !== option.value) // Remove if selected
         : [...currentOptions, option.value];                    // Add if not selected
-  
+
       return {
         ...prev,
         [filter.name]: updatedOptions // Set as name: options
@@ -345,7 +321,7 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
     });
   };
 
-  function handleClear(name)  {
+  function handleClear(name) {
     setSelectedOptions((prev) => ({
       ...prev,
       [name]: [] // Clear the options for the specific filter name
@@ -353,136 +329,144 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
     console.log({ [name]: [] }); // Log the cleared options
   };
 
-  function handleIconClick(){setShowFilterOptions((prev) => ({
-    ...prev,
-    [filter.name]: !prev[filter.name],
-  }));}
-  
-  return(
+  function handleIconClick() {
+    setShowFilterOptions((prev) => ({
+      ...prev,
+      [filter.name]: !prev[filter.name],
+    }));
+  }
+
+  return (
     <>
 
-    <Button
-    className="filter-badge"
-    onClick= {() => {
-      setShowFilterOptions((prev) => ({
-        ...prev,
-        [filter.name]: !prev[filter.name],
-      }));
-     }}
-    startIcon={filter.icon}
-    endIcon={ !showFilterOptions[filter.name] ? (showOptionsArrow):(closeOptionsArrow)}
-    sx={{...buttonStyle,
-      display: { xs: "none", md: "inline-flex" }}
-    }>
-      
-      {filter.display_name}
-      
-      {console.log(showFilterOptions)}
-
-    </Button>
-
-    {smallScreenIconButton(filter.display_name, handleIconClick, buttonStyle, filter.icon)}
-    
-    
-
-    {showFilterOptions[filter.name] && (
-      <Paper className="filter-dropdown-menu"
-      sx={{top:{xs: '6px', md: '100%',},
-          right:{xs: '100%', md: '0px',},
-          //transform:{xs: 'translateX(-100%)', },
-          width:{xs: '150px', md: '100%' }}}>
-
-        <Stack
-        direction="column"
-        sx={{
-          padding: '5px',
-          height: '200px',
-          overflow: 'scroll',
-          width: '100%',
-
+      <Button
+        className="filter-badge"
+        onClick={() => {
+          setShowFilterOptions((prev) => ({
+            ...prev,
+            [filter.name]: !prev[filter.name],
+          }));
         }}
-        spacing={1}>
-          {filter.options.map((option, optIndex) => {
-            return(
-              <FormControlLabel
-                
-                key={optIndex}
-                label={<Typography sx={{ fontSize: '12px' }}>
-                          {option.label}
-                        </Typography>}
-                control={
-                  <Checkbox        
-                    checked={selectedOptions[filter.name]?.includes(option.value) || false}
-                    onChange={() => handleCheckboxChange(option)}
-                    sx= {{color:"#e55162",
-                          '&.Mui-checked': {color: 'grey',}
-                        
+        startIcon={filter.icon}
+        endIcon={!showFilterOptions[filter.name] ? (showOptionsArrow) : (closeOptionsArrow)}
+        sx={{
+          ...buttonStyle,
+          display: { xs: "none", md: "inline-flex" }
+        }
+        }>
 
-                      
-                      
+        {filter.display_name}
+
+        {console.log(showFilterOptions)}
+
+      </Button>
+
+      {smallScreenIconButton(filter.display_name, handleIconClick, buttonStyle, filter.icon)}
+
+
+
+      {showFilterOptions[filter.name] && (
+        <Paper className="filter-dropdown-menu"
+          sx={{
+            top: { xs: '6px', md: '100%', },
+            right: { xs: '100%', md: '0px', },
+            //transform:{xs: 'translateX(-100%)', },
+            width: { xs: '150px', md: '100%' }
+          }}>
+
+          <Stack
+            direction="column"
+            sx={{
+              padding: '5px',
+              height: '200px',
+              overflow: 'scroll',
+              width: '100%',
+
+            }}
+            spacing={1}>
+            {filter.options.map((option, optIndex) => {
+              return (
+                <FormControlLabel
+
+                  key={optIndex}
+                  label={<Typography sx={{ fontSize: '12px' }}>
+                    {option.label}
+                  </Typography>}
+                  control={
+                    <Checkbox
+                      checked={selectedOptions[filter.name]?.includes(option.value) || false}
+                      onChange={() => handleCheckboxChange(option)}
+                      sx={{
+                        color: "#e55162",
+                        '&.Mui-checked': { color: 'grey', }
+
+
+
+
                       }}
 
-                  />
-                }
-              />
-            )
-          })}
+                    />
+                  }
+                />
+              )
+            })}
 
-          <Box 
-            sx={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
-                <Button 
-                  onClick={() => handleClear(filter.name)} 
-                  className="filter-submit-button"
-                >
-                  Clear
-                </Button>
-          </Box>
+            <Box
+              sx={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
+              <Button
+                onClick={() => handleClear(filter.name)}
+                className="filter-submit-button"
+              >
+                Clear
+              </Button>
+            </Box>
 
-        </Stack>
-        
-        
+          </Stack>
 
-        {console.log(selectedOptions)}
-        {console.log(filter.options)}
-        
-      </Paper>
-    )}
 
-  </>
-    
+
+          {console.log(selectedOptions)}
+          {console.log(filter.options)}
+
+        </Paper>
+      )}
+
+    </>
+
   )
 
 };
 
 
 
-export async function processFilterRequest(filterParameters){
+export async function processFilterRequest(filterParameters, setLoading) {
 
   console.log(filterParameters);
   let uniqueList;
-  const stormCategory= formatStormCategory(filterParameters['stormCategory']);
-  const stormNames= formatStormName(filterParameters['stormName']);
+  const stormCategory = formatStormCategory(filterParameters['stormCategory']);
+  const stormNames = formatStormName(filterParameters['stormName']);
   const startDate = formatFilterDate(filterParameters['startDate']);
   const endDate = formatFilterDate(filterParameters['endDate']);
-  const stormBbox= filterParameters['bboxCoordinates'];
-  const stormPoly= filterParameters['polyCoords'];
+  const stormBbox = filterParameters['bboxCoordinates'];
+  const stormPoly = filterParameters['polyCoords'];
 
 
-  console.log(stormCategory, stormNames, startDate, endDate )
+  console.log(stormCategory, stormNames, startDate, endDate)
 
 
 
   const query = new URLSearchParams({
-    storm_category: stormCategory, 
+    storm_category: stormCategory,
     name: stormNames,
     start_date: startDate,
     end_date: endDate,
-    bbox:stormBbox,
-    polygon:stormPoly,
+    bbox: stormBbox,
+    polygon: stormPoly,
 
   }).toString();
 
   console.log(query)
+  setLoading(true);
   try {
     const resource = await fetch(`${basePath}/api/filter_storms?${query}`);
     const storm_data = await resource.json();
@@ -495,15 +479,16 @@ export async function processFilterRequest(filterParameters){
     // Create a set to track unique IDs and add objects to the result list
     uniqueList = makeStormList(storm_data)
     // Create a set to track unique IDs and add objects to the result list
-    
+    setLoading(false);
 
     console.log(uniqueList);
     if (uniqueList.length === 0) {
       alert("No result found for this search, please try again...")
     }
-      
-  
+
+
   } catch (error) {
+    setLoading(false);
     console.error('Error fetching storm or station data:', error);
   }
   return uniqueList
@@ -513,7 +498,7 @@ export async function processFilterRequest(filterParameters){
 
 }
 
-export function formatFilterDate(date){
+export function formatFilterDate(date) {
   if (!date) {
     return ""; // Return an empty string if no date is provided
   }
@@ -521,16 +506,16 @@ export function formatFilterDate(date){
   return formattedDate;
 }
 
-export function formatStormCategory(category_list=[]){
+export function formatStormCategory(category_list = []) {
   console.log(category_list);
   const formattedCategoryList = category_list.join("_");
   return formattedCategoryList;
 }
 
-export function formatStormName(storm_names=""){
+export function formatStormName(storm_names = "") {
   storm_names = storm_names.replace(/\s+/g, ''); // Remove all spaces
   console.log(storm_names);
-  const storm_list= storm_names.split(",");
+  const storm_list = storm_names.split(",");
   const formattedStormList = storm_list.join("_");
   return formattedStormList;
 }
