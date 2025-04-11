@@ -319,7 +319,7 @@ export function addSearchParams(stormName, stormYear, router) {
  * based on the storm details, and sets the retrieved data for display on the map.
 
  */
-export async function handleClick( storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation) {
+export async function handleClick( storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading) {
 
   //console.log(Leaflet);
   setSelectedStation(empty_station_obj)
@@ -350,7 +350,7 @@ export async function handleClick( storm, setStationPoints, setStormPoints, map,
     id: storm_id
   }).toString();
 
-
+  setLoading(true);
   try {
     const resource = await fetch(`${basePath}/api/historical_storms?${query}`);
     const storm_data = await resource.json();
@@ -371,10 +371,13 @@ export async function handleClick( storm, setStationPoints, setStormPoints, map,
 
     setStormPoints(historical_storm_data);  // Set the storm data
     setStationPoints(historical_station_data);  // Set the station data
+
+    setLoading(false);
     
 
 
   } catch (error) {
+    setLoading(false);
     console.error('Error fetching storm:', error);
   }
 

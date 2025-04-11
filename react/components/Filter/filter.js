@@ -16,6 +16,7 @@ import { filters, input_filters } from "@/components/Filter/filters_list";
 import { useRouter } from 'next/router';
 import { InputFilter } from "./inputFilter";
 import { basePath } from "@/next.config";
+import LoadingScreen from "../loading_screen";
 
 
 
@@ -100,8 +101,10 @@ export function RenderFilter({filterResult, setFilterResult, returnFilterResult,
 }
 
 function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions, filterParameters, setFilterParameters, startDate, endDate,setStartDate, setEndDate, setFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords, clearShapesRef  }){
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter(); // Next.js useRouter
+  
 
   // Function to clear all filters and shapes
   function handleClearAll() {
@@ -147,7 +150,7 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
     console.log(updatedParams); // 
 
 
-    const stormResult = await processFilterRequest(updatedParams);
+    const stormResult = await processFilterRequest(updatedParams, setLoading);
     console.log(stormResult);
     setFilterResult(stormResult);
     router.push(`/?storms=historical`);
@@ -158,92 +161,98 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
 
   return(
     <>
-    <Stack
-    direction="row"
-    spacing={0.1}
-    className='filter-icons-list'>
-      {
-        input_filters.map((input_filter, index) => {
-          return(
+        {loading ? (
+            <LoadingScreen/>
+            ) : (
+                <>
+                <Stack
+                direction="row"
+                spacing={0.1}
+                className='filter-icons-list'>
+                  {
+                    input_filters.map((input_filter, index) => {
+                      return(
 
-            <div className="filter-group" key={index}>
-  
-
-              <InputFilter
-              input_filter={input_filter}
-              showOptionsArrow={showOptionsArrow}
-              closeOptionsArrow={closeOptionsArrow}
-              setSelectedOptions={setSelectedOptions}
-              selectedOptions={selectedOptions}
-              showFilterOptions={showFilterOptions}
-              setShowFilterOptions={setShowFilterOptions}
+                        <div className="filter-group" key={index}>
               
-              />
 
-            </div>
+                          <InputFilter
+                          input_filter={input_filter}
+                          showOptionsArrow={showOptionsArrow}
+                          closeOptionsArrow={closeOptionsArrow}
+                          setSelectedOptions={setSelectedOptions}
+                          selectedOptions={selectedOptions}
+                          showFilterOptions={showFilterOptions}
+                          setShowFilterOptions={setShowFilterOptions}
+                          
+                          />
 
-
-          )
-        })
-      }
-      
-
-      <div className="filter-group">
-        <RenderDateFilter
-          showOptionsArrow={showOptionsArrow}
-          closeOptionsArrow={closeOptionsArrow}
-          setSelectedOptions={setSelectedOptions}
-          startDate={startDate}
-          endDate={endDate}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
-        />
-
-      </div>
-
-      
-      {
-        filters.map((filter, index) => {
-          return(
-
-            <div className="filter-group" key={index}>
-  
-
-              <Badges
-              filter={filter}
-              showFilterOptions={showFilterOptions}
-              setShowFilterOptions={setShowFilterOptions}
-              setSelectedOptions={setSelectedOptions}
-              selectedOptions={selectedOptions}
-              />
-
-            </div>
+                        </div>
 
 
-          )
-        })
-      }
+                      )
+                    })
+                  }
+                  
 
-      <Button
-        className="filter-submit-button"
-        onClick={handleFilterSubmit}
-        startIcon={<PublishRoundedIcon/>}>
-        Submit
-      </Button>
-      <Button
-        id="cancel-filter-icon"
-        className="filter-icons"
-        onClick={handleClearAll}>
-        X
-      </Button> 
-       
+                  <div className="filter-group">
+                    <RenderDateFilter
+                      showOptionsArrow={showOptionsArrow}
+                      closeOptionsArrow={closeOptionsArrow}
+                      setSelectedOptions={setSelectedOptions}
+                      startDate={startDate}
+                      endDate={endDate}
+                      setStartDate={setStartDate}
+                      setEndDate={setEndDate}
+                    />
+
+                  </div>
+
+                  
+                  {
+                    filters.map((filter, index) => {
+                      return(
+
+                        <div className="filter-group" key={index}>
+              
+
+                          <Badges
+                          filter={filter}
+                          showFilterOptions={showFilterOptions}
+                          setShowFilterOptions={setShowFilterOptions}
+                          setSelectedOptions={setSelectedOptions}
+                          selectedOptions={selectedOptions}
+                          />
+
+                        </div>
 
 
-    </Stack>
-    
+                      )
+                    })
+                  }
+
+                  <Button
+                    className="filter-submit-button"
+                    onClick={handleFilterSubmit}
+                    startIcon={<PublishRoundedIcon/>}>
+                    Submit
+                  </Button>
+                  <Button
+                    id="cancel-filter-icon"
+                    className="filter-icons"
+                    onClick={handleClearAll}>
+                    X
+                  </Button> 
+                  
 
 
-  </>
+                </Stack>
+                
+
+
+              </>
+            )};
+    </>
   )
   
 }
@@ -368,7 +377,7 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
 
 
 
-export async function processFilterRequest(filterParameters){
+export async function processFilterRequest(filterParameters, setLoading){
 
   console.log(filterParameters);
   let uniqueList;
@@ -395,6 +404,7 @@ export async function processFilterRequest(filterParameters){
   }).toString();
 
   console.log(query)
+  setLoading(true);
   try {
     const resource = await fetch(`${basePath}/api/filter_storms?${query}`);
     const storm_data = await resource.json();
@@ -407,7 +417,7 @@ export async function processFilterRequest(filterParameters){
     // Create a set to track unique IDs and add objects to the result list
     uniqueList = makeStormList(storm_data)
     // Create a set to track unique IDs and add objects to the result list
-    
+    setLoading(false);
 
     console.log(uniqueList);
     if (uniqueList.length === 0) {
@@ -416,6 +426,7 @@ export async function processFilterRequest(filterParameters){
       
   
   } catch (error) {
+    setLoading(false);
     console.error('Error fetching storm or station data:', error);
   }
   return uniqueList
