@@ -79,6 +79,7 @@ export default function StationDashboard({
   });
 
   const hoverPointTime = fetch_value(hover_point, ["TIMESTAMP", "ISO_TIME"]);
+  console.log(hoverPointTime);
 
   return (
     isExtraSmall ? (

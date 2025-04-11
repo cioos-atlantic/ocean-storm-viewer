@@ -8,7 +8,7 @@ import annotationPlugin from 'chartjs-plugin-annotation';
 import 'chartjs-adapter-luxon';
 
 // Register necessary components, including the Line controller
-Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, annotationPlugin);
+Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, annotationPlugin, TimeScale);
 
 
 /**
@@ -26,13 +26,18 @@ function RenderChart({ sourceData, position, stationName, varCategory, hoverPoin
     if (sourceData && sourceData.rows.length > 0) {
       const ctx = chartRef.current.getContext('2d'); // Get context for the canvas
       const highlightTime = new Date(hoverPointTime).toLocaleString('en-US', {
-        hour: '2-digit',
+        year: 'numeric',
+        month: 'short',   // full month name
         day: '2-digit',
-        month: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
     
       });
+
+      console.log(hoverPointTime);
       
-      const chartData = parseChartData(sourceData, varCategory, highlightTime);
+      const chartData = parseChartData(sourceData, varCategory, hoverPointTime);
       console.log(chartData);
       const datasets = chartData.datasets;
       const timeData = chartData.timeData;
@@ -120,26 +125,26 @@ function RenderChart({ sourceData, position, stationName, varCategory, hoverPoin
 
       setTimeout(() => {
         const chart = chartRef.current.chart;
-        if (!chart) return;
+        if (!chart || !hoverPointTime) return; 
   
-        const yScale = chart.scales.y;
-        const yMin = yScale.min;
-        const yMax = yScale.max;
+        //const yScale = chart.scales.y;
+        //const yMin = yScale.min;
+        //const yMax = yScale.max;
   
         // Add annotation using yMin/yMax
         chart.options.plugins.annotation.annotations.line1 = {
           drawTime: 'afterDraw',
           type: 'line',
-          xMin: highlightTime,
-          xMax: highlightTime,
-          yMin: yMin,
-          yMax: yMax,
+          xMin: new Date(hoverPointTime),
+          xMax: new Date(hoverPointTime),
+          //yMin: yMin,
+          //yMax: yMax,
           borderColor: 'rgb(255, 99, 132)',
           borderWidth: 2,
           borderDash: [5,2],
           label: {
             display: true,
-            content: `Hovered Date ${highlightTime}`,
+            content: `Hovered Date: ${highlightTime}`,
             position: 'end', // options: 'start', 'center', 'end'
             backgroundColor: 'rgba(255,99,132,0.8)',
             color: '#fff',
@@ -151,7 +156,7 @@ function RenderChart({ sourceData, position, stationName, varCategory, hoverPoin
           }
         }
        chart.update();
-      }, 500) // set delay to heart's content. Set to anything above 250, 20 cause a very interesting bug
+      }, 1000) // set delay to heart's content. Set to anything above 250, 20 cause a very interesting bug
   
     }
 
@@ -202,7 +207,7 @@ function getColour(graph_colour_list, var_name){
 
 export default React.memo(RenderChart);
 
-function parseChartData(sourceData, varCategory, highlightTime){
+function parseChartData(sourceData, varCategory, hoverPointTime){
   console.log(sourceData);
   const  column_names = sourceData.column_names;
   
@@ -239,8 +244,16 @@ function parseChartData(sourceData, varCategory, highlightTime){
         borderColor: getColour(graph_colour_list, variable), // Generate random colors for each line
         backgroundColor: 'rgba(0, 0, 0, 0)',
         fill: false,
-        pointRadius: (context) => (timeData[context.dataIndex] === highlightTime ? 10 : 0),
-        pointBackgroundColor: (context) => (timeData[context.dataIndex] === highlightTime ? 'red' : 'blue'),
+        pointRadius: (context) => {
+          const pointTime = new Date(timeData[context.dataIndex]).getTime();
+          const hoverTime = new Date(hoverPointTime).getTime();
+          return pointTime === hoverTime ? 10 : 0;
+        },
+        pointBackgroundColor: (context) => {
+          const pointTime = new Date(timeData[context.dataIndex]).getTime();
+          const hoverTime = new Date(hoverPointTime).getTime();
+          return pointTime === hoverTime ? 'red' : 'blue';
+        },
       })}
       
     });
