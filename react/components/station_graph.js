@@ -156,7 +156,7 @@ function RenderChart({ sourceData, position, stationName, varCategory, hoverPoin
           }
         }
        chart.update();
-      }, 1000) // set delay to heart's content. Set to anything above 250, 20 cause a very interesting bug
+      }, 500) // set delay to heart's content. Set to anything above 250, 20 cause a very interesting bug
   
     }
 
@@ -216,7 +216,7 @@ function parseChartData(sourceData, varCategory, hoverPointTime){
   console.log(uniqueColStdNames);
 
   const timeData = get_station_field_data(sourceData,"time", "column_std_names")?.data
-
+  console.log(timeData);
   // Move this to config later
   const exclude_var = ['time', 'latitude', 'longitude', 'wind_from_direction', 'relative_humidity',
       'sea_surface_wave_from_direction', 'sea_surface_wave_maximum_period', 'sea_surface_wave_mean_period'

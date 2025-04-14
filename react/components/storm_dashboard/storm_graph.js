@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController, BarController, BarElement, Filler } from 'chart.js';
+import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController, BarController, BarElement, Filler, TimeScale } from 'chart.js';
 import { storm_graph_color, } from './storm_color';
 import { keyframes } from '@emotion/react';
 import { ProgressiveAnimation } from './utils';
 import annotationPlugin from 'chartjs-plugin-annotation';
+import 'chartjs-adapter-luxon';
 
 //import { graph_colour } from './station_dashboard/station_graph/graph_config.js'
 
@@ -11,15 +12,14 @@ import annotationPlugin from 'chartjs-plugin-annotation';
 
 
 // Register necessary components, including the Line controller
-Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, BarController, BarElement, Filler, annotationPlugin );
+Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, BarController, BarElement, Filler, annotationPlugin, TimeScale );
 
 
 /**
  * Renders a line chart using Chart.js to display station data.
  */
 function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }) {
-  console.log(sourceData);
-  console.log(varCategory);
+
   
 
   let chartTimeData = timeData;
@@ -33,22 +33,24 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
 // Find the index of the given time dynamically
 //const highlightIndex = chartTimeData.indexOf(highlightTime);
 
-  const formattedTimeData = chartTimeData.map((timestamp) => new Date(timestamp).toLocaleString('en-US', {
-  hour: '2-digit',
-  //minute: '2-digit',
-  day: '2-digit',
-  month: '2-digit',
-  //year: 'numeric'
-  }));
+  const formattedTimeData = chartTimeData.map(timeString=> Date.parse(timeString))
+  
+  
+  Date.parse(chartTimeData);
+  
 
   useEffect(() => {
 
     const highlightTime = new Date(hoverPointTime).toLocaleString('en-US', {
-      hour: '2-digit',
+      year: 'numeric',
+      month: 'short',   // full month name
       day: '2-digit',
-      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
   
     });
+
 
     // Check if the canvas and data are available
     const canvas = chartRef.current;
@@ -68,7 +70,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
     
     
     console.log(sourceData);
-    const datasets = makeDataset(sourceData, formattedTimeData, highlightTime);
+    const datasets = makeDataset(sourceData, formattedTimeData, hoverPointTime);
 
     console.log(datasets);
   
@@ -94,6 +96,18 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
             grid: {
               display: true, // Show grid on the x-axis
             },
+            type: "time",
+              time: {
+                parser: 'yyyy/MM/dd t',
+                tooltipFormat: 'yyyy/MM/dd t',
+                unit: "day",
+                displayFormats: {
+                  'hour':'MM/dd'
+                }
+              },
+              ticks:{
+                stepSize: 1
+              }
           },
           y: {
             grid: {
@@ -141,26 +155,26 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
     chartInstance.current = new Chart(ctx, chartConfig);
     setTimeout(() => {
       const chart = chartInstance.current;
-      if (!chart) return;
+      if (!chart || !hoverPointTime) return;
 
-      const yScale = chart.scales.y;
-      const yMin = yScale.min;
-      const yMax = yScale.max;
+      //const yScale = chart.scales.y;
+      //const yMin = yScale.min;
+      //const yMax = yScale.max;
 
       // Add annotation using yMin/yMax
       chart.options.plugins.annotation.annotations.line1 = {
         drawTime: 'afterDraw',
         type: 'line',
-        xMin: highlightTime,
-        xMax: highlightTime,
-        yMin: yMin,
-        yMax: yMax,
+        xMin: new Date(hoverPointTime),
+        xMax: new Date(hoverPointTime),
+        //yMin: yMin,
+        //yMax: yMax,
         borderColor: 'rgb(255, 99, 132)',
         borderWidth: 2,
         borderDash: [5,2],
         label: {
           display: true,
-          content: `Hovered Date ${highlightTime}`,
+          content: `Hovered Date: ${highlightTime}`,
           position: 'end', // options: 'start', 'center', 'end'
           backgroundColor: 'rgba(255,99,132,0.8)',
           color: '#fff',
@@ -187,7 +201,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
   }, [sourceData, varCategory, hoverPointTime]); // Re-run effect if chartData or stationName changes
 
 
-  console.log("here")
+  
   return (
 
     <div className='chart-render'>
@@ -226,7 +240,7 @@ function getColour(var_name){
 
 
 //Generate datasets
-function makeDataset(dataList, formattedTimeData, highlightTime) {
+function makeDataset(dataList, formattedTimeData, hoverPointTime) {
   const datasets=[];
   dataList.forEach((dataDict) => {console.log(dataDict);
     Object.entries(dataDict).forEach(([key, value]) => {console.log(key)
@@ -236,8 +250,16 @@ function makeDataset(dataList, formattedTimeData, highlightTime) {
         borderColor: getColour(value.name),
         backgroundColor: 'rgba(0, 0, 0, 0)',
         fill: true,
-        pointRadius: (context) => (formattedTimeData[context.dataIndex] === highlightTime ? 10 : 0),
-        pointBackgroundColor: (context) => (formattedTimeData[context.dataIndex] === highlightTime ? 'red' : 'blue'),
+        pointRadius: (context) => {
+          const pointTime = new Date(formattedTimeData[context.dataIndex]).getTime();
+          const hoverTime = new Date(hoverPointTime).getTime();
+          return pointTime === hoverTime ? 10 : 0;
+        },
+        pointBackgroundColor: (context) => {
+          const pointTime = new Date(formattedTimeData[context.dataIndex]).getTime();
+          const hoverTime = new Date(hoverPointTime).getTime();
+          return pointTime === hoverTime ? 'red' : 'blue';
+        },
       })
 
     })
