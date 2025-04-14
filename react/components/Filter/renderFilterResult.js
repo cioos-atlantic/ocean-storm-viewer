@@ -24,7 +24,9 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult}
           <Box
           sx={{
             color: "white",
-            position: "static"
+            position: "static",
+            fontSize: '14px',
+            fontWeight: "bold",
           }}>
           Filter Result...</Box>
           {filterResult.map((storm, index) => (

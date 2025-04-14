@@ -1,7 +1,7 @@
 import React, { useState, useRef } from"react";
 import { FaWindowClose } from "react-icons/fa";
 import { empty_station_obj } from "../layout";
-import { useMediaQuery, Box } from "@mui/material";
+import { useMediaQuery, Box, useTheme } from "@mui/material";
 //import { empty_station_obj } from "../layout";
 //import { useMediaQuery, Box } from "@mui/material";
 import StationDataLayout from "./station_layout_small_screen";
@@ -82,7 +82,7 @@ export default function StationDashboard({
   console.log(hoverPointTime);
 
   return (
-    isExtraSmall ? (
+    isSmall ? (
       <Box
       key="01-station-dashboard"
       className={`station_dashboard`}

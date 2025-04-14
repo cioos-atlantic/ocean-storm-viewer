@@ -17,6 +17,9 @@ import { basePath } from "@/next.config";
 
 import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
 import {empty_point_obj} from "@/components/storm_point_details"
+import { Tooltip } from 'react-leaflet';
+import { useMediaQuery, useTheme } from '@mui/material';
+import StormPointDetailsSmallScreen from "./storm_point_details_small_screens";
 
 
 export const hurricon = new Icon({
@@ -114,9 +117,18 @@ const storm_types = {
  *
  * @returns {JSX.Element} - A React Marker component with event handlers and custom icon.
  */
-export default function StormMarker({ storm_point_data, setHoverMarker, setShowPopup, setIsStormDashOpen }) {
+export default function StormMarker({ storm_point_data, setHoverMarker, setShowPopup, isStormDetOpen, setIsStormDetOpen, storm_point_hover }) {
+    const [isMounted, setIsMounted] = useState(false);
+
+    // Ensure component is mounted
+    useEffect(() => {
+        setIsMounted(true);
+        return () => setIsMounted(false);
+    }, []);
 
     const position = flip_coords(storm_point_data.geometry.coordinates);
+    const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('md')); // `md` in MUI = 960px
 
     let clicked = false;
     // Keep track of previously clicked marker to default back to?
@@ -171,7 +183,10 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setShowP
         })();
     }, [storm_category, svgPath, storm_icon]);
 
+    if (!isMounted) return null; // Prevent rendering before the component is mounted
+
     return (
+        
         <Marker
             key={storm_point_data.id}
             position={position}
@@ -190,7 +205,15 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setShowP
                 }
             }}
             icon={customIcon}
-        >
+        >{isSmallScreen ? (
+            <Tooltip direction="top" offset={[0, -10]} permanent={false}>
+                {<StormPointDetailsSmallScreen
+                    storm_point_hover={storm_point_hover}
+                    setIsStormDetOpen={setIsStormDetOpen}
+                    setHoverMarker={setHoverMarker}
+                    />}
+            </Tooltip>
+        ):(null)}
         </Marker>
     );
 }

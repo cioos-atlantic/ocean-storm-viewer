@@ -1,5 +1,5 @@
 /* General Body Styling */
-/* General Body Styling */
+
 body {
   padding: 0;
   margin: 0;
@@ -8,7 +8,7 @@ body {
 }
 
 /* Header Styling */
-/* Header Styling */
+
 header {
   width: 100%;
   position: absolute;
@@ -17,9 +17,7 @@ header {
   background-color: #e55162; /* Light red background for header */
   z-index: 9000; /* High z-index to ensure header stays on top */
   height: 60px;
-  background-color: #e55162; /* Light red background for header */
-  z-index: 9000; /* High z-index to ensure header stays on top */
-  height: 60px;
+  
 }
 
 header img.logo {
@@ -34,7 +32,7 @@ header img.logo {
 }
 
 /* Navigation Styling */
-/* Navigation Styling */
+
 header nav {
   float: left; /* Align navigation links to the left */
   /*font-size: 1.25rem;  Slightly larger font for readability */
@@ -96,32 +94,29 @@ header nav ul li {
   margin-right: 0.5rem; /* Space between links */
   list-style-type: none; /* Remove bullets from list items */
   
-  float: left; /* Display navigation items inline */
-  margin-right: 0.5rem; /* Space between links */
-  list-style-type: none; /* Remove bullets from list items */
+  
   
 }
 
 header nav ul li a {
   color: white; /* White text for links */
   text-decoration: none; /* Remove underline by default */
-  color: white; /* White text for links */
-  text-decoration: none; /* Remove underline by default */
+  
 }
 
 header nav ul li a:hover {
   text-decoration: underline; /* Underline on hover for clarity */
-  text-decoration: underline; /* Underline on hover for clarity */
+  
 }
 
 header nav ul li a::after {
   content: " /"; /* Add slash separator between links */
-  content: " /"; /* Add slash separator between links */
+  
 }
 
 header nav ul li:last-child a::after {
   content: ""; /* Remove separator for the last link */
-  content: ""; /* Remove separator for the last link */
+  
 }
 
 /* Footer Styling */
@@ -132,12 +127,7 @@ footer {
   bottom: 0px; /* Positioned at the very bottom */
   z-index: 8000; /* High z-index for visibility */
   background-color: black; /* Black footer background */
-  position: fixed; /* Stick footer to the bottom */
-  width: 100%; /* Full-width footer */
-  /*height: 50px;  absolute height */
-  bottom: 0px; /* Positioned at the very bottom */
-  z-index: 8000; /* High z-index for visibility */
-  background-color: black; /* Black footer background */
+  
 }
 
 /* Map Container Styling */
@@ -146,34 +136,32 @@ footer {
   height: 100vh; /* Full viewport height for map */
   width: 100%; /* Full width for map container */
   overflow: hidden;
-  height: 100vh; /* Full viewport height for map */
-  width: 100%; /* Full width for map container */
-  overflow: hidden;
+  
 }
 
 .inner_container {
   height: 100%; /* Fill height of the parent container */
   width: 100%; /* Fill width of the parent container */
-  height: 100%; /* Fill height of the parent container */
-  width: 100%; /* Fill width of the parent container */
+  
 }
 
 /* Leaflet Control Position Adjustments */
-/* Leaflet Control Position Adjustments */
+
 .leaflet-control-container .leaflet-top {
-  top: 75px; /* Adjust top to avoid overlapping header */
+  top: 70px; /* Adjust top to avoid overlapping header */
 }
 
 .leaflet-control-container .leaflet-bottom {
   bottom: 50px; /* Adjust bottom to avoid overlapping footer */
-  bottom: 50px; /* Adjust bottom to avoid overlapping footer */
+  
 }
 
-/* Map Layer Styling */
+
+
+
 /* Map Layer Styling */
 .line-of-travel {
   position: relative;
-  stroke: green; /* Green color for travel path */
   stroke: green; /* Green color for travel path */
 }
 
@@ -181,23 +169,19 @@ footer {
   position: relative;
   stroke: navy; /* Navy blue outline for sea height */
   fill: navy; /* Navy blue fill */
-  stroke: navy; /* Navy blue outline for sea height */
-  fill: navy; /* Navy blue fill */
+  
 }
 
 .wind-rad-34 {
   position: relative;
   stroke: yellow; /* Yellow color for wind radius of 34 knots */
   fill: yellow; /* Fill with yellow */
-  stroke: yellow; /* Yellow color for wind radius of 34 knots */
-  fill: yellow; /* Fill with yellow */
+  
 }
 
 .wind-rad-48,
 .wind-rad-50 {
   position: relative;
-  stroke: orange; /* Orange for 48/50 knot wind radius */
-  fill: orange; /* Fill with orange */
   stroke: orange; /* Orange for 48/50 knot wind radius */
   fill: orange; /* Fill with orange */
 }
@@ -206,8 +190,7 @@ footer {
   position: relative;
   stroke: red; /* Red for 64 knot wind radius */
   fill: red; /* Fill with red */
-  stroke: red; /* Red for 64 knot wind radius */
-  fill: red; /* Fill with red */
+  
 }
 
 /* Info Pane Styling */
@@ -228,18 +211,10 @@ footer {
   border-top-left-radius: 1rem; /* Rounded top-left corner */
   border-bottom-left-radius: 1rem; /* Rounded bottom-left corner */
   overflow: auto;
-  background-color: white; /* White background for better readability */
-  color: black; /* Black text */
-  border: 3px solid gray; /* Gray border for distinction */
-  border-right: 0; /* No border on the right edge */
-  z-index: 500; /* Layer above map but below header/footer */
-  padding: 1rem; /* Internal padding */
-  border-top-left-radius: 1rem; /* Rounded top-left corner */
-  border-bottom-left-radius: 1rem; /* Rounded bottom-left corner */
-  overflow: auto;
+  
 }
 
-/* Storm Timeline Styling */
+
 /* Storm Timeline Styling */
 #storm_timeline ul li {
   padding: 2px; /* Space within each list item */
@@ -249,7 +224,7 @@ footer {
 
 #storm_timeline ul li ul li:hover {
   background-color: #DDD; /* Highlight background on hover */
-  background-color: #DDD; /* Highlight background on hover */
+  
 }
 
 #storm_timeline ul li.selected {
@@ -257,35 +232,29 @@ footer {
   border: 1px solid gray; /* Add border for clarity */
   background-color: #DDD; /* Slight gray background */
   font-weight: bold; /* Bold text for selected item */
-  border: 1px solid gray; /* Add border for clarity */
-  background-color: #DDD; /* Slight gray background */
+  
 }
 
 .selected_storm a {
   font-weight: bold; /* Bold text for selected storms */
-  font-weight: bold; /* Bold text for selected storms */
+  
 }
 
-/* Storm Card Styling */
+
 /* Storm Card Styling */
 .storm_card {
   margin-bottom: 1.5rem; /* Space below each card */
   border-top: 1px solid black; /* Top border for separation */
   border-bottom: 1px solid black; /* Bottom border for separation */
   font-size: 0.9rem; /* Slightly smaller font */
-  margin-bottom: 1.5rem; /* Space below each card */
-  border-top: 1px solid black; /* Top border for separation */
-  border-bottom: 1px solid black; /* Bottom border for separation */
-  font-size: 0.9rem; /* Slightly smaller font */
+  
 }
 
 .storm_card.selected_storm {
   background-color: #EEE; /* Light gray background for selected storm */
   padding-left: 0.5rem; /* Indent selected storm card */
   font-size: 1.1rem; /* Slightly larger font for emphasis */
-  background-color: #EEE; /* Light gray background for selected storm */
-  padding-left: 0.5rem; /* Indent selected storm card */
-  font-size: 1.1rem; /* Slightly larger font for emphasis */
+  
 }
 
 /* Station Dashboard Styling */
@@ -542,11 +511,12 @@ footer {
   cursor: pointer;
   text-align: center;
   font-weight: 100;
+  padding: 1.5px;
 
 }
 .search-output-space{
   text-align: left;
-  padding: 5px;
+  padding: 12px;
   background-color: #e55162;
   height: 300px;
   border-radius: 4px;
@@ -715,7 +685,6 @@ footer {
   align-items: center;
   justify-content: center;
   position: relative;
-  display: inline-flex;
   max-width: 100%;
   font-size: 0.8125rem;
   height: 32px;
@@ -735,13 +704,13 @@ footer {
 
 .filter-dropdown-menu {
   position: absolute;
-  top: 100%;           /* Positions it directly below the button */
-  left: 0;
-  background-color: white;
-  border: 1px solid #ccc;
+  /*background-color: white;*/
+  background-color: #f4f4f4;
+  /*border: 1px solid #ccc;*/
+  border: 2px solid #e55162;
+  border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 9024;
-  width: 100%;
   border-radius: 8px;
   padding: 0px;
   
@@ -808,27 +777,31 @@ footer {
 }
 
 
-.filter-time-input{
-  color: #e55162;
-  width: 150px
+.filter-time-input {
+  width: 140px !important;
+}
+
+.filter-time-input .MuiInputLabel-root.Mui-focused {
+  color: black; /* Change label color on focus */
 }
 
 
-.MuiPickersPopper-root {
-  z-index: 9999 !important; /* Ensure it appears above other elements */
-}
+
+
+ /*.MuiPickersPopper-root {
+  z-index: 9999 !important; /* Ensure it appears above other elements 
+ }*/
 
 
 .date-card-content{
   padding: 9px;
   text-align: center;
+  overflow: hidden;
 }
 
 
 .input-filter{
   position: absolute;
-  top: 100%;
-  width: 200px;
   padding: 6px;
   height: auto;
   min-height: 100px;
@@ -874,6 +847,25 @@ footer {
 
 /* Adjust the width of the Draw Control toolbar */
 
+.filters-speed-dial{
+  color: #e55162;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  margin: 8px;
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, opacity 0.8s;
+  opacity: 1;
+  cursor: pointer;
+  transition-delay: 30ms;
+  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 
+              0px 6px 10px 0px rgba(0, 0, 0, 0.14), 
+              0px 1px 18px 0px rgba(0, 0, 0, 0.12);}
+
+.filters-speed-dial:hover{
+    color: white;
+    background-color: #e55162;}
 .chart-render{
   width: 100%;
   max-height: 300px;

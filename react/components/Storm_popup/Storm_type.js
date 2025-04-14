@@ -13,7 +13,7 @@ import { storm_type_info } from "@/lib/storm_class";
 export default function StormType({ STORMTYPE }) {
 
     return (
-        <p>
+        <div>
             <strong>Storm Type:</strong> {storm_type_info[STORMTYPE]["name"]["en"]}{" "}
             <Image
                 src={storm_type_info[STORMTYPE]["img"]}
@@ -21,6 +21,6 @@ export default function StormType({ STORMTYPE }) {
                 height={storm_type_info[STORMTYPE]["img_height"]}
                 width={storm_type_info[STORMTYPE]["img_width"]}
             />
-        </p>
+        </div>
     );
 }

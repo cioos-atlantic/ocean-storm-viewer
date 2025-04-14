@@ -6,7 +6,8 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import { useEffect, useState } from 'react';
 import { IconButton, TextField, Box, Typography, Paper, Button, Stack, CardContent, Card, CardActions } from "@mui/material";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import Slider from '@mui/material/Slider';
+import {Slider, Tooltip} from '@mui/material';
+import { smallScreenIconButton } from './filter_utils';
 
 
 
@@ -74,6 +75,10 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelect
       color: startDate && endDate && startDate.isValid() && endDate.isValid() ? 'black' : 'black',
     },
   };
+
+  function handleIconClick(){
+    setShowDateSelection(prev => !prev);
+  }
   
 
 
@@ -87,13 +92,18 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelect
      }}
     startIcon={<CalendarMonthOutlinedIcon/>}
     endIcon={ !showDateSelection ? (showOptionsArrow):(closeOptionsArrow)}
-    sx={buttonStyle}>
+    sx={{...buttonStyle,
+      display: { xs: "none", md: "inline-flex" }, }
+    }>
       
       Select Date Range
       
       
 
     </Button>
+    {smallScreenIconButton('Select Date Range', handleIconClick, buttonStyle, <CalendarMonthOutlinedIcon/>)}
+    
+
     {showDateSelection && 
       (<DateDisplay 
         startDate={startDate}
@@ -117,16 +127,29 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
    
 
   const slotProps={
+    popper:{ sx: { zIndex: 9999 },},
+    
     textField: {
       sx: { 
         color: '#e55162', // Change text color
         '& label': { color: '#e55162' }, // Change label color
         //'& input': { color: '#e55162' }, // Change input text color
         '& .MuiOutlinedInput-root': {
+          height:{sm:'40px !important', md:'50px !important'},
+          fontSize:{sm:'12px !important', md:'14px !important'},
           '& fieldset': { borderColor: '#e55162' }, // Default border color
           '&:hover fieldset': { borderColor: '#d43b50' }, // Hover effect
-          '&.Mui-focused fieldset': { borderColor: '#a32e3b' }, // Focused border color
+          '&.Mui-focused fieldset': { borderColor: 'red' }, // Focused border color
         },
+        '& .MuiOutlinedInput-notchedOutline': {
+          height:'inherit !important',
+        },
+        '& .MuiInputLabel-root': {
+          fontSize:{sm:'14px !important', md:'16px !important'},
+          left: {sm:'-2px !important', md:'-3px !important'},
+          
+          
+        }
       },
     },
     openPickerIcon: {
@@ -144,14 +167,24 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
     <Card
      sx={{
       position: 'absolute',
-      top: '100%',
-      width: '340px',
+      top:{xs: '6px', md: '100%',},
+      right:{xs: '100%', md: '0px',},
+      width:{xs: '220px', md: '320px',},
+      height:{xs: '200px',  md: 'inherit',},
+      overflow:{xs: 'scroll', md: 'hidden', },
       padding: '6px',
+      backgroundColor: "#f4f4f4",
+      alignContent: 'center',
+      border: '2px solid #e55162',
+      borderRadius: '10px',
+      zIndex:'9001',
+      
 
      }}>
       <CardContent
-      className='date-card-content'>
-      <Box>
+      className='date-card-content'
+      sx={{display: { xs: "none", md: "block" },}}>
+      <Box >
             {shortcutsItems.map((shortcut, indx) => {
               return(
                 <Button
@@ -168,6 +201,13 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
       className='date-card-content'>
         
         <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Box 
+          display="flex" 
+          flexDirection={{ xs: "row", md: "row" }} // Column on small screens, row on medium
+          gap={2} 
+          justifyContent="center" // Centers horizontally
+          alignItems="center" // Centers vertically
+          >
 
           <DatePicker 
             defaultValue={dayjs()} 
@@ -175,18 +215,27 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
             className='filter-time-input'
             value={startDate}
             onChange={setStartDate}
-            slotProps={slotProps}/>
+            slotProps={slotProps}
+            
+            />
           <DatePicker 
             defaultValue={dayjs()} 
             label='End Date' 
             className='filter-time-input'
             value={endDate}
             onChange={setEndDate}
-            slotProps={slotProps} />
+            slotProps={slotProps}
+            
+            
+            
+             />
+            </Box>
         </LocalizationProvider>
       </CardContent>
+      
       <CardContent
-      className='date-card-content'>
+      className='date-card-content'
+      >
         <RangeSlider
           startDate={startDate}
           endDate={endDate}
@@ -243,13 +292,56 @@ export function RangeSlider({ startDate, endDate, setStartDate, setEndDate }) {
   };
 
   return (
-    <Box sx={{ width: 300 }}>
+    <Box sx={{ width: {sx: 130, md: 300} }}>
       <Slider
       sx={{
-        width: '100%',
+        width: '85%',
         color: '#e55162',
         
       }}
+        getAriaLabel={() => 'Year range'}
+        value={value}
+        onChange={handleChange}
+        //valueLabelDisplay="auto"
+        min={1860}
+        max={currentYear}
+        marks={[
+          { value: 1860, label: '1860' },
+          { value: 1900, label: '1900' },
+          { value: 1980, label: '1980' },
+          { value: 2020, label: '2020' },
+          
+        ]}
+      />
+    </Box>
+  );
+}
+
+export function VerticalSlider({ startDate, endDate, setStartDate, setEndDate }) {
+  const currentYear = dayjs().year();
+  
+  // Independent state for the slider's range
+  const [value, setValue] = useState([1860, currentYear]);
+
+  const handleChange = (event, newValue) => {
+    event.propagation;
+    setValue(newValue);
+    setStartDate(dayjs().year(newValue[0]));
+    setEndDate(dayjs().year(newValue[1]));
+  };
+  function getAriaValueText(value) {
+    return `${value}°C`;
+  }
+
+  return (
+    <Box >
+
+      <Slider
+      sx={{
+        height: '200px',
+        color: '#e55162',
+      }}
+        orientation='vertical'
         getAriaLabel={() => 'Year range'}
         value={value}
         onChange={handleChange}

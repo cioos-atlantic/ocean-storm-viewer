@@ -20,9 +20,9 @@ export default function StormPressure({ STORMPRESSURE }) {
   const unit_in_InHg = pressure_inHg.unit
 
     return (
-        <p>
+        <div>
             <strong>Pressure:</strong> {value_in_Kpa} {unit_in_Kpa} ({value_in_InHg} {unit_in_InHg})
             
-        </p>
+        </div>
     );
 }
