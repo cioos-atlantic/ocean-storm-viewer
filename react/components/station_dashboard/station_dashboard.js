@@ -32,7 +32,8 @@ export default function StationDashboard({
 
   const stationData = selected_station;
   
-  
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down('md')); // `md` in MUI = 960px
   const isExtraSmall = useMediaQuery("(max-width:600px)");
   if (!stationData) return null;
 

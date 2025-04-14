@@ -117,7 +117,7 @@ const storm_types = {
  *
  * @returns {JSX.Element} - A React Marker component with event handlers and custom icon.
  */
-export default function StormMarker({ storm_point_data, setHoverMarker, setShowPopup, isStormDetOpen, setIsStormDetOpen, storm_point_hover }) {
+export default function StormMarker({ storm_point_data, setHoverMarker, setIsStormDashOpen, storm_point_hover }) {
     const [isMounted, setIsMounted] = useState(false);
 
     // Ensure component is mounted
@@ -209,7 +209,6 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setShowP
             <Tooltip direction="top" offset={[0, -10]} permanent={false}>
                 {<StormPointDetailsSmallScreen
                     storm_point_hover={storm_point_hover}
-                    setIsStormDetOpen={setIsStormDetOpen}
                     setHoverMarker={setHoverMarker}
                     />}
             </Tooltip>

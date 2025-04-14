@@ -226,6 +226,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                         storm_point_data={point}
                         setHoverMarker={setHoverMarker}
                         setIsStormDashOpen={setIsStormDashOpen}
+                        storm_point_hover= {hover_marker}
                        
                       />
                     );
