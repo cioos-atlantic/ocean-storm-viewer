@@ -156,7 +156,8 @@ onEditVertex	function	hook to leaflet-draw's draw:editvertex event*/
           rectangle: true,
           circlemarker: false,
           circle: false,
-          polygon: true
+          polygon: true,
+          marker: false,
         }}
       />
     </FeatureGroup>

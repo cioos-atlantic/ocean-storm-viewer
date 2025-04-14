@@ -1,6 +1,6 @@
 // https://iconoir.com/ icon library that can be installed via npm
 import React, { useState, useRef } from "react";
-import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup, Marker, Popup, useMap } from 'react-leaflet'
 import Drawer from '@/components/drawer';
 
 import 'leaflet/dist/leaflet.css'
@@ -24,6 +24,7 @@ import { RenderBoundingBox } from "./Filter/boundingBox";
 //import EditFeature from "./Filter/Edit_spatial_filter";
 //import StationDashboardTest from "./station_dashboard/station_dashboard";
 import { RenderSpatialFilter } from "./Filter/Edit_spatial_filter";
+import CustomZoomControl from "./custom_zoom_control";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
@@ -49,8 +50,11 @@ export default function Map({ children, storm_points, storm_data, station_data, 
 
   const allDatasetDescriptions = useDatasetDescriptions();
 
+  
+
   console.log(allDatasetDescriptions)
   console.debug("Storm Points in map.js: ", storm_points);
+
 
   return (
     <div className="map_container">
@@ -108,8 +112,9 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           zoom={defaultZoom}
           style={{ height: "100%", width: "100%" }}
           worldCopyJump={true}
+          zoomControl={false}
           
-        >
+        > <CustomZoomControl /> 
           <Drawer
             element_id="left-side"
             classes="left"
@@ -135,7 +140,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           />
 
-          <LayersControl position="topright">
+          <LayersControl position="bottomright">
             <LayersControl.Overlay checked name="ECCC Hurricane Response Zone">
               <LayerGroup>
                 <WMSTileLayer
@@ -189,6 +194,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                         setHoverMarker={setHoverMarker}
                         isStormDetOpen= {isStormDetOpen}
                         setIsStormDetOpen= {setIsStormDetOpen}
+                        storm_point_hover={hover_marker}
                        
                       />
                     );

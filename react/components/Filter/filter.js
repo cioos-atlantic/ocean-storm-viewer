@@ -1,5 +1,5 @@
-import { IconButton, TextField, Box, Typography, Paper, Button } from "@mui/material";
-import { useEffect, useState } from 'react';
+import { IconButton, TextField, Box, Typography, Paper, Button, SpeedDial, SpeedDialIcon, SpeedDialAction, Tooltip } from "@mui/material";
+import { useEffect, useState, Fragment } from 'react';
 import Stack from '@mui/material/Stack';
 
 //import Chip from '@mui/material/Chip';
@@ -17,8 +17,8 @@ import { useRouter } from 'next/router';
 import { InputFilter } from "./inputFilter";
 import { basePath } from "@/next.config";
 import LoadingScreen from "../loading_screen";
-
-
+import { smallScreenIconButton } from "./filter_utils";
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 
 const ITEM_HEIGHT = 35;
@@ -34,77 +34,34 @@ const MenuProps = {
 
 
 
-const showOptionsArrow = <KeyboardDoubleArrowDownIcon/>; 
-const closeOptionsArrow = <KeyboardDoubleArrowUpIcon/>;
+const showOptionsArrow = <KeyboardDoubleArrowDownIcon />;
+const closeOptionsArrow = <KeyboardDoubleArrowUpIcon />;
 
 
-export function RenderFilter({filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords, clearShapesRef} ){
-  const [showFilterIcons, setShowFilterIcons] = useState(false); 
-  const [showFilterOptions, setShowFilterOptions] = useState({}); 
-  const [selectedOptions, setSelectedOptions] = useState([]); 
-  const [filterParameters, setFilterParameters] = useState([]); 
+export function RenderFilter({ filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords, clearShapesRef }) {
+  const [showFilterIcons, setShowFilterIcons] = useState(false);
+  const [showFilterOptions, setShowFilterOptions] = useState({});
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [filterParameters, setFilterParameters] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  
-  
 
+  const [openSpeedDial, setOpenSpeedDial] = useState(false);
 
-
-  function handleClick(){
-    setShowFilterIcons((prev) => !prev); // Toggle form visibility
+  //const handleSpeedDialToggle = () => setOpenSpeedDial(prev => !prev);
+  const handleOpen = () => setOpenSpeedDial(true);
+  const handleClose = (event, reason) => {
+    if (reason !== "toggle") {
+      setOpenSpeedDial(false);
+    }
   };
 
-  return(
-    <>
-      {/*
-        {!showFilterIcons &&
-          (<IconButton  aria-label='filter'
-        id='filter-icon'
-        onClick={() => handleClick()}>
-          <FilterAltIcon
-          sx={{
-            fontSize: 'larger',          
-          }}
-          />
-        </IconButton>)
-        } */
-      }
-      
-      {//showFilterIcons && (
-        <FilterIcons
-        setShowFilterIcons = {setShowFilterIcons}
-        showFilterOptions={showFilterOptions}
-        setShowFilterOptions={setShowFilterOptions}
-        setSelectedOptions={setSelectedOptions}
-        selectedOptions={selectedOptions}
-        filterParameters={filterParameters}
-        setFilterParameters={setFilterParameters}
-        startDate={startDate}
-        endDate={endDate}
-        setStartDate={setStartDate}
-        setEndDate={setEndDate}
-        setFilterResult = {setFilterResult}
-        setReturnFilterResult = {setReturnFilterResult}
-        setIsDrawerOpen= {setIsDrawerOpen}
-        bboxFilterCoordinates={bboxFilterCoordinates}
-        setBboxFilterCoordinates={setBboxFilterCoordinates}
-        polyFilterCoords={polyFilterCoords}
-        setPolyFilterCoords={setPolyFilterCoords}
-        clearShapesRef={clearShapesRef}
 
-        
-        />
-      //)
-      }
-    </>
-  )
-}
 
-function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions, filterParameters, setFilterParameters, startDate, endDate,setStartDate, setEndDate, setFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords, clearShapesRef  }){
   const [loading, setLoading] = useState(false);
 
   const router = useRouter(); // Next.js useRouter
-  
+
 
   // Function to clear all filters and shapes
   function handleClearAll() {
@@ -142,11 +99,11 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
       ...selectedOptions, // Spread selected options correctly
       startDate: startDate, // Ensure start and end dates are included
       endDate: endDate,
-      bboxCoordinates:bboxFilterCoordinates,
-      polyCoords:polyFilterCoords,
+      bboxCoordinates: bboxFilterCoordinates,
+      polyCoords: polyFilterCoords,
 
     };
-  
+
     console.log(updatedParams); // 
 
 
@@ -159,126 +116,204 @@ function FilterIcons({setShowFilterIcons, showFilterOptions, setShowFilterOption
 
   }
 
-  return(
+
+
+  return (
     <>
-        {loading ? (
-            <LoadingScreen/>
-            ) : (
-                <>
-                <Stack
-                direction="row"
-                spacing={0.1}
-                className='filter-icons-list'>
-                  {
-                    input_filters.map((input_filter, index) => {
-                      return(
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <>
+          <SpeedDial
+            ariaLabel="Filter Options"
+            sx={{
+              position: 'absolute', bottom: 25, right: 7,
+              display: { xs: "block", md: "none" }, '& .MuiSpeedDial-fab': {
+                backgroundColor: '#e55162',  // Change SpeedDial button background color
+                '&:hover': {
+                  backgroundColor: '#b9acac', // Change SpeedDial button hover color
+                }
+              }
+            }}
+            icon={<FilterAltIcon openIcon={<KeyboardDoubleArrowDownIcon />} />}
 
-                        <div className="filter-group" key={index}>
-              
+            //onClick={handleSpeedDialToggle}
+            open={openSpeedDial}
+            onOpen={handleOpen}
+            onClose={handleClose}
+          >
 
-                          <InputFilter
-                          input_filter={input_filter}
-                          showOptionsArrow={showOptionsArrow}
-                          closeOptionsArrow={closeOptionsArrow}
-                          setSelectedOptions={setSelectedOptions}
-                          selectedOptions={selectedOptions}
-                          showFilterOptions={showFilterOptions}
-                          setShowFilterOptions={setShowFilterOptions}
-                          
-                          />
+            <SpeedDialAction
+              icon={<IconButton className="filters-speed-dial">X</IconButton>}
+              tooltipTitle="Clear Filters"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClearAll()
+              }}
+            />
+            <SpeedDialAction
+              className="filters-speed-dial"
+              icon={<PublishRoundedIcon />}
+              tooltipTitle="Submit"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleFilterSubmit()
+              }}
+            />
 
-                        </div>
+            {openSpeedDial && (input_filters.map((input_filter, index) => {
+              return (
+                <div className="filter-group" key={index}>
+                  <InputFilter
+                    input_filter={input_filter}
+                    showOptionsArrow={showOptionsArrow}
+                    closeOptionsArrow={closeOptionsArrow}
+                    setSelectedOptions={setSelectedOptions}
+                    selectedOptions={selectedOptions}
+                    showFilterOptions={showFilterOptions}
+                    setShowFilterOptions={setShowFilterOptions}
+                  />
+                </div>
+              )
+            }))
+
+            }
+            {openSpeedDial && (<div className="filter-group">
+              <RenderDateFilter
+                showOptionsArrow={showOptionsArrow}
+                closeOptionsArrow={closeOptionsArrow}
+                setSelectedOptions={setSelectedOptions}
+                startDate={startDate}
+                endDate={endDate}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
+              />
+
+            </div>
+            )
+
+            }
+            {openSpeedDial && (filters.map((filter, index) => {
+              return (
+
+                <div className="filter-group" key={index}>
 
 
-                      )
-                    })
-                  }
-                  
+                  <Badges
+                    filter={filter}
+                    showFilterOptions={showFilterOptions}
+                    setShowFilterOptions={setShowFilterOptions}
+                    setSelectedOptions={setSelectedOptions}
+                    selectedOptions={selectedOptions}
+                  />
 
-                  <div className="filter-group">
-                    <RenderDateFilter
+                </div>
+
+
+              )
+            }))
+
+            }
+
+          </SpeedDial>
+
+          <Stack
+            direction="row"
+            spacing={0.1}
+            sx={{ display: { xs: "none", md: "flex" }, }}
+            className='filter-icons-list'>
+            {
+              input_filters.map((input_filter, index) => {
+                return (
+
+                  <div className="filter-group" key={index}>
+                    <InputFilter
+                      input_filter={input_filter}
                       showOptionsArrow={showOptionsArrow}
                       closeOptionsArrow={closeOptionsArrow}
                       setSelectedOptions={setSelectedOptions}
-                      startDate={startDate}
-                      endDate={endDate}
-                      setStartDate={setStartDate}
-                      setEndDate={setEndDate}
+                      selectedOptions={selectedOptions}
+                      showFilterOptions={showFilterOptions}
+                      setShowFilterOptions={setShowFilterOptions}
                     />
 
                   </div>
-
-                  
-                  {
-                    filters.map((filter, index) => {
-                      return(
-
-                        <div className="filter-group" key={index}>
-              
-
-                          <Badges
-                          filter={filter}
-                          showFilterOptions={showFilterOptions}
-                          setShowFilterOptions={setShowFilterOptions}
-                          setSelectedOptions={setSelectedOptions}
-                          selectedOptions={selectedOptions}
-                          />
-
-                        </div>
+                )
+              })
+            }
 
 
-                      )
-                    })
-                  }
+            <div className="filter-group">
+              <RenderDateFilter
+                showOptionsArrow={showOptionsArrow}
+                closeOptionsArrow={closeOptionsArrow}
+                setSelectedOptions={setSelectedOptions}
+                startDate={startDate}
+                endDate={endDate}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
+              />
+            </div>
 
-                  <Button
-                    className="filter-submit-button"
-                    onClick={handleFilterSubmit}
-                    startIcon={<PublishRoundedIcon/>}>
-                    Submit
-                  </Button>
-                  <Button
-                    id="cancel-filter-icon"
-                    className="filter-icons"
-                    onClick={handleClearAll}>
-                    X
-                  </Button> 
-                  
+            {
+              filters.map((filter, index) => {
+                return (
 
+                  <div className="filter-group" key={index}>
+                    <Badges
+                      filter={filter}
+                      showFilterOptions={showFilterOptions}
+                      setShowFilterOptions={setShowFilterOptions}
+                      setSelectedOptions={setSelectedOptions}
+                      selectedOptions={selectedOptions}
+                    />
+                  </div>
+                )
+              })
+            }
 
-                </Stack>
-                
-
-
-              </>
-            )};
+            <Button
+              className="filter-submit-button"
+              onClick={handleFilterSubmit}
+              startIcon={<PublishRoundedIcon />}>
+              Submit
+            </Button>
+            <Button
+              id="cancel-filter-icon"
+              className="filter-icons"
+              onClick={handleClearAll}>
+              X
+            </Button>
+          </Stack>
+        </>
+      )
+      };
     </>
   )
-  
 }
 
 
 
-export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions}){
+export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions }) {
   const buttonStyle = {
     backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#e55162' : 'white',
     color: selectedOptions[filter.name]?.length > 0 ? 'white' : '#e55162',
     '&:hover': {
-      backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#ffd1dc' : '#82ccdd', 
+      backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#ffd1dc' : '#82ccdd',
       color: selectedOptions[filter.name]?.length > 0 ? 'black' : 'black',
     },
   };
-   
+
   const handleCheckboxChange = (option) => {
     setSelectedOptions((prev) => {
       const currentOptions = prev[filter.name] || []; // Get current options for this filter
       const isSelected = currentOptions.includes(option.value);
-  
+
       // Toggle selection
       const updatedOptions = isSelected
         ? currentOptions.filter((item) => item !== option.value) // Remove if selected
         : [...currentOptions, option.value];                    // Add if not selected
-  
+
       return {
         ...prev,
         [filter.name]: updatedOptions // Set as name: options
@@ -286,120 +321,147 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
     });
   };
 
-  function handleClear(name)  {
+  function handleClear(name) {
     setSelectedOptions((prev) => ({
       ...prev,
       [name]: [] // Clear the options for the specific filter name
     }));
     console.log({ [name]: [] }); // Log the cleared options
   };
-  
-  return(
+
+  function handleIconClick() {
+    setShowFilterOptions((prev) => ({
+      ...prev,
+      [filter.name]: !prev[filter.name],
+    }));
+  }
+
+  return (
     <>
-    <Button
-    className="filter-badge"
-    onClick= {() => {
-      setShowFilterOptions((prev) => ({
-        ...prev,
-        [filter.name]: !prev[filter.name],
-      }));
-     }}
-    startIcon={filter.icon}
-    endIcon={ !showFilterOptions[filter.name] ? (showOptionsArrow):(closeOptionsArrow)}
-    sx={buttonStyle}>
-      
-      {filter.display_name}
-      
-      {console.log(showFilterOptions)}
 
-    </Button>
-
-    {showFilterOptions[filter.name] && (
-      <Paper className="filter-dropdown-menu">
-
-        <Stack
-        direction="column"
-        sx={{
-          padding: '5px',
+      <Button
+        className="filter-badge"
+        onClick={() => {
+          setShowFilterOptions((prev) => ({
+            ...prev,
+            [filter.name]: !prev[filter.name],
+          }));
         }}
-        spacing={1}>
-          {filter.options.map((option, optIndex) => {
-            return(
-              <FormControlLabel
-                
-                key={optIndex}
-                label={<Typography sx={{ fontSize: '12px' }}>
-                          {option.label}
-                        </Typography>}
-                control={
-                  <Checkbox        
-                    checked={selectedOptions[filter.name]?.includes(option.value) || false}
-                    onChange={() => handleCheckboxChange(option)}
-                    sx= {{color:"#e55162",
-                          '&.Mui-checked': {color: 'grey',}
-                        
+        startIcon={filter.icon}
+        endIcon={!showFilterOptions[filter.name] ? (showOptionsArrow) : (closeOptionsArrow)}
+        sx={{
+          ...buttonStyle,
+          display: { xs: "none", md: "inline-flex" }
+        }
+        }>
 
-                      
-                      
+        {filter.display_name}
+
+        {console.log(showFilterOptions)}
+
+      </Button>
+
+      {smallScreenIconButton(filter.display_name, handleIconClick, buttonStyle, filter.icon)}
+
+
+
+      {showFilterOptions[filter.name] && (
+        <Paper className="filter-dropdown-menu"
+          sx={{
+            top: { xs: '6px', md: '100%', },
+            right: { xs: '100%', md: '0px', },
+            //transform:{xs: 'translateX(-100%)', },
+            width: { xs: '150px', md: '100%' }
+          }}>
+
+          <Stack
+            direction="column"
+            sx={{
+              padding: '5px',
+              height: '200px',
+              overflow: 'scroll',
+              width: '100%',
+
+            }}
+            spacing={1}>
+            {filter.options.map((option, optIndex) => {
+              return (
+                <FormControlLabel
+
+                  key={optIndex}
+                  label={<Typography sx={{ fontSize: '12px' }}>
+                    {option.label}
+                  </Typography>}
+                  control={
+                    <Checkbox
+                      checked={selectedOptions[filter.name]?.includes(option.value) || false}
+                      onChange={() => handleCheckboxChange(option)}
+                      sx={{
+                        color: "#e55162",
+                        '&.Mui-checked': { color: 'grey', }
+
+
+
+
                       }}
 
-                  />
-                }
-              />
-            )
-          })}
+                    />
+                  }
+                />
+              )
+            })}
 
-          <Box 
-            sx={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
-                <Button 
-                  onClick={() => handleClear(filter.name)} 
-                  className="filter-submit-button"
-                >
-                  Clear
-                </Button>
-          </Box>
+            <Box
+              sx={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
+              <Button
+                onClick={() => handleClear(filter.name)}
+                className="filter-submit-button"
+              >
+                Clear
+              </Button>
+            </Box>
 
-        </Stack>
-        
-        
+          </Stack>
 
-        {console.log(selectedOptions)}
-        {console.log(filter.options)}
-        
-      </Paper>
-    )}
 
-  </>
-    
+
+          {console.log(selectedOptions)}
+          {console.log(filter.options)}
+
+        </Paper>
+      )}
+
+    </>
+
   )
 
 };
 
 
 
-export async function processFilterRequest(filterParameters, setLoading){
+export async function processFilterRequest(filterParameters, setLoading) {
 
   console.log(filterParameters);
   let uniqueList;
-  const stormCategory= formatStormCategory(filterParameters['stormCategory']);
-  const stormNames= formatStormName(filterParameters['stormName']);
+  const stormCategory = formatStormCategory(filterParameters['stormCategory']);
+  const stormNames = formatStormName(filterParameters['stormName']);
   const startDate = formatFilterDate(filterParameters['startDate']);
   const endDate = formatFilterDate(filterParameters['endDate']);
-  const stormBbox= filterParameters['bboxCoordinates'];
-  const stormPoly= filterParameters['polyCoords'];
+  const stormBbox = filterParameters['bboxCoordinates'];
+  const stormPoly = filterParameters['polyCoords'];
 
 
-  console.log(stormCategory, stormNames, startDate, endDate )
+  console.log(stormCategory, stormNames, startDate, endDate)
 
 
 
   const query = new URLSearchParams({
-    storm_category: stormCategory, 
+    storm_category: stormCategory,
     name: stormNames,
     start_date: startDate,
     end_date: endDate,
-    bbox:stormBbox,
-    polygon:stormPoly,
+    bbox: stormBbox,
+    polygon: stormPoly,
 
   }).toString();
 
@@ -423,8 +485,8 @@ export async function processFilterRequest(filterParameters, setLoading){
     if (uniqueList.length === 0) {
       alert("No result found for this search, please try again...")
     }
-      
-  
+
+
   } catch (error) {
     setLoading(false);
     console.error('Error fetching storm or station data:', error);
@@ -436,7 +498,7 @@ export async function processFilterRequest(filterParameters, setLoading){
 
 }
 
-export function formatFilterDate(date){
+export function formatFilterDate(date) {
   if (!date) {
     return ""; // Return an empty string if no date is provided
   }
@@ -444,16 +506,16 @@ export function formatFilterDate(date){
   return formattedDate;
 }
 
-export function formatStormCategory(category_list=[]){
+export function formatStormCategory(category_list = []) {
   console.log(category_list);
   const formattedCategoryList = category_list.join("_");
   return formattedCategoryList;
 }
 
-export function formatStormName(storm_names=""){
+export function formatStormName(storm_names = "") {
   storm_names = storm_names.replace(/\s+/g, ''); // Remove all spaces
   console.log(storm_names);
-  const storm_list= storm_names.split(",");
+  const storm_list = storm_names.split(",");
   const formattedStormList = storm_list.join("_");
   return formattedStormList;
 }

@@ -1,6 +1,7 @@
-import { Button, CardActions, CardContent, Stack, Card, Box, TextField, Paper,  OutlinedInput, Input, FormControl, InputLabel} from "@mui/material"
+import { Button, CardActions, CardContent, Stack, Card, Box, TextField, Paper,  OutlinedInput, Input, FormControl, InputLabel, IconButton, Tooltip} from "@mui/material"
 import { input_filters } from "./filters_list"
 import { useEffect, useState } from 'react';
+import { smallScreenIconButton } from "./filter_utils";
 
 
 
@@ -34,6 +35,13 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     }));
     setInputValue(""); // Reset input field
   };
+
+  function handleIconClick(){
+    setShowFilterOptions((prev) => ({
+      ...prev,
+      [input_filter.name]: !prev[input_filter.name],
+    }));
+  }
   return(
     <>
     <Button
@@ -46,15 +54,25 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       }}
       startIcon={input_filter.icon}
       endIcon={ !showFilterOptions[input_filter.name] ? (showOptionsArrow):(closeOptionsArrow)}
-      sx={buttonStyle}
+      sx={{...buttonStyle,
+        display: { xs: "none", md: "inline-flex" }}
+      }
     >{input_filter.display_name}
 
     </Button>
+
+    {smallScreenIconButton(input_filter.display_name, handleIconClick, buttonStyle, input_filter.icon)}
+
+    
+    
     {/* Filter Input Popup */}
     {showFilterOptions[input_filter.name] && (
   <Paper
     elevation={3}
     className="input-filter"
+    sx={{top:{xs: '6px', md: '100%',},
+    right:{xs: '100%', md: '0px',},
+    width:{xs: '150px', md: '180px' } }}      
   >
     <Box
       component="form"
@@ -64,7 +82,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       className="input-filter-box"
     >
       {/* Native Input Field */}
-      <FormControl variant="outlined" sx={{ width: "180px" }}>
+      <FormControl variant="outlined" sx={{ width:{xs: '130px', md: '160px' } }}>
         <InputLabel
           htmlFor="custom-outlined-input"
           //shrink
@@ -72,7 +90,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
             color: "#e55162", // Default label color
             fontSize: '14px',
             padding:'0px',
-            display: "none", // Hidden by default
+            display: inputValue ? "block" : "none", // Show if input has value
             "&.Mui-focused": {
               display: "block",
               color: "red", // Label color when focused
@@ -93,7 +111,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
           onChange={(e) => setInputValue(e.target.value)}
           label={input_filter.display_name}
           sx={{
-            width:'170px',
+            width:'100%',
             height: "35px",
             padding: "6px",
             fontSize: "14px",
