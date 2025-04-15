@@ -25,6 +25,8 @@ function RenderChart({ sourceData, position, stationName, varCategory, hoverPoin
     // Check if chartData is available
     if (sourceData && sourceData.rows.length > 0) {
       const ctx = chartRef.current.getContext('2d'); // Get context for the canvas
+      
+      console.log(hoverPointTime);
       const highlightTime = new Date(hoverPointTime).toLocaleString('en-US', {
         year: 'numeric',
         month: 'short',   // full month name
@@ -186,6 +188,8 @@ function RenderChart({ sourceData, position, stationName, varCategory, hoverPoin
   );
 }
 
+
+
 // Function to generate a random color for chart lines
 const getRandomColor = () => {
   const letters = '0123456789ABCDEF';
@@ -196,12 +200,15 @@ const getRandomColor = () => {
   return color;
 };
 
-function getColour(graph_colour_list, var_name){
+function getColour(graph_colour_list, var_name, indx) {
   let colour = '';
-  console.log(var_name)
-  console.log(graph_colour_list)
-  colour = var_name in graph_colour_list ? graph_colour[var_name] : getRandomColor()
+  console.log(var_name);
+  console.log(graph_colour_list);
+
+  colour = var_name in graph_colour_list ? graph_colour[var_name][indx] : getRandomColor()
   return colour;
+
+    
 }
 
 
@@ -210,6 +217,7 @@ export default React.memo(RenderChart);
 function parseChartData(sourceData, varCategory, hoverPointTime){
   console.log(sourceData);
   const  column_names = sourceData.column_names;
+  const hoverTimestamp = new Date(hoverPointTime).getTime();
   
   const column_std_names = sourceData.column_std_names;
   const uniqueColStdNames= getUniqueStdNamesList(column_std_names);
@@ -227,12 +235,14 @@ function parseChartData(sourceData, varCategory, hoverPointTime){
     console.log(variable)
 
     const column_names_list = getColumnNameList(column_std_names, column_names, variable)
-    
+    console.log(column_names_list);
     var graph_colour_list = {}
     Object.assign(graph_colour_list, graph_colour);
+   
     console.log(graph_colour_list)
-    column_names_list.forEach(col_name => {
+    column_names_list.forEach((col_name, indx) => {
       const unit = get_station_field_units(sourceData, col_name)
+      
       
       const data_obj = get_station_field_data(sourceData, col_name);
       const values = data_obj?.data
@@ -241,18 +251,17 @@ function parseChartData(sourceData, varCategory, hoverPointTime){
         datasets.push({
         label: `${data_obj.long_name} (${convert_unit_data(values[0], unit).unit})` || key, //  std_name if available
         data: values.map((value)=>convert_unit_data(value,unit).value) || [], // Ensure that value exists
-        borderColor: getColour(graph_colour_list, variable), // Generate random colors for each line
+        borderColor: getColour(graph_colour_list, variable, indx), // Generate random colors for each line
         backgroundColor: 'rgba(0, 0, 0, 0)',
         fill: false,
         pointRadius: (context) => {
-          const pointTime = new Date(timeData[context.dataIndex]).getTime();
-          const hoverTime = new Date(hoverPointTime).getTime();
-          return pointTime === hoverTime ? 10 : 0;
+          const pointTime = timeData[context.dataIndex];
+          return pointTime === hoverTimestamp ? 10 : 0;
         },
         pointBackgroundColor: (context) => {
-          const pointTime = new Date(timeData[context.dataIndex]).getTime();
-          const hoverTime = new Date(hoverPointTime).getTime();
-          return pointTime === hoverTime ? 'red' : 'blue';
+          const pointTime = timeData[context.dataIndex];
+          console.log(hoverTimestamp);
+          return pointTime === hoverTimestamp ? 'red' : '';
         },
       })}
       
