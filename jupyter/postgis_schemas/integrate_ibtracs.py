@@ -287,11 +287,30 @@ def md5_file_checksum(path):
     return md5(open(path, mode='rt').read().encode()).hexdigest()
 
 
+
 def generate_ibtracs_lines(ibtracs_files:dict, pg_engine:Engine):
+    # Creates a list of storm lines based on the list of points 
+    # SELECT 
+    # "SID",
+    # ST_MakeLine(ihs.geom ORDER BY "ISO_TIME") as geom
+    # FROM public.ibtracs_historical_storms as ihs
+    # GROUP BY "SID"
+
     with pg_engine.begin() as conn:
-        query = text(f"SELECT * FROM public.{destination_table} LIMIT 0")
-        table_columns = pd.read_sql_query(query, conn).columns.drop('geom')
-    pass
+        for ib_file in ibtracs_files:
+            destination_table = ibtracs_files[ib_file]['table']
+            query = text(f'SELECT DISTINCT "SID" FROM public.{destination_table};')
+
+            storms = conn.execute(query).fetchall()
+            
+            for storm in storms:
+                print(storm)
+                query = text(f'SELECT * FROM public.{destination_table} WHERE "SID" = \'{storm[0]}\';')
+                print(query)
+                storm_data = conn.execute(query).fetchall()
+                print(storm_data)
+
+            
 
 
 def process_files(ibtracs_files:dict, pg_engine:Engine):
@@ -375,31 +394,28 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--gen_lines", help="Generates Line strings for IBTRACS data based on existing data in the database", action="store_true")
-    # Separate active and historical commands
-    # subparsers = parser.add_subparsers(dest='subcommand')
-    # subparsers.required = True  
-
-    # parser_historical = subparsers.add_parser("historical")
-    # parser_historical.add_argument("--storm", help="The storm identifier, in the format of YYYY_stormname (lowercase). Example: 2022_fiona", nargs='?', type=storm_format)
-    # parser_historical.add_argument("--min", help="The start time of data in the storm interval. Format: YYYY", nargs='?', type=int)
-    # parser_historical.add_argument("--max", help="The end time of data in the storm interval. Format: YYYY", nargs='?', type=int)
-    # parser_historical.add_argument("--dry", help="Dry run. Will grab from ERDDAP but not commit the data to the database", action="store_true")
-
-    """
-    parser_historical.add_argument("storm", help="The storm identifier, in the format of YYYY_stormname (lowercase). Example: 2022_fiona", type=storm_format)
-    parser_historical.add_argument("min_time", help="The start time of data in the storm interval. Format: YYYY-mm-ddTHH:MM:SSZ", type=datetime_format)
-    parser_historical.add_argument("max_time", help="The end time of data in the storm interval. Format: YYYY-mm-ddTHH:MM:SSZ", type=datetime_format)
-    """
-    # parser_active = subparsers.add_parser("active")
     
     args = parser.parse_args()
 
     print(f"MD5 Results File: {md5_results_file}")
     print(f"MD5 Test File: {md5_test_file}")
 
-    # Populate IBTrACS file metadata
+    # Populate IBTrACS file metadata - example output below:
+    # {
+    #   'active': {
+    #   'table': 'ibtracs_active_storms', 
+    #   'path': '/home/scott/ibtracs/ibtracs.ACTIVE.list.v04r01.csv', 
+    #   'checksum': None, 
+    #   'checksum_result': 'FAILED'
+    # }, 
+    #   'historical': {
+    #   'table': 'ibtracs_historical_storms', 
+    #   'path': '/home/scott/ibtracs/ibtracs.NA.list.v04r01.csv', 
+    #   'checksum': None, 
+    #   'checksum_result': 'FAILED'
+    #   }
+    # }
     ibtracs_files = check_ibtracs_data_checksums()
-    print(ibtracs_files)
 
     # Open database connection
     pg_engine = create_engine(f"postgresql+psycopg2://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
