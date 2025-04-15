@@ -11,6 +11,7 @@ import BasicTabs from "./tabs";
 import { RecentStationData, getMatchedStation, getStationDataText, } from "../utils/station_data_format_util";
 //import BasicTabs from "./tabs";
 import { fetch_value } from "@/lib/storm_utils";
+import { RowingSharp } from "@mui/icons-material";
 
 
 /**
@@ -69,15 +70,29 @@ export default function StationDashboard({
 
 
 
-  standardNames.forEach((varName) => {
+  standardNames.forEach((varName, indx) => {
     if (!excludeVars.includes(varName)) {
-      variablePresence.wind_speed ||= varName.includes("wind_speed");
-      variablePresence.wind_from_direction ||= varName.includes("wind_from_direction");
-      variablePresence.temperature ||= varName.includes("temperature");
-      variablePresence.wave ||= varName.includes("wave");
-      variablePresence.air_pressure ||= varName.includes("air_pressure");
+
+      const rowData = stationValues?.properties?.station_data?.rows;
+      rowData.forEach((datalist) => {
+         if (datalist[indx]) {
+            variablePresence.wind_speed ||= varName.includes("wind_speed");
+            variablePresence.wind_from_direction ||= varName.includes("wind_from_direction");
+            variablePresence.temperature ||= varName.includes("temperature");
+            variablePresence.wave ||= varName.includes("wave");
+            variablePresence.air_pressure ||= varName.includes("air_pressure");
+         }
+      })
+
+
+      
+      
     }
+    
+   
+    
   });
+  console.log(variablePresence);
 
   const hoverPointTime = fetch_value(hover_point, ["TIMESTAMP", "ISO_TIME"]);
   console.log(hoverPointTime);
