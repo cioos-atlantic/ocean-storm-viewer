@@ -8,6 +8,7 @@ import psycopg2
 from sqlalchemy import create_engine, text, Engine, exc
 from pathlib import Path
 from hashlib import md5
+import argparse
 
 # import logging
 # logging.basicConfig(
@@ -286,6 +287,13 @@ def md5_file_checksum(path):
     return md5(open(path, mode='rt').read().encode()).hexdigest()
 
 
+def generate_ibtracs_lines(ibtracs_files:dict, pg_engine:Engine):
+    with pg_engine.begin() as conn:
+        query = text(f"SELECT * FROM public.{destination_table} LIMIT 0")
+        table_columns = pd.read_sql_query(query, conn).columns.drop('geom')
+    pass
+
+
 def process_files(ibtracs_files:dict, pg_engine:Engine):
     # Keep a count of how many files have been processed, increment 1 per valid
     # ins_result
@@ -299,8 +307,8 @@ def process_files(ibtracs_files:dict, pg_engine:Engine):
             print("Checksum Failed! processing new file...")
             ins_result = process_ibtracs(source_csv_file=ibtracs_files[file]["path"], destination_table=ibtracs_files[file]["table"], pg_engine=pg_engine)
             print("Finished Processing.")
-            
-            # If insert 
+
+            # If insert is successful, reset md5 
             if ins_result:
                 ibtracs_files[file]["ins_result"] = ins_result
                 ibtracs_files[file]['new_checksum'] = md5(open(ibtracs_files[file]['path'], mode='rt').read().encode()).hexdigest()
@@ -364,14 +372,45 @@ def process_ibtracs(source_csv_file:str, destination_table:str, pg_engine:Engine
         
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--gen_lines", help="Generates Line strings for IBTRACS data based on existing data in the database", action="store_true")
+    # Separate active and historical commands
+    # subparsers = parser.add_subparsers(dest='subcommand')
+    # subparsers.required = True  
+
+    # parser_historical = subparsers.add_parser("historical")
+    # parser_historical.add_argument("--storm", help="The storm identifier, in the format of YYYY_stormname (lowercase). Example: 2022_fiona", nargs='?', type=storm_format)
+    # parser_historical.add_argument("--min", help="The start time of data in the storm interval. Format: YYYY", nargs='?', type=int)
+    # parser_historical.add_argument("--max", help="The end time of data in the storm interval. Format: YYYY", nargs='?', type=int)
+    # parser_historical.add_argument("--dry", help="Dry run. Will grab from ERDDAP but not commit the data to the database", action="store_true")
+
+    """
+    parser_historical.add_argument("storm", help="The storm identifier, in the format of YYYY_stormname (lowercase). Example: 2022_fiona", type=storm_format)
+    parser_historical.add_argument("min_time", help="The start time of data in the storm interval. Format: YYYY-mm-ddTHH:MM:SSZ", type=datetime_format)
+    parser_historical.add_argument("max_time", help="The end time of data in the storm interval. Format: YYYY-mm-ddTHH:MM:SSZ", type=datetime_format)
+    """
+    # parser_active = subparsers.add_parser("active")
+    
+    args = parser.parse_args()
+
     print(f"MD5 Results File: {md5_results_file}")
     print(f"MD5 Test File: {md5_test_file}")
 
     # Populate IBTrACS file metadata
     ibtracs_files = check_ibtracs_data_checksums()
+    print(ibtracs_files)
 
     # Open database connection
     pg_engine = create_engine(f"postgresql+psycopg2://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
+
+    if args.gen_lines:
+        print("Generating lines for IBTRACS...")
+        generate_ibtracs_lines(ibtracs_files=ibtracs_files, pg_engine=pg_engine)
+    else:
+        print("Not generating lines")
+
+    exit()
 
     # Process files is invalid checksum results
     (ibtracs_files, files_processed) = process_files(ibtracs_files=ibtracs_files, pg_engine=pg_engine)
