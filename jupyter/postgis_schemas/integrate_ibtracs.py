@@ -296,22 +296,60 @@ def generate_ibtracs_lines(ibtracs_files:dict, pg_engine:Engine):
     # FROM public.ibtracs_historical_storms as ihs
     # GROUP BY "SID"
 
+    storm_buffer_radius = 2000 * 1000
+
     with pg_engine.begin() as conn:
         for ib_file in ibtracs_files:
             destination_table = ibtracs_files[ib_file]['table']
-            query = text(f'SELECT DISTINCT "SID" FROM public.{destination_table};')
 
-            storms = conn.execute(query).fetchall()
-            
-            for storm in storms:
-                print(storm)
-                query = text(f'SELECT * FROM public.{destination_table} WHERE "SID" = \'{storm[0]}\';')
-                print(query)
-                storm_data = conn.execute(query).fetchall()
-                print(storm_data)
+            try:
+                sql = f"TRUNCATE {destination_table};"
+                del_result = conn.execute(text(sql))
 
-            
+                # Creates the short-list along with min/max values as well as a 2,000km 
+                # buffer around the storm line geometry
+                # 
+                sql = f"""
+                SELECT 
+                    ihs_prime."SID", "SEASON", "NUMBER", "NAME", 
+                    MIN("ISO_TIME") as ISO_TIME_START, MAX("ISO_TIME") as ISO_TIME_END, 
+                    MIN("WMO_WIND") as min_wind, MAX("WMO_WIND") as min_wind, 
+                    MIN("WMO_PRES") as min_pres, MAX("WMO_PRES") as max_pres,
+                    MIN("USA_SSHS") as min_cat, MAX("USA_SSHS") as max_cat,
+                    ihs_lines.geom, ihs_lines.geom_storm_buffer 
+                FROM 
+                    public.{destination_table} as ihs_prime
+                INNER JOIN (
+                    SELECT 
+                        ihs."SID", 
+                        ST_MakeLine(ihs.geom ORDER BY "ISO_TIME") as geom, 
+                        ST_Buffer(st_setSRID(ST_MakeLine(ihs.geom ORDER BY "ISO_TIME"), 4326)::geography, {storm_buffer_radius}, 'endcap=round join=round') as geom_storm_buffer 
+                    FROM 
+                        public.{destination_table} as ihs 
+                    GROUP BY 
+                        ihs."SID"
+                ) as ihs_lines
+                ON 
+                    ihs_prime."SID" = ihs_lines."SID"
+                GROUP BY 
+                    ihs_prime."SID", 
+                    "SEASON",
+                    "NUMBER",
+                    "NAME", 
+                    ihs_lines.geom, 
+                    ihs_lines.geom_storm_buffer
+                """
+                ibtracs_storm_lines = pd.read_sql_query(text(sql), conn)
+                ins_result = ibtracs_storm_lines.to_sql(destination_table, pg_engine, chunksize=1000, method='multi', index=False, schema='public')
+                
+                print(f"Inserted {ins_result} rows - Committing Transaction.")
+                conn.commit()
 
+            except exc.SQLAlchemyError as ex:
+                print(f" - SQLAlchemyError: {ex}")
+                print(" - Rolling back Transaction.")
+                conn.rollback()
+    
 
 def process_files(ibtracs_files:dict, pg_engine:Engine):
     # Keep a count of how many files have been processed, increment 1 per valid
