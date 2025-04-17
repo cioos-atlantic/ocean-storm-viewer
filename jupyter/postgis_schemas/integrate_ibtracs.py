@@ -361,11 +361,6 @@ def generate_ibtracs_lines(ibtracs_files:dict, pg_engine:Engine):
                 
                 print(f"Inserting into storm lines table...")
                 ins_result = conn.execute(text(sql))
-
-                # ibtracs_storm_lines = pd.read_sql_query(text(sql), conn)
-
-                # print(f"Inserting into storm lines table...")
-                # ins_result = ibtracs_storm_lines.to_sql(destination_table, pg_engine, chunksize=1000, method='multi', index=False, schema='public', if_exists='append')
                 
                 print(f"Inserted {ins_result.rowcount} rows - Committing Transaction.")
 
