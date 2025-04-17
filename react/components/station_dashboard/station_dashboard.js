@@ -60,6 +60,8 @@ export default function StationDashboard({
     "sea_surface_wave_maximum_period",
   ];
   const standardNames = stationValues?.properties?.station_data?.column_std_names || [];
+  const rowData = stationValues?.properties?.station_data?.rows;
+  //console.log(rowData);
   const variablePresence = {
     wind_speed: false,
     wind_from_direction: false,
@@ -73,7 +75,7 @@ export default function StationDashboard({
   standardNames.forEach((varName, indx) => {
     if (!excludeVars.includes(varName)) {
 
-      const rowData = stationValues?.properties?.station_data?.rows;
+      
       rowData.forEach((datalist) => {
          if (datalist[indx]) {
             variablePresence.wind_speed ||= varName.includes("wind_speed");

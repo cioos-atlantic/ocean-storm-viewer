@@ -260,7 +260,7 @@ function parseChartData(sourceData, varCategory, hoverPointTime){
         },
         pointBackgroundColor: (context) => {
           const pointTime = timeData[context.dataIndex];
-          console.log(hoverTimestamp);
+          //console.log(hoverTimestamp);
           return pointTime === hoverTimestamp ? 'red' : '';
         },
       })}
