@@ -32,7 +32,7 @@ CREATE INDEX IF NOT EXISTS ibtracs_historical_storm_lines_season_idx
 
 CREATE INDEX IF NOT EXISTS ibtracs_historical_storm_lines_iso_time_idx
     ON public.ibtracs_historical_storm_lines 
-    USING btree ("ISO_TIME" ASC NULLS LAST)
+    USING btree ("ISO_TIME_START" ASC NULLS LAST, "ISO_TIME_END" ASC NULLS LAST)
     WITH (deduplicate_items=True)
     TABLESPACE pg_default;
 

@@ -37,6 +37,9 @@ historical_file = os.getenv('HISTORICAL_FILE')
 active_table = os.getenv('ACTIVE_TABLE')
 historical_table = os.getenv('HISTORICAL_TABLE')
 
+active_table_lines = os.getenv('ACTIVE_TABLE_LINES')
+historical_table_lines = os.getenv('HISTORICAL_TABLE_LINES')
+
 # Tells pandas to skip the 2nd line in the CSV file that specifies unit types 
 # for the columns - this row doesn't need to be inserted into the postgis table
 skip_rows = [1]
@@ -245,6 +248,7 @@ def check_ibtracs_data_checksums():
 
                 file_properties = {
                     "table":"",
+                    "table_lines":"",
                     "path":file_path.strip(),
                     "checksum":checksum,
                     "checksum_result":checksum_result.strip()
@@ -252,10 +256,12 @@ def check_ibtracs_data_checksums():
                 
                 if active_file in file_path:
                     file_properties["table"] = active_table
+                    file_properties["table_lines"] = active_table_lines
                     ibtracs_files["active"] = file_properties
 
                 if historical_file in file_path:
                     file_properties["table"] = historical_table
+                    file_properties["table_lines"] = historical_table_lines
                     ibtracs_files["historical"] = file_properties
 
     # except TypeError:
@@ -264,6 +270,7 @@ def check_ibtracs_data_checksums():
 
         active_file_properties = {
             "table":active_table,
+            "table_lines":active_table_lines,
             "path":active_file,
             "checksum": None,
             "checksum_result":"FAILED"
@@ -273,6 +280,7 @@ def check_ibtracs_data_checksums():
 
         historical_file_properties = {
             "table":historical_table,
+            "table_lines":historical_table_lines,
             "path":historical_file,
             "checksum": None,
             "checksum_result":"FAILED"
@@ -289,43 +297,53 @@ def md5_file_checksum(path):
 
 
 def generate_ibtracs_lines(ibtracs_files:dict, pg_engine:Engine):
-    # Creates a list of storm lines based on the list of points 
-    # SELECT 
-    # "SID",
-    # ST_MakeLine(ihs.geom ORDER BY "ISO_TIME") as geom
+    # Creates a linestring for storm lines based on the list of points in the 
+    # row
+    # 
+    # SELECT "SID", ST_MakeLine(ihs.geom ORDER BY "ISO_TIME") as geom
     # FROM public.ibtracs_historical_storms as ihs
     # GROUP BY "SID"
 
+    # initial radius of 2,000km based on the fact that the largest radius known
+    # (Hurricane Sandy) was over 1,800km
     storm_buffer_radius = 2000 * 1000
+    
+    print(ibtracs_files)
 
     with pg_engine.begin() as conn:
         for ib_file in ibtracs_files:
-            destination_table = ibtracs_files[ib_file]['table']
+            source_table = ibtracs_files[ib_file]['table']
+            destination_table = ibtracs_files[ib_file]['table_lines']
 
+            print(f"Building Storm lines from {source_table} into {destination_table}...")
             try:
+                print(f"Truncating {destination_table}...")
                 sql = f"TRUNCATE {destination_table};"
                 del_result = conn.execute(text(sql))
+
+                print(f"Removed {del_result.rowcount} rows.")
 
                 # Creates the short-list along with min/max values as well as a 2,000km 
                 # buffer around the storm line geometry
                 # 
                 sql = f"""
+                INSERT INTO {destination_table} (
                 SELECT 
                     ihs_prime."SID", "SEASON", "NUMBER", "NAME", 
                     MIN("ISO_TIME") as ISO_TIME_START, MAX("ISO_TIME") as ISO_TIME_END, 
-                    MIN("WMO_WIND") as min_wind, MAX("WMO_WIND") as min_wind, 
-                    MIN("WMO_PRES") as min_pres, MAX("WMO_PRES") as max_pres,
-                    MIN("USA_SSHS") as min_cat, MAX("USA_SSHS") as max_cat,
-                    ihs_lines.geom, ihs_lines.geom_storm_buffer 
+                    MIN("WMO_WIND") as WMO_WIND_MIN, MAX("WMO_WIND") as WMO_WIND_MAX, 
+                    MIN("WMO_PRES") as WMO_PRES_MIN, MAX("WMO_PRES") as WMO_PRES_MAX,
+                    MIN("USA_SSHS") as USA_SSHS_MIN, MAX("USA_SSHS") as USA_SSHS_MAX,
+                    ihs_lines.geom as geom_storm_line, ihs_lines.geom_storm_buffer::geometry as geom_storm_buffer
                 FROM 
-                    public.{destination_table} as ihs_prime
+                    public.{source_table} as ihs_prime
                 INNER JOIN (
                     SELECT 
                         ihs."SID", 
                         ST_MakeLine(ihs.geom ORDER BY "ISO_TIME") as geom, 
                         ST_Buffer(st_setSRID(ST_MakeLine(ihs.geom ORDER BY "ISO_TIME"), 4326)::geography, {storm_buffer_radius}, 'endcap=round join=round') as geom_storm_buffer 
                     FROM 
-                        public.{destination_table} as ihs 
+                        public.{source_table} as ihs 
                     GROUP BY 
                         ihs."SID"
                 ) as ihs_lines
@@ -338,18 +356,27 @@ def generate_ibtracs_lines(ibtracs_files:dict, pg_engine:Engine):
                     "NAME", 
                     ihs_lines.geom, 
                     ihs_lines.geom_storm_buffer
+                )
                 """
-                ibtracs_storm_lines = pd.read_sql_query(text(sql), conn)
-                ins_result = ibtracs_storm_lines.to_sql(destination_table, pg_engine, chunksize=1000, method='multi', index=False, schema='public')
                 
-                print(f"Inserted {ins_result} rows - Committing Transaction.")
-                conn.commit()
+                print(f"Inserting into storm lines table...")
+                ins_result = conn.execute(text(sql))
+
+                # ibtracs_storm_lines = pd.read_sql_query(text(sql), conn)
+
+                # print(f"Inserting into storm lines table...")
+                # ins_result = ibtracs_storm_lines.to_sql(destination_table, pg_engine, chunksize=1000, method='multi', index=False, schema='public', if_exists='append')
+                
+                print(f"Inserted {ins_result.rowcount} rows - Committing Transaction.")
 
             except exc.SQLAlchemyError as ex:
                 print(f" - SQLAlchemyError: {ex}")
                 print(" - Rolling back Transaction.")
                 conn.rollback()
-    
+                conn.close()
+                return 
+            
+        conn.commit()
 
 def process_files(ibtracs_files:dict, pg_engine:Engine):
     # Keep a count of how many files have been processed, increment 1 per valid
