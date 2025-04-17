@@ -32,6 +32,7 @@ export function toKmh(value_in, unit_in){
 
   if (unitList_ms.includes(unit_in)){value = (value_in * 3.6)} // Convert m/s to km/h
   else if(unitList_kmh.includes(unit_in)){value = value_in}
+  else if (unit_in =='knots'){value = value_in * 1.852}
   else return {value, unit}
 
   value = value.toFixed(2)

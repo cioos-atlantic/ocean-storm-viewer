@@ -24,7 +24,7 @@ export const empty_point_obj = { properties: {}, geometry: {} }
  * 
  * The function then renders the storm point details in a JSX format, including the extracted information and any additional details.
  */
-export default function StormPointDetailsSmallScreen({ storm_point_hover,  setIsStormDetOpen, setHoverMarker }) {
+export default function StormPointDetailsSmallScreen({ storm_point_hover,  setHoverMarker }) {
     // If properties has no items, it's an empty storm_point_hover object and should return
     // immediately
     if (Object.keys(storm_point_hover.properties).length == 0) {
@@ -71,7 +71,7 @@ export default function StormPointDetailsSmallScreen({ storm_point_hover,  setIs
                 <button 
                 onClick={() =>{
                     setHoverMarker(empty_point_obj)
-                    setIsStormDetOpen(false);}
+                    }
                     } 
                 style={{ float: "right", cursor: "pointer" }}
                 aria-label="Close Storm Details"

@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import { RenderWindRose } from "./wind_rose";
 import RenderChart from "../station_graph.js";
 
-export default function StationDataLayout({stationName, stationData, stationSummaryText, variablePresence}) {
+export default function StationDataLayout({stationName, stationData, stationSummaryText, variablePresence, hoverPointTime}){
   function generateGraph(selectedVar){
       return (
        <div className="station_chart" 
@@ -13,10 +13,11 @@ export default function StationDataLayout({stationName, stationData, stationSumm
        padding: '0px', // Optional padding around chart
        display:'flex',
        }}>
-       <RenderChart  
+       <RenderChart 
            sourceData={stationData}
            stationName={stationName}
            varCategory={selectedVar}
+           hoverPointTime={hoverPointTime}
          />
      </div>
       )

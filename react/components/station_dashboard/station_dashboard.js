@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef } from"react";
 import { FaWindowClose } from "react-icons/fa";
 import { empty_station_obj } from "../layout";
 import { useMediaQuery, Box, useTheme } from "@mui/material";
@@ -10,6 +10,7 @@ import BasicTabs from "./tabs";
 //import BasicTabs from "./tabs";
 import { RecentStationData, getMatchedStation, getStationDataText, } from "../utils/station_data_format_util";
 //import BasicTabs from "./tabs";
+import { fetch_value } from "@/lib/storm_utils";
 
 
 /**
@@ -25,15 +26,15 @@ export default function StationDashboard({
   time,
   selectedTab,
   setSelectedTab,
-  isDrawerOpen,
-  isStormDetOpen, 
-  setIsStormDetOpen,
-  source_type
+  source_type,
+  isStationDashOpen, setIsStationDashOpen, hover_point
 }) {
 
   const stationData = selected_station;
+  
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('md')); // `md` in MUI = 960px
+  const isExtraSmall = useMediaQuery("(max-width:600px)");
   if (!stationData) return null;
 
   const stationName = stationData[0];
@@ -66,6 +67,8 @@ export default function StationDashboard({
     air_pressure: false,
   };
 
+
+
   standardNames.forEach((varName) => {
     if (!excludeVars.includes(varName)) {
       variablePresence.wind_speed ||= varName.includes("wind_speed");
@@ -76,14 +79,18 @@ export default function StationDashboard({
     }
   });
 
+  const hoverPointTime = fetch_value(hover_point, ["TIMESTAMP", "ISO_TIME"]);
+  console.log(hoverPointTime);
+
   return (
     isSmall ? (
       <Box
       key="01-station-dashboard"
-      className={`station_dashboard ${isDrawerOpen ? "drawerOpen" : "drawerClosed"}`}
+      className={`station_dashboard`}
       sx={{
-        bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
-        maxHeight:  "45%", // Adjust max height for extra-small screens
+        bottom: { xs: "20px", sm: "30px", },
+        display:  'flex',
+        maxHeight: '45%'
         
       }}
     >
@@ -129,6 +136,7 @@ export default function StationDashboard({
             stationData={stationValues?.properties?.station_data}
             stationSummaryText={dataText}
             variablePresence={variablePresence}
+            hoverPointTime={hoverPointTime}
           />
         
         
@@ -137,10 +145,10 @@ export default function StationDashboard({
     ):(
       <Box
       key="01-station-dashboard"
-      className={`station_dashboard ${isDrawerOpen ? "drawerOpen" : "drawerClosed"} ${isStormDetOpen ? "stormDetOpen" : ""} `}
-      sx={{
-        bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
-        maxHeight: "80%", 
+      className={`station_dashboard`}
+      sx={{display: isStationDashOpen ? 'flex':'none',
+        //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
+        
         
       }}
     >
@@ -156,6 +164,7 @@ export default function StationDashboard({
           onClick={() => {
             setSelectedStation(empty_station_obj);
             setSelectedTab(0);
+            setIsStationDashOpen(false);
           }}
           title="Close"
           aria-label="Close"
@@ -175,7 +184,7 @@ export default function StationDashboard({
         className="dash-body"
         sx={{
           fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
-          
+           
         }}
       >
           <BasicTabs
@@ -185,6 +194,7 @@ export default function StationDashboard({
             variablePresence={variablePresence}
             selectedTab={selectedTab}
             setSelectedTab={setSelectedTab}
+            hoverPointTime={hoverPointTime}
           />
         
       </Box>

@@ -68,8 +68,8 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
     setSelectedOptions([]);
     setStartDate(null); // Reset to empty string
     setEndDate(null);   // Reset to empty string;
-    setFilterResult([]);         // Clear filter results
-    setReturnFilterResult(false); // Reset return state
+    //setFilterResult([]);         // Clear filter results
+    //setReturnFilterResult(false); // Reset return state
     setBboxFilterCoordinates(''); // Clear BBOX filter
     setPolyFilterCoords('');      // Clear polygon filter
 

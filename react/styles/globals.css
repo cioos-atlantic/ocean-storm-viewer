@@ -262,21 +262,27 @@ footer {
 .station_dashboard {
   background: white; /* White background for clarity */
   color: black; /* Black text for readability */
-  /*border-top: 3px solid #e55162;   */
   padding: 1rem; /* Internal padding */
-  margin-left: 20%; /* Offset from the left */
+  position: relative; 
+  flex-direction: column; /* Stack the header and body vertically*/
+  height: 100%;
+
+}
+.dashboards {
+  /*border-top: 3px solid #e55162;   */
+
   position: fixed; /* Positioned at the bottom */
   /*bottom: 50px;  Above the footer */
   z-index: 5000; /* High z-index to overlay the map */
-  width: 80%; /* 80% width for balance */
-  display: flex;
-  flex-direction: column; /* Stack the header and body vertically*/
-
+  /*width: 80%;  80% width for balance */
+  max-height: 60%;
+  
 }
 
 /* When drawer is open (add a class dynamically) */
 .drawerOpen {
-  width: 80%; /* 80% width for balance */
+  width: 82%;  /*80% width for balance */
+  margin-left: 18%;
 
 }
 
@@ -303,22 +309,6 @@ footer {
 
 }
 
-/* When drawer is open (add a class dynamically) */
-.drawerOpen {
-  width: 80%; /* 80% width for balance */
-
-}
-
-/* When drawer is closed */
-.drawerClosed  {
-  margin-left: 0%; /* No offset */
-  width: 100%; /* Full width */
-}
-
-
-.stormDetOpen{
-  width: 55%
-}
 
 
 
@@ -873,6 +863,13 @@ footer {
               0px 6px 10px 0px rgba(0, 0, 0, 0.14), 
               0px 1px 18px 0px rgba(0, 0, 0, 0.12);}
 
-  .filters-speed-dial:hover{
+.filters-speed-dial:hover{
     color: white;
     background-color: #e55162;}
+.chart-render{
+  width: 100%;
+  max-height: 300px;
+  position: relative;
+  display:flex;
+  justify-content: center;
+}
