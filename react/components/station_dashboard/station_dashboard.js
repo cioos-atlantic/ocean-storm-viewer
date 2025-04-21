@@ -34,7 +34,7 @@ export default function StationDashboard({
   
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('md')); // `md` in MUI = 960px
-  const isExtraSmall = useMediaQuery("(max-width:600px)");
+  const isExtraSmall = useMediaQuery(theme.breakpoints.down('sm'));
   if (!stationData) return null;
 
   const stationName = stationData[0];
@@ -83,14 +83,14 @@ export default function StationDashboard({
   console.log(hoverPointTime);
 
   return (
-    isSmall ? (
+    isExtraSmall ? (
       <Box
       key="01-station-dashboard"
       className={`station_dashboard`}
       sx={{
-        bottom: { xs: "20px", sm: "30px", },
+        
         display:  'flex',
-        maxHeight: '45%'
+        
         
       }}
     >
@@ -99,8 +99,7 @@ export default function StationDashboard({
         sx={{
           fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
           padding: "10px",
-          fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
-          padding: "10px",
+          
         }}
       >
         <button
