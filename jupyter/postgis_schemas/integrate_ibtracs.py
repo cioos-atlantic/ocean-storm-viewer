@@ -304,12 +304,10 @@ def generate_ibtracs_lines(ibtracs_files:dict, pg_engine:Engine):
     # FROM public.ibtracs_historical_storms as ihs
     # GROUP BY "SID"
 
-    # initial radius of 2,000km based on the fact that the largest radius known
+    # Initial radius of 2,000km based on the fact that the largest radius known
     # (Hurricane Sandy) was over 1,800km
     storm_buffer_radius = 2000 * 1000
     
-    print(ibtracs_files)
-
     with pg_engine.begin() as conn:
         for ib_file in ibtracs_files:
             source_table = ibtracs_files[ib_file]['table']
@@ -364,14 +362,20 @@ def generate_ibtracs_lines(ibtracs_files:dict, pg_engine:Engine):
                 
                 print(f"Inserted {ins_result.rowcount} rows - Committing Transaction.")
 
+                ibtracs_files[ib_file]["storm_lines"] = ins_result.rowcount
+
             except exc.SQLAlchemyError as ex:
                 print(f" - SQLAlchemyError: {ex}")
                 print(" - Rolling back Transaction.")
+                
                 conn.rollback()
                 conn.close()
-                return 
+
+                return ibtracs_files
             
         conn.commit()
+
+        return ibtracs_files
 
 def process_files(ibtracs_files:dict, pg_engine:Engine):
     # Keep a count of how many files have been processed, increment 1 per valid
@@ -451,11 +455,11 @@ def process_ibtracs(source_csv_file:str, destination_table:str, pg_engine:Engine
         
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    # parser = argparse.ArgumentParser()
 
-    parser.add_argument("--gen_lines", help="Generates Line strings for IBTRACS data based on existing data in the database", action="store_true")
+    # parser.add_argument("--gen_lines", help="Generates Line strings for IBTRACS data based on existing data in the database", action="store_true")
     
-    args = parser.parse_args()
+    # args = parser.parse_args()
 
     print(f"MD5 Results File: {md5_results_file}")
     print(f"MD5 Test File: {md5_test_file}")
@@ -480,19 +484,15 @@ if __name__ == '__main__':
     # Open database connection
     pg_engine = create_engine(f"postgresql+psycopg2://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 
-    if args.gen_lines:
-        print("Generating lines for IBTRACS...")
-        generate_ibtracs_lines(ibtracs_files=ibtracs_files, pg_engine=pg_engine)
-    else:
-        print("Not generating lines")
-
-    exit()
-
     # Process files is invalid checksum results
     (ibtracs_files, files_processed) = process_files(ibtracs_files=ibtracs_files, pg_engine=pg_engine)
 
+    ibtracs_files = generate_ibtracs_lines(ibtracs_files=ibtracs_files, pg_engine=pg_engine)
+
     # Dispose of database connection pool after all files have been processed
     pg_engine.dispose()
+
+    print(f"Final output: {ibtracs_files}")
 
     # If no files are processed leave results file alone, only recreate when one 
     # or more files have been processed
