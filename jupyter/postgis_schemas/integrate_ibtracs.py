@@ -345,6 +345,8 @@ def generate_ibtracs_lines(ibtracs_files:dict, pg_engine:Engine):
                         public.{source_table} as ihs 
                     GROUP BY 
                         ihs."SID"
+                    HAVING 
+                        COUNT("SID") > 1
                 ) as ihs_lines
                 ON 
                     ihs_prime."SID" = ihs_lines."SID"
