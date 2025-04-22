@@ -268,6 +268,18 @@ footer {
   height: 100%;
 
 }
+
+.combined_dashboard_small {
+  background: white; /* White background for clarity */
+  color: black; /* Black text for readability */
+  padding: 1rem; /* Internal padding */
+  position: relative; 
+  flex-direction: column; /* Stack the header and body vertically*/
+  position: fixed; /* Positioned at the bottom */
+  z-index: 5000; /* High z-index to overlay the map */
+
+
+}
 .dashboards {
   /*border-top: 3px solid #e55162;   */
 
@@ -318,6 +330,12 @@ footer {
   background-color: #eee;
   padding:0.5rem;
 }
+.combined_dashboard_small .dash-header {
+  /*border: 1px solid darkgoldenrod;   */
+  /*border: 1px solid darkgoldenrod;   */
+  background-color: #eee;
+  padding:0.5rem;
+}
 
 .station_dashboard .dash-header button {
   float: right; /* Align button to the right */
@@ -325,8 +343,21 @@ footer {
   border: 0; /* No border */
   font-size: 1.5rem; /* Larger font size */
 }
+.combined_dashboard_small .dash-header button {
+  float: right; /* Align button to the right */
+  background-color: #eee; /* White background for button */
+  border: 0; /* No border */
+  font-size: 1.5rem; /* Larger font size */
+}
 
 .station_dashboard .dash-header button.close {
+  font-weight: bold; /* Bold close button */
+  float: right; /* Align button to the right */
+  background-color: #eee; /* White background for button */
+  border: 0; /* No border */
+  font-size: 1.5rem; /* Larger font size */
+}
+.combined_dashboard_small .dash-header button.close {
   font-weight: bold; /* Bold close button */
   float: right; /* Align button to the right */
   background-color: #eee; /* White background for button */
@@ -337,8 +368,19 @@ footer {
 .station_dashboard .dash-header button.close {
   font-weight: bold; /* Bold close button */
 }
+.combined_dashboard_small .dash-header button.close {
+  font-weight: bold; /* Bold close button */
+}
 
 .station_dashboard .dash-body {
+  overflow-y: auto; /* Enable scrolling within the body*/
+  padding: 1rem;
+  flex: 1; /* Allow the body to take up available space*/
+  overflow-y: auto; /* Enable scrolling within the body*/
+  padding: 1rem;
+  flex: 1; /* Allow the body to take up available space*/
+}
+.combined_dashboard_small .dash-body {
   overflow-y: auto; /* Enable scrolling within the body*/
   padding: 1rem;
   flex: 1; /* Allow the body to take up available space*/

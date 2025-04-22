@@ -1,6 +1,8 @@
 import { fetch_value } from "@/lib/storm_utils";
 import { getStationDataText, getMatchedStation } from "../utils/station_data_format_util";
 import { convert_unit_data } from "../utils/unit_conversion";
+import { Box } from "@mui/material";
+import { FaWindowClose } from "react-icons/fa";
 
 
 export function RenderSmallDashboard({selected_station, hover_point, station_descriptions, source_type, time, storm_points}){
@@ -19,13 +21,20 @@ export function RenderSmallDashboard({selected_station, hover_point, station_des
   console.log(stationSummary, stationDisplayName, institution, institutionLink);
 	const [stormName, stormTime, stormType, storm_data_dict] = parseStormData(storm_points);
 
-	return (<>
+	console.log(storm_data_dict);
+
+	return (
 	<Box
       key="01-station-dashboard"
-      className={`station_dashboard`}
+      className={`combined_dashboard_small`}
       sx={{
-        display:  'flex',
-      }}
+				bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
+				width: "100%",
+				gap: 0,
+				display: "flex",
+				alignItems: "stretch", // Ensures both boxes are equal height
+				maxHeight:  { xs: "45%",  md: "55%" }, 
+		}}
     >
       <Box
         className="dash-header"
@@ -73,20 +82,14 @@ export function RenderSmallDashboard({selected_station, hover_point, station_des
         }}
       >
         
-          <StationDataLayout
-            stationName={stationName}
-            stationData={stationValues?.properties?.station_data}
-            stationSummaryText={dataText}
-            variablePresence={variablePresence}
-            hoverPointTime={hoverPointTime}
-          />
+         
         
         
       </Box>
     </Box>
 
 
-	</>)
+	)
 }
 
 
