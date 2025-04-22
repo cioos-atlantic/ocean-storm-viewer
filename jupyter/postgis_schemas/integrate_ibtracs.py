@@ -325,6 +325,15 @@ def generate_ibtracs_lines(ibtracs_files:dict, pg_engine:Engine):
                 # Creates the short-list along with min/max values as well as a 2,000km 
                 # buffer around the storm line geometry
                 # 
+                # NOTE:  
+                # 
+                #   "HAVING COUNT("SID") > 1" 
+                # 
+                # was added to prevent a handful of storms from the 1800s being
+                # factored into the line generation.  These storms only have 1 
+                # point, which is less than that is required to generate 
+                # linestrings and creates issues for PostGIS/Geoserver 
+                # from rendering the historical lines table.
                 sql = f"""
                 INSERT INTO {destination_table} (
                 SELECT 
