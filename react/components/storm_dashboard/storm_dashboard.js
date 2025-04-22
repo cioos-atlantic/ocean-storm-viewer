@@ -23,7 +23,7 @@ import { convert_unit_data } from "../utils/unit_conversion";
 export default function StormDashboard({ storm_data, storm_points, source_type, hover_point, isDrawerOpen, setHoverMarker, isStormDashOpen, setIsStormDashOpen}) {
 
   const [selectedStormTab, setSelectedStormTab] = useState(0);
-  console.log(storm_data, storm_points, source_type, hover_point);
+  //console.log(storm_data, storm_points, source_type, hover_point);
   console.log(storm_points.pts.features)
 
   const stormPoints = storm_points.pts.features;

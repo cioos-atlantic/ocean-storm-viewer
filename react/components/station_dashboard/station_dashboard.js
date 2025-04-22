@@ -11,6 +11,7 @@ import BasicTabs from "./tabs";
 import { RecentStationData, getMatchedStation, getStationDataText, } from "../utils/station_data_format_util";
 //import BasicTabs from "./tabs";
 import { fetch_value } from "@/lib/storm_utils";
+import { RenderSmallDashboard } from "../Dashboard/dashboard_small";
 
 
 /**
@@ -82,16 +83,15 @@ export default function StationDashboard({
   const hoverPointTime = fetch_value(hover_point, ["TIMESTAMP", "ISO_TIME"]);
   console.log(hoverPointTime);
 
+ 
+
   return (
     isExtraSmall ? (
       <Box
       key="01-station-dashboard"
       className={`station_dashboard`}
       sx={{
-        
         display:  'flex',
-        
-        
       }}
     >
       <Box
