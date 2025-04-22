@@ -4,6 +4,7 @@ import re
 import os
 from dotenv import load_dotenv
 import pandas as pd
+import numpy as np
 import psycopg2
 from sqlalchemy import create_engine, text, Engine, exc
 from pathlib import Path
@@ -308,7 +309,7 @@ def generate_ibtracs_lines(ibtracs_files:dict, pg_engine:Engine):
     # (Hurricane Sandy) was over 1,800km
     storm_buffer_radius = 2000 * 1000
     
-    with pg_engine.begin() as conn:
+    with pg_engine.begin() as pg_conn:
         for ib_file in ibtracs_files:
             source_table = ibtracs_files[ib_file]['table']
             destination_table = ibtracs_files[ib_file]['table_lines']
@@ -317,7 +318,7 @@ def generate_ibtracs_lines(ibtracs_files:dict, pg_engine:Engine):
             try:
                 print(f"Truncating {destination_table}...")
                 sql = f"TRUNCATE {destination_table};"
-                del_result = conn.execute(text(sql))
+                del_result = pg_conn.execute(text(sql))
 
                 print(f"Removed {del_result.rowcount} rows.")
 
@@ -358,7 +359,7 @@ def generate_ibtracs_lines(ibtracs_files:dict, pg_engine:Engine):
                 """
                 
                 print(f"Inserting into storm lines table...")
-                ins_result = conn.execute(text(sql))
+                ins_result = pg_conn.execute(text(sql))
                 
                 print(f"Inserted {ins_result.rowcount} rows - Committing Transaction.")
 
@@ -368,12 +369,17 @@ def generate_ibtracs_lines(ibtracs_files:dict, pg_engine:Engine):
                 print(f" - SQLAlchemyError: {ex}")
                 print(" - Rolling back Transaction.")
                 
-                conn.rollback()
-                conn.close()
+                pg_conn.rollback()
+                pg_conn.close()
 
                 return ibtracs_files
-            
-        conn.commit()
+        
+            except Exception as ex:
+                print(f" - OTHER ERROR!: {ex}")
+                print(" - Rolling back Transaction.")
+                pg_conn.rollback()
+
+        pg_conn.commit()
 
         return ibtracs_files
 
@@ -403,21 +409,28 @@ def process_ibtracs(source_csv_file:str, destination_table:str, pg_engine:Engine
     df = pd.read_csv(filepath_or_buffer=source_csv_file, header=0, skiprows=skip_rows, parse_dates=True, dtype=table_dtypes, na_values=na_values, keep_default_na=False)
     
     table_columns = []
-    with pg_engine.begin() as conn:
+    with pg_engine.begin() as pg_conn:
         query = text(f"SELECT * FROM public.{destination_table} LIMIT 0")
-        table_columns = pd.read_sql_query(query, conn).columns.drop('geom')
+        table_columns = pd.read_sql_query(query, pg_conn)
 
-    # table_columns = pd.read_sql_table(destination_table, pg_engine).columns.drop('geom')
+    # print("Columns in table not in dataframe")
+    # not_in_df = set(table_columns) - set(df.columns)
+    # print(not_in_df)
+
+    # for col in not_in_df:
+    #     print(f"Adding empty '{col}' to df...")
+    #     df.insert(len(df.columns), col, '')
     
+    print(df)
+    # exit()
     del_result = None
     ins_result = None
 
     # truncate tables
     with pg_engine.begin() as pg_conn:
-        print(" - Clearing Existing Data...")
-        sql = f"TRUNCATE {destination_table};"
-        
         try:
+            print(" - Clearing Existing Data...")
+            sql = f"TRUNCATE {destination_table};"
             del_result = pg_conn.execute(text(sql))
             print(" - Committing Transaction.")
             pg_conn.commit()
@@ -426,19 +439,23 @@ def process_ibtracs(source_csv_file:str, destination_table:str, pg_engine:Engine
             print(f" - SQLAlchemyError: {ex}")
             print(" - Rolling back Transaction.")
             pg_conn.rollback()
+        
+        except Exception as ex:
+            print(f" - OTHER ERROR!: {ex}")
+            print(" - Rolling back Transaction.")
+            pg_conn.rollback()
 
     # If delete table contents is successful, proceed to ingest the 
     # replacement data.
     if del_result:
-        print(" - Populating Table...")
-        ins_result = df[table_columns].to_sql(destination_table, pg_engine, chunksize=2500, method='multi', if_exists='append', index=False, schema='public')
-        print(f" - Inserted {ins_result} rows")
-        
         with pg_engine.begin() as pg_conn:
-            print(" - Updating Geometry...")
-            sql = f'UPDATE public.{destination_table} SET geom = ST_SetSRID(ST_MakePoint("LON", "LAT"), 4326);'
-
             try:
+                print(" - Populating Table...")
+                ins_result = df.to_sql(destination_table, pg_conn, chunksize=500, method='multi', if_exists='append', index=False, schema='public')
+                print(f" - Inserted {ins_result} rows")
+
+                print(" - Updating Geometry...")
+                sql = f'UPDATE public.{destination_table} SET geom = ST_SetSRID(ST_MakePoint("LON", "LAT"), 4326);'
                 upd_result = pg_conn.execute(text(sql))
                 
                 print(f" - Calculated geometry for {upd_result.rowcount} rows")
@@ -448,6 +465,11 @@ def process_ibtracs(source_csv_file:str, destination_table:str, pg_engine:Engine
 
             except exc.SQLAlchemyError as ex:
                 print(f" - SQLAlchemyError: {ex}")
+                print(" - Rolling back Transaction.")
+                pg_conn.rollback()
+        
+            except Exception as ex:
+                print(f" - OTHER ERROR!: {ex}")
                 print(" - Rolling back Transaction.")
                 pg_conn.rollback()
 

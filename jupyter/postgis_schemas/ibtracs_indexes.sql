@@ -30,6 +30,12 @@ CREATE INDEX IF NOT EXISTS ibtracs_active_storms_subbasin_idx
     WITH (deduplicate_items=True)
     TABLESPACE pg_default;
 
+CREATE INDEX IF NOT EXISTS ibtracs_active_storms_sshs_idx
+    ON public.ibtracs_active_storms USING btree
+    ("USA_SSHS" ASC NULLS LAST)
+    WITH (deduplicate_items=True)
+    TABLESPACE pg_default;
+
 -- HISTORICAL INDEXES
 
 CREATE INDEX IF NOT EXISTS ibtracs_historical_storms_name_idx
@@ -59,6 +65,12 @@ CREATE INDEX IF NOT EXISTS ibtracs_historical_storms_basin_idx
 CREATE INDEX IF NOT EXISTS ibtracs_historical_storms_subbasin_idx
     ON public.ibtracs_historical_storms USING btree
     ("SUBBASIN" ASC NULLS LAST)
+    WITH (deduplicate_items=True)
+    TABLESPACE pg_default;
+
+CREATE INDEX IF NOT EXISTS ibtracs_historical_storms_sshs_idx
+    ON public.ibtracs_historical_storms USING btree
+    ("USA_SSHS" ASC NULLS LAST)
     WITH (deduplicate_items=True)
     TABLESPACE pg_default;
 
