@@ -5,7 +5,7 @@ import { empty_point_obj } from '../storm_point_details';
 import {empty_station_obj} from '../layout'
 import { Stack } from '@mui/material';
 import { useMediaQuery, Box, useTheme } from "@mui/material";
-import { RenderSmallDashboard } from './dashboard_small';
+import { RenderSmallDashboard } from './Mobile_Dashboard/dashboard_small';
 
 
 

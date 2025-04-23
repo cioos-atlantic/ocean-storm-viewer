@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import RenderStormChart from "./storm_graph";
 import StormTypeChart from './storm_type_chart';
 import StormCategoryChart from './storm_cat_chart';
-import { RenderWindRose } from "../station_dashboard/wind_rose";
+import { RenderWindRose } from "../../station_dashboard/wind_rose";
 
 
 export default function CombinedLayout({ stormData, stormSummaryText, variablePresence, stormTime, hoverPointTime, stormType, stormCategory}) {

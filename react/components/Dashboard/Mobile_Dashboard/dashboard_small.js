@@ -1,8 +1,11 @@
 import { fetch_value } from "@/lib/storm_utils";
-import { getStationDataText, getMatchedStation } from "../utils/station_data_format_util";
-import { convert_unit_data } from "../utils/unit_conversion";
+import { getStationDataText, getMatchedStation, get_station_field_data } from "../../utils/station_data_format_util";
+import { convert_unit_data } from "../../utils/unit_conversion";
 import { Box } from "@mui/material";
 import { FaWindowClose } from "react-icons/fa";
+import RenderStormChart from "../../storm_dashboard/storm_graph";
+import RenderCombinedChart from './combined_graph'
+
 
 
 export function RenderSmallDashboard({selected_station, hover_point, station_descriptions, source_type, time, storm_points}){
@@ -19,9 +22,45 @@ export function RenderSmallDashboard({selected_station, hover_point, station_des
 
 	const [stationSummary, stationDisplayName, institution, institutionLink] = getStationInfo(stationValues, station_descriptions, stationName, source_type, time);
   console.log(stationSummary, stationDisplayName, institution, institutionLink);
-	const [stormName, stormTime, stormType, storm_data_dict] = parseStormData(storm_points);
+	const [stormName, stormTimes, stormType, stormDataDict] = parseStormData(storm_points);
 
-	console.log(storm_data_dict);
+	const mergedData = mergeData(stationDataDict, stormDataDict);
+
+	console.log(mergedData);
+	const stationTimes = get_station_field_data(stationValues?.properties?.station_data,"time", "column_std_names")?.data
+
+	const convertedStormTimes = stormTimes.map(time =>  Date.parse(time));
+
+	const { unifiedTimes, alignedMergedData } = alignMergedData(mergedData, convertedStormTimes, stationTimes);
+
+	console.log(unifiedTimes, alignedMergedData);
+
+	const variablePresence = createVarPresenceDict(alignedMergedData);
+
+	function generateGraph(selectedVar){
+				return (
+				 <div className="station_chart" 
+				 style={{
+				 height: 'auto',
+				 width: 'auto', // Adjust width based on content (chart)
+				 padding: '0px', // Optional padding around chart
+				 display:'flex',
+				 }}>
+				 <RenderCombinedChart   
+									sourceData={alignedMergedData[selectedVar]}
+									varCategory={selectedVar}
+									 timeData={unifiedTimes}
+									 hoverPointTime={hoverPointTime}
+								/>
+			 </div>
+				)
+		}
+
+
+
+
+	
+
 
 	return (
 	<Box
@@ -80,7 +119,24 @@ export function RenderSmallDashboard({selected_station, hover_point, station_des
           fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
           
         }}
-      >
+      >{
+            Object.entries(alignedMergedData).map(([key, value], index) => {
+              
+              return(<>
+											{variablePresence[key] && (
+												<section className="station_dashboard_small_screen_section">
+													<Box
+														sx= {{
+															fontSize: { xs: '14px', sm: '16px'}
+														}}
+														className="section-header"
+													>{key}</Box>
+													{generateGraph(key)}
+											</section>)}
+										</>
+			)
+            })
+      }
         
          
         
@@ -120,6 +176,7 @@ function parseStationData(stationValues){
     "relative_humidity",
     "sea_surface_wave_from_direction",
     "sea_surface_wave_maximum_period",
+		'wind_from_direction'
   ];
 
 	const standardNames = stationValues?.properties?.station_data?.column_std_names || [];
@@ -143,6 +200,7 @@ function parseStationData(stationValues){
 		const column_name= stationData?.['column_names']?.[indx];
 		const long_name = stationData?.['column_long_names']?.[indx];
 		const std_name = stationData?.['column_std_names']?.[indx];
+		const unit = stationData?.['column_units']?.[indx];
 		
 
 		const varData = []
@@ -155,7 +213,8 @@ function parseStationData(stationValues){
 			[column_name]:{
 				name:long_name,
 				standardName:std_name,
-				data:varData
+				data:varData.map((value)=>convert_unit_data(value,unit).value) || [],
+				displayName:`Station ${long_name} (${convert_unit_data(varData[0], unit).unit})`
 			}
 		})
 	})
@@ -184,12 +243,13 @@ function parseStormData(storm_points){
 
 	const stormCategory={data:[], name:'Storm Category'}
 	const storm_data_dict ={
-	direction: [{stormDir: { data: [], name: "Storm Direction (degree)" }}],
-	Pressure: [{stormPressure: { data: [], name: "Storm Pressure (kPa)" }}],
-	speed: [{stormSpeed: { data: [], name: "Storm Speed (km/h)" }}],
-	seaHeight: [{stormSeaHgt: { data: [], name: "Storm Sea Height (m)" }}],
-	'Wind Speed': [{stormWindSpeed: { data: [], name: "Storm Wind Speed (km/h)" }},
-	{stormGust: { data: [], name: "Storm Gust (km/h)" }}],
+		direction: [{stormDir: { data: [], name: "Storm Direction (degree)" }}],
+		Pressure: [{stormPressure: { data: [], name: "Storm Pressure (kPa)" }}],
+		speed: [{stormSpeed: { data: [], name: "Storm Speed (km/h)" }}],
+		seaHeight: [{stormSeaHgt: { data: [], name: "Storm Sea Height (m)" }}],
+		'Wind Speed': [{stormWindSpeed: { data: [], name: "Storm Wind Speed (km/h)" }},
+		{stormGust: { data: [], name: "Storm Gust (km/h)" }}],
+		Temperature:[],
 
 	}
 
@@ -233,5 +293,94 @@ function parseStormData(storm_points){
 	console.log(stormName);
 
 	return [stormName, stormTime, stormType, storm_data_dict]
+}
+
+function mergeData(station_data, storm_data){
+	const merged_data = JSON.parse(JSON.stringify(storm_data)); // deepclone storm_data
+	station_data.forEach((varObj)=>{
+	const variable = Object.values(varObj)[0];
+	console.log(variable);
+
+
+		// sea height
+		if (variable.standardName.includes('wave') && variable.standardName.includes('height'))
+			{merged_data.seaHeight.push(
+				{[`station${variable.name}`]:{
+					data: variable.data, 
+					name: variable.displayName }}
+			)}
+			// wind speed and gust
+		if (variable.standardName.includes('wind') && variable.standardName.includes('speed'))
+			{merged_data['Wind Speed'].push(
+				{[`station${variable.name}`]:{
+					data: variable.data, 
+					name: variable.displayName }}
+			)}
+			// temperature
+		if (variable.standardName.includes('temperature'))
+			{merged_data['Temperature'].push(
+				{[`station${variable.name}`]:{
+					data: variable.data, 
+					name: variable.displayName }}
+		)}
+
+		//pressure
+		if (variable.standardName.includes('pressure'))
+			{merged_data['Pressure'].push(
+				{[`station${variable.name}`]:{
+					data: variable.data, 
+					name: variable.displayName }}
+		)}
+	
+	})
+
+	return merged_data;
+}
+
+function alignMergedData(merged_data, stormTimes, stationTimes) {
+  const unifiedTimes = Array.from(new Set([...stormTimes, ...stationTimes])).sort();
+
+  const alignedMergedData = {};
+
+  for (const category in merged_data) {
+    alignedMergedData[category] = merged_data[category].map(varObj => {
+      const varKey = Object.keys(varObj)[0];
+      const variable = varObj[varKey];
+      
+      // figure out whether it is storm or station data
+      const times = varKey.startsWith('storm') ? stormTimes : stationTimes;
+
+      const timeToValue = new Map(times.map((time, idx) => [time, variable.data[idx]]));
+
+      const alignedData = unifiedTimes.map(time => timeToValue.get(time) ?? null);
+
+      return {
+        [varKey]: {
+          name: variable.name,
+          data: alignedData
+        }
+      };
+    });
+  }
+
+  return { unifiedTimes, alignedMergedData };
+}
+
+function createVarPresenceDict(mergedData){
+	const variablePresence={};
+  Object.keys(mergedData).forEach((key) => {
+    variablePresence[key]= false;
+  });
+
+	Object.entries(mergedData).forEach(([key, value]) => {
+    variablePresence[key] = 
+      Array.isArray(value) && 
+      value.some(obj => {
+        const [innerKey, innerValue] = Object.entries(obj)[0]; // Extract the key-value pair
+        return innerValue?.data?.length > 0 && innerValue.data.some(item => item !== undefined && item !== null);
+      });
+  });
+
+	return variablePresence;
 }
 
