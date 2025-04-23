@@ -373,14 +373,17 @@ function createVarPresenceDict(mergedData){
   });
 
 	Object.entries(mergedData).forEach(([key, value]) => {
-    variablePresence[key] = 
-      Array.isArray(value) && 
-      value.some(obj => {
-        const [innerKey, innerValue] = Object.entries(obj)[0]; // Extract the key-value pair
-        return innerValue?.data?.length > 0 && innerValue.data.some(item => item !== undefined && item !== null);
-      });
+		if (Array.isArray(value) && value.length > 0) {
+			variablePresence[key] = value.some(obj => {
+				const v = Object.values(obj)[0];
+				return v?.data?.some(item => item != null && !Number.isNaN(item));
+			});
+		} else {
+			variablePresence[key] = false;
+		}
   });
 
+	console.log(variablePresence);
 	return variablePresence;
 }
 
