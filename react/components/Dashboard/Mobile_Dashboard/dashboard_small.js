@@ -243,10 +243,10 @@ function parseStormData(storm_points){
 
 	const stormCategory={data:[], name:'Storm Category'}
 	const storm_data_dict ={
-		direction: [{stormDir: { data: [], name: "Storm Direction (degree)" }}],
+		Direction: [{stormDir: { data: [], name: "Storm Direction (degree)" }}],
 		Pressure: [{stormPressure: { data: [], name: "Storm Pressure (kPa)" }}],
-		speed: [{stormSpeed: { data: [], name: "Storm Speed (km/h)" }}],
-		seaHeight: [{stormSeaHgt: { data: [], name: "Storm Sea Height (m)" }}],
+		'Storm Speed': [{stormSpeed: { data: [], name: "Storm Speed (km/h)" }}],
+		'Wave Height': [{stormSeaHgt: { data: [], name: "Storm Sea Height (m)" }}],
 		'Wind Speed': [{stormWindSpeed: { data: [], name: "Storm Wind Speed (km/h)" }},
 		{stormGust: { data: [], name: "Storm Gust (km/h)" }}],
 		Temperature:[],
@@ -260,7 +260,7 @@ function parseStormData(storm_points){
 	//console.log(storm_point);
 	stormNameList.push(fetch_value(storm_point, ["STORMNAME", "NAME"]));
 	stormTime.push(fetch_value(storm_point, ["TIMESTAMP", "ISO_TIME"]));
-	storm_data_dict.direction[0].stormDir.data.push(storm_point.properties.STORM_DIR);
+	storm_data_dict.Direction[0].stormDir.data.push(storm_point.properties.STORM_DIR);
 	
 	stormCategory.data.push(fetch_value(storm_point, ["STORMFORCE", "USA_SSHS"]));
 
@@ -272,7 +272,7 @@ function parseStormData(storm_points){
 	const stormSpeed_in_Kmh = convert_unit_data(storm_point.properties.STORM_SPEED, 'knots', 'km/h')
 	
 
-	storm_data_dict.speed[0].stormSpeed.data.push(stormSpeed_in_Kmh.value);
+	storm_data_dict['Storm Speed'][0].stormSpeed.data.push(stormSpeed_in_Kmh.value);
 	storm_data_dict['Wind Speed'][1].stormGust.data.push(gust_in_Kmh.value);
 	storm_data_dict['Wind Speed'][0].stormWindSpeed.data.push(stormWindSpeed_in_Kmh.value);
 	const pressure_in_mb = fetch_value(storm_point, ["MSLP", "WMO_PRES", "USA_PRES"])|| []
@@ -284,7 +284,7 @@ function parseStormData(storm_points){
 	stormType.data.push(fetch_value(storm_point, ["STORMTYPE", "NATURE"]));
 
 	const seaHeight_in_m = convert_unit_data(storm_point.properties.USA_SEAHGT, 'ft', 'm');
-	storm_data_dict.seaHeight[0].stormSeaHgt.data.push(seaHeight_in_m.value);
+	storm_data_dict['Wave Height'][0].stormSeaHgt.data.push(seaHeight_in_m.value);
 	
 	})
 	const stormNameUniqueValues= [...new Set(stormNameList)];
@@ -304,7 +304,7 @@ function mergeData(station_data, storm_data){
 
 		// sea height
 		if (variable.standardName.includes('wave') && variable.standardName.includes('height'))
-			{merged_data.seaHeight.push(
+			{merged_data['Wave Height'].push(
 				{[`station${variable.name}`]:{
 					data: variable.data, 
 					name: variable.displayName }}
