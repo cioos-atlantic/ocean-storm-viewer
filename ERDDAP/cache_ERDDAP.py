@@ -219,6 +219,20 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
         replace_cols = standardize_column_names(dataset, dataset_id)
         df.columns = map(lambda col: col + " (" + replace_cols[col] + ")", replace_cols.keys())
 
+        print(dataset_id)
+        drop_cols = []
+        for col in df.columns:
+            if len(df[col].value_counts()) == 0:
+                drop_cols.append(col)
+
+        # Drop variables that were marked as empty
+        for col in drop_cols:
+            df = df.drop(col, axis=1)
+
+        # If all variables of interest were dropped, skip caching
+        if len(df.columns) < 4:
+            return cached_entries
+
         max_lat= find_df_column_by_standard_name(df, "latitude").max().max()
         min_lat= find_df_column_by_standard_name(df, "latitude").min().min()
         max_lon= find_df_column_by_standard_name(df, "longitude").max().max()
@@ -339,11 +353,6 @@ def main():
     parser_historical.add_argument("--max", help="The end time of data in the storm interval. Format: YYYY", nargs='?', type=int)
     parser_historical.add_argument("--dry", help="Dry run. Will grab from ERDDAP but not commit the data to the database", action="store_true")
 
-    """
-    parser_historical.add_argument("storm", help="The storm identifier, in the format of YYYY_stormname (lowercase). Example: 2022_fiona", type=storm_format)
-    parser_historical.add_argument("min_time", help="The start time of data in the storm interval. Format: YYYY-mm-ddTHH:MM:SSZ", type=datetime_format)
-    parser_historical.add_argument("max_time", help="The end time of data in the storm interval. Format: YYYY-mm-ddTHH:MM:SSZ", type=datetime_format)
-    """
     parser_active = subparsers.add_parser("active")
     
     args = parser.parse_args()
