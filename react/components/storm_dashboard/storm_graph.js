@@ -242,6 +242,7 @@ function getColour(var_name){
 //Generate datasets
 function makeDataset(dataList, formattedTimeData, hoverPointTime) {
   const datasets=[];
+  const hoverTimeStamp = new Date(hoverPointTime).getTime();
   dataList.forEach((dataDict) => {console.log(dataDict);
     Object.entries(dataDict).forEach(([key, value]) => {console.log(key)
       datasets.push({
@@ -252,13 +253,11 @@ function makeDataset(dataList, formattedTimeData, hoverPointTime) {
         fill: true,
         pointRadius: (context) => {
           const pointTime = new Date(formattedTimeData[context.dataIndex]).getTime();
-          const hoverTime = new Date(hoverPointTime).getTime();
-          return pointTime === hoverTime ? 10 : 0;
+          return pointTime === hoverTimeStamp ? 10 : 0;
         },
         pointBackgroundColor: (context) => {
           const pointTime = new Date(formattedTimeData[context.dataIndex]).getTime();
-          const hoverTime = new Date(hoverPointTime).getTime();
-          return pointTime === hoverTime ? 'red' : 'blue';
+          return pointTime === hoverTimeStamp ? 'red' : 'blue';
         },
       })
 
