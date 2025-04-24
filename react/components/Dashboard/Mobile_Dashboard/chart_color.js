@@ -6,6 +6,6 @@ export const combined_graph_color = {
   'Wind Speed':["#FF6B6B", "#4ECDC4", "#1A535C", "#FFA600", "#FF6361", "#58508D", "#003F5C", "#7A5195"]
   ,
   'Storm Speed':['#248F24'],
-  'Temperature':["#FF9F1C", "#FFBF69", "#CBF3F0", "#2EC4B6", "#E71D36", "#011627", "#FF3366", "#8338EC"],
+  'Temperature':["#264653", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51", "#3A86FF", "#8338EC", "#FF006E"],
 
 };

@@ -5,6 +5,7 @@ import { keyframes } from '@emotion/react';
 import { ProgressiveAnimation } from '../../storm_dashboard/utils';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import 'chartjs-adapter-luxon';
+import { combined_graph_color } from './chart_color';
 
 //import { graph_colour } from './station_dashboard/station_graph/graph_config.js'
 
@@ -65,7 +66,7 @@ function RenderCombinedChart({ sourceData,  varCategory, timeData, hoverPointTim
     
     
     console.log(sourceData);
-    const datasets = makeDataset(sourceData, chartTimeData, hoverPointTime);
+    const datasets = makeDataset(sourceData, chartTimeData, hoverPointTime, varCategory);
 
     console.log(datasets);
     console.log(chartTimeData);
@@ -224,26 +225,33 @@ const getRandomColor = () => {
   return color;
 };
 
-function getColour(var_name){
+function getColour(graph_colour_list, var_name, indx) {
   let colour = '';
-  console.log(var_name)
-  console.log(storm_graph_color)
-  colour = storm_graph_color[var_name] || getRandomColor();
+  console.log(var_name);
+  console.log(graph_colour_list);
+
+  colour = var_name in graph_colour_list ? combined_graph_color[var_name][indx] : getRandomColor()
   return colour;
+
+    
 }
 
 
 
 
 //Generate datasets
-function makeDataset(dataList, formattedTimeData, hoverPointTime) {
+function makeDataset(dataList, formattedTimeData, hoverPointTime, varCategory) {
   const datasets=[];
-  dataList.forEach((dataDict) => {console.log(dataDict);
+  var graph_colour_list = {}
+      Object.assign(graph_colour_list, combined_graph_color);
+
+
+  dataList.forEach((dataDict, index) => {console.log(dataDict);
     Object.entries(dataDict).forEach(([key, value]) => {console.log(key)
       datasets.push({
         label: value.name,
         data: value.data,
-        borderColor: getColour(value.name),
+        borderColor: getColour(graph_colour_list, varCategory, index),
         backgroundColor: 'rgba(0, 0, 0, 0)',
         fill: true,
         pointRadius: (context) => {
@@ -254,7 +262,7 @@ function makeDataset(dataList, formattedTimeData, hoverPointTime) {
         pointBackgroundColor: (context) => {
           const pointTime = new Date(formattedTimeData[context.dataIndex]).getTime();
           const hoverTime = new Date(hoverPointTime).getTime();
-          return pointTime === hoverTime ? 'red' : 'blue';
+          return pointTime === hoverTime ? 'red' : "";
         },
       })
 
