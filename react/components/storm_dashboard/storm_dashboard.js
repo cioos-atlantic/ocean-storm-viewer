@@ -8,6 +8,7 @@ import BasicTabs from "./tabs";
 import { StormSummaryText } from "./storm_details";
 import StormDataLayout from "./storm_layout_small_screen";
 import { convert_unit_data } from "../utils/unit_conversion";
+import StormCategory from "../Storm_popup/storm_category";
 
 
 //import BasicTabs from "./tabs";
@@ -108,7 +109,7 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
         stormType['data'].some(item => item !== undefined);
 
 
-  variablePresence[stormType] = 
+  variablePresence[stormCategory] = 
         Array.isArray(stormCategory['data']) && 
         stormCategory['data'].length > 0 && 
         stormCategory['data'].some(item => item !== undefined);

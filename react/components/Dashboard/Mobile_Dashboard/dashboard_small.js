@@ -7,6 +7,7 @@ import RenderStormChart from "../../storm_dashboard/storm_graph";
 import RenderCombinedChart from './combined_graph'
 import StormTypeChart from "@/components/storm_dashboard/storm_type_chart";
 import StormCategoryChart from "@/components/storm_dashboard/storm_cat_chart";
+import { RenderWindRose } from "@/components/station_dashboard/wind_rose";
 
 
 
@@ -37,7 +38,8 @@ export function RenderSmallDashboard({selected_station, hover_point, station_des
 
 	console.log(unifiedTimes, alignedMergedData);
 
-	const variablePresence = createVarPresenceDict(alignedMergedData);
+	const variablePresence = createVarPresenceDict(alignedMergedData, stormCategory, stormType, stationValues);
+	
 
 	function generateGraph(selectedVar){
 				return (
@@ -145,6 +147,22 @@ export function RenderSmallDashboard({selected_station, hover_point, station_des
         <p>{<StormCategoryChart chartData={stormCategory}/>}</p>
         
       </section>
+
+
+
+			{/* Wind Direction Section */}
+				{variablePresence["wind_from_direction"] && (
+					<section className="station_dashboard_small_screen_section">
+						<Box className="section-header"
+						sx= {{
+							fontSize: { xs: '14px', sm: '16px', md: '18px', lg: '18px' }
+						}}>Wind Direction</Box>
+						<RenderWindRose
+							sourceData={stationValues?.properties?.station_data}
+							hasWindRoseData={variablePresence["wind_from_direction"]}
+						/>
+					</section>
+				)}
 				
 				
 				
@@ -396,11 +414,26 @@ function alignMergedData(merged_data, stormTimes, stationTimes) {
   return { unifiedTimes, alignedMergedData };
 }
 
-function createVarPresenceDict(mergedData){
+function createVarPresenceDict(mergedData, stormCategory, stormType, stationValues){
 	const variablePresence={};
+	
   Object.keys(mergedData).forEach((key) => {
     variablePresence[key]= false;
   });
+
+	variablePresence[stormType] = 
+		Array.isArray(stormType['data']) && 
+		stormType['data'].length > 0 && 
+		stormType['data'].some(item => item !== undefined);
+
+
+  variablePresence[stormCategory] = 
+		Array.isArray(stormCategory['data']) && 
+		stormCategory['data'].length > 0 && 
+		stormCategory['data'].some(item => item !== undefined);
+
+	createWindDirVarPresence(stationValues, variablePresence);
+
 
 	Object.entries(mergedData).forEach(([key, value]) => {
 		if (Array.isArray(value) && value.length > 0) {
@@ -417,3 +450,18 @@ function createVarPresenceDict(mergedData){
 	return variablePresence;
 }
 
+function createWindDirVarPresence(stationValues, variablePresence){
+	let WindDirIndx = ''
+	const standardNames = stationValues?.properties?.station_data?.column_std_names || [];
+	standardNames.forEach((std_name, indx) => {
+		if (std_name === "wind_from_direction") { WindDirIndx =indx}
+	})
+	const rowData = stationValues?.properties?.station_data?.rows;
+
+	variablePresence.wind_from_direction = rowData.some(
+		d => d[WindDirIndx] != null && !Number.isNaN(d[WindDirIndx])
+	);
+
+
+	
+}
