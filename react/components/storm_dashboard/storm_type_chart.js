@@ -44,7 +44,7 @@ function StormTypeChart({ chartData }) {
         plugins: {
           
           legend: { position: 'top' },
-          title: { display: true, text: 'Storm Type Distribution (DataPoints)' },
+          title: { display: true, text: 'Storm Type Distribution (Data Points)' },
         },
       },
     };

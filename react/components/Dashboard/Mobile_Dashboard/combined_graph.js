@@ -255,15 +255,9 @@ function makeDataset(dataList, formattedTimeData, hoverPointTime, varCategory) {
         backgroundColor: 'rgba(0, 0, 0, 0)',
         fill: true,
         pointRadius: (context) => {
-          const pointTime = new Date(formattedTimeData[context.dataIndex]).getTime();
-          const hoverTime = new Date(hoverPointTime).getTime();
-          return pointTime === hoverTime ? 10 : 0;
+          return  0;
         },
-        pointBackgroundColor: (context) => {
-          const pointTime = new Date(formattedTimeData[context.dataIndex]).getTime();
-          const hoverTime = new Date(hoverPointTime).getTime();
-          return pointTime === hoverTime ? 'red' : "";
-        },
+        
       })
 
     })
