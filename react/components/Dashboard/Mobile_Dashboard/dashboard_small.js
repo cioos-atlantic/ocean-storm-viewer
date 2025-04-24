@@ -5,6 +5,8 @@ import { Box } from "@mui/material";
 import { FaWindowClose } from "react-icons/fa";
 import RenderStormChart from "../../storm_dashboard/storm_graph";
 import RenderCombinedChart from './combined_graph'
+import StormTypeChart from "@/components/storm_dashboard/storm_type_chart";
+import StormCategoryChart from "@/components/storm_dashboard/storm_cat_chart";
 
 
 
@@ -22,7 +24,7 @@ export function RenderSmallDashboard({selected_station, hover_point, station_des
 
 	const [stationSummary, stationDisplayName, institution, institutionLink] = getStationInfo(stationValues, station_descriptions, stationName, source_type, time);
   console.log(stationSummary, stationDisplayName, institution, institutionLink);
-	const [stormName, stormTimes, stormType, stormDataDict] = parseStormData(storm_points);
+	const [stormName, stormTimes, stormType, stormDataDict, stormCategory] = parseStormData(storm_points);
 
 	const mergedData = mergeData(stationDataDict, stormDataDict);
 
@@ -119,7 +121,35 @@ export function RenderSmallDashboard({selected_station, hover_point, station_des
           fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
           
         }}
-      >{
+      >{/* Storm Type */}
+      <section className="station_dashboard_small_screen_section">
+        <Box
+          sx= {{
+            fontSize: { xs: '14px', sm: '16px'}
+          }}
+          className="section-header"
+        >{stormType['name']}</Box>
+        <p>{<StormTypeChart chartData={stormType}/>}</p>
+        
+      </section>
+
+
+      {/* Storm Category */}
+      <section className="station_dashboard_small_screen_section">
+        <Box
+          sx= {{
+            fontSize: { xs: '14px', sm: '16px'}
+          }}
+          className="section-header"
+        >{stormCategory['name']}</Box>
+        <p>{<StormCategoryChart chartData={stormCategory}/>}</p>
+        
+      </section>
+				
+				
+				
+				
+				{
             Object.entries(alignedMergedData).map(([key, value], index) => {
               
               return(<>
@@ -292,7 +322,7 @@ function parseStormData(storm_points){
 	
 	console.log(stormName);
 
-	return [stormName, stormTime, stormType, storm_data_dict]
+	return [stormName, stormTime, stormType, storm_data_dict, stormCategory]
 }
 
 function mergeData(station_data, storm_data){
