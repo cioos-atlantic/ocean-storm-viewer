@@ -99,17 +99,17 @@ export function RenderSmallDashboard({selected_station, hover_point, station_des
           <FaWindowClose />
         </button>
         <div>
-          <strong key={stormName}>Storm Name:</strong>
+          <strong key={stormName}>Storm Name: </strong>
 					{stormName}
         </div>
 				<div>
-          <strong key={stormName}>Storm DataSource:</strong>
+          <strong key={stormName}>Storm DataSource: </strong>
 					<a href={ibtracs_link} target="_blank" rel="noopener noreferrer">
             IBTrACS
           </a>
         </div>
 				<div>
-          <strong key={stationDisplayName}>Station Name:</strong>
+          <strong key={stationDisplayName}>Station Name: </strong>
 					{stationDisplayName}
         </div>
         <div>
