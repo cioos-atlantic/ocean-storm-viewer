@@ -293,9 +293,8 @@ footer {
 
 /* When drawer is open (add a class dynamically) */
 .drawerOpen {
-  width: 82%;  /*80% width for balance */
-  margin-left: 18%;
-
+  width: calc(100vw - 258px);
+  margin-left: 258px;
 }
 
 /* When drawer is closed */
