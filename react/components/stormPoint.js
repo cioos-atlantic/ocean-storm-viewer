@@ -46,14 +46,14 @@ export default function StormMarker1({ storm_point_data, setHoverMarker, setIsSt
             const isSelected = storm_point_data.id === storm_point_hover?.id;
 
             const fallbackColor = "#e6e1e1";
-            console.log(storm_category)
+            //console.log(storm_category)
             const categoryInfo = storm_categories[storm_category] || {};
 
             const arcColor = isSelected ? "#ff0000" : categoryInfo.arcColor || fallbackColor;
             const textColor = isSelected ? "#ffffff" : categoryInfo.textColor || "ff0000";
             const iconSize = isSelected ? 40 : 25;
 
-            console.log(arcColor, textColor)
+            //console.log(arcColor, textColor)
 
             setCustomIcon(createSvgIconWithText(storm_type, arcColor, iconSize, textColor))
             
@@ -88,14 +88,14 @@ export default function StormMarker1({ storm_point_data, setHoverMarker, setIsSt
             }}
             icon={customIcon}
         >
-            {isSmallScreen && (
+            {/*isSmallScreen && (
                 <Tooltip direction="top" offset={[0, -10]} permanent={false}>
                     <StormPointDetailsSmallScreen
                         storm_point_hover={storm_point_hover}
                         setHoverMarker={setHoverMarker}
                     />
                 </Tooltip>
-            )}
+            )*/}
         </Marker>
     );
 }
