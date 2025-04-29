@@ -27,6 +27,7 @@ import { RenderSpatialFilter } from "./Filter/Edit_spatial_filter";
 import CustomZoomControl from "./custom_zoom_control";
 import StormDashboard from "./storm_dashboard/storm_dashboard";
 import { RenderDashboards } from "./Dashboard/dashboard";
+import StormMarker1 from "./stormPoint";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
@@ -221,7 +222,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                   storm_points.pts.features.map(point => {
                     return (
 
-                      <StormMarker
+                      <StormMarker1
                         key={point.id}
                         storm_point_data={point}
                         setHoverMarker={setHoverMarker}
