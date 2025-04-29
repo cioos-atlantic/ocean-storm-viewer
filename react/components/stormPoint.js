@@ -100,7 +100,7 @@ export default function StormMarker1({ storm_point_data, setHoverMarker, setIsSt
     );
 }
 
-const createSvgIconWithText = (text = "A", fill = "#0077be", size = 40, textColor = 'white') => {
+function createSvgIconWithText(text = "A", fill = "#0077be", size = 40, textColor = 'white') {
     const fontSize = (size / 2) - 2;
      
     const svg = `
