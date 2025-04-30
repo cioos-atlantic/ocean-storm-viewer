@@ -52,7 +52,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   const [polyFilterCoords, setPolyFilterCoords] = useState('');
   const [isStormDashOpen, setIsStormDashOpen] = useState(false);
   const [isStationDashOpen, setIsStationDashOpen] = useState(false);
-
+  const [filterButtonClicked, setFilterButtonClicked] = useState('');
+  
   const allDatasetDescriptions = useDatasetDescriptions();
 
   
@@ -102,7 +103,9 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           setBboxFilterCoordinates={setBboxFilterCoordinates}
           polyFilterCoords={polyFilterCoords}
           setPolyFilterCoords={setPolyFilterCoords}
-          clearShapesRef={clearShapesRef} // Pass the ref to RenderFilter
+          clearShapesRef={clearShapesRef} // Pass the ref to 
+          // RenderFilter
+          
           />
         }
         {
@@ -167,6 +170,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             setFilterResult = {setFilterResult}
             returnFilterResult= {returnFilterResult}
             setReturnFilterResult = {setReturnFilterResult}
+            filterButtonClicked={filterButtonClicked}
+            setFilterButtonClicked={setFilterButtonClicked}
           />
 
           <TileLayer

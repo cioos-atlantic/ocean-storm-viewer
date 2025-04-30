@@ -406,7 +406,6 @@ footer {
 }
 .historical_storm_button{
   text-decoration: none;
-  color: #e55162;
   display: block;        /* Ensures it takes full width for easier clicks */
   transition: color 0.3s ease; /* Smooth transition for hover effects */
   border-bottom: 1px solid #e55162; /* Light grey border to outline the block */
@@ -510,10 +509,17 @@ footer {
   font-size: 12px;
   cursor: pointer;
   text-align: center;
-  font-weight: 100;
   padding: 1.5px;
 
 }
+.search-output:hover{
+  padding: 1.8px;
+  font-size: 13px;
+  font-weight: 550;
+
+}
+
+
 .search-output-space{
   text-align: left;
   padding: 12px;

@@ -5,7 +5,8 @@ import { Stack } from "@mui/system";
 import { handleStormNameClick } from "@/pages/about_page";
 
 
-export function RenderFilterResult({filterResult, router, setReturnFilterResult}){
+export function RenderFilterResult({filterResult, router, setReturnFilterResult, filterButtonClicked, setFilterButtonClicked}){
+  
   
   return(
     <Box >
@@ -28,19 +29,26 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult}
             fontSize: '14px',
             fontWeight: "bold",
           }}>
-          Filter Result...</Box>
+          Filter Result: ({filterResult.length} result(s) found)</Box>
           {filterResult.map((storm, index) => (
           <Paper
             key={storm.storm_id}
-            onClick={(e) => { console.log()
-                              handleStormNameClick(storm.name, storm.year, router);
+            onClick=
+              {(e) => { console.log(`${storm.name} clicked`)
+                handleStormNameClick(storm.name, storm.year, router);
                               //triggerReload(); // Reload page when a storm is clicked
             
                               //console.log(storm);
+                      }}
+              sx={{color: filterButtonClicked === storm.storm_id ? 'white' : 'black', 
+                                backgroundColor: filterButtonClicked === storm.storm_id ? 'black' : 'white',
+                                padding: filterButtonClicked === storm.storm_id ? '5px' : '0.5px',
+                                border: filterButtonClicked === storm.storm_id ? 'solid white 2px': '0',
+                                
                               }}      
           >
-            <Typography className='search-output'>
-              <strong>{`${storm.display_name}`}</strong>
+            <Typography className='search-output' sx ={{fontWeight: filterButtonClicked === storm.storm_id ? '550': 'normal'}} >
+              {`${storm.display_name}`}
             </Typography>
             
           </Paper>
@@ -54,7 +62,10 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult}
           ...</Box>)}
       </Stack>
       <Button
-      onClick={()=> {setReturnFilterResult(false)}}
+      onClick={()=> {
+        setReturnFilterResult(false)
+        setFilterButtonClicked('')
+      }}
       className="cancel-search"
       >Cancel Filter</Button>
     </Box>
