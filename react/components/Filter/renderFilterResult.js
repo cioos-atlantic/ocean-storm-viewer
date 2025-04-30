@@ -5,7 +5,7 @@ import { Stack } from "@mui/system";
 import { handleStormNameClick } from "@/pages/about_page";
 
 
-export function RenderFilterResult({filterResult, router, setReturnFilterResult, filterButtonClicked, setFilterButtonClicked}){
+export function RenderFilterResult({filterResult, router, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked}){
   
   
   return(
@@ -40,14 +40,14 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult,
             
                               //console.log(storm);
                       }}
-              sx={{color: filterButtonClicked === storm.storm_id ? 'white' : 'black', 
-                                backgroundColor: filterButtonClicked === storm.storm_id ? 'black' : 'white',
-                                padding: filterButtonClicked === storm.storm_id ? '5px' : '0.5px',
-                                border: filterButtonClicked === storm.storm_id ? 'solid white 2px': '0',
+              sx={{color: drawerButtonClicked === storm.storm_id ? 'white' : 'black', 
+                                backgroundColor: drawerButtonClicked === storm.storm_id ? 'black' : 'white',
+                                padding: drawerButtonClicked === storm.storm_id ? '5px' : '0.5px',
+                                border: drawerButtonClicked === storm.storm_id ? 'solid white 2px': '0',
                                 
                               }}      
           >
-            <Typography className='search-output' sx ={{fontWeight: filterButtonClicked === storm.storm_id ? '550': 'normal'}} >
+            <Typography className='search-output' sx ={{fontWeight: drawerButtonClicked === storm.storm_id ? '550': 'normal'}} >
               {`${storm.display_name}`}
             </Typography>
             
@@ -64,7 +64,7 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult,
       <Button
       onClick={()=> {
         setReturnFilterResult(false)
-        setFilterButtonClicked('')
+        setDrawerButtonClicked('')
       }}
       className="cancel-search"
       >Cancel Filter</Button>

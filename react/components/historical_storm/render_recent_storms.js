@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import { IconButton, TextField, Box, Typography, Paper } from "@mui/material";
 
 
-export function renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, filterButtonClicked, setFilterButtonClicked){
+export function renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setDrawerButtonClicked){
   return(
     <>
     <Box className='historical_page_drawer_subheader'
@@ -29,11 +29,11 @@ export function renderRecentStorms(stormList, setStationPoints, setStormPoints, 
                 className='historical_storm_button'
                 sx={{
                   fontSize: { xs: '10px', sm: '10px', md: '12px', lg: '12px',},
-                  color: filterButtonClicked === storm.storm_id ? 'white' : '#e55162', 
-                  backgroundColor: filterButtonClicked === storm.storm_id ? 'black' : 'white',
-                  padding: filterButtonClicked === storm.storm_id ? '5px' : '0.5px',
-                  border: filterButtonClicked === storm.storm_id ? 'solid white 2px': '0',
-                  fontWeight: filterButtonClicked === storm.storm_id ? 'bolder': 'normal'
+                  color: drawerButtonClicked === storm.storm_id ? 'white' : '#e55162', 
+                  backgroundColor: drawerButtonClicked === storm.storm_id ? 'black' : 'white',
+                  padding: drawerButtonClicked === storm.storm_id ? '5px' : '0.5px',
+                  border: drawerButtonClicked === storm.storm_id ? 'solid white 2px': '0',
+                  fontWeight: drawerButtonClicked === storm.storm_id ? 'bolder': 'normal'
                    
                 }}
                 onClick={(e) => { 

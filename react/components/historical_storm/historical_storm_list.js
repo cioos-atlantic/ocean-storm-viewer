@@ -32,7 +32,7 @@ const otherStormList = [
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, filterButtonClicked, setFilterButtonClicked}) {
+export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked}) {
 
   const [loading, setLoading] = useState(false);
 
@@ -66,7 +66,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           const selectedStorm = stormObjectList[0];
           console.log(selectedStorm);
           if (selectedStorm) {
-            setFilterButtonClicked(selectedStorm.storm_id);
+            setDrawerButtonClicked(selectedStorm.storm_id);
             await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation,setLoading);
           }
         }
@@ -131,11 +131,11 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           filterResult={filterResult}
           router={router}
           setReturnFilterResult={setReturnFilterResult}
-          filterButtonClicked={filterButtonClicked}
-          setFilterButtonClicked={setFilterButtonClicked}
+          drawerButtonClicked={drawerButtonClicked}
+          setDrawerButtonClicked={setDrawerButtonClicked}
                 
         />):
-        (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, filterButtonClicked, setFilterButtonClicked))}
+        (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setDrawerButtonClicked))}
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
 
           
