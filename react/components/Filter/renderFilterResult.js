@@ -9,11 +9,11 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult,
   
   
   return(
-    <Box >
+    <>
       
       <Stack
       
-        spacing={1}
+        spacing={0.1}
         className='search-output-space'
         sx={{
           
@@ -23,37 +23,41 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult,
         {filterResult.length > 0 ? (
           <>
           <Box
-          sx={{
-            color: "white",
-            position: "static",
-            fontSize: '14px',
-            fontWeight: "bold",
-          }}>
-          Filter Result: ({filterResult.length} result(s) found)</Box>
-          {filterResult.map((storm, index) => (
-          <Paper
-            key={storm.storm_id}
-            onClick=
-              {(e) => { console.log(`${storm.name} clicked`)
-                handleStormNameClick(storm.name, storm.year, router);
-                              //triggerReload(); // Reload page when a storm is clicked
-            
-                              //console.log(storm);
-                      }}
-              sx={{color: drawerButtonClicked === storm.storm_id ? 'white' : 'black', 
-                                backgroundColor: drawerButtonClicked === storm.storm_id ? 'black' : 'white',
-                                padding: drawerButtonClicked === storm.storm_id ? '5px' : '0.5px',
-                                border: drawerButtonClicked === storm.storm_id ? 'solid white 2px': '0',
-                                
-                              }}      
-          >
-            <Typography className='search-output' sx ={{fontWeight: drawerButtonClicked === storm.storm_id ? '550': 'normal'}} >
-              {`${storm.display_name}`}
-            </Typography>
-            
-          </Paper>
           
-        ))}
+          className='filter_page_drawer_subheader'>
+          Filter Result: ({filterResult.length} result(s) found)</Box >
+
+
+          <Stack sx={{overflowX: 'hidden', 
+                    paddingLeft: '7px', 
+                    paddingRight: '7px'}} 
+                  spacing={0.5}>
+            {filterResult.map((storm, index) => (
+            <Paper
+              key={storm.storm_id}
+              onClick=
+                {(e) => { console.log(`${storm.name} clicked`)
+                  handleStormNameClick(storm.name, storm.year, router);
+                                //triggerReload(); // Reload page when a storm is clicked
+              
+                                //console.log(storm);
+                        }}
+                sx={{color: drawerButtonClicked === storm.storm_id ? 'white' : 'black', 
+                                  backgroundColor: drawerButtonClicked === storm.storm_id ? 'black' : 'white',
+                                  padding: drawerButtonClicked === storm.storm_id ? '3px' : '0.5px',
+                                  border: drawerButtonClicked === storm.storm_id ? 'solid white 2px': '0',
+                                  
+                                }}      
+            >
+              <Typography className='search-output' sx ={{fontWeight: drawerButtonClicked === storm.storm_id ? '550': 'normal'}} >
+                {`${storm.display_name}`}
+              </Typography>
+              
+            </Paper>
+            
+            ))}
+          </Stack>
+          
         </>
         ): (<Box
           sx={{
@@ -68,6 +72,6 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult,
       }}
       className="cancel-search"
       >Cancel Filter</Button>
-    </Box>
+    </>
   )
 }

@@ -426,14 +426,19 @@ footer {
 
 }
 .historical_storm_search_result{
-  padding: 10px;
-  overflow-y:auto;
-  flex: 1; /* Allow the body to take up available space*/
-  max-height: 40%;
-  height: 240px;
+  text-align: left;
+  padding: 12px;
+  background-color: white;
+  height: 300px;
+  border-radius: 4px;
+  max-height: 480;
+  width: 100%;
+  overflow-y: auto;
+  position: relative;
 }
 .historical_page_drawer_header{
   font-weight: bolder;
+  
   
 
 }
@@ -441,10 +446,28 @@ footer {
 .historical_page_drawer_subheader{
   font-weight: bold;
   color: #ec1632;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+  padding: 8px;
+  border-bottom: 2px solid #ccc;
+}
+
+.filter_page_drawer_subheader{
+  font-weight: bold;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 8px;
+  border-bottom: 2px solid #ccc;
+  font-size: 14px;
 }
 .historical_storm_search_header{
   font-weight: bold;
   color: #ec1632;
+  
 }
 #search_button {
 
@@ -529,7 +552,8 @@ footer {
   border: 1px solid white;
   overflow: auto;
   max-height: 500;
-  width: 100%
+  width: 100%;
+  position: relative;
 
 }
 
