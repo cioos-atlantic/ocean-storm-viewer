@@ -11,15 +11,17 @@ export function StormSummaryText({storm_point_hover}){
   if (Object.keys(storm_point_hover.properties).length == 0) {
           return (<></>);
       }
+
+      const fallbackValue = "NO DATA";
   
 
       const TIMESTAMP = format(parseISO(fetch_value(storm_point_hover, ["TIMESTAMP", "ISO_TIME"])), 'PP pp X');
       
-      const STORMTYPE = fetch_value(storm_point_hover, ["STORMTYPE", "NATURE"]) || 'NO DATA';
-      const STORMFORCE = fetch_value(storm_point_hover, ["STORMFORCE", "USA_SSHS"]) || 'NO DATA';
-      const MAXWIND = fetch_value(storm_point_hover, ["MAXWIND", "WMO_WIND", "USA_WIND"]) || 'NO DATA';
-      const MINPRESS = fetch_value(storm_point_hover, ["MSLP", "WMO_PRES", "USA_PRES"]) || 'NO DATA';
-      const STORMSTATUS = storm_point_hover.properties.TCDVLP || 'NO DATA';
+      const STORMTYPE = fetch_value(storm_point_hover, ["STORMTYPE", "NATURE"]) || fallbackValue;
+      const STORMFORCE = fetch_value(storm_point_hover, ["STORMFORCE", "USA_SSHS"]) || fallbackValue;
+      const MAXWIND = fetch_value(storm_point_hover, ["MAXWIND", "WMO_WIND", "USA_WIND"]) || fallbackValue;
+      const MINPRESS = fetch_value(storm_point_hover, ["MSLP", "WMO_PRES", "USA_PRES"]) || fallbackValue;
+      const STORMSTATUS = storm_point_hover.properties.TCDVLP || fallbackValue;
   
   
   

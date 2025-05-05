@@ -1,9 +1,6 @@
 import { parseISO, format } from 'date-fns';
 import { fetch_value } from "@/lib/storm_utils";
 import React, {useState} from "react";
-import StormType from './Storm_popup/Storm_type';
-import StormCategory from './Storm_popup/storm_category';
-import StormPressure from './Storm_popup/storm_pressure';
 import { Box, Tooltip, useMediaQuery } from '@mui/material';
 import { storm_type_info } from "@/lib/storm_class";
 
@@ -44,12 +41,13 @@ export default function StormPointDetailsTooltip({ storm_point_hover,  setHoverM
 
     // ECCC and IBTRACS use different names for the same kinds of information.  Sometimes, within IBTRACS, several different fields may possibly contain the appropriate value
     // ECCC uses TIMESTAMP and IBTRACS uses ISO_TIME
+    const fallbackValue = "NO DATA";
     const TIMESTAMP = format(parseISO(fetch_value(storm_point_hover, ["TIMESTAMP", "ISO_TIME"])), 'PP p');
-    const STORMNAME = fetch_value(storm_point_hover, ["STORMNAME", "NAME"]) || 'NO DATA';
-    const STORMTYPE = fetch_value(storm_point_hover, ["STORMTYPE", "NATURE"]) || 'NO DATA';
-    const STORMFORCE = fetch_value(storm_point_hover, ["STORMFORCE", "USA_SSHS"]) || 'NO DATA';
-    const MAXWIND = fetch_value(storm_point_hover, ["MAXWIND", "WMO_WIND", "USA_WIND"]);
-    const MINPRESS = fetch_value(storm_point_hover, ["MSLP", "WMO_PRES", "USA_PRES"]);
+    const STORMNAME = fetch_value(storm_point_hover, ["STORMNAME", "NAME"]) || fallbackValue;
+    const STORMTYPE = fetch_value(storm_point_hover, ["STORMTYPE", "NATURE"]) || fallbackValue;
+    const STORMFORCE = fetch_value(storm_point_hover, ["STORMFORCE", "USA_SSHS"]) || fallbackValue;
+    const MAXWIND = fetch_value(storm_point_hover, ["MAXWIND", "WMO_WIND", "USA_WIND"]) || fallbackValue;;
+    const MINPRESS = fetch_value(storm_point_hover, ["MSLP", "WMO_PRES", "USA_PRES"]) || fallbackValue;;
 
 
 
