@@ -6,7 +6,7 @@ import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
 import {empty_point_obj} from "@/components/storm_point_details"
 import { Tooltip } from 'react-leaflet';
 import { useMediaQuery, useTheme } from '@mui/material';
-import StormPointDetailsSmallScreen from "./storm_point_details_small_screens";
+import StormPointDetailsTooltip from "./storm_point_details_tooltip";
 import { createSvgIconWithText } from "./utils/storm_display_utils";
 
 
@@ -27,6 +27,7 @@ import { createSvgIconWithText } from "./utils/storm_display_utils";
 export default function StormMarker({ storm_point_data, setHoverMarker, setIsStormDashOpen, storm_point_hover }) {
     const [isMounted, setIsMounted] = useState(false);
     const [customIcon, setCustomIcon] = useState(null);
+    const markerRef = useRef(null);
 
     console.log(storm_point_hover)
 
@@ -78,10 +79,12 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setIsSto
         <Marker
             key={storm_point_data.id}
             position={position}
+            ref={markerRef}
             eventHandlers={{
                 mouseover: () => {
                     setHoverMarker(storm_point_data);
                     setIsStormDashOpen(true);
+                    markerRef.current?.openPopup();
                 },
                 click: () => {
                     setHoverMarker(storm_point_data);
@@ -92,18 +95,25 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setIsSto
                     if (!clickedRef.current) {
                         setHoverMarker(empty_point_obj);
                         setIsStormDashOpen(false);
+                        markerRef.current?.closePopup();
                     }}
             }}
             icon={customIcon}
         >
-            {
-                <Tooltip sticky direction="top" offset={[0, -10]} permanent={false}>
-                    <StormPointDetailsSmallScreen
+            { storm_point_hover && (
+                <Popup
+                    closeButton={false}
+                    autoPan={false}
+                    closeOnEscapeKey={false}
+                    closeOnClick={false}
+                    interactive={false}
+                >
+                    <StormPointDetailsTooltip
                         storm_point_hover={storm_point_data}
                         setHoverMarker={setHoverMarker}
                     />
-                </Tooltip>
-            }
+                </Popup>
+)}
         </Marker>
     );
 }

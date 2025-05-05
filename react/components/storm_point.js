@@ -19,7 +19,7 @@ import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
 import {empty_point_obj} from "@/components/storm_point_details"
 import { Tooltip } from 'react-leaflet';
 import { useMediaQuery, useTheme } from '@mui/material';
-import StormPointDetailsSmallScreen from "./storm_point_details_small_screens";
+import StormPointDetailsSmallScreen from "./storm_point_details_tooltip";
 
 
 export const hurricon = new Icon({

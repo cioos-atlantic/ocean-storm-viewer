@@ -24,7 +24,7 @@ export const empty_point_obj = { properties: {}, geometry: {} }
  * 
  * The function then renders the storm point details in a JSX format, including the extracted information and any additional details.
  */
-export default function StormPointDetailsSmallScreen({ storm_point_hover,  setHoverMarker }) {
+export default function StormPointDetailsTooltip({ storm_point_hover,  setHoverMarker }) {
     // If properties has no items, it's an empty storm_point_hover object and should return
     // immediately
     if (Object.keys(storm_point_hover.properties).length == 0) {
@@ -45,9 +45,9 @@ export default function StormPointDetailsSmallScreen({ storm_point_hover,  setHo
     // ECCC and IBTRACS use different names for the same kinds of information.  Sometimes, within IBTRACS, several different fields may possibly contain the appropriate value
     // ECCC uses TIMESTAMP and IBTRACS uses ISO_TIME
     const TIMESTAMP = format(parseISO(fetch_value(storm_point_hover, ["TIMESTAMP", "ISO_TIME"])), 'PP p');
-    const STORMNAME = fetch_value(storm_point_hover, ["STORMNAME", "NAME"]);
-    const STORMTYPE = fetch_value(storm_point_hover, ["STORMTYPE", "NATURE"]);
-    const STORMFORCE = fetch_value(storm_point_hover, ["STORMFORCE", "USA_SSHS"]);
+    const STORMNAME = fetch_value(storm_point_hover, ["STORMNAME", "NAME"]) || 'NO DATA';
+    const STORMTYPE = fetch_value(storm_point_hover, ["STORMTYPE", "NATURE"]) || 'NO DATA';
+    const STORMFORCE = fetch_value(storm_point_hover, ["STORMFORCE", "USA_SSHS"]) || 'NO DATA';
     const MAXWIND = fetch_value(storm_point_hover, ["MAXWIND", "WMO_WIND", "USA_WIND"]);
     const MINPRESS = fetch_value(storm_point_hover, ["MSLP", "WMO_PRES", "USA_PRES"]);
 
