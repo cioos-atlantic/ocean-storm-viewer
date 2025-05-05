@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS public.erddap_cache
     min_lat numeric NOT NULL,
     max_lat numeric NOT NULL,
     station_data text COLLATE pg_catalog."default" NOT NULL,
-    geom geometry NOT NULL,
+    geom geometry(Point,4326),
     CONSTRAINT "PK_erddap_cache" PRIMARY KEY (storm, station, min_time, max_time)
 )
 
