@@ -50,7 +50,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
    of what it does: */
    useEffect(() => { 
     if (!router.isReady) return; // Ensure router is ready
-    const { name, season } = router.query;
+    const { name, season, sid } = router.query;
     if (previousQuery?.name !== name || previousQuery?.season !== season) {
     
       async function searchQuery(){
@@ -63,7 +63,18 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
         if (name && season) {
           const stormObjectList = await handleSearch(name, season);
           console.log(stormObjectList);
-          const selectedStorm = stormObjectList[0];
+
+          let selectedStorm;
+          if (stormObjectList.length > 1){ // this accounts for unnamed storms that has the same name and season
+            stormObjectList.forEach((stormObj) => {
+              if (stormObj['storm_id'] === sid){
+                selectedStorm= stormObj;
+              }
+            })
+
+          }
+          else{selectedStorm = stormObjectList[0];}
+          
           console.log(selectedStorm);
           if (selectedStorm) {
             await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation,setLoading);
