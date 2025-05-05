@@ -44,7 +44,7 @@ export default function StormPointDetailsSmallScreen({ storm_point_hover,  setHo
 
     // ECCC and IBTRACS use different names for the same kinds of information.  Sometimes, within IBTRACS, several different fields may possibly contain the appropriate value
     // ECCC uses TIMESTAMP and IBTRACS uses ISO_TIME
-    const TIMESTAMP = format(parseISO(fetch_value(storm_point_hover, ["TIMESTAMP", "ISO_TIME"])), 'PP p X');
+    const TIMESTAMP = format(parseISO(fetch_value(storm_point_hover, ["TIMESTAMP", "ISO_TIME"])), 'PP p');
     const STORMNAME = fetch_value(storm_point_hover, ["STORMNAME", "NAME"]);
     const STORMTYPE = fetch_value(storm_point_hover, ["STORMTYPE", "NATURE"]);
     const STORMFORCE = fetch_value(storm_point_hover, ["STORMFORCE", "USA_SSHS"]);
@@ -60,15 +60,9 @@ export default function StormPointDetailsSmallScreen({ storm_point_hover,  setHo
                 <div><strong>Type:</strong> {storm_type_info[STORMTYPE]["name"]["en"]}</div>
                 <div><strong>Category:</strong> {STORMFORCE}</div>
                 <div><strong>Timestamp:</strong> {TIMESTAMP}</div>
-                <div><strong>Lat/Long:</strong> {storm_point_hover.properties.LAT}&deg; N, {storm_point_hover.properties.LON}&deg; W</div>
-                <div><strong>Max Windspeed:</strong> {MAXWIND} knots ({(MAXWIND * 1.84).toFixed(2)} km/h)</div>
-                <StormPressure STORMPRESSURE={MINPRESS} />
-                {
-                    storm_point_hover.properties.ERRCT &&
-                    <div><strong>Error radius :</strong> {storm_point_hover.properties.ERRCT} nmi ({(storm_point_hover.properties.ERRCT * 1.852).toFixed(2)} km)</div>
-                }
+                
 
-                <button 
+                {/*<button 
                 onClick={() =>{
                     setHoverMarker(empty_point_obj)
                     }
@@ -76,7 +70,7 @@ export default function StormPointDetailsSmallScreen({ storm_point_hover,  setHo
                 style={{ float: "right", cursor: "pointer" }}
                 aria-label="Close Storm Details"
                 >✖
-                </button>
+                </button>*/}
             
         </Box>
         

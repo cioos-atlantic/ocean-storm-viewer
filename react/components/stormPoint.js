@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Marker, Popup } from 'react-leaflet'
 import { Icon, DivIcon, Point } from 'leaflet'
 import { storm_categories, storm_type_info } from '@/lib/storm_class'
@@ -24,11 +24,15 @@ import { createSvgIconWithText } from "./utils/storm_display_utils";
  *
  * @returns {JSX.Element} - A React Marker component with event handlers and custom icon.
  */
-export default function StormMarker1({ storm_point_data, setHoverMarker, setIsStormDashOpen, storm_point_hover }) {
+export default function StormMarker({ storm_point_data, setHoverMarker, setIsStormDashOpen, storm_point_hover }) {
     const [isMounted, setIsMounted] = useState(false);
     const [customIcon, setCustomIcon] = useState(null);
 
-    let clicked = false;
+    console.log(storm_point_hover)
+
+    
+    const clickedRef = useRef(false);
+
     // Keep track of previously clicked marker to default back to?
 
     const position = flip_coords(storm_point_data.geometry.coordinates);
@@ -36,6 +40,8 @@ export default function StormMarker1({ storm_point_data, setHoverMarker, setIsSt
     const storm_category = String(storm_point_data.properties["USA_SSHS"]);
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+    console.log(storm_point_data);
 
     useEffect(() => {
         setIsMounted(true);
@@ -63,11 +69,12 @@ export default function StormMarker1({ storm_point_data, setHoverMarker, setIsSt
 
               
         })();
-    }, [storm_category, storm_point_hover]);
+    }, [storm_category, storm_point_hover, storm_point_data]);
 
     if (!isMounted || !customIcon) return null;
 
     return (
+        
         <Marker
             key={storm_point_data.id}
             position={position}
@@ -79,24 +86,24 @@ export default function StormMarker1({ storm_point_data, setHoverMarker, setIsSt
                 click: () => {
                     setHoverMarker(storm_point_data);
                     setIsStormDashOpen(true);
-                    clicked = true;
+                    clickedRef.current = true;
                 },
                 mouseout: () =>  {
-                    if (!clicked) {
+                    if (!clickedRef.current) {
                         setHoverMarker(empty_point_obj);
                         setIsStormDashOpen(false);
                     }}
             }}
             icon={customIcon}
         >
-            {/*isSmallScreen && (
-                <Tooltip direction="top" offset={[0, -10]} permanent={false}>
+            {
+                <Tooltip sticky direction="top" offset={[0, -10]} permanent={false}>
                     <StormPointDetailsSmallScreen
-                        storm_point_hover={storm_point_hover}
+                        storm_point_hover={storm_point_data}
                         setHoverMarker={setHoverMarker}
                     />
                 </Tooltip>
-            )*/}
+            }
         </Marker>
     );
 }

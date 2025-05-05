@@ -7,7 +7,7 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
 import "leaflet-defaulticon-compatibility";
 
-import StormMarker from "@/components/storm_point";
+//import StormMarker from "@/components/storm_point";
 import LineOfTravel from "@/components/line_of_travel";
 import WindSpeedRadius from "@/components/wind_radii";
 import SeaHeightRadius from "@/components/sea_height_radii";
@@ -27,7 +27,7 @@ import { RenderSpatialFilter } from "./Filter/Edit_spatial_filter";
 import CustomZoomControl from "./custom_zoom_control";
 import StormDashboard from "./storm_dashboard/storm_dashboard";
 import { RenderDashboards } from "./Dashboard/dashboard";
-import StormMarker1 from "./stormPoint";
+import StormMarker from "./stormPoint";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
@@ -227,7 +227,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                   storm_points.pts.features.map(point => {
                     return (
 
-                      <StormMarker1
+                      <StormMarker
                         key={point.id}
                         storm_point_data={point}
                         setHoverMarker={setHoverMarker}
