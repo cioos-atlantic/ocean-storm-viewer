@@ -51,7 +51,8 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
    useEffect(() => { 
     if (!router.isReady) return; // Ensure router is ready
     const { name, season, sid } = router.query;
-    if (previousQuery?.name !== name || previousQuery?.season !== season) {
+    console.log( name, season, sid )
+    if (previousQuery?.name !== name || previousQuery?.season !== season || previousQuery?.sid !== sid ) {
     
       async function searchQuery(){
         
@@ -82,7 +83,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
         }
     }
     searchQuery()
-    setPreviousQuery({ name, season });
+    setPreviousQuery({ name, season, sid });
 
   }
   }, [router.query, previousQuery]); // 
