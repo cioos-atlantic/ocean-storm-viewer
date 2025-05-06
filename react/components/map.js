@@ -104,6 +104,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           polyFilterCoords={polyFilterCoords}
           setPolyFilterCoords={setPolyFilterCoords}
           clearShapesRef={clearShapesRef} // Pass the ref to 
+          setDrawerButtonClicked={setDrawerButtonClicked}
+          
           // RenderFilter
           
           />
