@@ -903,3 +903,8 @@ footer {
   display:flex;
   justify-content: center;
 }
+
+.leaflet-popup-content {
+  margin: 5px !important;
+  padding: 0 !important;
+}
