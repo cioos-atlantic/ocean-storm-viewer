@@ -7,7 +7,7 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
 import "leaflet-defaulticon-compatibility";
 
-import StormMarker from "@/components/storm_point";
+//import StormMarker from "@/components/storm_point";
 import LineOfTravel from "@/components/line_of_travel";
 import WindSpeedRadius from "@/components/wind_radii";
 import SeaHeightRadius from "@/components/sea_height_radii";
@@ -27,6 +27,7 @@ import { RenderSpatialFilter } from "./Filter/Edit_spatial_filter";
 import CustomZoomControl from "./custom_zoom_control";
 import StormDashboard from "./storm_dashboard/storm_dashboard";
 import { RenderDashboards } from "./Dashboard/dashboard";
+import StormMarker from "./stormPoint";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
@@ -52,7 +53,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   const [isDashOpen, setIsDashOpen] = useState(false);
   const [isStormDashOpen, setIsStormDashOpen] = useState(false);
   const [isStationDashOpen, setIsStationDashOpen] = useState(false);
-
+  const [drawerButtonClicked, setDrawerButtonClicked] = useState('');
+  
   const allDatasetDescriptions = useDatasetDescriptions();
 
   
@@ -102,7 +104,11 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           setBboxFilterCoordinates={setBboxFilterCoordinates}
           polyFilterCoords={polyFilterCoords}
           setPolyFilterCoords={setPolyFilterCoords}
-          clearShapesRef={clearShapesRef} // Pass the ref to RenderFilter
+          clearShapesRef={clearShapesRef} // Pass the ref to 
+          setDrawerButtonClicked={setDrawerButtonClicked}
+          
+          // RenderFilter
+          
           />
         }
         {
@@ -169,6 +175,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             setFilterResult = {setFilterResult}
             returnFilterResult= {returnFilterResult}
             setReturnFilterResult = {setReturnFilterResult}
+            drawerButtonClicked={drawerButtonClicked}
+            setDrawerButtonClicked={setDrawerButtonClicked}
             setIsDashOpen={setIsDashOpen}
             setIsStormDashOpen={setIsStormDashOpen}
             setIsStationDashOpen ={setIsStationDashOpen}

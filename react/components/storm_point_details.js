@@ -44,11 +44,11 @@ export default function StormPointDetails({ storm_point_hover,  setIsStormDetOpe
     // ECCC and IBTRACS use different names for the same kinds of information.  Sometimes, within IBTRACS, several different fields may possibly contain the appropriate value
     // ECCC uses TIMESTAMP and IBTRACS uses ISO_TIME
     const TIMESTAMP = format(parseISO(fetch_value(storm_point_hover, ["TIMESTAMP", "ISO_TIME"])), 'PP pp X');
-    const STORMNAME = fetch_value(storm_point_hover, ["STORMNAME", "NAME"]);
-    const STORMTYPE = fetch_value(storm_point_hover, ["STORMTYPE", "NATURE"]);
-    const STORMFORCE = fetch_value(storm_point_hover, ["STORMFORCE", "USA_SSHS"]);
-    const MAXWIND = fetch_value(storm_point_hover, ["MAXWIND", "WMO_WIND", "USA_WIND"]);
-    const MINPRESS = fetch_value(storm_point_hover, ["MSLP", "WMO_PRES", "USA_PRES"]);
+    const STORMNAME = fetch_value(storm_point_hover, ["STORMNAME", "NAME"]) || 'NO DATA';
+    const STORMTYPE = fetch_value(storm_point_hover, ["STORMTYPE", "NATURE"]) || 'NO DATA';
+    const STORMFORCE = fetch_value(storm_point_hover, ["STORMFORCE", "USA_SSHS"]) || 'NO DATA';
+    const MAXWIND = fetch_value(storm_point_hover, ["MAXWIND", "WMO_WIND", "USA_WIND"]) || 'NO DATA';
+    const MINPRESS = fetch_value(storm_point_hover, ["MSLP", "WMO_PRES", "USA_PRES"]) || 'NO DATA';
 
 
 
