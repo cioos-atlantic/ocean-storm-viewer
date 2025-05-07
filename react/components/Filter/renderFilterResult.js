@@ -67,7 +67,7 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult,
         setDrawerButtonClicked('')
       }}
       className="cancel-search"
-      >Cancel Filter</Button>
+      >Clear Results</Button>
     </>
   )
 }
