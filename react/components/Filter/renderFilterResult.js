@@ -2,7 +2,7 @@
 import { Button } from "@mui/material";
 import { IconButton, TextField, Box, Typography, Paper } from "@mui/material";
 import { Stack } from "@mui/system";
-import { handleStormNameClick } from "@/pages/about_page";
+import { handleStormButtonClick } from "../historical_storm/historical_storm_utils";
 
 
 export function RenderFilterResult({filterResult, router, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked}){
@@ -23,7 +23,6 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult,
         {filterResult.length > 0 ? (
           <>
           <Box
-          
           className='filter_page_drawer_subheader'>
           Filter Result: ({filterResult.length} result(s) found)</Box >
 
@@ -37,7 +36,7 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult,
               key={storm.storm_id}
               onClick=
                 {(e) => { console.log(`${storm.name} clicked`)
-                  handleStormNameClick(storm.name, storm.year, router);
+                handleStormButtonClick(storm.name, storm.year, storm.storm_id, router);
                                 //triggerReload(); // Reload page when a storm is clicked
               
                                 //console.log(storm);
