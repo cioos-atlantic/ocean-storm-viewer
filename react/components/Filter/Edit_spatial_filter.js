@@ -99,7 +99,7 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({bbo
 
     if (featureGroup) {
         featureGroup.eachLayer((layer) => {
-            if (layer instanceof L.Rectangle) {
+            /*if (layer instanceof L.Rectangle) {
                 const bbox = processRectangle(layer.getLatLngs());
                 setPolyFilterCoords('');
                 setBboxFilterCoordinates(bbox);
@@ -110,7 +110,11 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({bbo
                 setBboxFilterCoordinates('');
                 setPolyFilterCoords(poly);
                 console.log("Updated Polygon Coordinates:", poly);
-            }
+            }*/
+                const poly = processPolygon(layer.getLatLngs());
+                setBboxFilterCoordinates('');
+                setPolyFilterCoords(poly);
+                console.log("Updated Polygon Coordinates:", poly);
         });
     }
     
@@ -168,6 +172,7 @@ onEditVertex	function	hook to leaflet-draw's draw:editvertex event*/
 
 
 export function processRectangle(coords){
+  console.log(coords)
   const latitudes = coords.flat().map(coord => coord.lat);
   const longitudes = coords.flat().map(coord => coord.lng);
 
