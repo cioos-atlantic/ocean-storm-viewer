@@ -38,7 +38,7 @@ const showOptionsArrow = <KeyboardDoubleArrowDownIcon />;
 const closeOptionsArrow = <KeyboardDoubleArrowUpIcon />;
 
 
-export function RenderFilter({ filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords, clearShapesRef, setDrawerButtonClicked }) {
+export function RenderFilter({ filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, polyFilterCoords, setPolyFilterCoords, clearShapesRef, setDrawerButtonClicked }) {
   const [showFilterIcons, setShowFilterIcons] = useState(false);
   const [showFilterOptions, setShowFilterOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -87,7 +87,6 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
       ...selectedOptions, // Spread selected options correctly
       startDate: startDate, // Ensure start and end dates are included
       endDate: endDate,
-      bboxCoordinates: bboxFilterCoordinates,
       polyCoords: polyFilterCoords,
 
     };
@@ -269,7 +268,7 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
             <Button
               id="cancel-filter-icon"
               className="filter-icons"
-              onClick={() => {handleClearAll(setSelectedOptions, setStartDate, setEndDate, setBboxFilterCoordinates, setPolyFilterCoords, clearShapesRef)}}>
+              onClick={() => {handleClearAll(setSelectedOptions, setStartDate, setEndDate,  setPolyFilterCoords, clearShapesRef)}}>
               X
             </Button>
           </Stack>
@@ -281,13 +280,12 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
 }
 
   // Function to clear all filters and shapes
-  export function handleClearAll(setSelectedOptions, setStartDate, setEndDate, setBboxFilterCoordinates, setPolyFilterCoords, clearShapesRef) {
+  export function handleClearAll(setSelectedOptions, setStartDate, setEndDate,  setPolyFilterCoords, clearShapesRef) {
     setSelectedOptions([]);
     setStartDate(null); // Reset to empty string
     setEndDate(null);   // Reset to empty string;
     //setFilterResult([]);         // Clear filter results
     //setReturnFilterResult(false); // Reset return state
-    setBboxFilterCoordinates(''); // Clear BBOX filter
     setPolyFilterCoords('');      // Clear polygon filter
     
 
@@ -452,7 +450,7 @@ export async function processFilterRequest(filterParameters, setLoading) {
   const stormNames = formatStormName(filterParameters['stormName']);
   const startDate = formatFilterDate(filterParameters['startDate']);
   const endDate = formatFilterDate(filterParameters['endDate']);
-  const stormBbox = filterParameters['bboxCoordinates'];
+  
   const stormPoly = filterParameters['polyCoords'];
 
 
@@ -465,7 +463,6 @@ export async function processFilterRequest(filterParameters, setLoading) {
     name: stormNames,
     start_date: startDate,
     end_date: endDate,
-    bbox: stormBbox,
     polygon: stormPoly,
 
   }).toString();

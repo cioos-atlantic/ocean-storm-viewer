@@ -6,7 +6,7 @@ import {
 } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 
-export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords}, ref) {
+export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({polyFilterCoords, setPolyFilterCoords}, ref) {
   const featureGroupRef = useRef(null);
   // Get the FeatureGroup reference
   function clearShapes(){
@@ -58,15 +58,15 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({bbo
   
     if (type === "rectangle") {
       console.log("_onCreated: Rectangle created");
-      const bbox = processRectangle(layer.getLatLngs());
-      setPolyFilterCoords('');
-      setBboxFilterCoordinates(bbox);
+      
     } else if (type === "polygon") {
       console.log("_onCreated: Polygon created");
-      const poly = processPolygon(layer.getLatLngs())
-      setBboxFilterCoordinates('');
-      setPolyFilterCoords(poly);
+      
     } 
+      const poly = processPolygon(layer.getLatLngs())
+      setPolyFilterCoords(poly);
+
+
   
 
   
@@ -78,7 +78,7 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({bbo
     e.layers.eachLayer(layer => {
       numDeleted += 1;
     });
-    setBboxFilterCoordinates(''); // Clear BBOX filter
+    
     setPolyFilterCoords('');      // Clear polygon filter
     console.log(`onDeleted: removed ${numDeleted} layers`, e);
 
