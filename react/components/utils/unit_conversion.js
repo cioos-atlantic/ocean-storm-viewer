@@ -17,6 +17,7 @@ export function convert_unit_data (value, unit_from, unit_to=null){
   : (unitList_degreeC.includes(unit_from)) ? toDegreeC(value, unit_from)
   : (unitList_metres.includes(unit_from)) ? toM(value, unit_from)
   : (unit_from == 'mbar') ? toKPa(value, unit_from)
+  : (unit_from == 'hPa') ? toKPa(value, unit_from)
   : {'value':value, 'unit':unit_from} // No change, return input in formatted manner
 }
 

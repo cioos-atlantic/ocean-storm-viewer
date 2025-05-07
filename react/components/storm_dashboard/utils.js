@@ -1,6 +1,6 @@
 export function ProgressiveAnimation(data) {
-    const delayPerPoint = 50; // ms delay between points
-  
+    const delayPerPoint = 5; // ms delay between points
+
     const previousY = (ctx) =>
       {
         try {
