@@ -42,7 +42,7 @@ function StormCategoryChart({ chartData }) {
         responsive: true,
         plugins: {
           legend: { position: 'top' },
-          title: { display: true, text: 'Storm Category Distribution' },
+          title: { display: true, text: 'Storm Category Distribution (Data Points)' },
         },
       },
     };
