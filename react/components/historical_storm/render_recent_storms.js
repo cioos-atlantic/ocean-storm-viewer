@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import { IconButton, TextField, Box, Typography, Paper } from "@mui/material";
 
 
-export function renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, setIsDashOpen){
+export function renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen){
   return(
     <>
     <Box className='historical_page_drawer_subheader'
@@ -24,7 +24,7 @@ export function renderRecentStorms(stormList, setStationPoints, setStormPoints, 
                   fontSize: { xs: '10px', sm: '10px', md: '12px', lg: '12px' }
                 }}
                 onClick={(e) => { 
-                  handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, setIsDashOpen);
+                  handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
 
                   //console.log(storm);
                   }}>{`${storm.display_name}`}</Button>

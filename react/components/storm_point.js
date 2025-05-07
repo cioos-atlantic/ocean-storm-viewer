@@ -201,7 +201,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setIsSto
                 mouseout: (event) => {
                     if (!clicked) {
                         setHoverMarker(empty_point_obj);
-                        setIsDashOpen(false)
+                        //setIsDashOpen(false)
                         setIsStormDashOpen(false);
                     }
                 }
