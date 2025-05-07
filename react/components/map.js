@@ -170,6 +170,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             returnFilterResult= {returnFilterResult}
             setReturnFilterResult = {setReturnFilterResult}
             setIsDashOpen={setIsDashOpen}
+            setIsStormDashOpen={setIsStormDashOpen}
+            setIsStationDashOpen ={setIsStationDashOpen}
           />
 
           <TileLayer
