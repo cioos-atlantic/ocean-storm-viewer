@@ -6,7 +6,7 @@ import { handleStormButtonClick } from "../historical_storm/historical_storm_uti
 
 
 export function RenderFilterResult({filterResult, router, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked}){
-
+  
   function handleClearResult(){
     //setReturnFilterResult(false)
     //setDrawerButtonClicked('')
@@ -14,6 +14,7 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult,
 
 
   }
+
   
   
   return(
@@ -33,6 +34,7 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult,
           <Box
           className='filter_page_drawer_subheader'>
           Filter Result: ({filterResult.length} result(s) found)</Box >
+
           <Stack sx={{overflowX: 'hidden', 
                     paddingLeft: '7px', 
                     paddingRight: '7px'}} 
@@ -63,6 +65,7 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult,
             ))}
           </Stack>
           </>
+
         ): (<Box
           sx={{
             color: "white"
@@ -73,6 +76,7 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult,
       onClick={handleClearResult}
       className="cancel-search"
       >Clear Results</Button>
+
     </>
   )
 }

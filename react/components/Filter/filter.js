@@ -39,6 +39,7 @@ const closeOptionsArrow = <KeyboardDoubleArrowUpIcon />;
 
 
 export function RenderFilter({ filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, polyFilterCoords, setPolyFilterCoords, clearShapesRef, setDrawerButtonClicked }) {
+
   const [showFilterIcons, setShowFilterIcons] = useState(false);
   const [showFilterOptions, setShowFilterOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -61,12 +62,6 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
   const [loading, setLoading] = useState(false);
 
   const router = useRouter(); // Next.js useRouter
-
-
-
-
-
-
 
 
   async function handleFilterSubmit() {
