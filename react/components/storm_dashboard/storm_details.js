@@ -11,14 +11,17 @@ export function StormSummaryText({storm_point_hover}){
   if (Object.keys(storm_point_hover.properties).length == 0) {
           return (<></>);
       }
+
+      const fallbackValue = "NO DATA";
   
 
       const TIMESTAMP = format(parseISO(fetch_value(storm_point_hover, ["TIMESTAMP", "ISO_TIME"])), 'PP pp X');
       
-      const STORMTYPE = fetch_value(storm_point_hover, ["STORMTYPE", "NATURE"]);
-      const STORMFORCE = fetch_value(storm_point_hover, ["STORMFORCE", "USA_SSHS"]);
-      const MAXWIND = fetch_value(storm_point_hover, ["MAXWIND", "WMO_WIND", "USA_WIND"]);
-      const MINPRESS = fetch_value(storm_point_hover, ["MSLP", "WMO_PRES", "USA_PRES"]);
+      const STORMTYPE = fetch_value(storm_point_hover, ["STORMTYPE", "NATURE"]) || fallbackValue;
+      const STORMFORCE = fetch_value(storm_point_hover, ["STORMFORCE", "USA_SSHS"]) || fallbackValue;
+      const MAXWIND = fetch_value(storm_point_hover, ["MAXWIND", "WMO_WIND", "USA_WIND"]) || fallbackValue;
+      const MINPRESS = fetch_value(storm_point_hover, ["MSLP", "WMO_PRES", "USA_PRES"]) || fallbackValue;
+      const STORMSTATUS = storm_point_hover.properties.TCDVLP || fallbackValue;
   
   
   
@@ -34,12 +37,12 @@ export function StormSummaryText({storm_point_hover}){
   
             }}>
              
-                  <StormType STORMTYPE={STORMTYPE} />
-                  <p><strong>Storm Status:</strong> {storm_point_hover.properties.TCDVLP}</p>
+                    <StormType STORMTYPE={STORMTYPE}/>
+                  <div><strong>Storm Status:</strong> {STORMSTATUS}</div>
                   <StormCategory STORMFORCE={STORMFORCE} />
-                  <p><strong>Timestamp:</strong> {TIMESTAMP}</p>
-                  <p><strong>Lat/Long:</strong> {storm_point_hover.properties.LAT}&deg; N, {storm_point_hover.properties.LON}&deg; W</p>
-                  <p><strong>Max Windspeed:</strong> {MAXWIND} knots ({(MAXWIND * 1.84).toFixed(2)} km/h)</p>
+                  <div><strong>Timestamp:</strong> {TIMESTAMP}</div>
+                  <div><strong>Lat/Long:</strong> {storm_point_hover.properties.LAT}&deg; N, {storm_point_hover.properties.LON}&deg; W</div>
+                  <div><strong>Max Windspeed:</strong> {MAXWIND} knots ({(MAXWIND * 1.84).toFixed(2)} km/h)</div>
                   <StormPressure STORMPRESSURE={MINPRESS} />
                   {
                       storm_point_hover.properties.ERRCT &&

@@ -19,7 +19,7 @@ import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
 import {empty_point_obj} from "@/components/storm_point_details"
 import { Tooltip } from 'react-leaflet';
 import { useMediaQuery, useTheme } from '@mui/material';
-import StormPointDetailsSmallScreen from "./storm_point_details_small_screens";
+import StormPointDetailsSmallScreen from "./storm_dashboard/storm_point_details_tooltip";
 
 
 export const hurricon = new Icon({
@@ -119,57 +119,35 @@ const storm_types = {
  */
 export default function StormMarker({ storm_point_data, setHoverMarker, setIsStormDashOpen, storm_point_hover }) {
     const [isMounted, setIsMounted] = useState(false);
+    const [customIcon, setCustomIcon] = useState(null);
 
-    // Ensure component is mounted
+    let clicked = false;
+    // Keep track of previously clicked marker to default back to?
+
+    const position = flip_coords(storm_point_data.geometry.coordinates);
+    const storm_type = storm_point_data.properties["NATURE"];
+    const storm_icon = storm_types[storm_type];
+    const storm_category = String(storm_point_data.properties["USA_SSHS"]);
+    const svgPath = storm_type_info[storm_type]?.exp_img || "";
+    const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+
     useEffect(() => {
         setIsMounted(true);
         return () => setIsMounted(false);
     }, []);
 
-    const position = flip_coords(storm_point_data.geometry.coordinates);
-    const theme = useTheme();
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down('md')); // `md` in MUI = 960px
-
-    let clicked = false;
-    // Keep track of previously clicked marker to default back to?
-
-    const storm_type = storm_point_data.properties["NATURE"];
-    const storm_icon = storm_types[storm_type];
-    const storm_category = String(storm_point_data.properties["USA_SSHS"]);
-    let arcColor, ellipseColor, textColor, arcStroke;
-
-    const [customIcon, setCustomIcon] = useState(storm_icon);
-
-    if (storm_category === "undefined") {
-        arcColor = "#000000";
-        ellipseColor = "#000000";
-        textColor = "#000000";
-        arcStroke = "#000000";
-    } else {
-        //console.log(storm_categories[storm_category])
-        arcColor = storm_categories[storm_category]["arcColor"];
-        arcStroke = storm_categories[storm_category]["arcStroke"];
-        ellipseColor = storm_categories[storm_category]["ellipseColor"];
-        textColor = storm_categories[storm_category]["textColor"];
-    }
-
-    //console.log(storm_point_data.properties)
-    // console.log(String(storm_point_data.properties["USA_SSHS"]));
-
-    const svgPath = storm_type_info[storm_type]["exp_img"];
-    //console.log(storm_type_info[storm_type])
-    //storm_type_info[storm_type]["img"]
-    //const arcColor = storm_categories[storm_category]["arcColor"];
-    //const ellipseColor = storm_categories[storm_category]["ellipseColor"];
-    //const textColor = storm_categories[storm_category]["textColor"];
-    //const icon = storm_types[storm_type];
-
     useEffect(() => {
         (async () => {
-            const arcColor = storm_categories[storm_category]?.arcColor || "#000000";
-            const arcStroke = storm_categories[storm_category]?.arcStroke || "#000000";
-            const ellipseColor = storm_categories[storm_category]?.ellipseColor || "#000000";
-            const textColor = storm_categories[storm_category]?.textColor || "#000000";
+            const isSelected = storm_point_data.id === storm_point_hover?.id;
+
+            const fallbackColor = "#000000";
+            const categoryInfo = storm_categories[storm_category] || {};
+
+            const arcColor = isSelected ? "#ff0000" : categoryInfo.arcColor || fallbackColor;
+            const arcStroke = isSelected ? "#cc0000" : categoryInfo.arcStroke || fallbackColor;
+            const ellipseColor = isSelected ? "#ff6666" : categoryInfo.ellipseColor || fallbackColor;
+            const textColor = categoryInfo.textColor || fallbackColor;
 
             const updatedIcon = await change_icon_url(
                 storm_icon,
@@ -181,42 +159,40 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setIsSto
             );
             setCustomIcon(updatedIcon);
         })();
-    }, [storm_category, svgPath, storm_icon]);
+    }, [storm_category, svgPath, storm_icon, storm_point_hover]);
 
-    if (!isMounted) return null; // Prevent rendering before the component is mounted
+    if (!isMounted || !customIcon) return null;
 
     return (
-        
         <Marker
             key={storm_point_data.id}
             position={position}
             eventHandlers={{
-                mouseover: (event) => {setHoverMarker(storm_point_data); setIsStormDashOpen(true);},
-                click: (event) => {
+                mouseover: () => {
                     setHoverMarker(storm_point_data);
-                    clicked = true;
                     setIsStormDashOpen(true);
                 },
-                mouseout: (event) => {
+                click: () => {
+                    setHoverMarker(storm_point_data);
+                    setIsStormDashOpen(true);
+                    clicked = true;
+                },
+                mouseout: () =>  {
                     if (!clicked) {
                         setHoverMarker(empty_point_obj);
                         setIsStormDashOpen(false);
-                    }
-                }
+                    }}
             }}
             icon={customIcon}
-        >{isSmallScreen ? (
-            <Tooltip direction="top" offset={[0, -10]} permanent={false}>
-                {<StormPointDetailsSmallScreen
-                    storm_point_hover={storm_point_hover}
-                    setHoverMarker={setHoverMarker}
-                    />}
-            </Tooltip>
-        ):(null)}
+        >
+            {isSmallScreen && (
+                <Tooltip direction="top" offset={[0, -10]} permanent={false}>
+                    <StormPointDetailsSmallScreen
+                        storm_point_hover={storm_point_hover}
+                        setHoverMarker={setHoverMarker}
+                    />
+                </Tooltip>
+            )}
         </Marker>
     );
 }
-//icon={storm_types[storm_type]}
-
-
-
