@@ -16,7 +16,7 @@ import { Tooltip, Box, Button } from '@mui/material';
  * `styles.drawer_interior`. Depending on the `source_type`, either the `ActiveStormList`,
  * `HistoricalStormList`, or a placeholder for the Home Page is rendered within the `Drawer` component.
  */
-export default function Drawer({ children, element_id, classes, storm_data, source_type, setStormPoints, setStationPoints, setSelectedStation, setIsDrawerOpen, isDrawerOpen, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult }) {
+export default function Drawer({ children, element_id, classes, storm_data, source_type, setStormPoints, setStationPoints, setSelectedStation, setIsDrawerOpen, isDrawerOpen, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDashOpen }) {
 
     let sideClass = null;
     
@@ -78,6 +78,7 @@ export default function Drawer({ children, element_id, classes, storm_data, sour
                                 setFilterResult = {setFilterResult}
                                 returnFilterResult= {returnFilterResult}
                                 setReturnFilterResult = {setReturnFilterResult}
+                                setIsDashOpen ={setIsDashOpen}
                         />
                         ) : 
                         (
