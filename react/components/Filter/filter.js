@@ -63,24 +63,9 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
   const router = useRouter(); // Next.js useRouter
 
 
-  // Function to clear all filters and shapes
-  function handleClearAll() {
-    setSelectedOptions([]);
-    setStartDate(null); // Reset to empty string
-    setEndDate(null);   // Reset to empty string;
-    //setFilterResult([]);         // Clear filter results
-    //setReturnFilterResult(false); // Reset return state
-    setBboxFilterCoordinates(''); // Clear BBOX filter
-    setPolyFilterCoords('');      // Clear polygon filter
-    
 
-    // Clear shapes via reference
-    if (clearShapesRef && clearShapesRef.current) {
-      clearShapesRef.current.clearShapes();
-    }
 
-    console.log("All filters and shapes cleared!");
-  }
+
 
 
 
@@ -284,7 +269,7 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
             <Button
               id="cancel-filter-icon"
               className="filter-icons"
-              onClick={handleClearAll}>
+              onClick={() => {handleClearAll(setSelectedOptions, setStartDate, setEndDate, setBboxFilterCoordinates, setPolyFilterCoords, clearShapesRef)}}>
               X
             </Button>
           </Stack>
@@ -295,7 +280,24 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
   )
 }
 
+  // Function to clear all filters and shapes
+  export function handleClearAll(setSelectedOptions, setStartDate, setEndDate, setBboxFilterCoordinates, setPolyFilterCoords, clearShapesRef) {
+    setSelectedOptions([]);
+    setStartDate(null); // Reset to empty string
+    setEndDate(null);   // Reset to empty string;
+    //setFilterResult([]);         // Clear filter results
+    //setReturnFilterResult(false); // Reset return state
+    setBboxFilterCoordinates(''); // Clear BBOX filter
+    setPolyFilterCoords('');      // Clear polygon filter
+    
 
+    // Clear shapes via reference
+    if (clearShapesRef && clearShapesRef.current) {
+      clearShapesRef.current.clearShapes();
+    }
+
+    console.log("All filters and shapes cleared!");
+  }
 
 export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions }) {
   const buttonStyle = {

@@ -78,6 +78,8 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({bbo
     e.layers.eachLayer(layer => {
       numDeleted += 1;
     });
+    setBboxFilterCoordinates(''); // Clear BBOX filter
+    setPolyFilterCoords('');      // Clear polygon filter
     console.log(`onDeleted: removed ${numDeleted} layers`, e);
 
     // this._onChange();

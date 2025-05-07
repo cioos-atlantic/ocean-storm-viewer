@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     }
     if(storm_poly !==""){
         
-        filters["INTERSECTS(geom, POLYGON(("] = `${storm_poly})))`;
+        filters["INTERSECTS(geom_storm_line, POLYGON(("] = `${storm_poly})))`;
         
     }
 
