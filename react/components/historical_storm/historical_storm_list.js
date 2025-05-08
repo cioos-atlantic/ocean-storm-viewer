@@ -32,7 +32,7 @@ const otherStormList = [
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult }) {
+export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked}) {
 
   const [loading, setLoading] = useState(false);
 
@@ -50,8 +50,9 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
    of what it does: */
    useEffect(() => { 
     if (!router.isReady) return; // Ensure router is ready
-    const { name, season } = router.query;
-    if (previousQuery?.name !== name || previousQuery?.season !== season) {
+    const { name, season, sid } = router.query;
+    console.log( name, season, sid )
+    if (previousQuery?.name !== name || previousQuery?.season !== season || previousQuery?.sid !== sid ) {
     
       async function searchQuery(){
         
@@ -63,15 +64,27 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
         if (name && season) {
           const stormObjectList = await handleSearch(name, season);
           console.log(stormObjectList);
-          const selectedStorm = stormObjectList[0];
+
+          let selectedStorm;
+          if (stormObjectList.length > 1){ // this accounts for unnamed storms that has the same name and season
+            stormObjectList.forEach((stormObj) => {
+              if (stormObj['storm_id'] === sid){
+                selectedStorm= stormObj;
+              }
+            })
+
+          }
+          else{selectedStorm = stormObjectList[0];}
+          
           console.log(selectedStorm);
           if (selectedStorm) {
+            setDrawerButtonClicked(selectedStorm.storm_id);
             await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation,setLoading);
           }
         }
     }
     searchQuery()
-    setPreviousQuery({ name, season });
+    setPreviousQuery({ name, season, sid });
 
   }
   }, [router.query, previousQuery]); // 
@@ -130,9 +143,11 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           filterResult={filterResult}
           router={router}
           setReturnFilterResult={setReturnFilterResult}
+          drawerButtonClicked={drawerButtonClicked}
+          setDrawerButtonClicked={setDrawerButtonClicked}
                 
         />):
-        (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading))}
+        (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setDrawerButtonClicked))}
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
 
           

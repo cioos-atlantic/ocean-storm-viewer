@@ -467,4 +467,14 @@ export async function handleSearch(storm_name, storm_year){
   return uniqueList
 }
 
+export function handleStormButtonClick(stormName, stormYear, stormID, router){
+  const url = `/?storms=historical&name=${stormName}&season=${stormYear}&sid=${stormID}`;
+  console.log(url)
+  router.push(url);
+  
+  /*router.push(url).then(() => {
+    window.location.reload(); // Force a full page reload after navigation
+  }); */
+}
+
 

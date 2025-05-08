@@ -2,7 +2,7 @@ import { handleClick } from "./historical_storm_utils";
 import { Button } from "@mui/material";
 import { IconButton, TextField, Box, Typography, Paper } from "@mui/material";
 import { Stack } from "@mui/system";
-import { handleStormNameClick } from "@/pages/about_page";
+import { handleStormButtonClick } from "./historical_storm_utils";
 
 
 export function RenderSearchResult({searchResult, router, setIsSearchSubmitted}){
@@ -31,7 +31,7 @@ export function RenderSearchResult({searchResult, router, setIsSearchSubmitted})
           <Paper
             key={storm.storm_id}
             onClick={(e) => { console.log()
-                              handleStormNameClick(storm.name, storm.year, router);
+              handleStormButtonClick(storm.name, storm.year, storm.storm_id, router);
                               //triggerReload(); // Reload page when a storm is clicked
             
                               //console.log(storm);

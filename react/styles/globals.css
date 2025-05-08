@@ -268,6 +268,18 @@ footer {
   height: 100%;
 
 }
+
+.combined_dashboard_small {
+  background: white; /* White background for clarity */
+  color: black; /* Black text for readability */
+  padding: 1rem; /* Internal padding */
+  position: relative; 
+  flex-direction: column; /* Stack the header and body vertically*/
+  position: fixed; /* Positioned at the bottom */
+  z-index: 5000; /* High z-index to overlay the map */
+
+
+}
 .dashboards {
   /*border-top: 3px solid #e55162;   */
 
@@ -275,15 +287,14 @@ footer {
   /*bottom: 50px;  Above the footer */
   z-index: 5000; /* High z-index to overlay the map */
   /*width: 80%;  80% width for balance */
-  max-height: 60%;
+  
   
 }
 
 /* When drawer is open (add a class dynamically) */
 .drawerOpen {
-  width: 82%;  /*80% width for balance */
-  margin-left: 18%;
-
+  width: calc(100vw - 258px);
+  margin-left: 258px;
 }
 
 /* When drawer is closed */
@@ -318,6 +329,12 @@ footer {
   background-color: #eee;
   padding:0.5rem;
 }
+.combined_dashboard_small .dash-header {
+  /*border: 1px solid darkgoldenrod;   */
+  /*border: 1px solid darkgoldenrod;   */
+  background-color: #eee;
+  padding:0.5rem;
+}
 
 .station_dashboard .dash-header button {
   float: right; /* Align button to the right */
@@ -325,8 +342,21 @@ footer {
   border: 0; /* No border */
   font-size: 1.5rem; /* Larger font size */
 }
+.combined_dashboard_small .dash-header button {
+  float: right; /* Align button to the right */
+  background-color: #eee; /* White background for button */
+  border: 0; /* No border */
+  font-size: 1.5rem; /* Larger font size */
+}
 
 .station_dashboard .dash-header button.close {
+  font-weight: bold; /* Bold close button */
+  float: right; /* Align button to the right */
+  background-color: #eee; /* White background for button */
+  border: 0; /* No border */
+  font-size: 1.5rem; /* Larger font size */
+}
+.combined_dashboard_small .dash-header button.close {
   font-weight: bold; /* Bold close button */
   float: right; /* Align button to the right */
   background-color: #eee; /* White background for button */
@@ -337,8 +367,19 @@ footer {
 .station_dashboard .dash-header button.close {
   font-weight: bold; /* Bold close button */
 }
+.combined_dashboard_small .dash-header button.close {
+  font-weight: bold; /* Bold close button */
+}
 
 .station_dashboard .dash-body {
+  overflow-y: auto; /* Enable scrolling within the body*/
+  padding: 1rem;
+  flex: 1; /* Allow the body to take up available space*/
+  overflow-y: auto; /* Enable scrolling within the body*/
+  padding: 1rem;
+  flex: 1; /* Allow the body to take up available space*/
+}
+.combined_dashboard_small .dash-body {
   overflow-y: auto; /* Enable scrolling within the body*/
   padding: 1rem;
   flex: 1; /* Allow the body to take up available space*/
@@ -406,7 +447,6 @@ footer {
 }
 .historical_storm_button{
   text-decoration: none;
-  color: #e55162;
   display: block;        /* Ensures it takes full width for easier clicks */
   transition: color 0.3s ease; /* Smooth transition for hover effects */
   border-bottom: 1px solid #e55162; /* Light grey border to outline the block */
@@ -427,14 +467,19 @@ footer {
 
 }
 .historical_storm_search_result{
-  padding: 10px;
-  overflow-y:auto;
-  flex: 1; /* Allow the body to take up available space*/
-  max-height: 40%;
-  height: 240px;
+  text-align: left;
+  padding: 12px;
+  background-color: white;
+  height: 300px;
+  border-radius: 4px;
+  max-height: 480;
+  width: 100%;
+  overflow-y: auto;
+  position: relative;
 }
 .historical_page_drawer_header{
   font-weight: bolder;
+  
   
 
 }
@@ -442,10 +487,28 @@ footer {
 .historical_page_drawer_subheader{
   font-weight: bold;
   color: #ec1632;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+  padding: 8px;
+  border-bottom: 2px solid #ccc;
+}
+
+.filter_page_drawer_subheader{
+  font-weight: bold;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 8px;
+  border-bottom: 2px solid #ccc;
+  font-size: 14px;
 }
 .historical_storm_search_header{
   font-weight: bold;
   color: #ec1632;
+  
 }
 #search_button {
 
@@ -510,10 +573,17 @@ footer {
   font-size: 12px;
   cursor: pointer;
   text-align: center;
-  font-weight: 100;
   padding: 1.5px;
 
 }
+.search-output:hover{
+  padding: 1.8px;
+  font-size: 13px;
+  font-weight: 550;
+
+}
+
+
 .search-output-space{
   text-align: left;
   padding: 12px;
@@ -523,7 +593,8 @@ footer {
   border: 1px solid white;
   overflow: auto;
   max-height: 500;
-  width: 100%
+  width: 100%;
+  position: relative;
 
 }
 
@@ -872,4 +943,9 @@ footer {
   position: relative;
   display:flex;
   justify-content: center;
+}
+
+.leaflet-popup-content {
+  margin: 5px !important;
+  padding: 0 !important;
 }
