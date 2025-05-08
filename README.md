@@ -42,3 +42,6 @@ To build a docker image of the Ocean Storm Viewer:
 
 `docker build -f react/Dockerfile .`
 
+### Docker Compose
+
+`docker compose up -d -f react/docker-compose.yml`
