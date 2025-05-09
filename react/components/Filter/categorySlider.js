@@ -51,13 +51,11 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
         
 
       }}>
-        <CardContent className='date-card-content'
-          sx={{display: { xs: "none", md: "block" },}}>
+        <CardContent className='date-card-content'>
           Select a range of storm category between -5 and 5
         </CardContent>
         <CardContent
-          className='date-card-content'
-          sx={{display: { xs: "none", md: "block" },}}>
+          className='date-card-content'>
             <Box sx={{ width: {sx: 130, md: 300} }}>
               <Slider
               sx={{

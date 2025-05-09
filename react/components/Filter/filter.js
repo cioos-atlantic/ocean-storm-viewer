@@ -183,6 +183,20 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
             )
 
             }
+            {openSpeedDial && (<div className="filter-group">
+              <RenderCategoryFilter
+                  showOptionsArrow={showOptionsArrow}
+                  closeOptionsArrow={closeOptionsArrow}
+                  setStartCategory= {setStartCategory}
+                  setEndCategory={setEndCategory}
+                  startCategory={startCategory}
+                  endCategory={endCategory}
+                />
+
+            </div>
+            )
+
+            }
             {openSpeedDial && (filters.map((filter, index) => {
               return (
 

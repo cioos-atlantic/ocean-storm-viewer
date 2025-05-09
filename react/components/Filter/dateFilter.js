@@ -203,7 +203,7 @@ function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate,
         <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Box 
           display="flex" 
-          flexDirection={{ xs: "row", md: "row" }} // Column on small screens, row on medium
+          flexDirection={{ xs: "row", md: "row" }} 
           gap={2} 
           justifyContent="center" // Centers horizontally
           alignItems="center" // Centers vertically
