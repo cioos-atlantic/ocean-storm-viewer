@@ -6,7 +6,7 @@ import {
 } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 
-export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords}, ref) {
+export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({polyFilterCoords, setPolyFilterCoords}, ref) {
   const featureGroupRef = useRef(null);
   // Get the FeatureGroup reference
   function clearShapes(){
@@ -58,15 +58,15 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({bbo
   
     if (type === "rectangle") {
       console.log("_onCreated: Rectangle created");
-      const bbox = processRectangle(layer.getLatLngs());
-      setPolyFilterCoords('');
-      setBboxFilterCoordinates(bbox);
+      
     } else if (type === "polygon") {
       console.log("_onCreated: Polygon created");
-      const poly = processPolygon(layer.getLatLngs())
-      setBboxFilterCoordinates('');
-      setPolyFilterCoords(poly);
+      
     } 
+      const poly = processPolygon(layer.getLatLngs())
+      setPolyFilterCoords(poly);
+
+
   
 
   
@@ -78,6 +78,8 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({bbo
     e.layers.eachLayer(layer => {
       numDeleted += 1;
     });
+    
+    setPolyFilterCoords('');      // Clear polygon filter
     console.log(`onDeleted: removed ${numDeleted} layers`, e);
 
     // this._onChange();
@@ -97,7 +99,7 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({bbo
 
     if (featureGroup) {
         featureGroup.eachLayer((layer) => {
-            if (layer instanceof L.Rectangle) {
+            /*if (layer instanceof L.Rectangle) {
                 const bbox = processRectangle(layer.getLatLngs());
                 setPolyFilterCoords('');
                 setBboxFilterCoordinates(bbox);
@@ -108,7 +110,10 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({bbo
                 setBboxFilterCoordinates('');
                 setPolyFilterCoords(poly);
                 console.log("Updated Polygon Coordinates:", poly);
-            }
+            }*/
+                const poly = processPolygon(layer.getLatLngs());
+                setPolyFilterCoords(poly);
+                console.log("Updated Polygon Coordinates:", poly);
         });
     }
     
@@ -166,6 +171,7 @@ onEditVertex	function	hook to leaflet-draw's draw:editvertex event*/
 
 
 export function processRectangle(coords){
+  console.log(coords)
   const latitudes = coords.flat().map(coord => coord.lat);
   const longitudes = coords.flat().map(coord => coord.lng);
 

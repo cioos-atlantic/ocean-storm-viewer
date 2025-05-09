@@ -164,7 +164,7 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
             Object.entries(stormData).map(([key, value], index) => {
               
               return(
-                <CustomTabPanel value={selectedStormTab} index={index + 3}>
+                <CustomTabPanel key={key} value={selectedStormTab} index={index + 3}>
                   {generateGraph(key)}
                 </CustomTabPanel>
               )
