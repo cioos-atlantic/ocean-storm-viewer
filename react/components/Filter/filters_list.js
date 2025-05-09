@@ -3,7 +3,7 @@ import TodayOutlinedIcon from '@mui/icons-material/TodayOutlined';
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
 
 
-const storm_category_filter_list = [
+export const storm_category_filter_list = [
   { label: "Category 5", value: 5 },
   { label: "Category 4", value: 4 },
   { label: "Category 3", value: 3 },
@@ -51,3 +51,5 @@ export const input_filters = [
     
   }*/
 ]
+
+

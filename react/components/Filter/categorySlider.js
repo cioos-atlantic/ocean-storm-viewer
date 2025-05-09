@@ -1,0 +1,160 @@
+import { storm_category_filter_list } from "./filters_list";
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
+import { useEffect, useState, Fragment } from 'react';
+import { Box, Button, Card, CardContent, CardActions, Slider } from "@mui/material";
+
+import { smallScreenIconButton } from './filter_utils';
+export const storm_category_list = [
+  { label: "5", value: 5 },
+  { label: "4", value: 4 },
+  { label: "3", value: 3 },
+  { label: "2", value: 2 },
+  { label: "1", value: 1 },
+  { label: "0", value: 0 },
+  { label: "-1", value: -1 },
+  { label: "-2", value: -2 },
+  { label: "-3", value: -3 },
+  { label: "-4", value: -4 },
+  { label: "-5", value: -5 },
+]
+
+export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowCatSelection }) {
+  
+  const values = storm_category_list.map(item => item.value);
+  const minCategory = Math.min(...values);
+  const maxCategory = Math.max(...values);
+  
+  // Independent state for the slider's range
+  const [value, setValue] = useState([minCategory, maxCategory]);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    setStartCategory(newValue[0]);
+    setEndCategory(newValue[1]);
+  };
+
+  return (
+    <Card
+      sx={{
+        position: 'absolute',
+        top:{xs: '6px', md: '100%',},
+        right:{xs: '100%', md: '0px',},
+        width:{xs: '220px', md: '320px',},
+        height:{xs: '200px',  md: 'inherit',},
+        overflow:{xs: 'scroll', md: 'hidden', },
+        padding: '6px',
+        backgroundColor: "#f4f4f4",
+        alignContent: 'center',
+        border: '2px solid #e55162',
+        borderRadius: '10px',
+        zIndex:'9001',
+        
+
+      }}>
+        <CardContent className='date-card-content'
+          sx={{display: { xs: "none", md: "block" },}}>
+          Select a range of storm category between -5 and 5
+        </CardContent>
+        <CardContent
+          className='date-card-content'
+          sx={{display: { xs: "none", md: "block" },}}>
+            <Box sx={{ width: {sx: 130, md: 300} }}>
+              <Slider
+              sx={{
+                width: '85%',
+                color: '#e55162',
+                
+              }}
+                getAriaLabel={() => 'Category range'}
+                value={value}
+                onChange={handleChange}
+                valueLabelDisplay="auto"
+                min={minCategory}
+                max={maxCategory}
+                marks={ [...storm_category_list].sort((a, b) => a.value - b.value) }
+              />
+            </Box>
+
+        </CardContent>
+        <CardActions
+              className='date-card-content'>
+                <Box 
+                  sx={{ display: 'flex', justifyContent: 'center', gap: '2px', width: '100%' }}>
+                    <Button 
+                      size="small"
+                      className='filter-submit-button'
+                      onClick={() => {
+                        setStartCategory(null); // Reset to empty string
+                        setEndCategory(null);   // Reset to empty string
+                      }}>Clear</Button>
+                    <Button 
+                      size="small" 
+                      className='filter-submit-button' 
+                      onClick={()=> {setShowCatSelection(false)}}>Close</Button>
+        
+        
+                </Box>
+                
+                
+        
+              </CardActions>
+
+    </Card>
+    
+  );
+}
+
+export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, setStartCategory, setEndCategory, startCategory, endCategory}){
+  const [showCatSelection, setShowCatSelection] = useState(false); 
+  const buttonStyle = {
+    backgroundColor: startCategory && endCategory  ? '#e55162' : 'white',
+    color: startCategory && endCategory ? 'white' : '#e55162',
+    '&:hover': {
+      backgroundColor: startCategory && endCategory ? '#ffd1dc' : '#82ccdd',
+      color: startCategory && endCategory ? 'black' : 'black',
+    },
+  };
+
+  function handleIconClick(){
+    setShowCatSelection(prev => !prev);
+  }
+  
+
+
+
+  return (
+    <>
+    <Button
+    className="filter-badge"
+    onClick= {handleIconClick}
+    startIcon={<CategoryOutlinedIcon />}
+    endIcon={ !showCatSelection ? (showOptionsArrow):(closeOptionsArrow)}
+    sx={{...buttonStyle,
+      display: { xs: "none", md: "inline-flex" }, }
+    }>
+      
+      Storm Category1
+      
+      
+
+    </Button>
+    {smallScreenIconButton('Storm Category1', handleIconClick, buttonStyle, <CategoryOutlinedIcon />)}
+    
+
+    {showCatSelection && 
+      (<CategoryRangeSlider 
+        setStartCategory = {setStartCategory}
+        setEndCategory = {setEndCategory}
+        setShowCatSelection={setShowCatSelection}/>)}
+
+    {console.log(startCategory, endCategory)}
+    </>
+
+
+    
+  );
+};
+
+
+
+

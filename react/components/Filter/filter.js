@@ -19,6 +19,7 @@ import { basePath } from "@/next.config";
 import LoadingScreen from "../loading_screen";
 import { smallScreenIconButton } from "./filter_utils";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { RenderCategoryFilter } from "./categorySlider";
 
 
 const ITEM_HEIGHT = 35;
@@ -45,6 +46,8 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
   const [filterParameters, setFilterParameters] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [startCategory, setStartCategory] = useState(null);
+  const [endCategory, setEndCategory] = useState(null);
 
   const [openSpeedDial, setOpenSpeedDial] = useState(false);
 
@@ -241,6 +244,17 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
                 setEndDate={setEndDate}
               />
             </div>
+            <div className="filter-group">
+              <RenderCategoryFilter
+                  showOptionsArrow={showOptionsArrow}
+                  closeOptionsArrow={closeOptionsArrow}
+                  setStartCategory= {setStartCategory}
+                  setEndCategory={setEndCategory}
+                  startCategory={startCategory}
+                  endCategory={endCategory}
+                />
+            </div>
+            
 
             {
               filters.map((filter, index) => {
