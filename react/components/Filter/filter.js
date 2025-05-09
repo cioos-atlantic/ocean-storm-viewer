@@ -91,6 +91,8 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
       startDate: startDate, // Ensure start and end dates are included
       endDate: endDate,
       polyCoords: polyFilterCoords,
+      startCategory: startCategory,
+      endCategory:endCategory,
 
     };
 
@@ -480,6 +482,8 @@ export async function processFilterRequest(filterParameters, setLoading) {
   const endDate = formatFilterDate(filterParameters['endDate']);
   
   const stormPoly = filterParameters['polyCoords'];
+  const startCategory= filterParameters['startCategory'];
+  const endCategory = filterParameters['endCategory'];
 
 
   console.log(stormCategory, stormNames, startDate, endDate)
@@ -492,6 +496,8 @@ export async function processFilterRequest(filterParameters, setLoading) {
     start_date: startDate,
     end_date: endDate,
     polygon: stormPoly,
+    start_category: startCategory,
+    end_category: endCategory,
 
   }).toString();
 

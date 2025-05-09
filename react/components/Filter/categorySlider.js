@@ -66,7 +66,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
                 getAriaLabel={() => 'Category range'}
                 value={value}
                 onChange={handleChange}
-                valueLabelDisplay="auto"
+                //valueLabelDisplay="auto"
                 min={minCategory}
                 max={maxCategory}
                 marks={ [...storm_category_list].sort((a, b) => a.value - b.value) }
