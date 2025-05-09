@@ -1,10 +1,11 @@
-name: sarr_env_4
+name: osv-sarracenia
 channels:
   - conda-forge
   - anaconda
   - defaults
 dependencies:
 - python=3.9
+- pip
 - botocore
 - imagecodecs
 - imageio
@@ -36,7 +37,7 @@ dependencies:
     - metpx-sr3
     - paho-mqtt
     - Pillow
-    - psycopg2
+    - psycopg2-binary
     - pylibmagic
     - pyshp
     - python-dotenv
@@ -45,4 +46,4 @@ dependencies:
     - scipy
     - shapely
 
-    
+
