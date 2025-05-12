@@ -21,10 +21,10 @@ export default async function handler(req, res) {
 
     if (start_date !== "" && end_date !== "") {
         //filters["(ISO_TIME BETWEEN "] =  `'${start_date}' AND '${end_date}')`;
-        filters["(ISO_TIME_START <= "] = `'${start_date}' AND ISO_TIME_END >= '${end_date}')`};
+        filters["(ISO_TIME_START >= "] = `'${start_date}' AND ISO_TIME_END <= '${end_date}')`};
 
     if (start_category !== "" && end_category !== "") {
-        filters["(USA_SSHS_MIN <= "] = `'${start_category}' AND USA_SSHS_MAX >= '${end_category}')`};
+        filters["(USA_SSHS_MIN >= "] = `'${start_category}' AND USA_SSHS_MAX <= '${end_category}')`};
     
 
     if (category_list.length > 0) {

@@ -160,6 +160,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
       {
         <Box className='filters-applied-space'
         sx={{color: 'white'}}>
+          No Filters Applied
           <AppliedFilters
             showCatSelection={showCatSelection}
             setShowCatSelection={setShowCatSelection}
