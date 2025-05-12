@@ -147,8 +147,8 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
   );
 }
 
-export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, setStartCategory, setEndCategory, startCategory, endCategory}){
-  const [showCatSelection, setShowCatSelection] = useState(false); 
+export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, setStartCategory, setEndCategory, startCategory, endCategory, showCatSelection, setShowCatSelection}){
+  //const [showCatSelection, setShowCatSelection] = useState(false); 
   const buttonStyle = {
     backgroundColor: startCategory && endCategory  ? '#e55162' : 'white',
     color: startCategory && endCategory ? 'white' : '#e55162',

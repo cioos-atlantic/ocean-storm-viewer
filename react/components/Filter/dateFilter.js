@@ -11,7 +11,7 @@ import { smallScreenIconButton } from './filter_utils';
 
 
 
-const shortcutsItems = [
+export const shortcutsItems = [
   {
     label: 'This Week',
     getValue: () => {
@@ -65,8 +65,8 @@ const reset= { label: 'Reset', getValue: () => [null, null] };
 
 
 
-export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelectedOption, startDate, endDate,setStartDate, setEndDate}){
-  const [showDateSelection, setShowDateSelection] = useState(false); 
+export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelectedOption, startDate, endDate,setStartDate, setEndDate, showDateSelection, setShowDateSelection}){
+  //const [showDateSelection, setShowDateSelection] = useState(false); 
   const buttonStyle = {
     backgroundColor: startDate && endDate && startDate.isValid() && endDate.isValid() ? '#e55162' : 'white',
     color: startDate && endDate && startDate.isValid() && endDate.isValid() ? 'white' : '#e55162',
@@ -123,7 +123,7 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelect
 
 
 
-function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate, endDate}){
+export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate, endDate}){
    
 
   const slotProps={

@@ -12,6 +12,7 @@ import { RenderSearchResult } from './render_search_result.js';
 import { renderRecentStorms } from './render_recent_storms.js';
 import { RenderFilterResult } from '../Filter/renderFilterResult.js';
 import LoadingScreen from '../loading_screen.js';
+import { AppliedFilters } from '../Filter/filtersApplied.js';
 
 
 const otherStormList = [
@@ -32,7 +33,14 @@ const otherStormList = [
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked}) {
+export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked, startDate,
+  endDate,
+  startCategory,
+  endCategory,
+  setStartDate,
+  setEndDate,
+  setStartCategory,
+  setEndCategory, showCatSelection, setShowCatSelection, showDateSelection, setShowDateSelection}) {
 
   const [loading, setLoading] = useState(false);
 
@@ -149,6 +157,25 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
         />):
         (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setDrawerButtonClicked))}
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
+      {
+        <Box className='filters-applied-space'
+        sx={{color: 'white'}}>
+          <AppliedFilters
+            showCatSelection={showCatSelection}
+            setShowCatSelection={setShowCatSelection}
+            setStartCategory={setStartCategory}
+            setEndCategory={setEndCategory}
+            startCategory={startCategory}
+            endCategory={endCategory}
+            showDateSelection={showDateSelection}
+            setShowDateSelection={setShowDateSelection}
+            startDate={startDate}
+            endDate={endDate}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
+          />
+        </Box>
+      }
 
           
           

@@ -39,15 +39,22 @@ const showOptionsArrow = <KeyboardDoubleArrowDownIcon />;
 const closeOptionsArrow = <KeyboardDoubleArrowUpIcon />;
 
 
-export function RenderFilter({ filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, polyFilterCoords, setPolyFilterCoords, clearShapesRef, setDrawerButtonClicked }) {
+export function RenderFilter({ filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, polyFilterCoords, setPolyFilterCoords, clearShapesRef, setDrawerButtonClicked, startDate,
+  endDate,
+  startCategory,
+  endCategory,
+  setStartDate,
+  setEndDate,
+  setStartCategory,
+  setEndCategory, showCatSelection, setShowCatSelection, showDateSelection, setShowDateSelection }) {
   const [showFilterIcons, setShowFilterIcons] = useState(false);
   const [showFilterOptions, setShowFilterOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [filterParameters, setFilterParameters] = useState([]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [startCategory, setStartCategory] = useState(null);
-  const [endCategory, setEndCategory] = useState(null);
+  //const [startDate, setStartDate] = useState(null);
+  //const [endDate, setEndDate] = useState(null);
+  //const [startCategory, setStartCategory] = useState(null);
+  //const [endCategory, setEndCategory] = useState(null);
 
   const [openSpeedDial, setOpenSpeedDial] = useState(false);
 
@@ -179,6 +186,8 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
                 endDate={endDate}
                 setStartDate={setStartDate}
                 setEndDate={setEndDate}
+                showDateSelection={showDateSelection}
+                setShowDateSelection={setShowDateSelection}
               />
 
             </div>
@@ -193,6 +202,8 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
                   setEndCategory={setEndCategory}
                   startCategory={startCategory}
                   endCategory={endCategory}
+                  showCatSelection ={showCatSelection}
+                  setShowCatSelection = {setShowCatSelection}
                 />
 
             </div>
@@ -258,6 +269,8 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
                 endDate={endDate}
                 setStartDate={setStartDate}
                 setEndDate={setEndDate}
+                showDateSelection={showDateSelection}
+                setShowDateSelection={setShowDateSelection}
               />
             </div>
             <div className="filter-group">
@@ -268,6 +281,8 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
                   setEndCategory={setEndCategory}
                   startCategory={startCategory}
                   endCategory={endCategory}
+                  showCatSelection ={showCatSelection}
+                  setShowCatSelection = {setShowCatSelection}
                 />
             </div>
             
