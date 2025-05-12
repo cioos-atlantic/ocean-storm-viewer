@@ -2,6 +2,7 @@ import { storm_category_filter_list } from "./filters_list";
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import { useEffect, useState, Fragment } from 'react';
 import { Box, Button, Card, CardContent, CardActions, Slider } from "@mui/material";
+import { storm_categories } from "@/lib/storm_class";
 
 import { smallScreenIconButton } from './filter_utils';
 export const storm_category_list = [
@@ -18,7 +19,10 @@ export const storm_category_list = [
   { label: "-5", value: -5 },
 ]
 
-export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowCatSelection }) {
+export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowCatSelection, startCategory, endCategory }) {
+  const defaultText = "Select a range of storm category between -5 and 5";
+
+  const [sliderText, setSliderText] = useState(defaultText);
   
   const values = storm_category_list.map(item => item.value);
   const minCategory = Math.min(...values);
@@ -32,6 +36,45 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
     setStartCategory(newValue[0]);
     setEndCategory(newValue[1]);
   };
+
+
+  
+  
+  const stormCategoryLink = "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html";
+
+
+  useEffect(() => {
+    if (startCategory != null && endCategory != null) {
+      const stormMin = `${startCategory}`;
+      const stormMax = `${endCategory}`;
+  
+      setSliderText(
+        <>
+          You've selected a storm category range from <strong>{stormMin}</strong> to <strong>{stormMax}</strong>. <br />
+          Category <strong>{stormMin}</strong>: {storm_categories[stormMin]?.info}. <br />
+          Category <strong>{stormMax}</strong>: {storm_categories[stormMax]?.info}. <br />
+          For more details, visit{' '}
+          <a href={stormCategoryLink}
+             target="_blank"
+             rel="noopener noreferrer">
+            this page
+          </a>.
+        </>
+      );
+    } else {
+      setSliderText(
+        <>
+          Adjust the slider to filter storms by category, from -5 (weakest) to 5 (strongest). <br />
+          Learn more about {" "}
+          <a href={stormCategoryLink}
+             target="_blank"
+             rel="noopener noreferrer">
+            storm categories
+          </a>.
+        </>
+      );
+    }
+  }, [startCategory, endCategory]);
 
   return (
     <Card
@@ -52,7 +95,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
 
       }}>
         <CardContent className='date-card-content'>
-          Select a range of storm category between -5 and 5
+          {sliderText}
         </CardContent>
         <CardContent
           className='date-card-content'>
@@ -82,6 +125,8 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
                       size="small"
                       className='filter-submit-button'
                       onClick={() => {
+                        setValue([minCategory, maxCategory]); // Reset slider range
+                        setSliderText(defaultText); // Optional: reset text too
                         setStartCategory(null); // Reset to empty string
                         setEndCategory(null);   // Reset to empty string
                       }}>Clear</Button>
@@ -143,7 +188,9 @@ export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, setSt
       (<CategoryRangeSlider 
         setStartCategory = {setStartCategory}
         setEndCategory = {setEndCategory}
-        setShowCatSelection={setShowCatSelection}/>)}
+        setShowCatSelection={setShowCatSelection}
+        startCategory={startCategory}
+        endCategory={endCategory}/>)}
 
     {console.log(startCategory, endCategory)}
     </>

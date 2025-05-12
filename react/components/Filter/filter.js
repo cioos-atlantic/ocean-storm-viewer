@@ -481,7 +481,7 @@ export async function processFilterRequest(filterParameters, setLoading) {
   const startDate = formatFilterDate(filterParameters['startDate']);
   const endDate = formatFilterDate(filterParameters['endDate']);
   
-  const stormPoly = filterParameters['polyCoords'];
+  const stormPoly = filterParameters['polyCoords'];                       
   const startCategory= filterParameters['startCategory'];
   const endCategory = filterParameters['endCategory'];
 
