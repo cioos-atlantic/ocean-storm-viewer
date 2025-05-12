@@ -78,6 +78,7 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
   //console.log(stationName, stationData, stationSummaryText, variablePresence, selectedTab, setSelectedTab)
 
   function generateGraph(selectedVar){
+    
     return (
      <div className="station_chart" >
      <RenderChart  

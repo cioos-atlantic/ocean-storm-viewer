@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController, BarController, BarElement, Filler, TimeScale } from 'chart.js';
-import { storm_graph_color, } from './storm_color';
+import { storm_graph_color } from '../../storm_dashboard/storm_color';
 import { keyframes } from '@emotion/react';
-import { ProgressiveAnimation } from './utils';
+import { ProgressiveAnimation } from '../../storm_dashboard/utils';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import 'chartjs-adapter-luxon';
+import { combined_graph_color } from './chart_color';
 
 //import { graph_colour } from './station_dashboard/station_graph/graph_config.js'
 
@@ -18,7 +19,7 @@ Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryS
 /**
  * Renders a line chart using Chart.js to display station data.
  */
-function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }) {
+function RenderCombinedChart({ sourceData,  varCategory, timeData, hoverPointTime }) {
 
   
 
@@ -32,11 +33,6 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
 
 // Find the index of the given time dynamically
 //const highlightIndex = chartTimeData.indexOf(highlightTime);
-
-  const formattedTimeData = chartTimeData.map(timeString=> Date.parse(timeString))
-  
-  
-  Date.parse(chartTimeData);
   
 
   useEffect(() => {
@@ -70,9 +66,10 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
     
     
     console.log(sourceData);
-    const datasets = makeDataset(sourceData, formattedTimeData, hoverPointTime);
+    const datasets = makeDataset(sourceData, chartTimeData, hoverPointTime, varCategory);
 
     console.log(datasets);
+    console.log(chartTimeData);
   
 
       
@@ -81,7 +78,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
     const chartConfig = {
       type: 'line',
       data: {
-        labels: formattedTimeData, // Set the labels (time)
+        labels: chartTimeData, // Set the labels (time)
         datasets: datasets, // Set the datasets
       },
       
@@ -228,37 +225,39 @@ const getRandomColor = () => {
   return color;
 };
 
-function getColour(var_name){
+function getColour(graph_colour_list, var_name, indx) {
   let colour = '';
-  console.log(var_name)
-  console.log(storm_graph_color)
-  colour = storm_graph_color[var_name] || getRandomColor();
+  console.log(var_name);
+  console.log(graph_colour_list);
+
+  colour = var_name in graph_colour_list ? combined_graph_color[var_name][indx] : getRandomColor()
   return colour;
+
+    
 }
 
 
 
 
 //Generate datasets
-function makeDataset(dataList, formattedTimeData, hoverPointTime) {
+function makeDataset(dataList, formattedTimeData, hoverPointTime, varCategory) {
   const datasets=[];
-  const hoverTimeStamp = new Date(hoverPointTime).getTime();
-  dataList.forEach((dataDict) => {console.log(dataDict);
+  var graph_colour_list = {}
+      Object.assign(graph_colour_list, combined_graph_color);
+
+
+  dataList.forEach((dataDict, index) => {console.log(dataDict);
     Object.entries(dataDict).forEach(([key, value]) => {console.log(key)
       datasets.push({
         label: value.name,
         data: value.data,
-        borderColor: getColour(value.name),
+        borderColor: getColour(graph_colour_list, varCategory, index),
         backgroundColor: 'rgba(0, 0, 0, 0)',
         fill: true,
         pointRadius: (context) => {
-          const pointTime = new Date(formattedTimeData[context.dataIndex]).getTime();
-          return pointTime === hoverTimeStamp ? 10 : 0;
+          return  0;
         },
-        pointBackgroundColor: (context) => {
-          const pointTime = new Date(formattedTimeData[context.dataIndex]).getTime();
-          return pointTime === hoverTimeStamp ? 'red' : 'blue';
-        },
+        
       })
 
     })
@@ -276,4 +275,4 @@ function makeDataset(dataList, formattedTimeData, hoverPointTime) {
 
 
 
-export default React.memo(RenderStormChart);
+export default React.memo(RenderCombinedChart);

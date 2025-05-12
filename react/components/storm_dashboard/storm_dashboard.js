@@ -1,13 +1,14 @@
 import React, { useState, useRef } from"react";
 import { FaWindowClose } from "react-icons/fa";
 import { empty_station_obj } from "../layout";
-import { useMediaQuery, Box } from "@mui/material";
+import { useMediaQuery, Box, useTheme } from "@mui/material";
 import { fetch_value } from "@/lib/storm_utils";
 import RenderStormChart from "./storm_graph";
 import BasicTabs from "./tabs";
 import { StormSummaryText } from "./storm_details";
 import StormDataLayout from "./storm_layout_small_screen";
 import { convert_unit_data } from "../utils/unit_conversion";
+import StormCategory from "../Storm_popup/storm_category";
 
 
 //import BasicTabs from "./tabs";
@@ -23,7 +24,7 @@ import { convert_unit_data } from "../utils/unit_conversion";
 export default function StormDashboard({ storm_data, storm_points, source_type, hover_point, isDrawerOpen, setHoverMarker, isStormDashOpen, setIsStormDashOpen}) {
 
   const [selectedStormTab, setSelectedStormTab] = useState(0);
-  console.log(storm_data, storm_points, source_type, hover_point);
+  //console.log(storm_data, storm_points, source_type, hover_point);
   console.log(storm_points.pts.features)
 
   const stormPoints = storm_points.pts.features;
@@ -85,9 +86,11 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
   const stormNameUniqueValues= [...new Set(stormNameList)];
   const stormName = stormNameUniqueValues[0];
   // Add on to check if more than one storm name exists in data
-
+  const theme = useTheme();
   console.log(stormName);
-  const isExtraSmall = useMediaQuery("(max-width:600px)");
+  const isExtraSmall = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const isSmall = useMediaQuery(theme.breakpoints.down('md')); // `md` in MUI = 960px
 
   const hoverPointTime = fetch_value(hover_point, ["TIMESTAMP", "ISO_TIME"]);
 
@@ -106,7 +109,7 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
         stormType['data'].some(item => item !== undefined);
 
 
-  variablePresence[stormType] = 
+  variablePresence[stormCategory] = 
         Array.isArray(stormCategory['data']) && 
         stormCategory['data'].length > 0 && 
         stormCategory['data'].some(item => item !== undefined);
@@ -130,11 +133,11 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
     isExtraSmall ? (
       <Box
       key="storm-dashboard"
-      className={`station_dashboard ${isDrawerOpen ? "drawerOpen" : "drawerClosed"}`}
+      className={`station_dashboard`}
       sx={{
         //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
         display: isStormDashOpen ? 'flex':'none',
-        maxHeight: '45%'
+        
         
         
       }}
@@ -144,8 +147,7 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
         sx={{
           fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
           padding: "10px",
-          fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
-          padding: "10px",
+          
         }}
       >
         <button
@@ -205,8 +207,7 @@ export default function StormDashboard({ storm_data, storm_points, source_type, 
         sx={{
           fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
           padding: "10px",
-          fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
-          padding: "10px",
+          
         }}
       >
         <button

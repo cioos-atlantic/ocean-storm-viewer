@@ -4,10 +4,12 @@ import re
 import os
 from dotenv import load_dotenv
 import pandas as pd
+import numpy as np
 import psycopg2
 from sqlalchemy import create_engine, text, Engine, exc
 from pathlib import Path
 from hashlib import md5
+import argparse
 
 # import logging
 # logging.basicConfig(
@@ -35,6 +37,9 @@ historical_file = os.getenv('HISTORICAL_FILE')
 
 active_table = os.getenv('ACTIVE_TABLE')
 historical_table = os.getenv('HISTORICAL_TABLE')
+
+active_table_lines = os.getenv('ACTIVE_TABLE_LINES')
+historical_table_lines = os.getenv('HISTORICAL_TABLE_LINES')
 
 # Tells pandas to skip the 2nd line in the CSV file that specifies unit types 
 # for the columns - this row doesn't need to be inserted into the postgis table
@@ -244,6 +249,7 @@ def check_ibtracs_data_checksums():
 
                 file_properties = {
                     "table":"",
+                    "table_lines":"",
                     "path":file_path.strip(),
                     "checksum":checksum,
                     "checksum_result":checksum_result.strip()
@@ -251,10 +257,12 @@ def check_ibtracs_data_checksums():
                 
                 if active_file in file_path:
                     file_properties["table"] = active_table
+                    file_properties["table_lines"] = active_table_lines
                     ibtracs_files["active"] = file_properties
 
                 if historical_file in file_path:
                     file_properties["table"] = historical_table
+                    file_properties["table_lines"] = historical_table_lines
                     ibtracs_files["historical"] = file_properties
 
     # except TypeError:
@@ -263,6 +271,7 @@ def check_ibtracs_data_checksums():
 
         active_file_properties = {
             "table":active_table,
+            "table_lines":active_table_lines,
             "path":active_file,
             "checksum": None,
             "checksum_result":"FAILED"
@@ -272,6 +281,7 @@ def check_ibtracs_data_checksums():
 
         historical_file_properties = {
             "table":historical_table,
+            "table_lines":historical_table_lines,
             "path":historical_file,
             "checksum": None,
             "checksum_result":"FAILED"
@@ -286,6 +296,104 @@ def md5_file_checksum(path):
     return md5(open(path, mode='rt').read().encode()).hexdigest()
 
 
+
+def generate_ibtracs_lines(ibtracs_files:dict, pg_engine:Engine):
+    # Creates a linestring for storm lines based on the list of points in the 
+    # row
+    # 
+    # SELECT "SID", ST_MakeLine(ihs.geom ORDER BY "ISO_TIME") as geom
+    # FROM public.ibtracs_historical_storms as ihs
+    # GROUP BY "SID"
+
+    # Initial radius of 2,000km based on the fact that the largest radius known
+    # (Hurricane Sandy) was over 1,800km
+    storm_buffer_radius = 2000 * 1000
+    
+    with pg_engine.begin() as pg_conn:
+        for ib_file in ibtracs_files:
+            source_table = ibtracs_files[ib_file]['table']
+            destination_table = ibtracs_files[ib_file]['table_lines']
+
+            print(f"Building Storm lines from {source_table} into {destination_table}...")
+            try:
+                print(f"Truncating {destination_table}...")
+                sql = f"TRUNCATE {destination_table};"
+                del_result = pg_conn.execute(text(sql))
+
+                print(f"Removed {del_result.rowcount} rows.")
+
+                # Creates the short-list along with min/max values as well as a 2,000km 
+                # buffer around the storm line geometry
+                # 
+                # NOTE:  
+                # 
+                #   "HAVING COUNT("SID") > 1" 
+                # 
+                # was added to prevent a handful of storms from the 1800s being
+                # factored into the line generation.  These storms only have 1 
+                # point, which is less than that is required to generate 
+                # linestrings and creates issues for PostGIS/Geoserver 
+                # from rendering the historical lines table.
+                sql = f"""
+                INSERT INTO {destination_table} (
+                SELECT 
+                    ihs_prime."SID", "SEASON", "NUMBER", "NAME", 
+                    MIN("ISO_TIME") as ISO_TIME_START, MAX("ISO_TIME") as ISO_TIME_END, 
+                    MIN("WMO_WIND") as WMO_WIND_MIN, MAX("WMO_WIND") as WMO_WIND_MAX, 
+                    MIN("WMO_PRES") as WMO_PRES_MIN, MAX("WMO_PRES") as WMO_PRES_MAX,
+                    MIN("USA_SSHS") as USA_SSHS_MIN, MAX("USA_SSHS") as USA_SSHS_MAX,
+                    ihs_lines.geom as geom_storm_line, ihs_lines.geom_storm_buffer::geometry as geom_storm_buffer
+                FROM 
+                    public.{source_table} as ihs_prime
+                INNER JOIN (
+                    SELECT 
+                        ihs."SID", 
+                        ST_MakeLine(ihs.geom ORDER BY "ISO_TIME") as geom, 
+                        ST_Buffer(st_setSRID(ST_MakeLine(ihs.geom ORDER BY "ISO_TIME"), 4326)::geography, {storm_buffer_radius}, 'endcap=round join=round') as geom_storm_buffer 
+                    FROM 
+                        public.{source_table} as ihs 
+                    GROUP BY 
+                        ihs."SID"
+                    HAVING 
+                        COUNT("SID") > 1
+                ) as ihs_lines
+                ON 
+                    ihs_prime."SID" = ihs_lines."SID"
+                GROUP BY 
+                    ihs_prime."SID", 
+                    "SEASON",
+                    "NUMBER",
+                    "NAME", 
+                    ihs_lines.geom, 
+                    ihs_lines.geom_storm_buffer
+                )
+                """
+                
+                print(f"Inserting into storm lines table...")
+                ins_result = pg_conn.execute(text(sql))
+                
+                print(f"Inserted {ins_result.rowcount} rows - Committing Transaction.")
+
+                ibtracs_files[ib_file]["storm_lines"] = ins_result.rowcount
+
+            except exc.SQLAlchemyError as ex:
+                print(f" - SQLAlchemyError: {ex}")
+                print(" - Rolling back Transaction.")
+                
+                pg_conn.rollback()
+                pg_conn.close()
+
+                return ibtracs_files
+        
+            except Exception as ex:
+                print(f" - OTHER ERROR!: {ex}")
+                print(" - Rolling back Transaction.")
+                pg_conn.rollback()
+
+        pg_conn.commit()
+
+        return ibtracs_files
+
 def process_files(ibtracs_files:dict, pg_engine:Engine):
     # Keep a count of how many files have been processed, increment 1 per valid
     # ins_result
@@ -299,8 +407,8 @@ def process_files(ibtracs_files:dict, pg_engine:Engine):
             print("Checksum Failed! processing new file...")
             ins_result = process_ibtracs(source_csv_file=ibtracs_files[file]["path"], destination_table=ibtracs_files[file]["table"], pg_engine=pg_engine)
             print("Finished Processing.")
-            
-            # If insert 
+
+            # If insert is successful, reset md5 
             if ins_result:
                 ibtracs_files[file]["ins_result"] = ins_result
                 ibtracs_files[file]['new_checksum'] = md5(open(ibtracs_files[file]['path'], mode='rt').read().encode()).hexdigest()
@@ -312,21 +420,28 @@ def process_ibtracs(source_csv_file:str, destination_table:str, pg_engine:Engine
     df = pd.read_csv(filepath_or_buffer=source_csv_file, header=0, skiprows=skip_rows, parse_dates=True, dtype=table_dtypes, na_values=na_values, keep_default_na=False)
     
     table_columns = []
-    with pg_engine.begin() as conn:
+    with pg_engine.begin() as pg_conn:
         query = text(f"SELECT * FROM public.{destination_table} LIMIT 0")
-        table_columns = pd.read_sql_query(query, conn).columns.drop('geom')
+        table_columns = pd.read_sql_query(query, pg_conn)
 
-    # table_columns = pd.read_sql_table(destination_table, pg_engine).columns.drop('geom')
+    # print("Columns in table not in dataframe")
+    # not_in_df = set(table_columns) - set(df.columns)
+    # print(not_in_df)
+
+    # for col in not_in_df:
+    #     print(f"Adding empty '{col}' to df...")
+    #     df.insert(len(df.columns), col, '')
     
+    print(df)
+    # exit()
     del_result = None
     ins_result = None
 
     # truncate tables
     with pg_engine.begin() as pg_conn:
-        print(" - Clearing Existing Data...")
-        sql = f"TRUNCATE {destination_table};"
-        
         try:
+            print(" - Clearing Existing Data...")
+            sql = f"TRUNCATE {destination_table};"
             del_result = pg_conn.execute(text(sql))
             print(" - Committing Transaction.")
             pg_conn.commit()
@@ -335,19 +450,23 @@ def process_ibtracs(source_csv_file:str, destination_table:str, pg_engine:Engine
             print(f" - SQLAlchemyError: {ex}")
             print(" - Rolling back Transaction.")
             pg_conn.rollback()
+        
+        except Exception as ex:
+            print(f" - OTHER ERROR!: {ex}")
+            print(" - Rolling back Transaction.")
+            pg_conn.rollback()
 
     # If delete table contents is successful, proceed to ingest the 
     # replacement data.
     if del_result:
-        print(" - Populating Table...")
-        ins_result = df[table_columns].to_sql(destination_table, pg_engine, chunksize=2500, method='multi', if_exists='append', index=False, schema='public')
-        print(f" - Inserted {ins_result} rows")
-        
         with pg_engine.begin() as pg_conn:
-            print(" - Updating Geometry...")
-            sql = f'UPDATE public.{destination_table} SET geom = ST_SetSRID(ST_MakePoint("LON", "LAT"), 4326);'
-
             try:
+                print(" - Populating Table...")
+                ins_result = df.to_sql(destination_table, pg_conn, chunksize=500, method='multi', if_exists='append', index=False, schema='public')
+                print(f" - Inserted {ins_result} rows")
+
+                print(" - Updating Geometry...")
+                sql = f'UPDATE public.{destination_table} SET geom = ST_SetSRID(ST_MakePoint("LON", "LAT"), 4326);'
                 upd_result = pg_conn.execute(text(sql))
                 
                 print(f" - Calculated geometry for {upd_result.rowcount} rows")
@@ -359,15 +478,40 @@ def process_ibtracs(source_csv_file:str, destination_table:str, pg_engine:Engine
                 print(f" - SQLAlchemyError: {ex}")
                 print(" - Rolling back Transaction.")
                 pg_conn.rollback()
+        
+            except Exception as ex:
+                print(f" - OTHER ERROR!: {ex}")
+                print(" - Rolling back Transaction.")
+                pg_conn.rollback()
 
     return ins_result
         
 
 if __name__ == '__main__':
+    # parser = argparse.ArgumentParser()
+
+    # parser.add_argument("--gen_lines", help="Generates Line strings for IBTRACS data based on existing data in the database", action="store_true")
+    
+    # args = parser.parse_args()
+
     print(f"MD5 Results File: {md5_results_file}")
     print(f"MD5 Test File: {md5_test_file}")
 
-    # Populate IBTrACS file metadata
+    # Populate IBTrACS file metadata - example output below:
+    # {
+    #   'active': {
+    #   'table': 'ibtracs_active_storms', 
+    #   'path': '/home/scott/ibtracs/ibtracs.ACTIVE.list.v04r01.csv', 
+    #   'checksum': None, 
+    #   'checksum_result': 'FAILED'
+    # }, 
+    #   'historical': {
+    #   'table': 'ibtracs_historical_storms', 
+    #   'path': '/home/scott/ibtracs/ibtracs.NA.list.v04r01.csv', 
+    #   'checksum': None, 
+    #   'checksum_result': 'FAILED'
+    #   }
+    # }
     ibtracs_files = check_ibtracs_data_checksums()
 
     # Open database connection
@@ -376,8 +520,12 @@ if __name__ == '__main__':
     # Process files is invalid checksum results
     (ibtracs_files, files_processed) = process_files(ibtracs_files=ibtracs_files, pg_engine=pg_engine)
 
+    ibtracs_files = generate_ibtracs_lines(ibtracs_files=ibtracs_files, pg_engine=pg_engine)
+
     # Dispose of database connection pool after all files have been processed
     pg_engine.dispose()
+
+    print(f"Final output: {ibtracs_files}")
 
     # If no files are processed leave results file alone, only recreate when one 
     # or more files have been processed

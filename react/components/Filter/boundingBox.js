@@ -10,31 +10,7 @@ import 'leaflet-draw/dist/leaflet.draw.css';
 import 'leaflet-draw';
 
 
-export function RenderBoundingBox1(map){
-  let drawItems = new FeatureGroup();
-  map.addLayer(drawItems);
 
-
-  let drawControl = new Control.Draw({
-    edit:{
-      featureGroup: drawItems
-    },
-    draw:{
-      polygon: true,
-      polyline: true,
-      rectangle: true,
-      circle: true,
-      marker: true,
-    }
-  })
-
-  map.addControl(drawControl);
-   // Ensure drawn items are added to the layer
-   map.on(L.Draw.Event.CREATED, function (event) {
-    let layer = event.layer;
-    drawItems.addLayer(layer);
-  });
-};
 
 
 

@@ -69,6 +69,14 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
   if (active_storms) {
     storm_data_pass = empty_storm_obj;
     source_type = "active";
+      // Fetch active station data
+    useEffect(() => {
+      fetch(`${basePath}/api/query_stations`)
+        .then((res) => res.json())
+        .then((data) => {
+          setStationPoints(data);
+        })
+    }, []);
   }
 
   if (historical_storms) {
