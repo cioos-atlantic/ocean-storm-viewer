@@ -294,8 +294,6 @@ export default function Map({ children, storm_points, storm_data, station_data, 
 
           {<RenderSpatialFilter
           ref={clearShapesRef} 
-          bboxFilterCoordinates={bboxFilterCoordinates}
-          setBboxFilterCoordinates={setBboxFilterCoordinates}
           polyFilterCoords={polyFilterCoords}
           setPolyFilterCoords={setPolyFilterCoords}
           />} {/* Calling the EditControl function here */}
