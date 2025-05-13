@@ -193,18 +193,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             setReturnFilterResult = {setReturnFilterResult}
             drawerButtonClicked={drawerButtonClicked}
             setDrawerButtonClicked={setDrawerButtonClicked}
-            startDate={startDate}
-            endDate={endDate}
-            startCategory={startCategory}
-            endCategory={endCategory}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-            setStartCategory={setStartCategory}
-            setEndCategory={setEndCategory}
-            showCatSelection ={showCatSelection}
-            setShowCatSelection = {setShowCatSelection}
-            showDateSelection={showDateSelection}
-            setShowDateSelection={setShowDateSelection}
+            
           />
 
           <TileLayer

@@ -176,12 +176,12 @@ export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, setSt
       display: { xs: "none", md: "inline-flex" }, }
     }>
       
-      Storm Category1
+      Storm Category
       
       
 
     </Button>
-    {smallScreenIconButton('Storm Category1', handleIconClick, buttonStyle, <CategoryOutlinedIcon />)}
+    {smallScreenIconButton('Storm Category', handleIconClick, buttonStyle, <CategoryOutlinedIcon />)}
     
 
     {showCatSelection && 

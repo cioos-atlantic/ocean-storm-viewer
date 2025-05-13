@@ -19,14 +19,7 @@ export const storm_category_filter_list = [
 
 export const filters = [
   
-  { 
-    "name":'stormCategory',
-    "display_name": 'Storm Category',
-    "options":storm_category_filter_list,
-    'icon':<CategoryOutlinedIcon />,
-    
-    
-  }
+ 
   
 
 

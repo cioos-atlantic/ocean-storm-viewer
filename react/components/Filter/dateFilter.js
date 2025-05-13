@@ -96,12 +96,12 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelect
       display: { xs: "none", md: "inline-flex" }, }
     }>
       
-      Select Date Range
+      Filter by Date
       
       
 
     </Button>
-    {smallScreenIconButton('Select Date Range', handleIconClick, buttonStyle, <CalendarMonthOutlinedIcon/>)}
+    {smallScreenIconButton('Filter by Date', handleIconClick, buttonStyle, <CalendarMonthOutlinedIcon/>)}
     
 
     {showDateSelection && 
