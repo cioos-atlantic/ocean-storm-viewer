@@ -157,27 +157,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
         />):
         (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setDrawerButtonClicked))}
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
-      {
-        <Box className='filters-applied-space'
-        sx={{color: 'white'}}>
-          No Filters Applied
-          <AppliedFilters
-            showCatSelection={showCatSelection}
-            setShowCatSelection={setShowCatSelection}
-            setStartCategory={setStartCategory}
-            setEndCategory={setEndCategory}
-            startCategory={startCategory}
-            endCategory={endCategory}
-            showDateSelection={showDateSelection}
-            setShowDateSelection={setShowDateSelection}
-            startDate={startDate}
-            endDate={endDate}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-          />
-        </Box>
-      }
-
+      
           
           
         </>
