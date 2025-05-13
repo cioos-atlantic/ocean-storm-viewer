@@ -136,7 +136,8 @@ export const storm_categories = {
     "arcStroke": '#A188FC',
     "ellipseColor": '#A188FC',
     "textColor": '#FFFFFF',
-    "info": "A hurricane with sustained winds of a minimum of 136 knots (252 km/h)",
+    "info": "A hurricane with sustained winds of a minimum of 137 knots (254 km/h)",
+    "sub_info":"a hurricane with sustained winds of a minimum of 137 knots (254 km/h)",
     "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
   },
   "4": {
@@ -147,7 +148,8 @@ export const storm_categories = {
     "arcStroke": '#FF738A',
     "ellipseColor": '#FF738A',
     "textColor": '#FFFFFF',
-    "info": "A hurricane with sustained winds of a minimum of 113 knots (210 km/h)",
+    "info": "A hurricane with sustained winds of a range of 113 knots (210 km/h) to 136 knots (252 km/h)",
+    "sub_info":"sustained winds ranging from 210 to 252 km/h (113–136 knots)",
     "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
   },
   "3": {
@@ -159,6 +161,7 @@ export const storm_categories = {
     "ellipseColor": '#FF9E59',
     "textColor": '#FFFFFF',
     "info": "A hurricane with sustained winds of a minimum of 96 knots (177 km/h)",
+    "sub_info":"sustained winds ranging from 177 to 207 km/h (96–112 knots)",
     "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
   },
   "2": {
@@ -170,6 +173,7 @@ export const storm_categories = {
     "ellipseColor": '#FFD98C',
     "textColor": '#000000',
     "info": "A hurricane with sustained winds of a minimum of 83 knots (153 km/h)",
+    "sub_info":"sustained winds ranging from 153 to 176 km/h (83–95 knots)",
     "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
   },
   "1": {
@@ -181,6 +185,7 @@ export const storm_categories = {
     "ellipseColor": '#FFFFD9',
     "textColor": '#000000',
     "info": "A hurricane with sustained winds of a minimum of 64 knots (119 km/h)",
+    "sub_info":"sustained winds ranging from 64 to 152 km/h (64–82 knots)",
     "more_info_link": "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html"
   },
   "0": {
@@ -192,6 +197,7 @@ export const storm_categories = {
     "ellipseColor": '#4DFFFF',
     "textColor": '#000000',
     "info": "This is a tropical system likely classified as tropical storm, as outlined in the IBTRACS documentation.",
+    "sub_info":"tropical storm with sustained winds ranging from 63 to 117 km/h (34–63 knots)",
     "more_info_link": "https://www.ncei.noaa.gov/sites/g/files/anmtlf171/files/2024-06/IBTrACS%20v04r01%20column%20documentation.pdf"
   },
   "-1": {
@@ -203,6 +209,7 @@ export const storm_categories = {
     "ellipseColor": '#6EC1EA',
     "textColor": '#000000',
     "info": "This is a tropical system likely classified as tropical depression, as outlined in the IBTRACS documentation.",
+    "sub_info":"tropical depression with sustained winds ranging less than 63 km/h (34 knots)",
     "more_info_link": "https://www.ncei.noaa.gov/sites/g/files/anmtlf171/files/2024-06/IBTrACS%20v04r01%20column%20documentation.pdf"
   },
   "-2": {
@@ -214,6 +221,7 @@ export const storm_categories = {
     "ellipseColor": '#1591DE',
     "textColor": '#000000',
     "info": "This is a tropical system likely classified as subtropical storm or subtropical depression, as outlined in the IBTRACS documentation.",
+    "sub_info":"classified as subtropical storms",
     "more_info_link": "https://www.ncei.noaa.gov/sites/g/files/anmtlf171/files/2024-06/IBTrACS%20v04r01%20column%20documentation.pdf"
   },
   "-3": {
@@ -225,6 +233,7 @@ export const storm_categories = {
     "ellipseColor": '#5DA7F0',
     "textColor": '#000000',
     "info": "This is a tropical system termed  Miscellaneous disturbances, likely classified as tropical wave, low, disturbance, dissipating, inland, or monsoon depression, as outlined in the IBTRACS documentation.",
+    "sub_info":"classified as miscellaneous disturbances",
     "more_info_link": "https://www.ncei.noaa.gov/sites/g/files/anmtlf171/files/2024-06/IBTrACS%20v04r01%20column%20documentation.pdf"
   },
   "-4": {
@@ -236,6 +245,7 @@ export const storm_categories = {
     "ellipseColor": '#2081D9',
     "textColor": '#FFFFFF',
     "info": "This is a tropical system, likely classified as an extra-tropical, post-tropical, or extrapolated, as outlined in the IBTRACS documentation.",
+    "sub_info":"classified as  post-tropical",
     "more_info_link": "https://www.ncei.noaa.gov/sites/g/files/anmtlf171/files/2024-06/IBTrACS%20v04r01%20column%20documentation.pdf"
   },
   "-5": {
@@ -247,6 +257,7 @@ export const storm_categories = {
     "ellipseColor": '#1659B8',
     "textColor": '#FFFFFF',
     "info": "This is a tropical system whose status is currently unknown as provided in the IBTRACS documentation",
+    "sub_info":"classified as unknown",
     "more_info_link": "https://www.ncei.noaa.gov/sites/g/files/anmtlf171/files/2024-06/IBTrACS%20v04r01%20column%20documentation.pdf"
   },
 }
