@@ -1,5 +1,5 @@
 import { IconButton, TextField, Box, Typography, Paper, Button, SpeedDial, SpeedDialIcon, SpeedDialAction, Tooltip } from "@mui/material";
-import { useEffect, useState, Fragment } from 'react';
+import { useEffect, useState, Fragment, useContext } from 'react';
 import Stack from '@mui/material/Stack';
 
 //import Chip from '@mui/material/Chip';
@@ -20,6 +20,7 @@ import LoadingScreen from "../loading_screen";
 import { smallScreenIconButton } from "./filter_utils";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { RenderCategoryFilter } from "./categorySlider";
+import { MapStates } from "../map";
 
 
 const ITEM_HEIGHT = 35;
@@ -38,15 +39,9 @@ const MenuProps = {
 const showOptionsArrow = <KeyboardDoubleArrowDownIcon />;
 const closeOptionsArrow = <KeyboardDoubleArrowUpIcon />;
 
-
-export function RenderFilter({ filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, polyFilterCoords, setPolyFilterCoords, clearShapesRef, setDrawerButtonClicked, startDate,
-  endDate,
-  startCategory,
-  endCategory,
-  setStartDate,
-  setEndDate,
-  setStartCategory,
-  setEndCategory, showCatSelection, setShowCatSelection, showDateSelection, setShowDateSelection }) {
+const context = useContext(MapStates);
+const {setDrawerButtonClicked, startDate, endDate, startCategory, endCategory, polyFilterCoords, clearShapesRef, setIsDrawerOpen, setReturnFilterResult, setFilterResult, setPolyFilterCoords, setStartDate, setEndDate } = context;
+export function RenderFilter({}) {
   const [showFilterIcons, setShowFilterIcons] = useState(false);
   const [showFilterOptions, setShowFilterOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -180,14 +175,7 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
             {openSpeedDial && (<div className="filter-group">
               <RenderDateFilter
                 showOptionsArrow={showOptionsArrow}
-                closeOptionsArrow={closeOptionsArrow}
-                setSelectedOptions={setSelectedOptions}
-                startDate={startDate}
-                endDate={endDate}
-                setStartDate={setStartDate}
-                setEndDate={setEndDate}
-                showDateSelection={showDateSelection}
-                setShowDateSelection={setShowDateSelection}
+                closeOptionsArrow={closeOptionsArrow}                
               />
 
             </div>
@@ -198,12 +186,7 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
               <RenderCategoryFilter
                   showOptionsArrow={showOptionsArrow}
                   closeOptionsArrow={closeOptionsArrow}
-                  setStartCategory= {setStartCategory}
-                  setEndCategory={setEndCategory}
-                  startCategory={startCategory}
-                  endCategory={endCategory}
-                  showCatSelection ={showCatSelection}
-                  setShowCatSelection = {setShowCatSelection}
+                  
                 />
 
             </div>
@@ -265,24 +248,12 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
                 showOptionsArrow={showOptionsArrow}
                 closeOptionsArrow={closeOptionsArrow}
                 setSelectedOptions={setSelectedOptions}
-                startDate={startDate}
-                endDate={endDate}
-                setStartDate={setStartDate}
-                setEndDate={setEndDate}
-                showDateSelection={showDateSelection}
-                setShowDateSelection={setShowDateSelection}
               />
             </div>
             <div className="filter-group">
               <RenderCategoryFilter
                   showOptionsArrow={showOptionsArrow}
                   closeOptionsArrow={closeOptionsArrow}
-                  setStartCategory= {setStartCategory}
-                  setEndCategory={setEndCategory}
-                  startCategory={startCategory}
-                  endCategory={endCategory}
-                  showCatSelection ={showCatSelection}
-                  setShowCatSelection = {setShowCatSelection}
                 />
             </div>
             
@@ -526,7 +497,7 @@ export async function processFilterRequest(filterParameters, setLoading) {
     //const historical_storm_data = parseStormData(storm_data, storm.name);
     // console.log(historical_station_data);
 
-    console.debug(`historical Storm Data for ${stormCategory} Between  ${startDate} and ${endDate}: `, storm_data);
+    //console.debug(`historical Storm Data for ${stormCategory} Between  ${startDate} and ${endDate}: `, storm_data);
     // Create a set to track unique IDs and add objects to the result list
     uniqueList = makeStormList(storm_data)
     // Create a set to track unique IDs and add objects to the result list

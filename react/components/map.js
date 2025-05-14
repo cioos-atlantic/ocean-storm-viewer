@@ -1,5 +1,5 @@
 // https://iconoir.com/ icon library that can be installed via npm
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext, createContext } from "react";
 import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup, Marker, Popup, useMap } from 'react-leaflet'
 import Drawer from '@/components/drawer';
 
@@ -28,12 +28,17 @@ import CustomZoomControl from "./custom_zoom_control";
 import StormDashboard from "./storm_dashboard/storm_dashboard";
 import { RenderDashboards } from "./Dashboard/dashboard";
 import StormMarker from "./stormPoint";
+import { LayoutState } from "./layout";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
 
-export default function Map({ children, storm_points, storm_data, station_data, source_type, setStormPoints, setStationPoints, setHistoricalStormData, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, setIsDrawerOpen, isDrawerOpen,  }) {
+export const MapStates = createContext();
 
+export default function Map({ children, source_type  }) {
+
+  const context = useContext(LayoutState);
+  const {stormPoints, setStormPoints,station_points, setStationPoints, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, isDrawerOpen, setIsDrawerOpen} = context;
   const clearShapesRef = useRef(null);
 
   // The state variable that contains the storm point currently being hovered 
@@ -65,260 +70,236 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   
 
   console.log(allDatasetDescriptions)
-  console.debug("Storm Points in map.js: ", storm_points);
+  console.debug("Storm Points in map.js: ", stormPoints);
 
 
   return (
-    <div className="map_container">
-      <div className='inner_container'>
-        {/*hover_marker !== empty_point_obj && (
-          <StormPointDetails
-            storm_point_hover={hover_marker}
-            //onClose={() => setHoverMarker(empty_point_obj)} // Close popup when the marker is reset
-            setIsStormDetOpen= {setIsStormDetOpen}
-            setHoverMarker= {setHoverMarker}
-          />
-        )*/}
-
-        {/*
-          <RenderStormSearch
-            isSearchSubmitted = {isSearchSubmitted}
-            setIsSearchSubmitted= {setIsSearchSubmitted}
-            searchResult= {searchResult}
-            setSearchResult={setSearchResult}
-            setIsDrawerOpen= {setIsDrawerOpen}
-            isDrawerOpen= {isDrawerOpen}/>
-         */}
-        {/*hover_marker !== empty_point_obj && (
-          <StormDashboard
-            storm_data={storm_data}
-            storm_points={storm_points}
-            source_type={source_type}
-            hover_point={hover_marker}
-            isDrawerOpen={isDrawerOpen}
-            setHoverMarker={setHoverMarker}/>
-         )*/}
-        {
-          <RenderFilter
-          filterResult = {filterResult}
-          setFilterResult = {setFilterResult}
-          returnFilterResult= {returnFilterResult}
-          setReturnFilterResult = {setReturnFilterResult}
-          setIsDrawerOpen= {setIsDrawerOpen}
-          bboxFilterCoordinates={bboxFilterCoordinates}
-          setBboxFilterCoordinates={setBboxFilterCoordinates}
-          polyFilterCoords={polyFilterCoords}
-          setPolyFilterCoords={setPolyFilterCoords}
-          clearShapesRef={clearShapesRef} // Pass the ref to 
-          setDrawerButtonClicked={setDrawerButtonClicked}
-          startDate={startDate}
-          endDate={endDate}
-          startCategory={startCategory}
-          endCategory={endCategory}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
-          setStartCategory={setStartCategory}
-          setEndCategory={setEndCategory}
-          showCatSelection ={showCatSelection}
-          setShowCatSelection = {setShowCatSelection}
-          showDateSelection={showDateSelection}
-          setShowDateSelection={setShowDateSelection}
-
-          
-          // RenderFilter
-          
-          />
-        }
-        {
-          <RenderDashboards
-            storm_data={storm_data}
-            storm_points={storm_points}
-            source_type={source_type}
-            hover_point={hover_marker}
-            isDrawerOpen={isDrawerOpen}
-            setHoverMarker={setHoverMarker}
-            selected_station={selected_station}
-            setSelectedStation={setSelectedStation}
-            station_descriptions={allDatasetDescriptions}
-            storm_timestamp = {new Date()}
-            selectedTab = {selected_tab}
-            setSelectedTab = {setSelectedTab}
-            isStormDashOpen={isStormDashOpen}
-            setIsStormDashOpen={setIsStormDashOpen}
-            isStationDashOpen={isStationDashOpen}
-            setIsStationDashOpen={setIsStationDashOpen}
+    <MapStates.Provider value= {{hover_marker, setHoverMarker, selected_tab, setSelectedTab, selected_station, setSelectedStation, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords, isStormDashOpen, setIsStormDashOpen, isStationDashOpen, setIsStationDashOpen, drawerButtonClicked, setDrawerButtonClicked, startDate, setStartDate, endDate, setEndDate, startCategory, setStartCategory, endCategory, setEndCategory, showCatSelection, setShowCatSelection, showDateSelection, setShowDateSelection }}>
+      <div className="map_container">
+        <div className='inner_container'>
+          {/*hover_marker !== empty_point_obj && (
+            <StormPointDetails
+              storm_point_hover={hover_marker}
+              //onClose={() => setHoverMarker(empty_point_obj)} // Close popup when the marker is reset
+              setIsStormDetOpen= {setIsStormDetOpen}
+              setHoverMarker= {setHoverMarker}
             />
-        }
-        
-        {/*selected_station !== empty_station_obj && (
-          <StationDashboard
-            selected_station={selected_station}
-            setSelectedStation={setSelectedStation}
-            stationsDescriptions={allDatasetDescriptions}
-            station_descriptions={allDatasetDescriptions}
-            storm_timestamp = {new Date()}
-            selectedTab = {selected_tab}
-            setSelectedTab = {setSelectedTab}
-            isDrawerOpen= {isDrawerOpen}
-            isStormDetOpen= {isStormDetOpen}
-            setIsStormDetOpen= {setIsStormDetOpen}
-            source_type = {source_type}
-          ></StationDashboard>
-        )*/}
-        <MapContainer
-          center={defaultPosition}
-          zoom={defaultZoom}
-          style={{ height: "100%", width: "100%" }}
-          worldCopyJump={true}
-          zoomControl={false}
+          )*/}
+
+          {/*
+            <RenderStormSearch
+              isSearchSubmitted = {isSearchSubmitted}
+              setIsSearchSubmitted= {setIsSearchSubmitted}
+              searchResult= {searchResult}
+              setSearchResult={setSearchResult}
+              setIsDrawerOpen= {setIsDrawerOpen}
+              isDrawerOpen= {isDrawerOpen}/>
+          */}
+          {/*hover_marker !== empty_point_obj && (
+            <StormDashboard
+              stormPoints={stormPoints}
+              stormPoints={stormPoints}
+              source_type={source_type}
+              hover_point={hover_marker}
+              isDrawerOpen={isDrawerOpen}
+              setHoverMarker={setHoverMarker}/>
+          )*/}
+          {
+            <RenderFilter/>
+          }
+          {
+            <RenderDashboards
+              stormPoints={stormPoints}
+              stormPoints={stormPoints}
+              source_type={source_type}
+              hover_point={hover_marker}
+              isDrawerOpen={isDrawerOpen}
+              setHoverMarker={setHoverMarker}
+              selected_station={selected_station}
+              setSelectedStation={setSelectedStation}
+              station_descriptions={allDatasetDescriptions}
+              storm_timestamp = {new Date()}
+              selectedTab = {selected_tab}
+              setSelectedTab = {setSelectedTab}
+              isStormDashOpen={isStormDashOpen}
+              setIsStormDashOpen={setIsStormDashOpen}
+              isStationDashOpen={isStationDashOpen}
+              setIsStationDashOpen={setIsStationDashOpen}
+              />
+          }
           
-        > <CustomZoomControl /> 
-          <Drawer
-            element_id="left-side"
-            classes="left"
-            storm_data={storm_data}
-            source_type={source_type}
-            setStormPoints={setStormPoints}
-            setStationPoints={setStationPoints}
-            setIsDrawerOpen= {setIsDrawerOpen}
-            isDrawerOpen= {isDrawerOpen}
-            setSelectedStation={setSelectedStation}
-            isSearchSubmitted = {isSearchSubmitted}
-            setIsSearchSubmitted= {setIsSearchSubmitted}
-            searchResult= {searchResult}
-            setSearchResult={setSearchResult}
-            filterResult = {filterResult}
-            setFilterResult = {setFilterResult}
-            returnFilterResult= {returnFilterResult}
-            setReturnFilterResult = {setReturnFilterResult}
-            drawerButtonClicked={drawerButtonClicked}
-            setDrawerButtonClicked={setDrawerButtonClicked}
+          {/*selected_station !== empty_station_obj && (
+            <StationDashboard
+              selected_station={selected_station}
+              setSelectedStation={setSelectedStation}
+              stationsDescriptions={allDatasetDescriptions}
+              station_descriptions={allDatasetDescriptions}
+              storm_timestamp = {new Date()}
+              selectedTab = {selected_tab}
+              setSelectedTab = {setSelectedTab}
+              isDrawerOpen= {isDrawerOpen}
+              isStormDetOpen= {isStormDetOpen}
+              setIsStormDetOpen= {setIsStormDetOpen}
+              source_type = {source_type}
+            ></StationDashboard>
+          )*/}
+          <MapContainer
+            center={defaultPosition}
+            zoom={defaultZoom}
+            style={{ height: "100%", width: "100%" }}
+            worldCopyJump={true}
+            zoomControl={false}
             
-          />
+          > <CustomZoomControl /> 
+            <Drawer
+              element_id="left-side"
+              classes="left"
+              stormPoints={stormPoints}
+              source_type={source_type}
+              setStormPoints={setStormPoints}
+              setStationPoints={setStationPoints}
+              setIsDrawerOpen= {setIsDrawerOpen}
+              isDrawerOpen= {isDrawerOpen}
+              setSelectedStation={setSelectedStation}
+              isSearchSubmitted = {isSearchSubmitted}
+              setIsSearchSubmitted= {setIsSearchSubmitted}
+              searchResult= {searchResult}
+              setSearchResult={setSearchResult}
+              filterResult = {filterResult}
+              setFilterResult = {setFilterResult}
+              returnFilterResult= {returnFilterResult}
+              setReturnFilterResult = {setReturnFilterResult}
+              drawerButtonClicked={drawerButtonClicked}
+              setDrawerButtonClicked={setDrawerButtonClicked}
+              
+            />
 
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-          />
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+            />
 
-          <LayersControl position="bottomright">
-            <LayersControl.Overlay checked name="ECCC Hurricane Response Zone">
-              <LayerGroup>
-                <WMSTileLayer
-                  url="https://geo.weather.gc.ca/geomet"
-                  layers='HURRICANE_RESPONSE_ZONE'
-                  format='image/png'
-                  transparent='true'
-                  styles='HURRICANE_LINE_BLACK_DASHED'
-                  attribution='<a href=&quot;https://www.canada.ca/en/environment-climate-change.html&quot;>ECCC</a>'
-                  version='1.3.0'
-                />
-              </LayerGroup>
-            </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Stations">
-              <LayerGroup>
-                {
-                  station_data ? (
-                    Object.entries(station_data).map((station) => {
-                      const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                      return StationMarker(station, allDatasetDescriptions, storm_timestamp, selected_station, setSelectedStation, setSelectedTab, setIsStationDashOpen)
+            <LayersControl position="bottomright">
+              <LayersControl.Overlay checked name="ECCC Hurricane Response Zone">
+                <LayerGroup>
+                  <WMSTileLayer
+                    url="https://geo.weather.gc.ca/geomet"
+                    layers='HURRICANE_RESPONSE_ZONE'
+                    format='image/png'
+                    transparent='true'
+                    styles='HURRICANE_LINE_BLACK_DASHED'
+                    attribution='<a href=&quot;https://www.canada.ca/en/environment-climate-change.html&quot;>ECCC</a>'
+                    version='1.3.0'
+                  />
+                </LayerGroup>
+              </LayersControl.Overlay>
+              <LayersControl.Overlay checked name="Stations">
+                <LayerGroup>
+                  {
+                    station_points ? (
+                      Object.entries(station_points).map((station) => {
+                        const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
+                        return StationMarker(station, allDatasetDescriptions, storm_timestamp, selected_station, setSelectedStation, setSelectedTab, setIsStationDashOpen)
+                      })
+                    ) : (
+                      <></>
+                    )
+                  }
+                </LayerGroup>
+              </LayersControl.Overlay>
+              <LayersControl.Overlay checked name="Error Cone">
+                <LayerGroup>
+                  {
+                    stormPoints.err.features.map(err_cone => {
+                      return (
+                        <ErrorCone
+                          key={err_cone.id}
+                          error_cone_data={err_cone}
+                        />
+                      );
                     })
-                  ) : (
-                    <></>
-                  )
-                }
-              </LayerGroup>
-            </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Error Cone">
-              <LayerGroup>
-                {
-                  storm_points.err.features.map(err_cone => {
-                    return (
-                      <ErrorCone
-                        key={err_cone.id}
-                        error_cone_data={err_cone}
-                      />
-                    );
-                  })
-                }
-              </LayerGroup>
-            </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Points">
-              <LayerGroup>
-                {
-                  storm_points.pts.features.map(point => {
-                    return (
+                  }
+                </LayerGroup>
+              </LayersControl.Overlay>
+              <LayersControl.Overlay checked name="Points">
+                <LayerGroup>
+                  {
+                    stormPoints.pts.features.map(point => {
+                      return (
 
-                      <StormMarker
-                        key={point.id}
-                        storm_point_data={point}
-                        setHoverMarker={setHoverMarker}
-                        setIsStormDashOpen={setIsStormDashOpen}
-                        storm_point_hover= {hover_marker}
-                       
-                      />
-                    );
-                  })
-                }
-              </LayerGroup>
-            </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Track Line">
-              <LayerGroup>
-                {
-                  storm_points.lin.features.length > 0 &&
-                  storm_points.lin.features.map(line => {
+                        <StormMarker
+                          key={point.id}
+                          storm_point_data={point}
+                          setHoverMarker={setHoverMarker}
+                          setIsStormDashOpen={setIsStormDashOpen}
+                          storm_point_hover= {hover_marker}
+                        
+                        />
+                      );
+                    })
+                  }
+                </LayerGroup>
+              </LayersControl.Overlay>
+              <LayersControl.Overlay checked name="Track Line">
+                <LayerGroup>
+                  {
+                    stormPoints.lin.features.length > 0 &&
+                    stormPoints.lin.features.map(line => {
 
-                    return (
-                      <LineOfTravel
-                        key={line.id}
-                        storm_line_data={line}
-                      />
-                    );
-                  })
-                }
-              </LayerGroup>
-            </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Wind Speed Radius">
-              <LayerGroup>
-                {
-                  storm_points.rad.features.length > 0 &&
-                  storm_points.rad.features.map(radii => {
-                    return (
-                      <WindSpeedRadius
-                        key={radii.id}
-                        storm_wind_radii_data={radii}
-                        hover_marker={hover_marker}
-                      />
-                    );
-                  })
-                }
-              </LayerGroup>
-            </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Sea Height Radius">
-              <LayerGroup>
-                {
-                  storm_points.sea.features.length > 0 &&
-                  storm_points.sea.features.map(radii => {
-                    return (
-                      <SeaHeightRadius
-                        key={radii.id}
-                        storm_sea_height_data={radii}
-                        hover_marker={hover_marker}
-                      />
-                    );
-                  })
-                }
-              </LayerGroup>
-            </LayersControl.Overlay>
-          </LayersControl>
+                      return (
+                        <LineOfTravel
+                          key={line.id}
+                          storm_line_data={line}
+                        />
+                      );
+                    })
+                  }
+                </LayerGroup>
+              </LayersControl.Overlay>
+              <LayersControl.Overlay checked name="Wind Speed Radius">
+                <LayerGroup>
+                  {
+                    stormPoints.rad.features.length > 0 &&
+                    stormPoints.rad.features.map(radii => {
+                      return (
+                        <WindSpeedRadius
+                          key={radii.id}
+                          storm_wind_radii_data={radii}
+                          hover_marker={hover_marker}
+                        />
+                      );
+                    })
+                  }
+                </LayerGroup>
+              </LayersControl.Overlay>
+              <LayersControl.Overlay checked name="Sea Height Radius">
+                <LayerGroup>
+                  {
+                    stormPoints.sea.features.length > 0 &&
+                    stormPoints.sea.features.map(radii => {
+                      return (
+                        <SeaHeightRadius
+                          key={radii.id}
+                          storm_sea_height_data={radii}
+                          hover_marker={hover_marker}
+                        />
+                      );
+                    })
+                  }
+                </LayerGroup>
+              </LayersControl.Overlay>
+            </LayersControl>
 
-          {<RenderSpatialFilter
-          ref={clearShapesRef} 
-          polyFilterCoords={polyFilterCoords}
-          setPolyFilterCoords={setPolyFilterCoords}
-          />} {/* Calling the EditControl function here */}
-        </MapContainer>
+            {<RenderSpatialFilter
+            ref={clearShapesRef} 
+            polyFilterCoords={polyFilterCoords}
+            setPolyFilterCoords={setPolyFilterCoords}
+            />} {/* Calling the EditControl function here */}
+          </MapContainer>
+        </div>
       </div>
-    </div>
+
+    </MapStates.Provider>
+    
   )
 }

@@ -1,8 +1,9 @@
 import { storm_category_filter_list } from "./filters_list";
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
-import { useEffect, useState, Fragment } from 'react';
+import { useEffect, useState, Fragment, useContext } from 'react';
 import { Box, Button, Card, CardContent, CardActions, Slider } from "@mui/material";
 import { storm_categories } from "@/lib/storm_class";
+import { MapStates } from '../map';
 
 import { smallScreenIconButton } from './filter_utils';
 export const storm_category_list = [
@@ -19,7 +20,10 @@ export const storm_category_list = [
   { label: "-5", value: -5 },
 ]
 
-export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowCatSelection, startCategory, endCategory }) {
+
+const context = React.useContext(MapStates);
+const { setStartCategory, setEndCategory, setShowCatSelection, startCategory, endCategory, showCatSelection  } = context;
+export function CategoryRangeSlider({ }) {
   const defaultText = "Select a range of storm category between -5 and 5";
 
   const [sliderText, setSliderText] = useState(defaultText);
@@ -160,7 +164,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
   );
 }
 
-export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, setStartCategory, setEndCategory, startCategory, endCategory, showCatSelection, setShowCatSelection}){
+export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow}){
   //const [showCatSelection, setShowCatSelection] = useState(false); 
   const buttonStyle = {
     backgroundColor: startCategory && endCategory  ? '#e55162' : 'white',

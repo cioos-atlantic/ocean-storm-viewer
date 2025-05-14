@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, createContext } from "react";
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from './layout.module.css'
@@ -22,6 +22,7 @@ import { StormSearchQuery } from "./search_storm_in_header";
 import { basePath } from "@/next.config";
 
 export const siteTitle = 'Atlantic Hurricane Dashboard'
+export const LayoutState = createContext()
 
 /**
  * The Layout function in JavaScript sets up a webpage layout with header, main content, and footer,
@@ -36,7 +37,7 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
   const [storms, setStorms] = useState([]);
   const [selected_forecast, setSelectedForecast] = useState({});
   const [storm_timeline, setStormTimeline] = useState([]);
-  const [storm_points, setStormPoints] = useState(empty_storm_obj);
+  const [stormPoints, setStormPoints] = useState(empty_storm_obj);
   const [station_points, setStationPoints] = useState({});
   const [historicalStormData, setHistoricalStormData] = useState(empty_storm_obj); // State for storing historical storm data
   const [isSearchSubmitted, setIsSearchSubmitted] = useState(false);
@@ -63,135 +64,127 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
     [],
   );
 
-  let storm_data_pass = {};
-  let source_type = "";
+ 
+  
+  const source_type = active_storms ? "active" : historical_storms ? "historical" : "";
 
-  if (active_storms) {
-    storm_data_pass = empty_storm_obj;
-    source_type = "active";
-  }
+  useEffect(() => {
+    if (active_storms) {
+      setStormPoints(empty_storm_obj);
+    } else if (historical_storms) {
+      setStormPoints(historicalStormData);
+    }
+  }, [active_storms, historical_storms, historicalStormData]);
 
-  if (historical_storms) {
-    storm_data_pass = historicalStormData;
-    source_type = "historical";
-    console.debug("Historical Storm Data in Layout.js: ", historicalStormData);
-  }
+
 
   return (
-    <div className={styles.body}>
-      <Head>
-        <link rel="icon" href={`${basePath}/favicon.ico`} />
-        <meta
-          name="description"
-          content=""
-        />
-        <meta name="og:title" content={siteTitle} />
-      </Head>
-      <header className={styles.header}>
-        <Grid container alignItems="center" spacing={1}  
-        sx={{ justifyContent: 'space-between', flexWrap: 'nowrap',  maxHeight: { xs: '80px', sm: '100px', md: '120px', lg: '140px' }, // Responsive max height for the header 
-        //maxWidth: '50%'
-        }}
-        >
-          {/* Logo Section */}
-          <Grid size ='auto' 
-                sx={{maxWidth: '50%'}} >
-          
-              <a href={logo.href}>
-                <Image
-                  src={logo.src}
-                  width={200}
-                  height={100}
-                  className="logo" // Preserving your existing class for the logo
-                  alt="logo"
-                  
-                />
-              </a>
-            
-          </Grid>
-          
-
-          {/* Content Section */}
-          <Grid size ='auto' >
-          
-            {home ? (
-              <>
-                {/* Home Page Header Content */}
-              </>
-            ) : (
-              <>
-                {/* Other Page Header Content */}
-              </>
-            )}
-
-          </Grid>
-          {/* Search 
-          <Grid
-            size="fixed"
-            sx={{
-              width: '200px', // Set to desired fixed width
-              height: '30px', // Set to desired fixed height
-              maxWidth: '100%', // Ensures it doesn't exceed container
-              overflow: 'visible',
-              display: { xs: "none", md: "block" }
-            }}
+    <LayoutState.Provider value={{stormPoints, setStormPoints,station_points, setStationPoints, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, isDrawerOpen, setIsDrawerOpen }}>
+        <div className={styles.body}>
+        <Head>
+          <link rel="icon" href={`${basePath}/favicon.ico`} />
+          <meta
+            name="description"
+            content=""
+          />
+          <meta name="og:title" content={siteTitle} />
+        </Head>
+        <header className={styles.header}>
+          <Grid container alignItems="center" spacing={1}  
+          sx={{ justifyContent: 'space-between', flexWrap: 'nowrap',  maxHeight: { xs: '80px', sm: '100px', md: '120px', lg: '140px' }, // Responsive max height for the header 
+          //maxWidth: '50%'
+          }}
           >
-            <StormSearchQuery
-            isSearchSubmitted = {isSearchSubmitted}
-            setIsSearchSubmitted= {setIsSearchSubmitted}
-            searchResult= {searchResult}
-            setSearchResult={setSearchResult}
-            setIsDrawerOpen= {setIsDrawerOpen}
-            isDrawerOpen= {isDrawerOpen}
-             />
-          </Grid> */}
-
-          {/* Navigation Section */}
-          <Grid size ='auto'
-            sx={{
-              maxWidth: '100%', // Ensures responsiveness
-              overflow: 'visible', // 
-              //display: 'flex',
-              //justifyContent: 'flex-end',
-              //gap: 1, // Adds spacing between navigation items
-              fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '18px', xl: '20px', xxl: '22px' }, // Font size changes based on breakpoints
-            }} ><HeaderNav navItems={topNav} />
-          </Grid>
-
-          
-          
-        </Grid>
-      </header>
-      {about_page ? (
-        <About
+            {/* Logo Section */}
+            <Grid size ='auto' 
+                  sx={{maxWidth: '50%'}} >
             
-            />):(<>
-      <main className="body">
-        <MapWithNoSSR
-          storm_points={storm_points}
-          storm_data={storm_data_pass}
-          station_data={station_points}
-          source_type={source_type}
-          setStormPoints={setStormPoints}
-          setStationPoints={setStationPoints}
-          isSearchSubmitted = {isSearchSubmitted}
-          setIsSearchSubmitted= {setIsSearchSubmitted}
-          searchResult= {searchResult}
-          setSearchResult={setSearchResult}
-          setIsDrawerOpen= {setIsDrawerOpen}
-          isDrawerOpen= {isDrawerOpen}
+                <a href={logo.href}>
+                  <Image
+                    src={logo.src}
+                    width={200}
+                    height={100}
+                    className="logo" // Preserving your existing class for the logo
+                    alt="logo"
+                    
+                  />
+                </a>
+              
+            </Grid>
+            
 
-        />
-      </main>
-      </>)}
-      <footer>
-        <Box sx={{
-          height:{ xs: '20px', sm: '30px', md: '35px', lg: '50px', xl: '50px', xxl: '50px' }, // if changed, remember to change the station dashboard bottom in the station_dashboard.js
-        }}>
-        <FooterNav></FooterNav>
-        </Box>
-        
-      </footer>
-    </div>
+            {/* Content Section */}
+            <Grid size ='auto' >
+            
+              {home ? (
+                <>
+                  {/* Home Page Header Content */}
+                </>
+              ) : (
+                <>
+                  {/* Other Page Header Content */}
+                </>
+              )}
+
+            </Grid>
+            {/* Search 
+            <Grid
+              size="fixed"
+              sx={{
+                width: '200px', // Set to desired fixed width
+                height: '30px', // Set to desired fixed height
+                maxWidth: '100%', // Ensures it doesn't exceed container
+                overflow: 'visible',
+                display: { xs: "none", md: "block" }
+              }}
+            >
+              <StormSearchQuery
+              isSearchSubmitted = {isSearchSubmitted}
+              setIsSearchSubmitted= {setIsSearchSubmitted}
+              searchResult= {searchResult}
+              setSearchResult={setSearchResult}
+              setIsDrawerOpen= {setIsDrawerOpen}
+              isDrawerOpen= {isDrawerOpen}
+              />
+            </Grid> */}
+
+            {/* Navigation Section */}
+            <Grid size ='auto'
+              sx={{
+                maxWidth: '100%', // Ensures responsiveness
+                overflow: 'visible', // 
+                //display: 'flex',
+                //justifyContent: 'flex-end',
+                //gap: 1, // Adds spacing between navigation items
+                fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '18px', xl: '20px', xxl: '22px' }, // Font size changes based on breakpoints
+              }} ><HeaderNav navItems={topNav} />
+            </Grid>
+
+            
+            
+          </Grid>
+        </header>
+        {about_page ? (
+          <About
+              
+              />):(<>
+        <main className="body">
+          <MapWithNoSSR
+            source_type={source_type}
+          />
+        </main>
+        </>)}
+        <footer>
+          <Box sx={{
+            height:{ xs: '20px', sm: '30px', md: '35px', lg: '50px', xl: '50px', xxl: '50px' }, // if changed, remember to change the station dashboard bottom in the station_dashboard.js
+          }}>
+          <FooterNav></FooterNav>
+          </Box>
+          
+        </footer>
+      </div>
+
+    </LayoutState.Provider>
+    
   )
 }

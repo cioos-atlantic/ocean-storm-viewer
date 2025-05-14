@@ -8,6 +8,7 @@ import { IconButton, TextField, Box, Typography, Paper, Button, Stack, CardConte
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {Slider, Tooltip} from '@mui/material';
 import { smallScreenIconButton } from './filter_utils';
+import { MapStates } from '../map';
 
 
 
@@ -62,10 +63,10 @@ export const shortcutsItems = [
 
 const reset= { label: 'Reset', getValue: () => [null, null] };
 
+const context = React.useContext(MapStates);
+const { startDate, endDate, setStartDate, setEndDate, showDateSelection, setShowDateSelection } = context;
 
-
-
-export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelectedOption, startDate, endDate,setStartDate, setEndDate, showDateSelection, setShowDateSelection}){
+export function RenderDateFilter({showOptionsArrow, closeOptionsArrow }){
   //const [showDateSelection, setShowDateSelection] = useState(false); 
   const buttonStyle = {
     backgroundColor: startDate && endDate && startDate.isValid() && endDate.isValid() ? '#e55162' : 'white',
@@ -106,11 +107,7 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelect
 
     {showDateSelection && 
       (<DateDisplay 
-        startDate={startDate}
-        endDate={endDate}
-        setStartDate={setStartDate}
-        setEndDate={setEndDate}
-        setShowDateSelection={setShowDateSelection}  />)}
+         />)}
 
     {console.log(startDate, endDate)}
     </>
@@ -123,7 +120,7 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelect
 
 
 
-export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate, endDate}){
+export function DateDisplay({}){
    
 
   const slotProps={
@@ -237,10 +234,7 @@ export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, sta
       className='date-card-content'
       >
         <RangeSlider
-          startDate={startDate}
-          endDate={endDate}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}/>
+          />
       </CardContent>
 
       <CardActions
@@ -279,7 +273,7 @@ export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, sta
 
 
 
-export function RangeSlider({ startDate, endDate, setStartDate, setEndDate }) {
+export function RangeSlider({}) {
   const currentYear = dayjs().year();
   
   // Independent state for the slider's range
