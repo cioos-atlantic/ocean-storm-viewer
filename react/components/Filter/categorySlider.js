@@ -50,15 +50,28 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
   
       setSliderText(
         <>
-          You've selected a storm category range from <strong>{stormMin}</strong> to <strong>{stormMax}</strong>. <br />
-          Category <strong>{stormMin}</strong>: {storm_categories[stormMin]?.sub_info}. <br />
-          Category <strong>{stormMax}</strong>: {storm_categories[stormMax]?.sub_info}. <br />
-          For more details, visit{' '}
+          You've selected storms from Category <strong>{stormMin}</strong> to <strong>{stormMax}</strong>. <br />
+          Category{' '}
+
+          <a href={storm_categories[stormMin]?.more_info_link}
+             target="_blank"
+             rel="noopener noreferrer">
+            <strong>{stormMin}</strong>
+          </a>
+            - {storm_categories[stormMin]?.sub_info}. <br />
+            Category{' '}
+
+          <a href={storm_categories[stormMax]?.more_info_link}
+            target="_blank"
+            rel="noopener noreferrer">
+            <strong>{stormMax}</strong>
+          </a> - {storm_categories[stormMax]?.sub_info}. <br />
+          [See more details{' '}
           <a href={stormCategoryLink}
              target="_blank"
              rel="noopener noreferrer">
-            this page
-          </a>.
+            here
+          </a>.]
         </>
       );
     } else {
@@ -94,7 +107,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
         
 
       }}>
-        <CardContent className='date-card-content'>
+        <CardContent className='date-card-content' sx={{fontSize: '13px'}}>
           {sliderText}
         </CardContent>
         <CardContent
