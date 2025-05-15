@@ -1,18 +1,12 @@
-import React, { useState, useRef } from"react";
+import React, { useContext} from"react";
 import { FaWindowClose } from "react-icons/fa";
 import { empty_station_obj } from "../layout";
 import { useMediaQuery, Box, useTheme } from "@mui/material";
-//import { empty_station_obj } from "../layout";
-//import { useMediaQuery, Box } from "@mui/material";
 import StationDataLayout from "./station_layout_small_screen";
 import BasicTabs from "./tabs";
-//import { RecentStationData, getMatchedStation } from "../utils/station_data_format_util";
-//import BasicTabs from "./tabs";
-import { RecentStationData, getMatchedStation, getStationDataText, } from "../utils/station_data_format_util";
-//import BasicTabs from "./tabs";
+import { getMatchedStation, getStationDataText, } from "../utils/station_data_format_util";
 import { fetch_value } from "@/lib/storm_utils";
-import { RenderSmallDashboard } from "../Dashboard/Mobile_Dashboard/dashboard_small";
-import { RowingSharp } from "@mui/icons-material";
+import { MapStates } from "../map";
 
 
 /**
@@ -20,19 +14,15 @@ import { RowingSharp } from "@mui/icons-material";
  * tabs for different variables.
  */
 
+const context = useContext(MapStates);
+const {selected_station, setSelectedStation, allDatasetDescriptions, isStationDashOpen, setIsStationDashOpen, hover_point, selectedTab,
+  setSelectedTab } = context;
 
-export default function StationDashboard({
-  selected_station,
-  setSelectedStation,
-  station_descriptions,
-  time,
-  selectedTab,
-  setSelectedTab,
-  source_type,
-  isStationDashOpen, setIsStationDashOpen, hover_point
-}) {
+
+export default function StationDashboard({time, source_type}) {
 
   const stationData = selected_station;
+  const station_descriptions = allDatasetDescriptions;
   
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('md')); // `md` in MUI = 960px

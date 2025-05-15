@@ -64,8 +64,9 @@ export default function Map({ children, source_type  }) {
   const [endCategory, setEndCategory] = useState(null);
   const [showCatSelection, setShowCatSelection] = useState(false); 
   const [showDateSelection, setShowDateSelection] = useState(false); 
+  const [allDatasetDescriptions, setAllDatasetDescriptions] = useState(''); 
   
-  const allDatasetDescriptions = useDatasetDescriptions();
+  setAllDatasetDescriptions(useDatasetDescriptions());
 
   
 
@@ -74,7 +75,7 @@ export default function Map({ children, source_type  }) {
 
 
   return (
-    <MapStates.Provider value= {{hover_marker, setHoverMarker, selected_tab, setSelectedTab, selected_station, setSelectedStation, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords, isStormDashOpen, setIsStormDashOpen, isStationDashOpen, setIsStationDashOpen, drawerButtonClicked, setDrawerButtonClicked, startDate, setStartDate, endDate, setEndDate, startCategory, setStartCategory, endCategory, setEndCategory, showCatSelection, setShowCatSelection, showDateSelection, setShowDateSelection }}>
+    <MapStates.Provider value= {{hover_marker, setHoverMarker, selected_tab, setSelectedTab, selected_station, setSelectedStation, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords, isStormDashOpen, setIsStormDashOpen, isStationDashOpen, setIsStationDashOpen, drawerButtonClicked, setDrawerButtonClicked, startDate, setStartDate, endDate, setEndDate, startCategory, setStartCategory, endCategory, setEndCategory, showCatSelection, setShowCatSelection, showDateSelection, setShowDateSelection, allDatasetDescriptions}}>
       <div className="map_container">
         <div className='inner_container'>
           {/*hover_marker !== empty_point_obj && (
@@ -86,63 +87,19 @@ export default function Map({ children, source_type  }) {
             />
           )*/}
 
-          {/*
-            <RenderStormSearch
-              isSearchSubmitted = {isSearchSubmitted}
-              setIsSearchSubmitted= {setIsSearchSubmitted}
-              searchResult= {searchResult}
-              setSearchResult={setSearchResult}
-              setIsDrawerOpen= {setIsDrawerOpen}
-              isDrawerOpen= {isDrawerOpen}/>
-          */}
-          {/*hover_marker !== empty_point_obj && (
-            <StormDashboard
-              stormPoints={stormPoints}
-              stormPoints={stormPoints}
-              source_type={source_type}
-              hover_point={hover_marker}
-              isDrawerOpen={isDrawerOpen}
-              setHoverMarker={setHoverMarker}/>
-          )*/}
+          
           {
             <RenderFilter/>
           }
           {
             <RenderDashboards
-              stormPoints={stormPoints}
-              stormPoints={stormPoints}
               source_type={source_type}
-              hover_point={hover_marker}
-              isDrawerOpen={isDrawerOpen}
-              setHoverMarker={setHoverMarker}
-              selected_station={selected_station}
-              setSelectedStation={setSelectedStation}
-              station_descriptions={allDatasetDescriptions}
               storm_timestamp = {new Date()}
-              selectedTab = {selected_tab}
-              setSelectedTab = {setSelectedTab}
-              isStormDashOpen={isStormDashOpen}
-              setIsStormDashOpen={setIsStormDashOpen}
-              isStationDashOpen={isStationDashOpen}
-              setIsStationDashOpen={setIsStationDashOpen}
+              storm_points={stormPoints}
               />
           }
           
-          {/*selected_station !== empty_station_obj && (
-            <StationDashboard
-              selected_station={selected_station}
-              setSelectedStation={setSelectedStation}
-              stationsDescriptions={allDatasetDescriptions}
-              station_descriptions={allDatasetDescriptions}
-              storm_timestamp = {new Date()}
-              selectedTab = {selected_tab}
-              setSelectedTab = {setSelectedTab}
-              isDrawerOpen= {isDrawerOpen}
-              isStormDetOpen= {isStormDetOpen}
-              setIsStormDetOpen= {setIsStormDetOpen}
-              source_type = {source_type}
-            ></StationDashboard>
-          )*/}
+          
           <MapContainer
             center={defaultPosition}
             zoom={defaultZoom}

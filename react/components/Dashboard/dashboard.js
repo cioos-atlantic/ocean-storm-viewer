@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import StormDashboard from '../storm_dashboard/storm_dashboard';
 import StationDashboard from '../station_dashboard/station_dashboard';
 import { empty_point_obj } from '../storm_point_details';
@@ -6,21 +6,15 @@ import {empty_station_obj} from '../layout'
 import { Stack } from '@mui/material';
 import { useMediaQuery, Box, useTheme } from "@mui/material";
 import { RenderSmallDashboard } from './Mobile_Dashboard/dashboard_small';
+import { MapStates } from '../map';
+
+
+const context = useContext(MapStates);
+const {isStormDashOpen, isStationDashOpen, isDrawerOpen} = context;
 
 
 
-
-export function RenderDashboards({storm_data, storm_points, source_type, hover_point, isDrawerOpen, setHoverMarker,selected_station,
-    setSelectedStation,
-    station_descriptions,
-    time,
-    selectedTab,
-    setSelectedTab,
-    isStormDashOpen, 
-    setIsStormDashOpen,
-    isStationDashOpen, 
-    setIsStationDashOpen
-    }){
+export function RenderDashboards({source_type, time, storm_points}){
         
 
         const showStorm = isStormDashOpen;
@@ -34,9 +28,6 @@ export function RenderDashboards({storm_data, storm_points, source_type, hover_p
         return (
             (isExtraSmall && showStorm && showStation) ? (
                 <RenderSmallDashboard
-                    selected_station={selected_station}
-                    hover_point={hover_point}
-                    station_descriptions={station_descriptions}
                     source_type={source_type}
                     time={time}
                     storm_points={storm_points}/>
@@ -66,14 +57,7 @@ export function RenderDashboards({storm_data, storm_points, source_type, hover_p
                 {showStorm && (
                     <Box sx={{ flex: flexValue, minWidth: showStation ? "50%" : "100%" }}> 
                         <StormDashboard 
-                            storm_data={storm_data}
                             storm_points={storm_points}
-                            source_type={source_type}
-                            hover_point={hover_point}
-                            isDrawerOpen={isDrawerOpen}
-                            setHoverMarker={setHoverMarker}
-                            isStormDashOpen={isStormDashOpen}
-                            setIsStormDashOpen={setIsStormDashOpen}
                         />
                     </Box>
                 )}
@@ -81,17 +65,9 @@ export function RenderDashboards({storm_data, storm_points, source_type, hover_p
                 {showStation && (
                     <Box sx={{ flex: flexValue, minWidth: showStorm ? "50%" : "100%" }}>
                         <StationDashboard
-                            selected_station={selected_station}
-                            setSelectedStation={setSelectedStation}
-                            stationsDescriptions={station_descriptions}
-                            station_descriptions={station_descriptions}
-                            storm_timestamp={new Date()}
-                            selectedTab={selectedTab}
-                            setSelectedTab={setSelectedTab}
+                            time={time}
                             source_type={source_type}
-                            isStationDashOpen={isStationDashOpen}
-                            setIsStationDashOpen={setIsStationDashOpen}
-                            hover_point={hover_point}
+                            
                         />
                     </Box>
                 )}

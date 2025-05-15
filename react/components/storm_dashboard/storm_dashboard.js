@@ -1,18 +1,18 @@
-import React, { useState, useRef } from"react";
+import React, { useState, useRef, useContext } from"react";
 import { FaWindowClose } from "react-icons/fa";
-import { empty_station_obj } from "../layout";
 import { useMediaQuery, Box, useTheme } from "@mui/material";
 import { fetch_value } from "@/lib/storm_utils";
-import RenderStormChart from "./storm_graph";
 import BasicTabs from "./tabs";
 import { StormSummaryText } from "./storm_details";
 import StormDataLayout from "./storm_layout_small_screen";
 import { convert_unit_data } from "../utils/unit_conversion";
-import StormCategory from "../Storm_popup/storm_category";
+import { MapStates } from "../map";
 
 
-//import BasicTabs from "./tabs";
 
+
+const context = useContext(MapStates);
+const {hover_point, isStormDashOpen, setIsStormDashOpen } = context;
 
 
 /**
@@ -21,7 +21,7 @@ import StormCategory from "../Storm_popup/storm_category";
  */
 
 
-export default function StormDashboard({ storm_data, storm_points, source_type, hover_point, isDrawerOpen, setHoverMarker, isStormDashOpen, setIsStormDashOpen}) {
+export default function StormDashboard({storm_points}) {
 
   const [selectedStormTab, setSelectedStormTab] = useState(0);
   //console.log(storm_data, storm_points, source_type, hover_point);

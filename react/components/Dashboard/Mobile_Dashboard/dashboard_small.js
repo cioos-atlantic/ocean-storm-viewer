@@ -10,9 +10,15 @@ import StormCategoryChart from "@/components/storm_dashboard/storm_cat_chart";
 import { RenderWindRose } from "@/components/station_dashboard/wind_rose";
 import { StormSummaryText } from "@/components/storm_dashboard/storm_details";
 import { createVarPresenceDict, alignMergedData, mergeData, parseStationData, parseStormData, getStationInfo } from "./utils";
+import { useContext } from "react";
+import { MapStates } from "@/components/map";
 
 
-export function RenderSmallDashboard({selected_station, hover_point, station_descriptions, source_type, time, storm_points}){
+const context = useContext(MapStates);
+const {selected_station, hover_point, allDatasetDescriptions } = context;
+
+export function RenderSmallDashboard({source_type, time, storm_points}){
+	const station_descriptions = allDatasetDescriptions;
 	const stationData = selected_station;
 	console.log(stationData);
 	const stationName = stationData[0];
