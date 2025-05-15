@@ -17,6 +17,7 @@ import argparse
 import json
 import numpy as np
 from datetime import datetime, timedelta, timezone
+import re
 
 log = logging.getLogger('caching.log')
 handler = RotatingFileHandler('caching.log', maxBytes=2000, backupCount=10)
@@ -61,8 +62,8 @@ table_dtypes = {
     "station_data": 'string'
 } 
 
-unit_override_file = open("./config/unit_mapping.json")
-unit_overrides = json.load(unit_override_file)
+unit_overrides = json.load(open("./config/unit_mapping.json"))
+variable_limits = json.load(open("./config/variable_limits.json"))
 
 #process_ibtracs(df = , destination_table=pg_ibtracs_active_table, pg_engine=engine, table_schema=erddap_cache_schema)
 def cache_erddap_data(storm_id, df, destination_table, pg_engine, table_schema, replace=False):
@@ -78,23 +79,18 @@ def cache_erddap_data(storm_id, df, destination_table, pg_engine, table_schema, 
             #Clear old storm data
             sql = f"TRUNCATE public.{destination_table};"
         pg_conn.execute(text(sql))
-    #Clear old storm data
 
     result = df.to_sql(destination_table, pg_engine, chunksize=1000, method='multi', 
                        if_exists='append', index=False, schema='public')
     
     
-    with pg_engine.begin() as pg_conn:   
-        #print(f"Adding geom column")
-        #sql = f"ALTER TABLE public.{destination_table} ADD COLUMN IF NOT EXISTS geom geometry(Point, 4326);"
-        #pg_conn.execute(text(sql))
+    with pg_engine.begin() as pg_conn: 
         
        #print("Updating Geometry...")
         sql = f'UPDATE public.{destination_table} SET geom = ST_SetSRID(ST_MakePoint("min_lon", "min_lat"), 4326);'
         pg_conn.execute(text(sql))
 
-        # TODO: Add users to env file. Caused errors when attempting through variable
-        #print("Providing docker with permissions...")
+        # This may not work and permissions may need to be added manually depending on who owns the table
         sql = f"GRANT ALL ON public.{destination_table} TO docker;"
         sql = f"GRANT SELECT ON public.{destination_table} TO hurricane_dash_geoserver;"
         pg_conn.execute(text(sql))
@@ -107,7 +103,6 @@ def cache_erddap_data(storm_id, df, destination_table, pg_engine, table_schema, 
 def create_table_from_schema(pg_engine, table_name, schema_file, pg_schema='public'):
     # Create ECCC Tables if not exist
     with pg_engine.begin() as pg_conn:
-        #print(f"Creating Table {table_name} (if not exists)...")
 
         sql = f"SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = '{pg_schema}' AND tablename = '{table_name}');"
         result = pg_conn.execute(text(sql))
@@ -117,11 +112,6 @@ def create_table_from_schema(pg_engine, table_name, schema_file, pg_schema='publ
             sql = Path(schema_file).read_text()
             pg_conn.execute(text(sql))
 
-        #print(f"Adding geom column")
-        #sql = f"ALTER TABLE {pg_schema}.{table_name} ADD COLUMN IF NOT EXISTS geom geometry(Point, 4326);"
-        #pg_conn.execute(text(sql))
-
-        #print("Committing Transaction.")
         pg_conn.execute(text("COMMIT;"))
 
 # Extracts data from the erddap metadata Pandas dataframe, NC_GLOBAL and
@@ -130,7 +120,6 @@ def create_table_from_schema(pg_engine, table_name, schema_file, pg_schema='publ
 def erddap_meta(metadata, attribute_name, row_type="attribute", var_name="NC_GLOBAL"):
     # Example: uuid = metadata[(metadata['Variable Name']=='NC_GLOBAL') & (metadata['Attribute Name']=='uuid')]['Value'].values[0]
     return_value = {"value": None, "type": None}
-
     try:
         return_value["value"] = metadata[(metadata["Variable Name"] == var_name) & (metadata["Attribute Name"] == attribute_name)]["Value"].values[0]
         return_value["type"] = metadata[(metadata["Variable Name"] == var_name) & (metadata["Attribute Name"] == attribute_name)]["Data Type"].values[0]
@@ -204,6 +193,7 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
         "time<": max_time
     }
     cached_entries = []
+    print(dataset_id)
 
     try:
         df = e.to_pandas()
@@ -219,7 +209,8 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
         replace_cols = standardize_column_names(dataset, dataset_id)
         df.columns = map(lambda col: col + " (" + replace_cols[col] + ")", replace_cols.keys())
 
-        print(dataset_id)
+        # Filter out erroneous values
+        df = filter_value_limits(df)
         drop_cols = []
         for col in df.columns:
             if len(df[col].value_counts()) == 0:
@@ -285,6 +276,12 @@ def find_df_column_by_standard_name(df, standard_name):
     column = df.filter(regex='\(' + standard_name + '\|')#.columns.values[0]
     return column
 
+# Returns the standard name of a formatted column
+def get_standard_name_from_column_name(col_name):
+    # Match within brackets, first instance e.g. (wind_speed|m/s|Wind speed) catches 'wind_speed'
+    standard_name = re.search("(?<=\().+?(?=\|)", col_name).group(0)
+    return standard_name
+
 def get_historical_storm_list(storm=None, min_year= None, max_year=None):
     # Conect to IBTracs storm table
     # Filter post-2000 storms
@@ -311,6 +308,18 @@ def get_postgres_data(source_table, pg_engine, table_schema=None):
         sql_text  = text(f'SELECT * FROM public.{source_table} WHERE "SEASON" > 2000')
         data = pd.read_sql_query(sql=sql_text, con=pg_conn, parse_dates=['ISO_TIME'])
         return data
+
+# Function for leaving out extreme values from being entered into the OSV
+# As storm values will be different than regular readings, this is more for the
+# really incorrect readings i.e. wind speed of -10000 km/h, temp at 0K, etc.
+def filter_value_limits(station_data):
+    for col in station_data.columns.values.tolist():
+        standard_name = get_standard_name_from_column_name(col)
+        if standard_name in variable_limits:
+            upper_limit = variable_limits[standard_name]['upper']
+            lower_limit = variable_limits[standard_name]['lower']
+            station_data.loc[(station_data[col] > upper_limit) | (station_data[col] < lower_limit), col] = np.nan
+    return station_data
     
 # Returns ERDDAP datasets active within a range of time that match important variables 
 # min_time and max_time are datetime objects   
@@ -324,7 +333,6 @@ def get_erddap_datasets(min_time, max_time):
     return dataset_list
 
 def main():
-    import re
     def storm_format (arg_value, pattern=re.compile("[0-9]{4}_[A-Z].*")):
         if not pattern.match(arg_value):
             raise argparse.ArgumentTypeError("invalid storm format")
