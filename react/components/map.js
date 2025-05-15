@@ -141,7 +141,7 @@ export default function Map({ children, source_type  }) {
                     station_points ? (
                       Object.entries(station_points).map((station) => {
                         const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                        return StationMarker(station, allDatasetDescriptions, storm_timestamp, selected_station, setSelectedStation, setSelectedTab, setIsStationDashOpen)
+                        return StationMarker(station, storm_timestamp)
                       })
                     ) : (
                       <></>
