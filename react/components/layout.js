@@ -64,18 +64,22 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
     [],
   );
 
- 
-  
   const source_type = active_storms ? "active" : historical_storms ? "historical" : "";
 
   useEffect(() => {
     if (active_storms) {
       setStormPoints(empty_storm_obj);
+      useEffect(() => {
+        fetch(`${basePath}/api/query_stations`)
+          .then((res) => res.json())
+          .then((data) => {
+            setStationPoints(data);
+          })
+      }, []);
     } else if (historical_storms) {
       setStormPoints(historicalStormData);
     }
   }, [active_storms, historical_storms, historicalStormData]);
-
 
 
   return (

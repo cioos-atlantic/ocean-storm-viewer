@@ -67,7 +67,7 @@ Connecting to the PosgreSQL database via [PgAdmin4](https://www.pgadmin.org/) is
 
 #### Route 1: Using a locally installed PgAdmin4 client
 
-Using a locally installed client (one that is installed directly to your opererating system) requires you to use the external port specified in the .env file for you Geoserver/PostgreSQL containers (default: **32767**)
+Using a locally installed client (one that is installed directly to your operating system) requires you to use the external port specified in the .env file for you Geoserver/PostgreSQL containers (default: **32767**)
 
 If you are running docker locally then the host will be **localhost**, otherwise specify the hostname or IP address of the machine running the docker containers.
 

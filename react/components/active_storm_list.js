@@ -139,7 +139,7 @@ export default function ActiveStormList({ setStormPoints, map, Leaflet, setSelec
                   </div>
                 </div>
               </>
-          )};
+          )}
     </>
   )
 }
