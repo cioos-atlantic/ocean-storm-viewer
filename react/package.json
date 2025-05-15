@@ -33,7 +33,7 @@
     "leaflet-defaulticon-compatibility": "^0.1.2",
     "leaflet-draw": "^1.0.4",
     "luxon": "^3.5.0",
-    "next": "^15.2.4",
+    "next": "^15.4.0-canary.35",
     "path": "^0.12.7",
     "pg": "^8.13.3",
     "query-string": "^7.1.3",

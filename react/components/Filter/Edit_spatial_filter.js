@@ -2,7 +2,7 @@ import React, { useState, useRef, forwardRef, useImperativeHandle, useContext } 
 import L from "leaflet";
 import {FeatureGroup} from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
-import { MapStates } from "./map";
+import { MapStates } from "../map";
 
 
 export function RenderSpatialFilter() {
