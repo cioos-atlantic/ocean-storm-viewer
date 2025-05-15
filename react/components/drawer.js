@@ -9,7 +9,7 @@ import { MapStates } from './map';
 
 
 const context = useContext(MapStates);
-const {setIsDrawerOpen, isDrawerOpen, setStormPoints,} = context;
+const {setIsDrawerOpen, isDrawerOpen} = context;
 
 
 /**
@@ -20,8 +20,7 @@ const {setIsDrawerOpen, isDrawerOpen, setStormPoints,} = context;
  * `styles.drawer_interior`. Depending on the `source_type`, either the `ActiveStormList`,
  * `HistoricalStormList`, or a placeholder for the Home Page is rendered within the `Drawer` component.
  */
-export default function Drawer({ children, element_id, classes, storm_data, source_type, setStormPoints, setStationPoints, setSelectedStation,  isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked, 
- }) {
+export default function Drawer({ children, element_id, classes, source_type, setStormPoints, setStationPoints}) {
 
     let sideClass = null;
     
@@ -73,19 +72,7 @@ export default function Drawer({ children, element_id, classes, storm_data, sour
                                 setStormPoints={setStormPoints}
                                 map={map}
                                 Leaflet={Leaflet}
-                                setSelectedStation={setSelectedStation}
-                                isSearchSubmitted = {isSearchSubmitted}
-                                setIsSearchSubmitted= {setIsSearchSubmitted}
-                                searchResult= {searchResult}
-                                setSearchResult={setSearchResult}
-                                filterResult = {filterResult}
-                                setFilterResult = {setFilterResult}
-                                returnFilterResult= {returnFilterResult}
-                                setReturnFilterResult = {setReturnFilterResult}
-                                drawerButtonClicked={drawerButtonClicked}
-                                setDrawerButtonClicked={setDrawerButtonClicked}
-                              
-                        />
+                            />
                         ) : 
                         (
                             <>

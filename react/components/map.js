@@ -110,23 +110,9 @@ export default function Map({ children, source_type  }) {
             <Drawer
               element_id="left-side"
               classes="left"
-              stormPoints={stormPoints}
               source_type={source_type}
               setStormPoints={setStormPoints}
               setStationPoints={setStationPoints}
-              setIsDrawerOpen= {setIsDrawerOpen}
-              isDrawerOpen= {isDrawerOpen}
-              setSelectedStation={setSelectedStation}
-              isSearchSubmitted = {isSearchSubmitted}
-              setIsSearchSubmitted= {setIsSearchSubmitted}
-              searchResult= {searchResult}
-              setSearchResult={setSearchResult}
-              filterResult = {filterResult}
-              setFilterResult = {setFilterResult}
-              returnFilterResult= {returnFilterResult}
-              setReturnFilterResult = {setReturnFilterResult}
-              drawerButtonClicked={drawerButtonClicked}
-              setDrawerButtonClicked={setDrawerButtonClicked}
               
             />
 
