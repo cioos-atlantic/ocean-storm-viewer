@@ -53,7 +53,6 @@ export default function Map({ children, source_type  }) {
   const [selected_station, setSelectedStation] = useState(empty_station_obj);
   const [filterResult, setFilterResult] = useState({}); 
   const [returnFilterResult, setReturnFilterResult] = useState(false);
-  const [bboxFilterCoordinates, setBboxFilterCoordinates]= useState('');
   const [polyFilterCoords, setPolyFilterCoords] = useState('');
   const [isStormDashOpen, setIsStormDashOpen] = useState(false);
   const [isStationDashOpen, setIsStationDashOpen] = useState(false);
@@ -75,7 +74,7 @@ export default function Map({ children, source_type  }) {
 
 
   return (
-    <MapStates.Provider value= {{hover_marker, setHoverMarker, selected_tab, setSelectedTab, selected_station, setSelectedStation, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, bboxFilterCoordinates, setBboxFilterCoordinates, polyFilterCoords, setPolyFilterCoords, isStormDashOpen, setIsStormDashOpen, isStationDashOpen, setIsStationDashOpen, drawerButtonClicked, setDrawerButtonClicked, startDate, setStartDate, endDate, setEndDate, startCategory, setStartCategory, endCategory, setEndCategory, showCatSelection, setShowCatSelection, showDateSelection, setShowDateSelection, allDatasetDescriptions}}>
+    <MapStates.Provider value= {{hover_marker, setHoverMarker, selected_tab, setSelectedTab, selected_station, setSelectedStation, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, polyFilterCoords, setPolyFilterCoords, isStormDashOpen, setIsStormDashOpen, isStationDashOpen, setIsStationDashOpen, drawerButtonClicked, setDrawerButtonClicked, startDate, setStartDate, endDate, setEndDate, startCategory, setStartCategory, endCategory, setEndCategory, showCatSelection, setShowCatSelection, showDateSelection, setShowDateSelection, allDatasetDescriptions}}>
       <div className="map_container">
         <div className='inner_container'>
           {/*hover_marker !== empty_point_obj && (
