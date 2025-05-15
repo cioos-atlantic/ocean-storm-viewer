@@ -472,9 +472,7 @@ export function handleStormButtonClick(stormName, stormYear, stormID, router){
   console.log(url)
   router.push(url);
   
-  /*router.push(url).then(() => {
-    window.location.reload(); // Force a full page reload after navigation
-  }); */
+  
 }
 
 

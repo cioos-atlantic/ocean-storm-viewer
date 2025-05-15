@@ -1,31 +1,22 @@
 // https://iconoir.com/ icon library that can be installed via npm
 import React, { useState, useRef, useContext, createContext } from "react";
-import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup, Marker, Popup, useMap } from 'react-leaflet'
-import Drawer from '@/components/drawer';
+import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup} from 'react-leaflet'
+import Drawer from "./drawer";
 
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
 import "leaflet-defaulticon-compatibility";
-
-//import StormMarker from "@/components/storm_point";
 import LineOfTravel from "@/components/line_of_travel";
 import WindSpeedRadius from "@/components/wind_radii";
 import SeaHeightRadius from "@/components/sea_height_radii";
-
 import StationMarker from "./station_marker";
 import ErrorCone from "@/components/error_cone";
 import StormPointDetails, { empty_point_obj } from "@/components/storm_point_details";
 import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
 import { empty_station_obj } from "./layout";
-import StationDashboard from "./station_dashboard/station_dashboard";
-import { RenderStormSearch } from "./render_storm_search";
 import { RenderFilter } from "./Filter/filter";
-import { RenderBoundingBox } from "./Filter/boundingBox";
-//import EditFeature from "./Filter/Edit_spatial_filter";
-//import StationDashboardTest from "./station_dashboard/station_dashboard";
 import { RenderSpatialFilter } from "./Filter/Edit_spatial_filter";
 import CustomZoomControl from "./custom_zoom_control";
-import StormDashboard from "./storm_dashboard/storm_dashboard";
 import { RenderDashboards } from "./Dashboard/dashboard";
 import StormMarker from "./stormPoint";
 import { LayoutState } from "./layout";
@@ -38,18 +29,14 @@ export const MapStates = createContext();
 export default function Map({ children, source_type  }) {
 
   const context = useContext(LayoutState);
-  const {stormPoints, setStormPoints,station_points, setStationPoints, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, isDrawerOpen, setIsDrawerOpen} = context;
+  const {stormPoints, setStormPoints, station_points, setStationPoints} = context;
   const clearShapesRef = useRef(null);
 
   // The state variable that contains the storm point currently being hovered 
   // over or clicked on
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
-
-  // The state variable that contains the station that was last clicked on
-  
   const [selected_tab, setSelectedTab] = useState(0);
   //const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isStormDetOpen, setIsStormDetOpen] = useState(false); 
   const [selected_station, setSelectedStation] = useState(empty_station_obj);
   const [filterResult, setFilterResult] = useState({}); 
   const [returnFilterResult, setReturnFilterResult] = useState(false);
@@ -63,6 +50,7 @@ export default function Map({ children, source_type  }) {
   const [endCategory, setEndCategory] = useState(null);
   const [showCatSelection, setShowCatSelection] = useState(false); 
   const [showDateSelection, setShowDateSelection] = useState(false); 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
   
   
   const allDatasetDescriptions = useDatasetDescriptions();
@@ -74,7 +62,7 @@ export default function Map({ children, source_type  }) {
 
 
   return (
-    <MapStates.Provider value= {{hover_marker, setHoverMarker, selected_tab, setSelectedTab, selected_station, setSelectedStation, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, polyFilterCoords, setPolyFilterCoords, isStormDashOpen, setIsStormDashOpen, isStationDashOpen, setIsStationDashOpen, drawerButtonClicked, setDrawerButtonClicked, startDate, setStartDate, endDate, setEndDate, startCategory, setStartCategory, endCategory, setEndCategory, showCatSelection, setShowCatSelection, showDateSelection, setShowDateSelection}}>
+    <MapStates.Provider value= {{hover_marker, setHoverMarker, selected_tab, setSelectedTab, selected_station, setSelectedStation, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, polyFilterCoords, setPolyFilterCoords, isStormDashOpen, setIsStormDashOpen, isStationDashOpen, setIsStationDashOpen, drawerButtonClicked, setDrawerButtonClicked, startDate, setStartDate, endDate, setEndDate, startCategory, setStartCategory, endCategory, setEndCategory, showCatSelection, setShowCatSelection, showDateSelection, setShowDateSelection, isDrawerOpen, setIsDrawerOpen}}>
       <div className="map_container">
         <div className='inner_container'>
           {/*hover_marker !== empty_point_obj && (
@@ -141,10 +129,7 @@ export default function Map({ children, source_type  }) {
                   {
                     station_points ? (
                       Object.entries(station_points).map((station) => {
-                        const storm_timestamp = useMemo(() => {
-                          const ts = hover_marker?.properties?.["TIMESTAMP"];
-                          return ts ? new Date(ts) : null;
-                        }, [hover_marker]);
+                        const storm_timestamp =  hover_marker?.properties?.["TIMESTAMP"];
                         return <StationMarker
                                 key={station[0]}
                                 station_data={station} 

@@ -42,7 +42,7 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
   const [historicalStormData, setHistoricalStormData] = useState(empty_storm_obj); // State for storing historical storm data
   const [isSearchSubmitted, setIsSearchSubmitted] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  
 
 
   
@@ -83,7 +83,7 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
 
 
   return (
-    <LayoutState.Provider value={{stormPoints, setStormPoints,station_points, setStationPoints, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, isDrawerOpen, setIsDrawerOpen }}>
+    <LayoutState.Provider value={{stormPoints, setStormPoints,station_points, setStationPoints, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult }}>
         <div className={styles.body}>
         <Head>
           <link rel="icon" href={`${basePath}/favicon.ico`} />
@@ -131,26 +131,7 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
               )}
 
             </Grid>
-            {/* Search 
-            <Grid
-              size="fixed"
-              sx={{
-                width: '200px', // Set to desired fixed width
-                height: '30px', // Set to desired fixed height
-                maxWidth: '100%', // Ensures it doesn't exceed container
-                overflow: 'visible',
-                display: { xs: "none", md: "block" }
-              }}
-            >
-              <StormSearchQuery
-              isSearchSubmitted = {isSearchSubmitted}
-              setIsSearchSubmitted= {setIsSearchSubmitted}
-              searchResult= {searchResult}
-              setSearchResult={setSearchResult}
-              setIsDrawerOpen= {setIsDrawerOpen}
-              isDrawerOpen= {isDrawerOpen}
-              />
-            </Grid> */}
+            
 
             {/* Navigation Section */}
             <Grid size ='auto'
