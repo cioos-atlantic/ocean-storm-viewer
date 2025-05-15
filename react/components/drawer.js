@@ -1,11 +1,15 @@
 import styles from './drawer.module.css'
-import { useMap } from "react-leaflet";
+import { useMap, useContext } from "react-leaflet";
 import ActiveStormList from "@/components/active_storm_list";
 import HistoricalStormList from "@/components/historical_storm/historical_storm_list";
 import Leaflet from 'leaflet';
 import React, { useState } from "react";
 import { Tooltip, Box, Button } from '@mui/material';
+import { MapStates } from './map';
 
+
+const context = useContext(MapStates);
+const {setIsDrawerOpen, isDrawerOpen, setStormPoints,} = context;
 
 
 /**
@@ -16,7 +20,7 @@ import { Tooltip, Box, Button } from '@mui/material';
  * `styles.drawer_interior`. Depending on the `source_type`, either the `ActiveStormList`,
  * `HistoricalStormList`, or a placeholder for the Home Page is rendered within the `Drawer` component.
  */
-export default function Drawer({ children, element_id, classes, storm_data, source_type, setStormPoints, setStationPoints, setSelectedStation, setIsDrawerOpen, isDrawerOpen, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked, 
+export default function Drawer({ children, element_id, classes, storm_data, source_type, setStormPoints, setStationPoints, setSelectedStation,  isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked, 
  }) {
 
     let sideClass = null;
@@ -57,11 +61,10 @@ export default function Drawer({ children, element_id, classes, storm_data, sour
                     {
                         source_type == "active" ? (
                             <ActiveStormList
-                                active_storm_data={storm_data}
                                 setStormPoints={setStormPoints}
                                 map={map}
                                 Leaflet={Leaflet}
-                                setSelectedStation={setSelectedStation}
+                                
                             />
                         ) : 
                         source_type == "historical" ? (

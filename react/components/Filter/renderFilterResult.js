@@ -3,9 +3,14 @@ import { Button } from "@mui/material";
 import { IconButton, TextField, Box, Typography, Paper } from "@mui/material";
 import { Stack } from "@mui/system";
 import { handleStormButtonClick } from "../historical_storm/historical_storm_utils";
+import {  useContext } from 'react';
+import { MapStates } from "../map";
+
+const context = useContext(MapStates);
+const {filterResult, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked  } = context;
 
 
-export function RenderFilterResult({filterResult, router, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked}){
+export function RenderFilterResult( {router}){
   
   
   return(

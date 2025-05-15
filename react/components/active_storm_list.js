@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { basePath } from "@/next.config";
 import { populateStormDetails, populateAllStormDetails } from '../lib/storm_utils';
 import StormListItem from "./storm_list_item";
 // import { parse, format } from 'date-fns';
 import LoadingScreen from "./loading_screen";
+import { MapStates } from "./map";
 
 export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
 
@@ -28,6 +29,9 @@ export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
 // }
 
 
+const context = useContext(MapStates);
+const { setSelectedStation } = context;
+
 /**
  * The ActiveStormList function displays a list of active storms with details and allows users to
  * select and view storm data.
@@ -36,7 +40,7 @@ export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
  * items with details for each storm. The component also conditionally renders a "Show All" link if
  * there are active storms available.
  */
-export default function ActiveStormList({ setStormPoints, map, Leaflet, setSelectedStation }) {
+export default function ActiveStormList({ setStormPoints, map, Leaflet}) {
   const [selected_storm, setSelectedStorm] = useState("");
 
   const [active_storm_data, setActiveStormData] = useState(null)

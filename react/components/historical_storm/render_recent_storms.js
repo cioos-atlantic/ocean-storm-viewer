@@ -1,9 +1,15 @@
 import { handleClick } from "./historical_storm_utils";
 import { Button, Stack } from "@mui/material";
 import { IconButton, TextField, Box, Typography, Paper } from "@mui/material";
+import { useContext } from "react";
+import { MapStates } from "../map";
 
 
-export function renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setDrawerButtonClicked){
+const context = useContext(MapStates);
+const {  setSelectedStation, drawerButtonClicked } = context;
+
+
+export function renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setLoading){
   return(
     
       <Stack

@@ -1,31 +1,16 @@
-import CustomButton from '../../custom/custom-button.js';
-import { addDays, subDays, lightFormat } from "date-fns";
-import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
-import { useEffect, useState } from 'react';
-import { getHistoricalStormList, parseStormData, makeStormList, isName, isYear, parseForFlyToPoint, addSearchParams } from './historical_storm_utils.js';
+import { useEffect, useState, useContext } from 'react';
+import { getHistoricalStormList} from './historical_storm_utils.js';
 import { useRouter } from 'next/router';
-
-import { empty_station_obj } from '../layout.js';
 import { Button, Box } from '@mui/material';
-import {  handleClick, handleFormSubmit, handleSearch } from './historical_storm_utils.js';
-import { RenderSearchResult } from './render_search_result.js';
+import {  handleClick,  handleSearch } from './historical_storm_utils.js';
 import { renderRecentStorms } from './render_recent_storms.js';
 import { RenderFilterResult } from '../Filter/renderFilterResult.js';
 import LoadingScreen from '../loading_screen.js';
 import { AppliedFilters } from '../Filter/filtersApplied.js';
+import { MapStates } from '../map.js';
 
-
-const otherStormList = [
-  { "name": "FIONA", "year": 2022, "source": "ibtracs" },
-  { "name": "ERNESTO", "year": 2018, "source": "ibtracs" },
-  { "name": "EARL", "year": 2022, "source": "ibtracs" },
-  { "name": "LEE", "year": 2017, "source": "ibtracs" },
-  { "name": "IRMA", "year": 2017, "source": "ibtracs" },
-  { "name": "BLAMMO", "year": 1999, "source": "ibtracs" },
-  { "name": "CLAUDETTE", "year": 2015, "source": "ibtracs" },
-
-]
-
+const context = useContext(MapStates);
+const { setSelectedStation, returnFilterResult,setDrawerButtonClicked  } = context;
 
 
 /**
@@ -33,13 +18,12 @@ const otherStormList = [
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked}) {
+export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet}) {
 
   const [loading, setLoading] = useState(false);
 
   
   const [stormList, setStormList] = useState([]);
-  //const [searchResult, setSearchResult] = useState({})
   const router = useRouter();
   const [previousQuery, setPreviousQuery] = useState(null);
 
@@ -112,7 +96,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
 
   
 
-  // const [selected_storm, setSelectedStorm] = useState("");
+ 
   return (
     <>
     {loading ? (
@@ -126,29 +110,14 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           >Historical Storms: </Box>
           <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>  {/* Bold line */}
 
-          {console.log(searchResult)}
-
-      {/*{isSearchSubmitted ? (<RenderSearchResult 
-                searchResult={searchResult}
-                router={router}
-                setIsSearchSubmitted={setIsSearchSubmitted}
-                
-                 />):
-      (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation))}
-
-      <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
-      */}
+      
 
       {returnFilterResult ? 
         (<RenderFilterResult 
-          filterResult={filterResult}
           router={router}
-          setReturnFilterResult={setReturnFilterResult}
-          drawerButtonClicked={drawerButtonClicked}
-          setDrawerButtonClicked={setDrawerButtonClicked}
                 
         />):
-        (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setDrawerButtonClicked))}
+        (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setLoading))}
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
       
           
