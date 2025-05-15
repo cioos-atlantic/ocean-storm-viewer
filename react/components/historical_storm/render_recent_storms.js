@@ -5,11 +5,13 @@ import { useContext } from "react";
 import { MapStates } from "../map";
 
 
-const context = useContext(MapStates);
-const {  setSelectedStation, drawerButtonClicked } = context;
 
 
-export function renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setLoading){
+
+export default function RenderRecentStorms({ stormList, setStationPoints, setStormPoints, map, Leaflet, router, setLoading }){
+
+  const context = useContext(MapStates);
+  const {  setSelectedStation, drawerButtonClicked } = context;
   return(
     
       <Stack

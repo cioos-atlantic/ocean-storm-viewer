@@ -11,8 +11,7 @@ import { MapStates } from "../map";
 
 
 
-const context = useContext(MapStates);
-const {hover_point, isStormDashOpen, setIsStormDashOpen } = context;
+
 
 
 /**
@@ -22,6 +21,8 @@ const {hover_point, isStormDashOpen, setIsStormDashOpen } = context;
 
 
 export default function StormDashboard({storm_points}) {
+  const context = useContext(MapStates);
+  const {hover_point, isStormDashOpen, setIsStormDashOpen } = context;
 
   const [selectedStormTab, setSelectedStormTab] = useState(0);
   //console.log(storm_data, storm_points, source_type, hover_point);
@@ -181,7 +182,8 @@ export default function StormDashboard({storm_points}) {
         }}
       ><StormDataLayout
                   stormData={storm_data_dict}
-                  stormSummaryText={<StormSummaryText storm_point_hover={hover_point}/>}
+                  stormSummaryText={<StormSummaryText 
+                  storm_point_hover={hover_point}/>}
                   variablePresence={variablePresence}
                   stormTime={stormTime}
                   hoverPointTime={hoverPointTime}
@@ -242,7 +244,8 @@ export default function StormDashboard({storm_points}) {
       ><BasicTabs
                   stormName={stormName}
                   stormData={storm_data_dict}
-                  stormSummaryText={<StormSummaryText storm_point_hover={hover_point}/>}
+                  stormSummaryText={<StormSummaryText 
+                  storm_point_hover={hover_point}/>}
                   variablePresence={variablePresence}
                   selectedStormTab={selectedStormTab}
                   setSelectedStormTab={setSelectedStormTab}

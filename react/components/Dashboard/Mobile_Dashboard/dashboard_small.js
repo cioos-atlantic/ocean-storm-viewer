@@ -14,11 +14,13 @@ import { useContext } from "react";
 import { MapStates } from "@/components/map";
 
 
-const context = useContext(MapStates);
-const {selected_station, hover_point, allDatasetDescriptions } = context;
 
-export function RenderSmallDashboard({source_type, time, storm_points}){
-	const station_descriptions = allDatasetDescriptions;
+
+export function RenderSmallDashboard({source_type, time, storm_points, station_descriptions}){
+	const context = useContext(MapStates);
+	const {selected_station, hover_point } = context;
+
+	
 	const stationData = selected_station;
 	console.log(stationData);
 	const stationName = stationData[0];

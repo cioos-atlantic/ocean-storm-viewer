@@ -8,8 +8,8 @@ import { Tooltip, Box, Button } from '@mui/material';
 import { MapStates } from './map';
 
 
-const context = useContext(MapStates);
-const {setIsDrawerOpen, isDrawerOpen} = context;
+
+
 
 
 /**
@@ -21,6 +21,7 @@ const {setIsDrawerOpen, isDrawerOpen} = context;
  * `HistoricalStormList`, or a placeholder for the Home Page is rendered within the `Drawer` component.
  */
 export default function Drawer({ children, element_id, classes, source_type, setStormPoints, setStationPoints}) {
+    const {setIsDrawerOpen, isDrawerOpen} = useContext(MapStates);
 
     let sideClass = null;
     

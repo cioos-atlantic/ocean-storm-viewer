@@ -6,11 +6,12 @@ import { handleStormButtonClick } from "../historical_storm/historical_storm_uti
 import {  useContext } from 'react';
 import { MapStates } from "../map";
 
-const context = useContext(MapStates);
-const {filterResult, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked  } = context;
+
+
 
 
 export function RenderFilterResult( {router}){
+  const {filterResult, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked  } = context = useContext(MapStates);
   
   
   return(

@@ -19,11 +19,11 @@ import { MapStates } from "./map";
  * @param {Date} time Time of the station data to retrieve. Defaults to most recent data if not provided
  * @returns StationMarker JavaScript snippet
  */
-export default function StationMarker({station_data, time = new Date()}) {
-  const { allDatasetDescriptions, selected_station, setSelectedStation, setSelectedTab, setIsStationDashOpen } = useContext(MapStates);
+export default function StationMarker({station_data, time = new Date(),station_descriptions }) {
+  const { selected_station, setSelectedStation, setSelectedTab, setIsStationDashOpen } = useContext(MapStates);
   // Turns selected marker red, others return as blue
 
-  const station_descriptions = allDatasetDescriptions;
+  
   function getMarkerIcon(selected_station, station_name) {
     try {
       if (station_name === selected_station[0]) {

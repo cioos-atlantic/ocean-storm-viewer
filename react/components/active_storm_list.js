@@ -29,8 +29,8 @@ export const show_all_storms = "SHOW_ALL_ACTIVE_STORMS";
 // }
 
 
-const context = useContext(MapStates);
-const { setSelectedStation } = context;
+
+
 
 /**
  * The ActiveStormList function displays a list of active storms with details and allows users to
@@ -41,6 +41,7 @@ const { setSelectedStation } = context;
  * there are active storms available.
  */
 export default function ActiveStormList({ setStormPoints, map, Leaflet}) {
+  const { setSelectedStation } = useContext(MapStates);
   const [selected_storm, setSelectedStorm] = useState("");
 
   const [active_storm_data, setActiveStormData] = useState(null)

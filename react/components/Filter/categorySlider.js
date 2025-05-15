@@ -21,9 +21,10 @@ export const storm_category_list = [
 ]
 
 
-const context = React.useContext(MapStates);
-const { setStartCategory, setEndCategory, setShowCatSelection, startCategory, endCategory, showCatSelection  } = context;
-export function CategoryRangeSlider({ }) {
+
+export function CategoryRangeSlider() {
+  const context = React.useContext(MapStates);
+  const { setStartCategory, setEndCategory, setShowCatSelection, startCategory, endCategory } = context;
   const defaultText = "Select a range of storm category between -5 and 5";
 
   const [sliderText, setSliderText] = useState(defaultText);
@@ -165,7 +166,8 @@ export function CategoryRangeSlider({ }) {
 }
 
 export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow}){
-  //const [showCatSelection, setShowCatSelection] = useState(false); 
+  const context = React.useContext(MapStates);
+  const { setStartCategory, setEndCategory, setShowCatSelection, startCategory, endCategory, showCatSelection  } = context;
   const buttonStyle = {
     backgroundColor: startCategory && endCategory  ? '#e55162' : 'white',
     color: startCategory && endCategory ? 'white' : '#e55162',

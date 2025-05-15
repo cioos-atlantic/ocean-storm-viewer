@@ -9,12 +9,13 @@ import { RenderSmallDashboard } from './Mobile_Dashboard/dashboard_small';
 import { MapStates } from '../map';
 
 
-const context = useContext(MapStates);
-const {isStormDashOpen, isStationDashOpen, isDrawerOpen} = context;
 
 
 
-export function RenderDashboards({source_type, time, storm_points}){
+
+export function RenderDashboards({source_type, time, storm_points, station_descriptions}){
+    const context = useContext(MapStates);
+    const {isStormDashOpen, isStationDashOpen, isDrawerOpen} = context;
         
 
         const showStorm = isStormDashOpen;
@@ -30,7 +31,8 @@ export function RenderDashboards({source_type, time, storm_points}){
                 <RenderSmallDashboard
                     source_type={source_type}
                     time={time}
-                    storm_points={storm_points}/>
+                    storm_points={storm_points}
+                    station_descriptions={station_descriptions}/>
             ):(
                 <Stack
                 key="combined-dashboard"
@@ -67,6 +69,7 @@ export function RenderDashboards({source_type, time, storm_points}){
                         <StationDashboard
                             time={time}
                             source_type={source_type}
+                            station_descriptions={station_descriptions}
                             
                         />
                     </Box>

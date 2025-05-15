@@ -39,18 +39,15 @@ const MenuProps = {
 const showOptionsArrow = <KeyboardDoubleArrowDownIcon />;
 const closeOptionsArrow = <KeyboardDoubleArrowUpIcon />;
 
-const context = useContext(MapStates);
-const {setDrawerButtonClicked, startDate, endDate, startCategory, endCategory, polyFilterCoords, clearShapesRef, setIsDrawerOpen, setReturnFilterResult, setFilterResult, setPolyFilterCoords, setStartDate, setEndDate } = context;
-export function RenderFilter({}) {
+
+export function RenderFilter() {
+  const context = useContext(MapStates);
+  const {setDrawerButtonClicked, startDate, endDate, startCategory, endCategory, polyFilterCoords, clearShapesRef, setIsDrawerOpen, setReturnFilterResult, setFilterResult, setPolyFilterCoords, setStartDate, setEndDate } = context;
   const [showFilterIcons, setShowFilterIcons] = useState(false);
   const [showFilterOptions, setShowFilterOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [filterParameters, setFilterParameters] = useState([]);
-  //const [startDate, setStartDate] = useState(null);
-  //const [endDate, setEndDate] = useState(null);
-  //const [startCategory, setStartCategory] = useState(null);
-  //const [endCategory, setEndCategory] = useState(null);
-
+  
   const [openSpeedDial, setOpenSpeedDial] = useState(false);
 
   //const handleSpeedDialToggle = () => setOpenSpeedDial(prev => !prev);

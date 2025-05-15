@@ -63,11 +63,12 @@ export const shortcutsItems = [
 
 const reset= { label: 'Reset', getValue: () => [null, null] };
 
-const context = React.useContext(MapStates);
-const { startDate, endDate, setStartDate, setEndDate, showDateSelection, setShowDateSelection } = context;
+
 
 export function RenderDateFilter({showOptionsArrow, closeOptionsArrow }){
-  //const [showDateSelection, setShowDateSelection] = useState(false); 
+  
+  const context = React.useContext(MapStates);
+  const { startDate, endDate, showDateSelection, setShowDateSelection } = context;
   const buttonStyle = {
     backgroundColor: startDate && endDate && startDate.isValid() && endDate.isValid() ? '#e55162' : 'white',
     color: startDate && endDate && startDate.isValid() && endDate.isValid() ? 'white' : '#e55162',
@@ -121,6 +122,8 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow }){
 
 
 export function DateDisplay({}){
+  const context = React.useContext(MapStates);
+  const { startDate, endDate, setStartDate, setEndDate,  setShowDateSelection } = context;
    
 
   const slotProps={
@@ -274,6 +277,8 @@ export function DateDisplay({}){
 
 
 export function RangeSlider({}) {
+  const context = React.useContext(MapStates);
+  const {setStartDate, setEndDate } = context;
   const currentYear = dayjs().year();
   
   // Independent state for the slider's range
@@ -311,45 +316,3 @@ export function RangeSlider({}) {
   );
 }
 
-export function VerticalSlider({ startDate, endDate, setStartDate, setEndDate }) {
-  const currentYear = dayjs().year();
-  
-  // Independent state for the slider's range
-  const [value, setValue] = useState([1860, currentYear]);
-
-  const handleChange = (event, newValue) => {
-    event.propagation;
-    setValue(newValue);
-    setStartDate(dayjs().year(newValue[0]));
-    setEndDate(dayjs().year(newValue[1]));
-  };
-  function getAriaValueText(value) {
-    return `${value}°C`;
-  }
-
-  return (
-    <Box >
-
-      <Slider
-      sx={{
-        height: '200px',
-        color: '#e55162',
-      }}
-        orientation='vertical'
-        getAriaLabel={() => 'Year range'}
-        value={value}
-        onChange={handleChange}
-        valueLabelDisplay="auto"
-        min={1860}
-        max={currentYear}
-        marks={[
-          { value: 1860, label: '1860' },
-          { value: 1900, label: '1900' },
-          { value: 1980, label: '1980' },
-          { value: 2020, label: '2020' },
-          
-        ]}
-      />
-    </Box>
-  );
-}

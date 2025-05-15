@@ -14,15 +14,16 @@ import { MapStates } from "../map";
  * tabs for different variables.
  */
 
-const context = useContext(MapStates);
-const {selected_station, setSelectedStation, allDatasetDescriptions, isStationDashOpen, setIsStationDashOpen, hover_point, selectedTab,
+
+
+
+export default function StationDashboard({time, source_type, station_descriptions}) {
+  const context = useContext(MapStates);
+  const {selected_station, setSelectedStation, isStationDashOpen, setIsStationDashOpen, hover_point, selectedTab,
   setSelectedTab } = context;
 
-
-export default function StationDashboard({time, source_type}) {
-
   const stationData = selected_station;
-  const station_descriptions = allDatasetDescriptions;
+  
   
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('md')); // `md` in MUI = 960px

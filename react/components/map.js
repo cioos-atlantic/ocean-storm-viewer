@@ -63,9 +63,9 @@ export default function Map({ children, source_type  }) {
   const [endCategory, setEndCategory] = useState(null);
   const [showCatSelection, setShowCatSelection] = useState(false); 
   const [showDateSelection, setShowDateSelection] = useState(false); 
-  const [allDatasetDescriptions, setAllDatasetDescriptions] = useState(''); 
   
-  setAllDatasetDescriptions(useDatasetDescriptions());
+  
+  const allDatasetDescriptions = useDatasetDescriptions();
 
   
 
@@ -74,7 +74,7 @@ export default function Map({ children, source_type  }) {
 
 
   return (
-    <MapStates.Provider value= {{hover_marker, setHoverMarker, selected_tab, setSelectedTab, selected_station, setSelectedStation, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, polyFilterCoords, setPolyFilterCoords, isStormDashOpen, setIsStormDashOpen, isStationDashOpen, setIsStationDashOpen, drawerButtonClicked, setDrawerButtonClicked, startDate, setStartDate, endDate, setEndDate, startCategory, setStartCategory, endCategory, setEndCategory, showCatSelection, setShowCatSelection, showDateSelection, setShowDateSelection, allDatasetDescriptions}}>
+    <MapStates.Provider value= {{hover_marker, setHoverMarker, selected_tab, setSelectedTab, selected_station, setSelectedStation, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, polyFilterCoords, setPolyFilterCoords, isStormDashOpen, setIsStormDashOpen, isStationDashOpen, setIsStationDashOpen, drawerButtonClicked, setDrawerButtonClicked, startDate, setStartDate, endDate, setEndDate, startCategory, setStartCategory, endCategory, setEndCategory, showCatSelection, setShowCatSelection, showDateSelection, setShowDateSelection}}>
       <div className="map_container">
         <div className='inner_container'>
           {/*hover_marker !== empty_point_obj && (
@@ -95,6 +95,7 @@ export default function Map({ children, source_type  }) {
               source_type={source_type}
               storm_timestamp = {new Date()}
               storm_points={stormPoints}
+              station_descriptions= {allDatasetDescriptions}
               />
           }
           
@@ -146,8 +147,9 @@ export default function Map({ children, source_type  }) {
                         }, [hover_marker]);
                         return <StationMarker
                                 key={station[0]}
-                                station={station} 
-                                time = {storm_timestamp}/>
+                                station_data={station} 
+                                time = {storm_timestamp}
+                                station_descriptions= {allDatasetDescriptions}/>
                       })
                     ) : (
                       <></>
