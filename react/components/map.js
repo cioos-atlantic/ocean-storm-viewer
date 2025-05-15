@@ -140,8 +140,14 @@ export default function Map({ children, source_type  }) {
                   {
                     station_points ? (
                       Object.entries(station_points).map((station) => {
-                        const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                        return StationMarker(station, storm_timestamp)
+                        const storm_timestamp = useMemo(() => {
+                          const ts = hover_marker?.properties?.["TIMESTAMP"];
+                          return ts ? new Date(ts) : null;
+                        }, [hover_marker]);
+                        return <StationMarker
+                                key={station[0]}
+                                station={station} 
+                                time = {storm_timestamp}/>
                       })
                     ) : (
                       <></>
@@ -172,9 +178,7 @@ export default function Map({ children, source_type  }) {
                         <StormMarker
                           key={point.id}
                           storm_point_data={point}
-                          setHoverMarker={setHoverMarker}
-                          setIsStormDashOpen={setIsStormDashOpen}
-                          storm_point_hover= {hover_marker}
+                          
                         
                         />
                       );
@@ -234,8 +238,6 @@ export default function Map({ children, source_type  }) {
 
             {<RenderSpatialFilter
             ref={clearShapesRef} 
-            polyFilterCoords={polyFilterCoords}
-            setPolyFilterCoords={setPolyFilterCoords}
             />} {/* Calling the EditControl function here */}
           </MapContainer>
         </div>

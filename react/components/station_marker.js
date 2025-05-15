@@ -12,10 +12,6 @@ import { getDisplayName } from "./utils/station_data_format_util";
 import { MapStates } from "./map";
 
 
-
-const context = useContext(MapStates);
-const {allDatasetDescriptions, selected_station, setSelectedStation, setSelectedTab, setIsStationDashOpen } = context;
-
 /**
  * 
  * @param {[Object]} station_data Station Data object after being retrieved from WFS and processed. 
@@ -23,7 +19,8 @@ const {allDatasetDescriptions, selected_station, setSelectedStation, setSelected
  * @param {Date} time Time of the station data to retrieve. Defaults to most recent data if not provided
  * @returns StationMarker JavaScript snippet
  */
-export default function StationMarker(station_data, time = new Date()) {
+export default function StationMarker({station_data, time = new Date()}) {
+  const { allDatasetDescriptions, selected_station, setSelectedStation, setSelectedTab, setIsStationDashOpen } = useContext(MapStates);
   // Turns selected marker red, others return as blue
 
   const station_descriptions = allDatasetDescriptions;

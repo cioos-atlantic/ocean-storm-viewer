@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Marker, Popup } from 'react-leaflet'
 import { Icon, DivIcon, Point } from 'leaflet'
 import { storm_categories, storm_type_info } from '@/lib/storm_class'
@@ -9,10 +9,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import StormPointDetailsTooltip from "./storm_dashboard/storm_point_details_tooltip";
 import { createSvgIconWithText } from "./utils/storm_display_utils";
 
-
-
-
-
+import { MapStates } from "./map";
 
 /**
  * This function represents a React component that renders a storm marker on a map.
@@ -24,10 +21,13 @@ import { createSvgIconWithText } from "./utils/storm_display_utils";
  *
  * @returns {JSX.Element} - A React Marker component with event handlers and custom icon.
  */
-export default function StormMarker({ storm_point_data, setHoverMarker, setIsStormDashOpen, storm_point_hover }) {
+export default function StormMarker({ storm_point_data}) {
     const [isMounted, setIsMounted] = useState(false);
     const [customIcon, setCustomIcon] = useState(null);
     const markerRef = useRef(null);
+    const {setHoverMarker, setIsStormDashOpen, hover_marker } = useContext(MapStates);
+
+    const storm_point_hover = hover_marker;
 
     console.log(storm_point_hover)
 

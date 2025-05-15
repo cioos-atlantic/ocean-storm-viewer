@@ -1,13 +1,14 @@
-import React, { useState, useRef, forwardRef, useImperativeHandle } from "react";
+import React, { useState, useRef, forwardRef, useImperativeHandle, useContext } from "react";
 import L from "leaflet";
-import {
-  
-  FeatureGroup,
-} from "react-leaflet";
+import {FeatureGroup} from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
+import { MapStates } from "./map";
 
-export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({polyFilterCoords, setPolyFilterCoords}, ref) {
+
+export function RenderSpatialFilter() {
   const featureGroupRef = useRef(null);
+  const { setPolyFilterCoords, clearShapesRef } = useContext(MapStates);
+
   // Get the FeatureGroup reference
   function clearShapes(){
     const featureGroup = featureGroupRef.current;
@@ -20,7 +21,7 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({pol
 
   }
   // Expose clearShapes to parent component
-  useImperativeHandle(ref, () => ({
+  useImperativeHandle(clearShapesRef, () => ({
       clearShapes
   }));
   
@@ -167,7 +168,7 @@ onEditVertex	function	hook to leaflet-draw's draw:editvertex event*/
       />
     </FeatureGroup>
   );
-});
+};
 
 
 export function processRectangle(coords){
@@ -191,7 +192,7 @@ export function processRectangle(coords){
 }; 
 
 
-export function ProcessPolygon({}){};
+
 
 export function processPolygon(coords){
   coords = coords.flat();
