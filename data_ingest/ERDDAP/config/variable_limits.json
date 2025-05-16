@@ -26,7 +26,7 @@
   },
   "air_pressure":
   {
-    "unit":"kPa",
+    "unit":"mbar",
     "upper":1100,
     "lower":800
   },
