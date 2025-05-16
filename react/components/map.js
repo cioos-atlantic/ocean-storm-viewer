@@ -195,6 +195,34 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                 />
               </LayerGroup>
             </LayersControl.Overlay>
+            <LayersControl.Overlay name="CIOPS-East - Sea surface height above geoid [m]">
+              <LayerGroup>
+                <WMSTileLayer
+                  url="https://geo.weather.gc.ca/geomet"
+                  layers='CIOPS-East_2km_SeaSfcHeight'
+                  format='image/png'
+                  transparent='true'
+                  params=''
+                  styles='SEA_SURFACE_HEIGHT-DEFAULT'
+                  attribution='<a href=&quot;https://www.canada.ca/en/environment-climate-change.html&quot;>ECCC</a>'
+                  version='1.3.0'
+                />
+              </LayerGroup>
+            </LayersControl.Overlay>
+            <LayersControl.Overlay name="Regional Ensemble storm Surge Prediction System (RESPS)">
+              <LayerGroup>
+                <WMSTileLayer
+                  url="https://geo.weather.gc.ca/geomet"
+                  layers='RESPS-Atlantic-North-West_9km_SeaSfcHeight_01'
+                  format='image/png'
+                  transparent='true'
+                  params=''
+                  styles='SEA_SURFACE_HEIGHT-DEFAULT'
+                  attribution='<a href=&quot;https://www.canada.ca/en/environment-climate-change.html&quot;>ECCC</a>'
+                  version='1.3.0'
+                />
+              </LayerGroup>
+            </LayersControl.Overlay>
             <LayersControl.Overlay checked name="Stations">
               <LayerGroup>
                 {
