@@ -1,3 +1,5 @@
+'use client';
+
 import { Stack, IconButton } from "@mui/material";
 import PentagonOutlinedIcon from '@mui/icons-material/PentagonOutlined';
 import RectangleOutlinedIcon from '@mui/icons-material/RectangleOutlined';
@@ -14,7 +16,7 @@ import 'leaflet-draw';
 
 
 
-export function RenderBoundingBox(map){
+export default function RenderBoundingBox(map){
   let drawItems = new FeatureGroup();
   map.addLayer(drawItems);
 

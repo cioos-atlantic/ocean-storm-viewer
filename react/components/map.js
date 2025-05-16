@@ -1,8 +1,8 @@
 // https://iconoir.com/ icon library that can be installed via npm
 import React, { useState, useRef, useContext, createContext } from "react";
 import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup} from 'react-leaflet'
-import Drawer from "./drawer";
-
+//import Drawer from "./drawer";
+//import  RenderBoundingBox  from "./Filter/boundingBox";
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
 import "leaflet-defaulticon-compatibility";
@@ -15,11 +15,22 @@ import StormPointDetails, { empty_point_obj } from "@/components/storm_point_det
 import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
 import { empty_station_obj } from "./layout";
 import { RenderFilter } from "./Filter/filter";
-import { RenderSpatialFilter } from "./Filter/Edit_spatial_filter";
+//import RenderSpatialFilter  from "./Filter/Edit_spatial_filter";
 import CustomZoomControl from "./custom_zoom_control";
 import { RenderDashboards } from "./Dashboard/dashboard";
 import StormMarker from "./stormPoint";
 import { LayoutState } from "./layout";
+import dynamic from 'next/dynamic';
+/*const RenderSpatialFilter = dynamic(
+  () => import('./Filter/Edit_spatial_filter'), // path to this component
+  { ssr: false }
+);
+const RenderBoundingBox = dynamic(
+  () => import('./Filter/boundingBox.js'), // path to this component
+  { ssr: false }
+);
+const Drawer = dynamic(() => import('./drawer'), { ssr: false });*/
+
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
