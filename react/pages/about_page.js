@@ -19,10 +19,7 @@ import { basePath } from "@/next.config";
 export default function About(){
 
   const router = useRouter();
-  const [isClient, setIsClient] = useState(false);
-    useEffect(() => {
-      setIsClient(true);
-    }, []);
+  
 
   return(
     <div className={aboutStyles.container}>
@@ -38,12 +35,12 @@ export default function About(){
       <main className={aboutStyles.mainContent}>
         <section className={aboutStyles.aboutSection}>
           <h1>Table of Content</h1>
-            <ol>
-              <li>
+            <ol >
+              <li >
                 <a href="#section1" aria-label="Go to Extreme Storms and Hurricanes section"> Extreme Storms and Hurricanes</a>
                 <ul>
                   {faq.map((question, index) => (
-                    <li key={index}>
+                    <li key={`${question.title}-toc`}>
                       <a href={`#section1.${index}`}>{question.title}</a>
                     </li>
                   ))}
@@ -51,17 +48,17 @@ export default function About(){
 
               </li>
             
-              <li>
+              <li >
                 <a href="#section2" aria-label="Go to Some Past Atlantic Canada Storms section">Some Past Atlantic Canada Storms</a>
                 <ul>
                   {pastAtlStorms.map((storm, index) => (
-                      <li key={index}>
+                      <li key={`${storm.title}-toc`}>
                         <a href={`#section2.${index}`}>{storm.title}</a>
                       </li>
                     ))}
                 </ul>
               </li>
-              <li>
+              <li >
                 <a href="#section3" aria-label="Go to How to Find more Information section">How to Find more Information</a>
                 </li>
               
@@ -75,11 +72,11 @@ export default function About(){
               <h2 id="section1">Extreme Storms and Hurricanes</h2>
               <div>
                 {faq.map((question, index) => (
-                  <div key={index}>
+                  <div key={`${question.title}-content`}>
                     <h3 className={aboutStyles.subheading} id={`section1.${index}`}>
                       {question.title}
                     </h3>
-                    <div className={aboutStyles.lightText}>{isClient && parse(question.details)}</div>
+                    <div className={aboutStyles.lightText}>{parse(question.details)}</div>
                     <br />
                   </div>
                 ))}
@@ -94,7 +91,7 @@ export default function About(){
               </p>
               <div>
                 {pastAtlStorms.map((storm, index) => (
-                  <div key={index}>
+                  <div key={`${storm.title}-content`}>
                     <h3 className={aboutStyles.subheading} id={`section2.${index}`}
                     aria-label={`Learn more about the storm: ${storm.title}`}
                     role="button"
@@ -109,7 +106,7 @@ export default function About(){
                         {storm.title}
 
                     </h3>
-                    <div className={aboutStyles.lightText}>{isClient && parse(storm.details)}</div>
+                    <div className={aboutStyles.lightText}>{parse(storm.details)}</div>
                     <br></br>
                     <figure className={aboutStyles.imageContainer}>
                       <Image
@@ -119,7 +116,7 @@ export default function About(){
                         width={350}
                         height={315}
                       />
-                      <figcaption className={aboutStyles.imageCaption}>{isClient && parse(storm.imgCaption)}</figcaption>
+                      <figcaption className={aboutStyles.imageCaption}>{parse(storm.imgCaption)}</figcaption>
                     </figure>
                   </div>
                 ))}
@@ -130,12 +127,12 @@ export default function About(){
               <br />
               <h2 id="section3">How to Find more Information</h2>
               <ul>
-                <li>
+                <li >
                   <a href= "https://en.wikipedia.org/wiki/List_of_hurricanes_in_Canada " target="_blank" rel="noopener noreferrer" aria-label="Learn about hurricanes in Canada on Wikipedia">
                     Hurricanes in Canada 
                   </a>
                 </li>
-                <li>
+                <li >
                   <a href= "https://www.nspower.ca/about-us/articles/details/articles/2022/11/29/you-asked-we-answer-extreme-weather-and-our-power-grid" target="_blank" rel="noopener noreferrer" aria-label="Learn more about extreme weather and power grids on Nova Scotia Power Blog">
                     Nova Scotia Power Blog 
                   </a>
@@ -161,7 +158,5 @@ export function handleStormNameClick(stormName, stormYear, router){
   console.log(url)
   router.push(url);
   
-  /*router.push(url).then(() => {
-    window.location.reload(); // Force a full page reload after navigation
-  }); */
+  
 }
