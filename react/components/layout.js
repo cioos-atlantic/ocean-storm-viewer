@@ -40,6 +40,7 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
   //const [historicalStormData, setHistoricalStormData] = useState(empty_storm_obj); // State for storing historical storm data
   const [isSearchSubmitted, setIsSearchSubmitted] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
+   const [station_points, setStationPoints] = useState({});
   
   const [sourceType, setSourceType] = useState("");
 
@@ -67,7 +68,13 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
   let source_type = "";
 
   useEffect(() => {
-    if (active_storms) setSourceType("active");
+    if (active_storms) {
+      setSourceType("active")
+      fetch(`${basePath}/api/query_stations`)
+      .then((res) => res.json())
+      .then((data) => {
+        setStationPoints(data);
+      })};
     if (historical_storms) setSourceType("historical");
   }, []);
 
@@ -148,6 +155,8 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
       <main className="body">
         <MapWithNoSSR
           source_type={sourceType}
+          station_points={station_points}
+          setStationPoints={setStationPoints}
           
 
         />

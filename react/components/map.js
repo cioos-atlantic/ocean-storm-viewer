@@ -33,7 +33,7 @@ import { empty_storm_obj } from "@/lib/storm_utils";
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
 
-export default function Map({ children,  source_type }) {
+export default function Map({ children,  source_type, station_points, setStationPoints }) {
 
   const clearShapesRef = useRef(null);
 
@@ -55,7 +55,7 @@ export default function Map({ children,  source_type }) {
   const [isStationDashOpen, setIsStationDashOpen] = useState(false);
   const [drawerButtonClicked, setDrawerButtonClicked] = useState('');
   const [storm_points, setStormPoints] = useState(empty_storm_obj);
-  const [station_points, setStationPoints] = useState({});
+ 
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
   
   const allDatasetDescriptions = useDatasetDescriptions();
