@@ -112,7 +112,6 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({pol
                 console.log("Updated Polygon Coordinates:", poly);
             }*/
                 const poly = processPolygon(layer.getLatLngs());
-                setBboxFilterCoordinates('');
                 setPolyFilterCoords(poly);
                 console.log("Updated Polygon Coordinates:", poly);
         });

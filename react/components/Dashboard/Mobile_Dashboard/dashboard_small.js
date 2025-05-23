@@ -8,8 +8,8 @@ import RenderCombinedChart from './combined_graph'
 import StormTypeChart from "@/components/storm_dashboard/storm_type_chart";
 import StormCategoryChart from "@/components/storm_dashboard/storm_cat_chart";
 import { RenderWindRose } from "@/components/station_dashboard/wind_rose";
+import { StormSummaryText } from "@/components/storm_dashboard/storm_details";
 import { createVarPresenceDict, alignMergedData, mergeData, parseStationData, parseStormData, getStationInfo } from "./utils";
-
 
 
 export function RenderSmallDashboard({selected_station, hover_point, station_descriptions, source_type, time, storm_points}){
