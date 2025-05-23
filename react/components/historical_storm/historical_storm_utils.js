@@ -366,8 +366,8 @@ export async function handleClick( storm, setStationPoints, setStormPoints, map,
     const historical_storm_data = parseStormData(storm_data, storm.name, map, Leaflet);
     //console.log(historical_storm_data);
 
-    console.debug("Historical Storm Data: ", historical_storm_data);
-    console.debug("Historical Station Data: ", historical_station_data);
+    console.log("Historical Storm Data: ", historical_storm_data);
+    console.log("Historical Station Data: ", historical_station_data);
 
     setStormPoints(historical_storm_data);  // Set the storm data
     setStationPoints(historical_station_data);  // Set the station data

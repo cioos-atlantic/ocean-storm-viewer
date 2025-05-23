@@ -8,7 +8,7 @@ import FooterNav from './footer_nav'
 //import StormSearch from "@/components/storm_search";
 import { useRouter } from 'next/router';
 
-import { empty_storm_obj } from '../lib/storm_utils';
+
 import dynamic from "next/dynamic";
 
 import ErddapHandler from "../pages/api/query_stations";
@@ -36,12 +36,12 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
   const [storms, setStorms] = useState([]);
   const [selected_forecast, setSelectedForecast] = useState({});
   const [storm_timeline, setStormTimeline] = useState([]);
-  const [storm_points, setStormPoints] = useState(empty_storm_obj);
-  const [station_points, setStationPoints] = useState({});
-  const [historicalStormData, setHistoricalStormData] = useState(empty_storm_obj); // State for storing historical storm data
+  
+  //const [historicalStormData, setHistoricalStormData] = useState(empty_storm_obj); // State for storing historical storm data
   const [isSearchSubmitted, setIsSearchSubmitted] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const [sourceType, setSourceType] = useState("");
 
 
   
@@ -63,19 +63,17 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
     [],
   );
 
-  let storm_data_pass = {};
+  //let storm_data_pass = {};
   let source_type = "";
 
-  if (active_storms) {
-    storm_data_pass = empty_storm_obj;
-    source_type = "active";
-  }
+  useEffect(() => {
+    if (active_storms) setSourceType("active");
+    if (historical_storms) setSourceType("historical");
+  }, []);
 
-  if (historical_storms) {
-    storm_data_pass = historicalStormData;
-    source_type = "historical";
-    console.debug("Historical Storm Data in Layout.js: ", historicalStormData);
-  }
+  
+  //console.log(storm_data_pass)
+  //console.log(storm_points)
 
   return (
     <div className={styles.body}>
@@ -125,26 +123,7 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
             )}
 
           </Grid>
-          {/* Search 
-          <Grid
-            size="fixed"
-            sx={{
-              width: '200px', // Set to desired fixed width
-              height: '30px', // Set to desired fixed height
-              maxWidth: '100%', // Ensures it doesn't exceed container
-              overflow: 'visible',
-              display: { xs: "none", md: "block" }
-            }}
-          >
-            <StormSearchQuery
-            isSearchSubmitted = {isSearchSubmitted}
-            setIsSearchSubmitted= {setIsSearchSubmitted}
-            searchResult= {searchResult}
-            setSearchResult={setSearchResult}
-            setIsDrawerOpen= {setIsDrawerOpen}
-            isDrawerOpen= {isDrawerOpen}
-             />
-          </Grid> */}
+          
 
           {/* Navigation Section */}
           <Grid size ='auto'
@@ -168,16 +147,7 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
             />):(<>
       <main className="body">
         <MapWithNoSSR
-          storm_points={storm_points}
-          storm_data={storm_data_pass}
-          station_data={station_points}
-          source_type={source_type}
-          setStormPoints={setStormPoints}
-          setStationPoints={setStationPoints}
-          isSearchSubmitted = {isSearchSubmitted}
-          setIsSearchSubmitted= {setIsSearchSubmitted}
-          searchResult= {searchResult}
-          setSearchResult={setSearchResult}
+          source_type={sourceType}
           setIsDrawerOpen= {setIsDrawerOpen}
           isDrawerOpen= {isDrawerOpen}
 

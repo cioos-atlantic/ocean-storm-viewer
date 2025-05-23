@@ -9,10 +9,15 @@ import { GeoJSON } from 'react-leaflet'
  * Otherwise, it returns an empty fragment.
  */
 export default function WindSpeedRadius({ storm_wind_radii_data, hover_marker }) {
+  
+    
     let display_wind_speed_radii = true;
     if (hover_marker.properties.TIMESTAMP != storm_wind_radii_data.properties.TIMESTAMP) {
         display_wind_speed_radii = false;
     }
+   
+
+    
 
     const path_options = { className: 'wind-rad-'.concat(storm_wind_radii_data.properties.WINDFORCE) };
 

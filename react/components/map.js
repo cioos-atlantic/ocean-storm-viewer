@@ -28,11 +28,12 @@ import CustomZoomControl from "./custom_zoom_control";
 import StormDashboard from "./storm_dashboard/storm_dashboard";
 import { RenderDashboards } from "./Dashboard/dashboard";
 import StormMarker from "./stormPoint";
+import { empty_storm_obj } from "@/lib/storm_utils";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
 
-export default function Map({ children, storm_points, storm_data, station_data, source_type, setStormPoints, setStationPoints, setHistoricalStormData, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, setIsDrawerOpen, isDrawerOpen,  }) {
+export default function Map({ children,  source_type,  setIsDrawerOpen, isDrawerOpen,  }) {
 
   const clearShapesRef = useRef(null);
 
@@ -53,13 +54,15 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   const [isStormDashOpen, setIsStormDashOpen] = useState(false);
   const [isStationDashOpen, setIsStationDashOpen] = useState(false);
   const [drawerButtonClicked, setDrawerButtonClicked] = useState('');
+  const [storm_points, setStormPoints] = useState(empty_storm_obj);
+  const [station_points, setStationPoints] = useState({});
   
   const allDatasetDescriptions = useDatasetDescriptions();
 
   
 
   console.log(allDatasetDescriptions)
-  console.debug("Storm Points in map.js: ", storm_points);
+  console.log("Storm Points in map.js: ", storm_points);
 
 
   return (
@@ -112,7 +115,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
         }
         {
           <RenderDashboards
-            storm_data={storm_data}
+            storm_data={storm_points}
             storm_points={storm_points}
             source_type={source_type}
             hover_point={hover_marker}
@@ -157,17 +160,17 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           <Drawer
             element_id="left-side"
             classes="left"
-            storm_data={storm_data}
+            storm_data={storm_points}
             source_type={source_type}
             setStormPoints={setStormPoints}
             setStationPoints={setStationPoints}
             setIsDrawerOpen= {setIsDrawerOpen}
             isDrawerOpen= {isDrawerOpen}
             setSelectedStation={setSelectedStation}
-            isSearchSubmitted = {isSearchSubmitted}
-            setIsSearchSubmitted= {setIsSearchSubmitted}
-            searchResult= {searchResult}
-            setSearchResult={setSearchResult}
+            //isSearchSubmitted = {isSearchSubmitted}
+            //setIsSearchSubmitted= {setIsSearchSubmitted}
+            //searchResult= {searchResult}
+            //setSearchResult={setSearchResult}
             filterResult = {filterResult}
             setFilterResult = {setFilterResult}
             returnFilterResult= {returnFilterResult}
@@ -198,8 +201,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             <LayersControl.Overlay checked name="Stations">
               <LayerGroup>
                 {
-                  station_data ? (
-                    Object.entries(station_data).map((station) => {
+                  station_points ? (
+                    Object.entries(station_points).map((station) => {
                       const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
                       return StationMarker(station, allDatasetDescriptions, storm_timestamp, selected_station, setSelectedStation, setSelectedTab, setIsStationDashOpen)
                     })

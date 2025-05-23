@@ -333,11 +333,16 @@ export function build_line_of_travel(storm_data) {
 
 export function build_storm_points(storm_data) {
     let storm_points = [];
+    
+
 
     for (let i in storm_data.data) {
         switch (storm_data.data[i].geometry.type) {
             case "Point":
+                
+                storm_data.data[i].properties.TIMESTAMP =  storm_data.data[i].id.match(/\d+-\d+-\d+[\sT]\d+:\d+:\d+/)[0].replace(" ", "T");
                 storm_points.push(storm_data.data[i])
+                
                 break;
         }
     }

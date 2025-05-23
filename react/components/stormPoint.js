@@ -29,7 +29,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setIsSto
     const [customIcon, setCustomIcon] = useState(null);
     const markerRef = useRef(null);
 
-    console.log(storm_point_hover)
+    //console.log(storm_point_hover)
 
     
     const clickedRef = useRef(false);
@@ -42,7 +42,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setIsSto
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-    console.log(storm_point_data);
+    //console.log(storm_point_data);
 
     useEffect(() => {
         setIsMounted(true);
@@ -51,7 +51,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setIsSto
 
     useEffect(() => {
         (async () => {
-            const isSelected = storm_point_data.id === storm_point_hover?.id;
+            const isSelected = storm_point_data?.id === storm_point_hover?.id;
 
             const fallbackColor = "#e6e1e1";
             //console.log(storm_category)
@@ -70,7 +70,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setIsSto
 
               
         })();
-    }, [storm_category, storm_point_hover, storm_point_data]);
+    }, [storm_category, storm_point_hover]);
 
     if (!isMounted || !customIcon) return null;
 
@@ -110,7 +110,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setIsSto
                 >
                     <StormPointDetailsTooltip
                         storm_point_hover={storm_point_data}
-                        setHoverMarker={setHoverMarker}
+                        
                     />
                 </Popup>
 )}
