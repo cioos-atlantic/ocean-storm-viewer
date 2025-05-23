@@ -40,7 +40,7 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
   //const [historicalStormData, setHistoricalStormData] = useState(empty_storm_obj); // State for storing historical storm data
   const [isSearchSubmitted, setIsSearchSubmitted] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  
   const [sourceType, setSourceType] = useState("");
 
 
@@ -148,8 +148,7 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
       <main className="body">
         <MapWithNoSSR
           source_type={sourceType}
-          setIsDrawerOpen= {setIsDrawerOpen}
-          isDrawerOpen= {isDrawerOpen}
+          
 
         />
       </main>
