@@ -20,8 +20,18 @@ from datetime import datetime, timedelta, timezone
 import re
 
 log = logging.getLogger('caching.log')
-handler = RotatingFileHandler('caching.log', maxBytes=2000, backupCount=10)
-log.addHandler(handler)
+log.setLevel(logging.INFO)
+
+log_formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
+
+file_handler = RotatingFileHandler('caching.log', maxBytes=2_000_000, backupCount=10)
+file_handler.setFormatter(log_formatter)
+log.addHandler(file_handler)
+
+# Allows logging calls to print out to sys.stderr as well the log file
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(log_formatter)
+log.addHandler(stream_handler)
 
 config = ConfigParser()
 config.read("./config/config.ini")
@@ -68,7 +78,7 @@ variable_limits = json.load(open("./config/variable_limits.json"))
 #process_ibtracs(df = , destination_table=pg_ibtracs_active_table, pg_engine=engine, table_schema=erddap_cache_schema)
 def cache_erddap_data(storm_id, df, destination_table, pg_engine, table_schema, replace=False):
     # populate table
-    print("Populating Table...")
+    log.info("Populating Table...")
 
 
     with pg_engine.begin() as pg_conn: 
@@ -86,7 +96,7 @@ def cache_erddap_data(storm_id, df, destination_table, pg_engine, table_schema, 
     
     with pg_engine.begin() as pg_conn: 
         
-       #print("Updating Geometry...")
+       #log.info("Updating Geometry...")
         sql = f'UPDATE public.{destination_table} SET geom = ST_SetSRID(ST_MakePoint("min_lon", "min_lat"), 4326);'
         pg_conn.execute(text(sql))
 
@@ -95,9 +105,9 @@ def cache_erddap_data(storm_id, df, destination_table, pg_engine, table_schema, 
         sql = f"GRANT SELECT ON public.{destination_table} TO hurricane_dash_geoserver;"
         pg_conn.execute(text(sql))
 
-        #print("Committing Transaction.")
+        #log.info("Committing Transaction.")
         pg_conn.execute(text("COMMIT;"))
-        print("Cached" + storm_id)
+        log.info("Cached " + storm_id)
     return
 
 def create_table_from_schema(pg_engine, table_name, schema_file, pg_schema='public'):
@@ -128,7 +138,7 @@ def erddap_meta(metadata, attribute_name, row_type="attribute", var_name="NC_GLO
         message = (
             f"IndexError (Not found?) extracting ERDDAP Metadata: attribute: {attribute_name}, row_type: {row_type}, var_name: {var_name}"
         )
-        print(message)
+        log.error(message)
     return return_value
     
 # For a given dataset find out if it has any variables of interest (via standard name)
@@ -152,7 +162,7 @@ def match_standard_names(dataset_id):
             "meta" : metadata
         }
     else:
-        print(dataset_id, "Doesn't have any matching variables.")
+        log.info(f"{dataset_id} doesn't have any matching variables.")
     return dataset
 
 # Iterate through datasets and create a mapping between variable names and standard names
@@ -179,7 +189,8 @@ def standardize_column_names(dataset, dataset_id):
 
         # standard_name = metadata[(metadata["Variable Name"] == var) & (metadata["Attribute Name"] == "standard_name")]["Value"].values[0]
         replace_cols[var] = f"{standard_name}|{units}|{long_name}"
-        log.info(var, " => ", standard_name)
+
+        log.debug(f"{var} => {standard_name} | {units} | {long_name}")
     return replace_cols
 
 # For active storms set id to ACTIVE
@@ -193,7 +204,8 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
         "time<": max_time
     }
     cached_entries = []
-    print(dataset_id)
+
+    log.info(dataset_id)
 
     try:
         df = e.to_pandas()
@@ -263,11 +275,11 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
                     cached_entries.append(entry)
                 # time in ISO format or set column to timestamp (UTC for timezone)
             prev_interval = interval
-        #print(dataset_id + " cached")
+        #log.info(dataset_id + " cached")
         return cached_entries
     except Exception as ex:
-         print("HTTPStatusError", ex)
-         log.info(f" - No data found for time range: {min_time} - {max_time}")
+         log.error("HTTPStatusError", ex)
+         log.error(f" - No data found for time range: {min_time} - {max_time}")
     return cached_entries
 
 #Finds the column name in the dataframe given the standard name
@@ -302,8 +314,8 @@ def get_historical_storm_list(storm=None, min_year= None, max_year=None):
 
 def get_postgres_data(source_table, pg_engine, table_schema=None):
     # populate table
-    print("Getting table data...")
-    log.info(source_table)
+    log.info(f"Getting table data from {source_table}...")
+
     with pg_engine.begin() as pg_conn:
         sql_text  = text(f'SELECT * FROM public.{source_table} WHERE "SEASON" > 2000')
         data = pd.read_sql_query(sql=sql_text, con=pg_conn, parse_dates=['ISO_TIME'])
@@ -318,7 +330,16 @@ def filter_value_limits(station_data):
         if standard_name in variable_limits:
             upper_limit = variable_limits[standard_name]['upper']
             lower_limit = variable_limits[standard_name]['lower']
+            
+            out_of_range_series = station_data.loc[(station_data[col] > upper_limit) | (station_data[col] < lower_limit), col]
+            if not out_of_range_series.empty:
+                log.warning(f"Out of range values detected for {col}!  Replacing with NaN...")
+                log.warning(f" - Lower Limit: {lower_limit},  Upper Limit: {upper_limit}:")
+                log.warning("Offending Values:")
+                log.warning(out_of_range_series)
+
             station_data.loc[(station_data[col] > upper_limit) | (station_data[col] < lower_limit), col] = np.nan
+
     return station_data
     
 # Returns ERDDAP datasets active within a range of time that match important variables 
@@ -380,7 +401,8 @@ def main():
         """
         #create_table_from_schema(pg_engine=engine, table_name=pg_erddap_cache_historical_table, schema_file=erddap_cache_historical_schema)
         for i, storm in storms.iterrows():
-            print(storm)
+            log.info(storm)
+
             storm_id = str(storm['SEASON'].values[0]) + "_" + storm['NAME'].values[0]
             min_time = storm['ISO_TIME']['min']
             max_time = storm['ISO_TIME']['max']
@@ -399,11 +421,11 @@ def main():
                                                         min_time=datetime.strftime(min_time,'%Y-%m-%dT%H:%M:%SZ'), 
                                                         max_time=datetime.strftime(max_time,'%Y-%m-%dT%H:%M:%SZ')))
             if(cached_data and not arg_dry):
-                    print('Caching historical storm...')
+                    log.info('Caching historical storm...')
                     cache_erddap_data(storm_id = storm_id, df=pd.DataFrame(cached_data),destination_table=pg_erddap_cache_historical_table,
                                         pg_engine=engine,table_schema=erddap_cache_historical_schema)
             elif(arg_dry):
-                print("Dry run")
+                log.info("Dry run")
     # ACTIVE
     else:
         storm_id = "ACTIVE"
@@ -428,7 +450,7 @@ def main():
                                                     min_time=datetime.strftime(min_time,'%Y-%m-%dT%H:%M:%SZ'), 
                                                     max_time=datetime.strftime(max_time,'%Y-%m-%dT%H:%M:%SZ')))
         if(cached_data):
-                print("Caching active storm...")
+                log.info("Caching active storm...")
                 cache_erddap_data(storm_id=storm_id, df=pd.DataFrame(cached_data),destination_table=pg_erddap_cache_active_table,
                                     pg_engine=engine,table_schema=erddap_cache_active_schema,replace=True)
 
