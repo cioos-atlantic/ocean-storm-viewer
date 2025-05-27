@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
-import Box from '@mui/material/Box';
 import StormDashboard from '../storm_dashboard/storm_dashboard';
 import StationDashboard from '../station_dashboard/station_dashboard';
 import { empty_point_obj } from '../storm_point_details';
 import {empty_station_obj} from '../layout'
 import { Stack } from '@mui/material';
+import { useMediaQuery, Box, useTheme } from "@mui/material";
+import { RenderSmallDashboard } from './Mobile_Dashboard/dashboard_small';
 
 
 
