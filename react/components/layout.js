@@ -47,10 +47,16 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
   
 
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
 
   const active_storms = querystring.query.storms == "active";
   const historical_storms = querystring.query.storms == "historical";
-  const about_page = querystring.query.storms == "hurricanes";
+  const about_page = router?.query?.storms === "hurricanes";
 
   // useMemo() tells React to "memorize" the map component.
   // Without this, the map will get redrawn by many interactions 
@@ -69,6 +75,14 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
   if (active_storms) {
     storm_data_pass = empty_storm_obj;
     source_type = "active";
+      // Fetch active station data
+    useEffect(() => {
+      fetch(`${basePath}/api/query_stations`)
+        .then((res) => res.json())
+        .then((data) => {
+          setStationPoints(data);
+        })
+    }, []);
   }
 
   if (historical_storms) {
@@ -162,7 +176,7 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
           
         </Grid>
       </header>
-      {about_page ? (
+      {!isMounted ? null : about_page ?  (
         <About
             
             />):(<>

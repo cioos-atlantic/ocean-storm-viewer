@@ -1,0 +1,54 @@
+{
+  "wind_speed": {
+    "unit": "m/s",
+    "upper": 120,
+    "lower": 0
+  },
+  "wind_speed_of_gust":{
+    "unit": "m/s",
+    "upper": 150,
+    "lower": 0
+  },
+  "wind_from_direction":{
+    "unit": "deg",
+    "upper": 360,
+    "lower": 0
+  },
+  "sea_water_temperature":{
+    "unit": "°C",
+    "upper": 40,
+    "lower": 0
+  },
+  "air_temperature":{
+    "unit":"°C",
+    "upper": 40,
+    "lower": -40
+  },
+  "air_pressure":
+  {
+    "unit":"mbar",
+    "upper":1100,
+    "lower":800
+  },
+  "relative_humidity":
+  {
+    "unit":"",
+    "upper":102,
+    "lower":0
+  },
+  "sea_surface_temperature":{
+    "unit":"",
+    "upper":40,
+    "lower":-5 
+  },
+  "sea_surface_wave_significant_height":{
+    "unit":"",
+    "upper":20,
+    "lower":0
+  },
+  "sea_surface_wave_maximum_height":{
+    "unit":"",
+    "upper":20,
+    "lower":0
+  }
+}

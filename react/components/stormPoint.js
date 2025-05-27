@@ -24,7 +24,7 @@ import { createSvgIconWithText } from "./utils/storm_display_utils";
  *
  * @returns {JSX.Element} - A React Marker component with event handlers and custom icon.
  */
-export default function StormMarker({ storm_point_data, setHoverMarker, setIsStormDashOpen, storm_point_hover }) {
+export default function StormMarker({ storm_point_data, setHoverMarker, setIsStormDashOpen, storm_point_hover, setIsDashOpen }) {
     const [isMounted, setIsMounted] = useState(false);
     const [customIcon, setCustomIcon] = useState(null);
     const markerRef = useRef(null);
@@ -83,10 +83,14 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setIsSto
             eventHandlers={{
                 mouseover: () => {
                     setHoverMarker(storm_point_data);
+                    setIsDashOpen(true);
+                    setIsStormDashOpen(true);
+                    
                     markerRef.current?.openPopup();
                 },
                 click: () => {
                     setHoverMarker(storm_point_data);
+                    setIsDashOpen(true);
                     setIsStormDashOpen(true);
                     clickedRef.current = true;
                 },
