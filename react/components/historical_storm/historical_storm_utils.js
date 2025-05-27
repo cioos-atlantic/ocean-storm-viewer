@@ -319,7 +319,11 @@ export function addSearchParams(stormName, stormYear, router) {
  * based on the storm details, and sets the retrieved data for display on the map.
 
  */
-export async function handleClick( storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading) {
+export async function handleClick( storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen) {
+
+  setIsDashOpen(false);
+  setIsStationDashOpen(false);
+  setIsStormDashOpen(false);
 
   //console.log(Leaflet);
   setSelectedStation(empty_station_obj)
