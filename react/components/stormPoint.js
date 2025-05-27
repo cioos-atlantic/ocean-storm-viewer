@@ -83,7 +83,6 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setIsSto
             eventHandlers={{
                 mouseover: () => {
                     setHoverMarker(storm_point_data);
-                    setIsStormDashOpen(true);
                     markerRef.current?.openPopup();
                 },
                 click: () => {
@@ -93,8 +92,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setIsSto
                 },
                 mouseout: () =>  {
                     if (!clickedRef.current) {
-                        setHoverMarker(empty_point_obj);
-                        setIsStormDashOpen(false);
+                        //setHoverMarker(empty_point_obj);
                         markerRef.current?.closePopup();
                     }}
             }}
