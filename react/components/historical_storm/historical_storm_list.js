@@ -33,7 +33,7 @@ const otherStormList = [
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked}) {
+export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen, drawerButtonClicked, setDrawerButtonClicked}) {
 
   const [loading, setLoading] = useState(false);
 
@@ -68,7 +68,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           console.log(selectedStorm);
           if (selectedStorm) {
             setDrawerButtonClicked(selectedStorm.storm_id);
-            await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation,setLoading);
+            await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation,setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
           }
         }
     }
@@ -134,9 +134,10 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           setReturnFilterResult={setReturnFilterResult}
           drawerButtonClicked={drawerButtonClicked}
           setDrawerButtonClicked={setDrawerButtonClicked}
+          
                 
         />):
-        (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setDrawerButtonClicked))}
+        (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setDrawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen))}
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
       
           

@@ -51,6 +51,7 @@ export default function Map({ children,  source_type, station_points, setStation
   const [returnFilterResult, setReturnFilterResult] = useState(false);
   const [bboxFilterCoordinates, setBboxFilterCoordinates]= useState('');
   const [polyFilterCoords, setPolyFilterCoords] = useState('');
+  const [isDashOpen, setIsDashOpen] = useState(false);
   const [isStormDashOpen, setIsStormDashOpen] = useState(false);
   const [isStationDashOpen, setIsStationDashOpen] = useState(false);
   const [drawerButtonClicked, setDrawerButtonClicked] = useState('');
@@ -151,6 +152,8 @@ export default function Map({ children,  source_type, station_points, setStation
             setIsStormDashOpen={setIsStormDashOpen}
             isStationDashOpen={isStationDashOpen}
             setIsStationDashOpen={setIsStationDashOpen}
+            setIsDashOpen={setIsDashOpen}
+            isDashOpen= {isDashOpen}
             />
         }
         
@@ -197,7 +200,9 @@ export default function Map({ children,  source_type, station_points, setStation
             setReturnFilterResult = {setReturnFilterResult}
             drawerButtonClicked={drawerButtonClicked}
             setDrawerButtonClicked={setDrawerButtonClicked}
-            
+            setIsDashOpen={setIsDashOpen}
+            setIsStormDashOpen={setIsStormDashOpen}
+            setIsStationDashOpen ={setIsStationDashOpen}
           />
 
           <TileLayer
@@ -225,7 +230,7 @@ export default function Map({ children,  source_type, station_points, setStation
                   station_points ? (
                     Object.entries(station_points).map((station) => {
                       const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                      return StationMarker(station, allDatasetDescriptions, storm_timestamp, selected_station, setSelectedStation, setSelectedTab, setIsStationDashOpen)
+                      return StationMarker(station, allDatasetDescriptions, storm_timestamp, selected_station, setSelectedStation, setSelectedTab, setIsStationDashOpen, setIsDashOpen)
                     })
                   ) : (
                     <></>
@@ -259,6 +264,7 @@ export default function Map({ children,  source_type, station_points, setStation
                         setHoverMarker={setHoverMarker}
                         setIsStormDashOpen={setIsStormDashOpen}
                         storm_point_hover= {hover_marker}
+                        setIsDashOpen = {setIsDashOpen}
                        
                       />
                     );
