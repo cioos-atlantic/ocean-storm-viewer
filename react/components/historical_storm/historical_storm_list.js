@@ -33,7 +33,7 @@ const otherStormList = [
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen, drawerButtonClicked, setDrawerButtonClicked}) {
+export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen, drawerButtonClicked, setDrawerButtonClicked}) {
 
   const [loading, setLoading] = useState(false);
 
@@ -126,7 +126,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           >Historical Storms: </Box>
           <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>  {/* Bold line */}
 
-          {console.log(searchResult)}
+          
 
       {/*{isSearchSubmitted ? (<RenderSearchResult 
                 searchResult={searchResult}

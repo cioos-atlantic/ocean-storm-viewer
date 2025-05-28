@@ -158,10 +158,6 @@ export default function Map({ children, station_data, source_type,  setStationPo
             setIsDrawerOpen= {setIsDrawerOpen}
             isDrawerOpen= {isDrawerOpen}
             setSelectedStation={setSelectedStation}
-            isSearchSubmitted = {isSearchSubmitted}
-            setIsSearchSubmitted= {setIsSearchSubmitted}
-            searchResult= {searchResult}
-            setSearchResult={setSearchResult}
             filterResult = {filterResult}
             setFilterResult = {setFilterResult}
             returnFilterResult= {returnFilterResult}
