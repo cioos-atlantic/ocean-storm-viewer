@@ -23,8 +23,11 @@ export default async function handler(req, res) {
         //filters["(ISO_TIME BETWEEN "] =  `'${start_date}' AND '${end_date}')`;
         filters["(ISO_TIME_START >= "] = `'${start_date}' AND ISO_TIME_END <= '${end_date}')`};
 
+    /*if (start_category !== "" && end_category !== "") {
+        filters["(USA_SSHS_MIN >= "] = `'${start_category}' AND USA_SSHS_MAX <= '${end_category}')`};*/
+
     if (start_category !== "" && end_category !== "") {
-        filters["(USA_SSHS_MIN >= "] = `'${start_category}' AND USA_SSHS_MAX <= '${end_category}')`};
+        filters["(USA_SSHS_MAX BETWEEN "] = `'${start_category}' AND '${end_category}')`};
     
 
     if (category_list.length > 0) {
@@ -32,6 +35,7 @@ export default async function handler(req, res) {
         //filters["(USA_SSHS IN ("] = category_string + "))";
         filters["(USA_SSHS_MIN IN ("] = category_string + ") OR USA_SSHS_MAX IN (" + category_string + "))" ;
     }
+    
 
 
     if (names_list.length > 0) {
