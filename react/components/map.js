@@ -42,12 +42,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
   const [storm_points, setStormPoints] = useState(empty_storm_obj);
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
-
-  // The state variable that contains the station that was last clicked on
-  
   const [selected_tab, setSelectedTab] = useState(0);
-  //const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isStormDetOpen, setIsStormDetOpen] = useState(false); 
   const [selected_station, setSelectedStation] = useState(empty_station_obj);
   const [filterResult, setFilterResult] = useState({}); 
   const [returnFilterResult, setReturnFilterResult] = useState(false);
@@ -75,33 +70,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
   return (
     <div className="map_container">
       <div className='inner_container'>
-        {/*hover_marker !== empty_point_obj && (
-          <StormPointDetails
-            storm_point_hover={hover_marker}
-            //onClose={() => setHoverMarker(empty_point_obj)} // Close popup when the marker is reset
-            setIsStormDetOpen= {setIsStormDetOpen}
-            setHoverMarker= {setHoverMarker}
-          />
-        )*/}
-
-        {/*
-          <RenderStormSearch
-            isSearchSubmitted = {isSearchSubmitted}
-            setIsSearchSubmitted= {setIsSearchSubmitted}
-            searchResult= {searchResult}
-            setSearchResult={setSearchResult}
-            setIsDrawerOpen= {setIsDrawerOpen}
-            isDrawerOpen= {isDrawerOpen}/>
-         */}
-        {/*hover_marker !== empty_point_obj && (
-          <StormDashboard
-            storm_data={storm_data}
-            storm_points={storm_points}
-            source_type={source_type}
-            hover_point={hover_marker}
-            isDrawerOpen={isDrawerOpen}
-            setHoverMarker={setHoverMarker}/>
-         )*/}
+        
         {
           <RenderFilter
           filterResult = {filterResult}
@@ -135,7 +104,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
         }
         {
           <RenderDashboards
-            storm_data={storm_data}
+            storm_data={storm_points}
             storm_points={storm_points}
             source_type={source_type}
             hover_point={hover_marker}
@@ -182,7 +151,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
           <Drawer
             element_id="left-side"
             classes="left"
-            storm_data={storm_data}
+            storm_data={storm_points}
             source_type={source_type}
             setStormPoints={setStormPoints}
             setStationPoints={setStationPoints}
