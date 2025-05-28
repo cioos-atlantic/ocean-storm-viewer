@@ -72,7 +72,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     className="input-filter"
     sx={{top:{xs: '6px', md: '100%',},
     right:{xs: '100%', md: '0px',},
-    width:{xs: '150px', md: '180px' } }}      
+    width:{xs: '210px', md: '210px' } }}      
   >
     <Box
       component="form"
@@ -132,12 +132,16 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       </FormControl>
 
       {/* Action Buttons */}
-      <Box sx={{ display: "flex", gap: "8px" }}>
+      <Box sx={{ display: "flex", gap: "1px" }}>
         <Button className="filter-submit-button" type="submit">
           Enter
         </Button>
         <Button className="filter-submit-button" onClick={handleClear}>
           Clear
+        </Button>
+        <Button className="filter-submit-button" onClick= {() => {
+        setShowFilterOptions(false)}}>
+          Close
         </Button>
       </Box>
     </Box>
