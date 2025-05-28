@@ -28,16 +28,19 @@ import CustomZoomControl from "./custom_zoom_control";
 import StormDashboard from "./storm_dashboard/storm_dashboard";
 import { RenderDashboards } from "./Dashboard/dashboard";
 import StormMarker from "./stormPoint";
+import { empty_storm_obj } from "@/lib/storm_utils";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
 
-export default function Map({ children, storm_points, storm_data, station_data, source_type, setStormPoints, setStationPoints, setHistoricalStormData, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, setIsDrawerOpen, isDrawerOpen,  }) {
+export default function Map({ children, station_data, source_type,  setStationPoints}) {
 
   const clearShapesRef = useRef(null);
 
   // The state variable that contains the storm point currently being hovered 
   // over or clicked on
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const [storm_points, setStormPoints] = useState(empty_storm_obj);
   const [hover_marker, setHoverMarker] = useState(empty_point_obj);
 
   // The state variable that contains the station that was last clicked on
