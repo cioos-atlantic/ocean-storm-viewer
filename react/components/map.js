@@ -72,9 +72,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
         
         {
           <RenderFilter
-          filterResult = {filterResult}
           setFilterResult = {setFilterResult}
-          returnFilterResult= {returnFilterResult}
           setReturnFilterResult = {setReturnFilterResult}
           setIsDrawerOpen= {setIsDrawerOpen}
           polyFilterCoords={polyFilterCoords}

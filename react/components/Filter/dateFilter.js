@@ -65,7 +65,7 @@ const reset= { label: 'Reset', getValue: () => [null, null] };
 
 
 
-export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelectedOption, startDate, endDate,setStartDate, setEndDate, showDateSelection, setShowDateSelection}){
+export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, startDate, endDate,setStartDate, setEndDate, showDateSelection, setShowDateSelection}){
   //const [showDateSelection, setShowDateSelection] = useState(false); 
   const buttonStyle = {
     backgroundColor: startDate && endDate && startDate.isValid() && endDate.isValid() ? '#e55162' : 'white',

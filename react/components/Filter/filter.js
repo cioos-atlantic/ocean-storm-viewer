@@ -39,7 +39,7 @@ const showOptionsArrow = <KeyboardDoubleArrowDownIcon />;
 const closeOptionsArrow = <KeyboardDoubleArrowUpIcon />;
 
 
-export function RenderFilter({ filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, polyFilterCoords, setPolyFilterCoords, clearShapesRef, setDrawerButtonClicked, startDate,
+export function RenderFilter({ setFilterResult,  setReturnFilterResult, setIsDrawerOpen, polyFilterCoords, setPolyFilterCoords, clearShapesRef, setDrawerButtonClicked, startDate,
   endDate,
   startCategory,
   endCategory,
@@ -51,14 +51,11 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
   const [showFilterOptions, setShowFilterOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [filterParameters, setFilterParameters] = useState([]);
-  //const [startDate, setStartDate] = useState(null);
-  //const [endDate, setEndDate] = useState(null);
-  //const [startCategory, setStartCategory] = useState(null);
-  //const [endCategory, setEndCategory] = useState(null);
+  
 
   const [openSpeedDial, setOpenSpeedDial] = useState(false);
 
-  //const handleSpeedDialToggle = () => setOpenSpeedDial(prev => !prev);
+  
   const handleOpen = () => setOpenSpeedDial(true);
   const handleClose = (event, reason) => {
     if (reason !== "toggle") {
@@ -82,17 +79,7 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
   async function handleFilterSubmit() {
     setDrawerButtonClicked('');
     
-    /*setFilterParameters((prev) => {
-      const updatedParams = {
-        ...prev,
-        ...selectedOptions, // Spread selected options correctly
-        startDate: startDate, // Ensure start and end dates are included
-        endDate: endDate
-      };
-      console.log(updatedParams); // Log the correct updated state
-      return updatedParams;
-    });
-    console.log(filterParameters);*/
+    
     const updatedParams = {
       ...selectedOptions, // Spread selected options correctly
       startDate: startDate, // Ensure start and end dates are included
@@ -181,7 +168,6 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
               <RenderDateFilter
                 showOptionsArrow={showOptionsArrow}
                 closeOptionsArrow={closeOptionsArrow}
-                setSelectedOptions={setSelectedOptions}
                 startDate={startDate}
                 endDate={endDate}
                 setStartDate={setStartDate}
