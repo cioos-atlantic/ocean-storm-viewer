@@ -21,6 +21,7 @@ export function RenderDashboards({storm_points, source_type, hover_point, isDraw
     isStationDashOpen, 
     setIsStationDashOpen,
     isDashOpen, 
+    setHoverMarker
     }){
         
 
@@ -74,6 +75,7 @@ export function RenderDashboards({storm_points, source_type, hover_point, isDraw
                 hover_point={hover_point}
                 isStormDashOpen={isStormDashOpen}
                 setIsStormDashOpen={setIsStormDashOpen}
+                setHoverMarker={setHoverMarker}
             />
             </Box>
         )}
