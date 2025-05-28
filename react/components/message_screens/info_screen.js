@@ -8,7 +8,7 @@ export default function InfoScreen({setInfo, open, onClose }){
     return(
       <Dialog onClose = {handleClose} open={open} PaperPropssx={{ align: 'center', display:'flex', justifyContent: 'center' }}>
         <DialogTitle>Ocean Storm Viewer - User Guide</DialogTitle>
-        <DialogContent dividers={scroll === 'paper'}>
+        <DialogContent dividers={scroll === 'paper'} style={{height:'60vh'}}>
         <p>
             Welcome to the <b>Ocean Storm Viewer (OSV)</b>!<br/>
             This website helps you explore and learn about ocean storms—both current and historical<br/>
