@@ -99,12 +99,10 @@ export default function Map({ children, station_data, source_type,  setStationPo
         }
         {
           <RenderDashboards
-            storm_data={storm_points}
             storm_points={storm_points}
             source_type={source_type}
             hover_point={hover_marker}
             isDrawerOpen={isDrawerOpen}
-            setHoverMarker={setHoverMarker}
             selected_station={selected_station}
             setSelectedStation={setSelectedStation}
             station_descriptions={allDatasetDescriptions}
@@ -115,7 +113,6 @@ export default function Map({ children, station_data, source_type,  setStationPo
             setIsStormDashOpen={setIsStormDashOpen}
             isStationDashOpen={isStationDashOpen}
             setIsStationDashOpen={setIsStationDashOpen}
-            setIsDashOpen={setIsDashOpen}
             isDashOpen= {isDashOpen}
             />
         }
