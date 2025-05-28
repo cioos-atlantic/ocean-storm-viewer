@@ -46,7 +46,6 @@ export default function Map({ children, station_data, source_type,  setStationPo
   const [selected_station, setSelectedStation] = useState(empty_station_obj);
   const [filterResult, setFilterResult] = useState({}); 
   const [returnFilterResult, setReturnFilterResult] = useState(false);
-  const [bboxFilterCoordinates, setBboxFilterCoordinates]= useState('');
   const [polyFilterCoords, setPolyFilterCoords] = useState('');
   const [isDashOpen, setIsDashOpen] = useState(false);
   const [isStormDashOpen, setIsStormDashOpen] = useState(false);
@@ -78,8 +77,6 @@ export default function Map({ children, station_data, source_type,  setStationPo
           returnFilterResult= {returnFilterResult}
           setReturnFilterResult = {setReturnFilterResult}
           setIsDrawerOpen= {setIsDrawerOpen}
-          bboxFilterCoordinates={bboxFilterCoordinates}
-          setBboxFilterCoordinates={setBboxFilterCoordinates}
           polyFilterCoords={polyFilterCoords}
           setPolyFilterCoords={setPolyFilterCoords}
           clearShapesRef={clearShapesRef} // Pass the ref to 
