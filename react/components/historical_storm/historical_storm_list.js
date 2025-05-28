@@ -1,30 +1,13 @@
-import CustomButton from '../../custom/custom-button.js';
-import { addDays, subDays, lightFormat } from "date-fns";
-import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
 import { useEffect, useState } from 'react';
-import { getHistoricalStormList, parseStormData, makeStormList, isName, isYear, parseForFlyToPoint, addSearchParams } from './historical_storm_utils.js';
+import { getHistoricalStormList } from './historical_storm_utils.js';
 import { useRouter } from 'next/router';
-
-import { empty_station_obj } from '../layout.js';
-import { Button, Box } from '@mui/material';
-import {  handleClick, handleFormSubmit, handleSearch } from './historical_storm_utils.js';
-import { RenderSearchResult } from './render_search_result.js';
+import {  Box } from '@mui/material';
+import {  handleClick,  handleSearch } from './historical_storm_utils.js';
 import { renderRecentStorms } from './render_recent_storms.js';
 import { RenderFilterResult } from '../Filter/renderFilterResult.js';
 import LoadingScreen from '../loading_screen.js';
 import { AppliedFilters } from '../Filter/filtersApplied.js';
 
-
-const otherStormList = [
-  { "name": "FIONA", "year": 2022, "source": "ibtracs" },
-  { "name": "ERNESTO", "year": 2018, "source": "ibtracs" },
-  { "name": "EARL", "year": 2022, "source": "ibtracs" },
-  { "name": "LEE", "year": 2017, "source": "ibtracs" },
-  { "name": "IRMA", "year": 2017, "source": "ibtracs" },
-  { "name": "BLAMMO", "year": 1999, "source": "ibtracs" },
-  { "name": "CLAUDETTE", "year": 2015, "source": "ibtracs" },
-
-]
 
 
 
@@ -33,7 +16,7 @@ const otherStormList = [
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen, drawerButtonClicked, setDrawerButtonClicked}) {
+export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, filterResult, returnFilterResult, setReturnFilterResult, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen, drawerButtonClicked, setDrawerButtonClicked}) {
 
   const [loading, setLoading] = useState(false);
 
@@ -128,16 +111,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
 
           
 
-      {/*{isSearchSubmitted ? (<RenderSearchResult 
-                searchResult={searchResult}
-                router={router}
-                setIsSearchSubmitted={setIsSearchSubmitted}
-                
-                 />):
-      (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation))}
-
-      <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
-      */}
+  
 
       {returnFilterResult ? 
         (<RenderFilterResult 
@@ -149,7 +123,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           
                 
         />):
-        (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setDrawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen))}
+        (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen))}
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
       
           

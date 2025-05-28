@@ -3,7 +3,7 @@ import { Button, Stack } from "@mui/material";
 import { IconButton, TextField, Box, Typography, Paper } from "@mui/material";
 
 
-export function renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setDrawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen){
+export function renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen){
   return(
     
       <Stack

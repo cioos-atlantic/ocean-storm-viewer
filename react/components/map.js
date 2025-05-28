@@ -129,7 +129,6 @@ export default function Map({ children, station_data, source_type,  setStationPo
           <Drawer
             element_id="left-side"
             classes="left"
-            storm_data={storm_points}
             source_type={source_type}
             setStormPoints={setStormPoints}
             setStationPoints={setStationPoints}
@@ -137,7 +136,6 @@ export default function Map({ children, station_data, source_type,  setStationPo
             isDrawerOpen= {isDrawerOpen}
             setSelectedStation={setSelectedStation}
             filterResult = {filterResult}
-            setFilterResult = {setFilterResult}
             returnFilterResult= {returnFilterResult}
             setReturnFilterResult = {setReturnFilterResult}
             drawerButtonClicked={drawerButtonClicked}
