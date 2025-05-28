@@ -114,6 +114,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
             isStationDashOpen={isStationDashOpen}
             setIsStationDashOpen={setIsStationDashOpen}
             isDashOpen= {isDashOpen}
+            setHoverMarker={setHoverMarker}
             />
         }
         

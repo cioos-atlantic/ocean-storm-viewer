@@ -9,6 +9,7 @@ import { StormSummaryText } from "./storm_details";
 import StormDataLayout from "./storm_layout_small_screen";
 import { convert_unit_data } from "../utils/unit_conversion";
 import StormCategory from "../Storm_popup/storm_category";
+import { empty_point_obj } from "../storm_point_details";
 
 
 //import BasicTabs from "./tabs";
@@ -21,7 +22,7 @@ import StormCategory from "../Storm_popup/storm_category";
  */
 
 
-export default function StormDashboard({storm_points, hover_point, isStormDashOpen, setIsStormDashOpen}) {
+export default function StormDashboard({storm_points, hover_point, isStormDashOpen, setIsStormDashOpen, setHoverMarker}) {
 
   const [selectedStormTab, setSelectedStormTab] = useState(0);
   //console.log(storm_data, storm_points, source_type, hover_point);
@@ -154,9 +155,10 @@ export default function StormDashboard({storm_points, hover_point, isStormDashOp
           className="close"
           onClick={() => {
             console.log("closed")
-            //setHoverMarker(empty_station_obj);
+            setHoverMarker(empty_point_obj);
             setSelectedStormTab(0);
             setIsStormDashOpen(false)
+            
           }}
           title="Close"
           aria-label="Close"
@@ -214,7 +216,7 @@ export default function StormDashboard({storm_points, hover_point, isStormDashOp
           className="close"
           onClick={() => {
             console.log("closed")
-            //setHoverMarker(empty_station_obj);
+            setHoverMarker(empty_point_obj);
             setSelectedStormTab(0);
             setIsStormDashOpen(false)
           }}
@@ -242,7 +244,8 @@ export default function StormDashboard({storm_points, hover_point, isStormDashOp
       ><BasicTabs
                   stormName={stormName}
                   stormData={storm_data_dict}
-                  stormSummaryText={<StormSummaryText storm_point_hover={hover_point}/>}
+                  stormSummaryText={<StormSummaryText 
+                    storm_point_hover={hover_point}/>}
                   variablePresence={variablePresence}
                   selectedStormTab={selectedStormTab}
                   setSelectedStormTab={setSelectedStormTab}
