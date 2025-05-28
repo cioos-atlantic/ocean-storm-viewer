@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { getHistoricalStormList } from './historical_storm_utils.js';
 import { useRouter } from 'next/router';
-import {  Box } from '@mui/material';
+import {  Box, Button } from '@mui/material';
 import {  handleClick,  handleSearch } from './historical_storm_utils.js';
 import { renderRecentStorms } from './render_recent_storms.js';
 import { RenderFilterResult } from '../Filter/renderFilterResult.js';
 import LoadingScreen from '../loading_screen.js';
 import { AppliedFilters } from '../Filter/filtersApplied.js';
+import { empty_storm_obj } from '@/lib/storm_utils.js';
 
 
 
@@ -125,6 +126,13 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
         />):
         (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen))}
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
+      <Button
+      onClick={()=> {
+      setStormPoints(empty_storm_obj)
+      router.push(`/?storms=historical`)
+      }}
+      className="cancel-search"
+      >Clear Storm Tracks</Button>
       
           
           
