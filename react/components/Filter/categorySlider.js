@@ -44,7 +44,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
 
 
   useEffect(() => {
-    if (startCategory != null && endCategory != null) {
+    if (startCategory != "" && endCategory != "") {
       const stormMin = `${startCategory}`;
       const stormMax = `${endCategory}`;
   

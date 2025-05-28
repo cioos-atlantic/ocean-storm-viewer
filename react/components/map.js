@@ -53,8 +53,8 @@ export default function Map({ children, station_data, source_type,  setStationPo
   const [drawerButtonClicked, setDrawerButtonClicked] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [startCategory, setStartCategory] = useState(null);
-  const [endCategory, setEndCategory] = useState(null);
+  const [startCategory, setStartCategory] = useState("");
+  const [endCategory, setEndCategory] = useState("");
   const [showCatSelection, setShowCatSelection] = useState(false); 
   const [showDateSelection, setShowDateSelection] = useState(false); 
   
