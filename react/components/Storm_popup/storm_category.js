@@ -32,7 +32,7 @@ export default function StormCategory({ STORMFORCE }) {
     return (
         <>
             <div>
-                <strong>Storm Category:</strong> {STORMFORCE || "Unknown"}{" "}
+                <strong>Storm Category:</strong> {STORMFORCE || "NO DATA"}{" "}
                 <FaInfoCircle
                     style={{ cursor: "pointer", marginLeft: "5px" }}
                     onClick={togglePopup}
@@ -53,3 +53,11 @@ export default function StormCategory({ STORMFORCE }) {
         </>
     );
 }
+
+
+/* TODO - Improvements
+Dynamically change text based what the range selected by the user is using the useState of the slider.
+
+" Range selected is between {min} and {max}" 
+{Min} is {blah blah blah} while {max} is {blah blah blah}"
+For more information, visit "blah"*/ 

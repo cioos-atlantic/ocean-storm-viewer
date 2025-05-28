@@ -54,6 +54,12 @@ export default function Map({ children, storm_points, storm_data, station_data, 
   const [isStormDashOpen, setIsStormDashOpen] = useState(false);
   const [isStationDashOpen, setIsStationDashOpen] = useState(false);
   const [drawerButtonClicked, setDrawerButtonClicked] = useState('');
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [startCategory, setStartCategory] = useState(null);
+  const [endCategory, setEndCategory] = useState(null);
+  const [showCatSelection, setShowCatSelection] = useState(false); 
+  const [showDateSelection, setShowDateSelection] = useState(false); 
   
   const allDatasetDescriptions = useDatasetDescriptions();
 
@@ -106,6 +112,19 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           setPolyFilterCoords={setPolyFilterCoords}
           clearShapesRef={clearShapesRef} // Pass the ref to 
           setDrawerButtonClicked={setDrawerButtonClicked}
+          startDate={startDate}
+          endDate={endDate}
+          startCategory={startCategory}
+          endCategory={endCategory}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+          setStartCategory={setStartCategory}
+          setEndCategory={setEndCategory}
+          showCatSelection ={showCatSelection}
+          setShowCatSelection = {setShowCatSelection}
+          showDateSelection={showDateSelection}
+          setShowDateSelection={setShowDateSelection}
+
           
           // RenderFilter
           
