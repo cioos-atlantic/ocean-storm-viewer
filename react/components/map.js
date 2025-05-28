@@ -98,7 +98,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
           setShowDateSelection={setShowDateSelection}
 
           
-          // RenderFilter
+          
           
           />
         }
@@ -125,21 +125,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
             />
         }
         
-        {/*selected_station !== empty_station_obj && (
-          <StationDashboard
-            selected_station={selected_station}
-            setSelectedStation={setSelectedStation}
-            stationsDescriptions={allDatasetDescriptions}
-            station_descriptions={allDatasetDescriptions}
-            storm_timestamp = {new Date()}
-            selectedTab = {selected_tab}
-            setSelectedTab = {setSelectedTab}
-            isDrawerOpen= {isDrawerOpen}
-            isStormDetOpen= {isStormDetOpen}
-            setIsStormDetOpen= {setIsStormDetOpen}
-            source_type = {source_type}
-          ></StationDashboard>
-        )*/}
+       
         <MapContainer
           center={defaultPosition}
           zoom={defaultZoom}
