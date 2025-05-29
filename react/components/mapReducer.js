@@ -93,6 +93,7 @@ export function mapReducer(state, action) {
           isDashOpen: true,
           isStationDashOpen: true,
         };
+      
     default:
       return state;
   }

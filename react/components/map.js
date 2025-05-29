@@ -84,22 +84,24 @@ export default function Map({ children, station_data, source_type,  setStationPo
         }
         {
           <RenderDashboards
-            storm_points={storm_points}
+            //storm_points={storm_points}
             source_type={source_type}
-            hover_point={hover_marker}
-            isDrawerOpen={isDrawerOpen}
-            selected_station={selected_station}
-            setSelectedStation={setSelectedStation}
+            //hover_point={hover_marker}
+            //isDrawerOpen={isDrawerOpen}
+            //selected_station={selected_station}
+            //setSelectedStation={setSelectedStation}
             station_descriptions={allDatasetDescriptions}
-            storm_timestamp = {new Date()}
-            selectedTab = {selected_tab}
-            setSelectedTab = {setSelectedTab}
-            isStormDashOpen={isStormDashOpen}
-            setIsStormDashOpen={setIsStormDashOpen}
-            isStationDashOpen={isStationDashOpen}
-            setIsStationDashOpen={setIsStationDashOpen}
-            isDashOpen= {isDashOpen}
-            setHoverMarker={setHoverMarker}
+            time = {new Date()}
+            state={state}
+            dispatch={dispatch}
+            //selectedTab = {selected_tab}
+            //setSelectedTab = {setSelectedTab}
+            //isStormDashOpen={isStormDashOpen}
+            //setIsStormDashOpen={setIsStormDashOpen}
+            //isStationDashOpen={isStationDashOpen}
+            //setIsStationDashOpen={setIsStationDashOpen}
+            //isDashOpen= {isDashOpen}
+            //setHoverMarker={setHoverMarker}
             />
         }
         

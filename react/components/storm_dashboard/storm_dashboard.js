@@ -22,13 +22,13 @@ import { empty_point_obj } from "../storm_point_details";
  */
 
 
-export default function StormDashboard({storm_points, hover_point, isStormDashOpen, setIsStormDashOpen, setHoverMarker}) {
+export default function StormDashboard({state, dispatch}) {
 
   const [selectedStormTab, setSelectedStormTab] = useState(0);
   //console.log(storm_data, storm_points, source_type, hover_point);
-  console.log(storm_points.pts.features)
+  console.log(state.storm_points.pts.features)
 
-  const stormPoints = storm_points.pts.features;
+  const stormPoints = state.storm_points.pts.features;
   console.log(stormPoints)
   const ibtracs_link = 'https://www.ncei.noaa.gov/products/international-best-track-archive';
 
@@ -93,7 +93,8 @@ export default function StormDashboard({storm_points, hover_point, isStormDashOp
 
   const isSmall = useMediaQuery(theme.breakpoints.down('md')); // `md` in MUI = 960px
 
-  const hoverPointTime = fetch_value(hover_point, ["TIMESTAMP", "ISO_TIME"]);
+
+  const hoverPointTime = fetch_value(state.hover_marker, ["TIMESTAMP", "ISO_TIME"]);
 
 
   console.log(storm_data_dict);
@@ -126,7 +127,7 @@ export default function StormDashboard({storm_points, hover_point, isStormDashOp
       });
   });
 
-  console.log(hover_point);
+  console.log(state.hover_marker);
 
 
 
@@ -137,7 +138,7 @@ export default function StormDashboard({storm_points, hover_point, isStormDashOp
       className={`station_dashboard`}
       sx={{
         //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
-        display: isStormDashOpen ? 'flex':'none',
+        display: state.isStormDashOpen ? 'flex':'none',
         
         
         
@@ -155,10 +156,9 @@ export default function StormDashboard({storm_points, hover_point, isStormDashOp
           className="close"
           onClick={() => {
             console.log("closed")
-            setHoverMarker(empty_point_obj);
             setSelectedStormTab(0);
-            setIsStormDashOpen(false)
-            
+            dispatch({ type: "SET_HOVER_MARKER", payload: empty_point_obj});
+            dispatch({ type: "TOGGLE_STORM_DASH", payload: false});
           }}
           title="Close"
           aria-label="Close"
@@ -183,7 +183,7 @@ export default function StormDashboard({storm_points, hover_point, isStormDashOp
         }}
       ><StormDataLayout
                   stormData={storm_data_dict}
-                  stormSummaryText={<StormSummaryText storm_point_hover={hover_point}/>}
+                  stormSummaryText={<StormSummaryText storm_point_hover={hover_marker}/>}
                   variablePresence={variablePresence}
                   stormTime={stormTime}
                   hoverPointTime={hoverPointTime}
@@ -199,7 +199,7 @@ export default function StormDashboard({storm_points, hover_point, isStormDashOp
       className={`station_dashboard`}
       sx={{
         //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
-        display: isStormDashOpen ? 'flex':'none',
+        display: state.isStormDashOpen ? 'flex':'none',
         
         
       }}
@@ -216,9 +216,9 @@ export default function StormDashboard({storm_points, hover_point, isStormDashOp
           className="close"
           onClick={() => {
             console.log("closed")
-            setHoverMarker(empty_point_obj);
             setSelectedStormTab(0);
-            setIsStormDashOpen(false)
+            dispatch({ type: "SET_HOVER_MARKER", payload: empty_point_obj});
+            dispatch({ type: "TOGGLE_STORM_DASH", payload: false});
           }}
           title="Close"
           aria-label="Close"
@@ -245,7 +245,7 @@ export default function StormDashboard({storm_points, hover_point, isStormDashOp
                   stormName={stormName}
                   stormData={storm_data_dict}
                   stormSummaryText={<StormSummaryText 
-                    storm_point_hover={hover_point}/>}
+                  storm_point_hover={state.hover_marker}/>}
                   variablePresence={variablePresence}
                   selectedStormTab={selectedStormTab}
                   setSelectedStormTab={setSelectedStormTab}
