@@ -3,9 +3,9 @@ import { empty_point_obj, empty_station_obj, empty_storm_obj } from "./point_def
 
 
 export const initialMapState = {
-  hoverMarker: empty_point_obj,
+  hover_marker: empty_point_obj,
   selectedTab: 0,
-  selectedStation: empty_station_obj,
+  selected_station: empty_station_obj,
   filterResult: {},
   returnFilterResult: false,
   polyFilterCoords: '',
@@ -26,13 +26,13 @@ export const initialMapState = {
 export function mapReducer(state, action) {
   switch (action.type) {
     case 'SET_HOVER_MARKER':
-      return { ...state, hoverMarker: action.payload };
+      return { ...state, hover_marker: action.payload };
     case 'SET_STORM_POINT':
       return { ...state, storm_points: action.payload };
     case 'SET_SELECTED_TAB':
       return { ...state, selectedTab: action.payload };
     case 'SET_SELECTED_STATION':
-      return { ...state, selectedStation: action.payload };
+      return { ...state, selected_station: action.payload };
     case 'SET_FILTER_RESULT':
       return { ...state, filterResult: action.payload };
     case 'TOGGLE_FILTER_RESULT':
@@ -84,6 +84,14 @@ export function mapReducer(state, action) {
           endDate: null,
           startCategory: "",
           endCategory: "",
+        };
+      case 'SET_SELECTED_STATION_AND_OPEN_DASHBOARD':
+        return {
+          ...state,
+          selected_station: action.payload.station,
+          selectedTab: 0,
+          isDashOpen: true,
+          isStationDashOpen: true,
         };
     default:
       return state;

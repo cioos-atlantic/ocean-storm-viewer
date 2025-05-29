@@ -146,7 +146,15 @@ export default function Map({ children, station_data, source_type,  setStationPo
                   station_data ? (
                     Object.entries(station_data).map((station) => {
                       const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                      return StationMarker(station, allDatasetDescriptions, storm_timestamp, selected_station, setSelectedStation, setSelectedTab, setIsStationDashOpen, setIsDashOpen)
+                      return (
+                        <StationMarker
+                          station_data={station}
+                          station_descriptions={allDatasetDescriptions}
+                          time={storm_timestamp}
+                          selected_station={state.selected_station}
+                          dispatch={dispatch} 
+                    />)
+                      
                     })
                   ) : (
                     <></>
@@ -177,10 +185,11 @@ export default function Map({ children, station_data, source_type,  setStationPo
                       <StormMarker
                         key={point.id}
                         storm_point_data={point}
-                        setHoverMarker={setHoverMarker}
-                        setIsStormDashOpen={setIsStormDashOpen}
-                        storm_point_hover= {hover_marker}
-                        setIsDashOpen = {setIsDashOpen}
+                        //setHoverMarker={setHoverMarker}
+                        //setIsStormDashOpen={setIsStormDashOpen}
+                        storm_point_hover= {state.hover_marker}
+                        dispatch={dispatch}
+                        //setIsDashOpen = {setIsDashOpen}
                        
                       />
                     );
