@@ -5,7 +5,7 @@ import { Stack } from "@mui/system";
 import { handleStormButtonClick } from "../historical_storm/historical_storm_utils";
 
 
-export function RenderFilterResult({filterResult, router, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked, cancelFilters}){
+export function RenderFilterResult({filterResult, router, drawerButtonClicked,  cancelFilters}){
   
   
   return(

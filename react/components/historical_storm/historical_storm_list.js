@@ -129,9 +129,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
         (<RenderFilterResult 
           filterResult={state.filterResult}
           router={router}
-          setReturnFilterResult={setReturnFilterResult}
           drawerButtonClicked={state.drawerButtonClicked}
-          setDrawerButtonClicked={setDrawerButtonClicked}
           cancelFilters={cancelFilters}
           
                 
