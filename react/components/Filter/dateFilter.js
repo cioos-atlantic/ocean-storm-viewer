@@ -65,19 +65,20 @@ const reset= { label: 'Reset', getValue: () => [null, null] };
 
 
 
-export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, startDate, endDate,setStartDate, setEndDate, showDateSelection, setShowDateSelection}){
+export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, state, dispatch}){
   //const [showDateSelection, setShowDateSelection] = useState(false); 
+  const hasValidDates = state.startDate?.isValid?.() && state.endDate?.isValid?.();
   const buttonStyle = {
-    backgroundColor: startDate && endDate && startDate.isValid() && endDate.isValid() ? '#e55162' : 'white',
-    color: startDate && endDate && startDate.isValid() && endDate.isValid() ? 'white' : '#e55162',
+    backgroundColor: hasValidDates ? '#e55162' : 'white',
+    color: hasValidDates ? 'white' : '#e55162',
     '&:hover': {
-      backgroundColor: startDate && endDate && startDate.isValid() && endDate.isValid() ? '#ffd1dc' : '#82ccdd',
-      color: startDate && endDate && startDate.isValid() && endDate.isValid() ? 'black' : 'black',
+      backgroundColor: hasValidDates ? '#ffd1dc' : '#82ccdd',
+      color: hasValidDates ? 'black' : 'black',
     },
   };
 
   function handleIconClick(){
-    setShowDateSelection(prev => !prev);
+    dispatch({ type: "TOGGLE_DATE_SELECTION"});
   }
   
 
@@ -87,11 +88,9 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, startDate
     <>
     <Button
     className="filter-badge"
-    onClick= {() => {
-      setShowDateSelection(prev => !prev)
-     }}
+    onClick= {handleIconClick}
     startIcon={<CalendarMonthOutlinedIcon/>}
-    endIcon={ !showDateSelection ? (showOptionsArrow):(closeOptionsArrow)}
+    endIcon={ !state.showDateSelection ? (showOptionsArrow):(closeOptionsArrow)}
     sx={{...buttonStyle,
       display: { xs: "none", md: "inline-flex" }, }
     }>
@@ -104,15 +103,12 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, startDate
     {smallScreenIconButton('Filter by Date', handleIconClick, buttonStyle, <CalendarMonthOutlinedIcon/>)}
     
 
-    {showDateSelection && 
+    {state.showDateSelection && 
       (<DateDisplay 
-        startDate={startDate}
-        endDate={endDate}
-        setStartDate={setStartDate}
-        setEndDate={setEndDate}
-        setShowDateSelection={setShowDateSelection}  />)}
+        state={state}
+        dispatch={dispatch}  />)}
 
-    {console.log(startDate, endDate)}
+    {console.log(state.startDate, state.endDate)}
     </>
 
 
@@ -123,7 +119,7 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, startDate
 
 
 
-export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate, endDate}){
+export function DateDisplay({state, dispatch}){
    
 
   const slotProps={
@@ -161,8 +157,10 @@ export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, sta
     }
   const handleShortcutClick = (getValue) => {
     const [newStartDate, newEndDate] = getValue();    
-    setStartDate(newStartDate);
-    setEndDate(newEndDate);}
+    //setStartDate(newStartDate);
+    //setEndDate(newEndDate);}
+    dispatch({ type: "SET_START_DATE", payload: newStartDate });  
+    dispatch({ type: "SET_END_DATE", payload: newEndDate });  
   return(
     <Card
      sx={{
@@ -213,8 +211,9 @@ export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, sta
             defaultValue={dayjs()} 
             label='Start Date' 
             className='filter-time-input'
-            value={startDate}
-            onChange={setStartDate}
+            value={state.startDate}
+            onChange={(newDate) =>
+              dispatch({ type: "SET_START_DATE", payload: newDate })}
             slotProps={slotProps}
             
             />
@@ -222,9 +221,13 @@ export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, sta
             defaultValue={dayjs()} 
             label='End Date' 
             className='filter-time-input'
-            value={endDate}
-            onChange={setEndDate}
+            value={state.endDate}
+            onChange={(newDate) =>
+              dispatch({ type: "SET_END_DATE", payload: newDate })}
             slotProps={slotProps}
+            minDate={state.startDate}
+            
+
             
             
             
@@ -237,10 +240,8 @@ export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, sta
       className='date-card-content'
       >
         <RangeSlider
-          startDate={startDate}
-          endDate={endDate}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}/>
+          setStartDate={(date) => dispatch({ type: "SET_START_DATE", payload: date })}
+          setEndDate={(date) => dispatch({ type: "SET_END_DATE", payload: date })}/>
       </CardContent>
 
       <CardActions
@@ -251,13 +252,13 @@ export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, sta
               size="small"
               className='filter-submit-button'
               onClick={() => {
-                setStartDate(null); // Reset to empty string
-                setEndDate(null);   // Reset to empty string
+                dispatch({ type: "SET_START_DATE", payload: null }); // Reset to empty string
+                dispatch({ type: "SET_END_DATE", payload: null });   // Reset to empty string
               }}>Clear</Button>
             <Button 
               size="small" 
               className='filter-submit-button' 
-              onClick={()=> {setShowDateSelection(false)}}>Close</Button>
+              onClick={()=> {dispatch({ type: "SET_DATE_SELECTION", payload: false })}}>Close</Button>
 
 
         </Box>
@@ -275,11 +276,11 @@ export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, sta
     </Card>
     
   )
-}
+}}
 
 
 
-export function RangeSlider({ startDate, endDate, setStartDate, setEndDate }) {
+export function RangeSlider({  setStartDate, setEndDate }) {
   const currentYear = dayjs().year();
   
   // Independent state for the slider's range
