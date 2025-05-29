@@ -39,14 +39,7 @@ const showOptionsArrow = <KeyboardDoubleArrowDownIcon />;
 const closeOptionsArrow = <KeyboardDoubleArrowUpIcon />;
 
 
-export function RenderFilter({ setFilterResult,  setReturnFilterResult, setIsDrawerOpen, polyFilterCoords, setPolyFilterCoords, clearShapesRef, setDrawerButtonClicked, startDate,
-  endDate,
-  startCategory,
-  endCategory,
-  setStartDate,
-  setEndDate,
-  setStartCategory,
-  setEndCategory, showCatSelection, setShowCatSelection, showDateSelection, setShowDateSelection }) {
+export function RenderFilter({  clearShapesRef, state, dispatch }) {
   const [showFilterIcons, setShowFilterIcons] = useState(false);
   const [showFilterOptions, setShowFilterOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -69,6 +62,21 @@ export function RenderFilter({ setFilterResult,  setReturnFilterResult, setIsDra
 
   const router = useRouter(); // Next.js useRouter
 
+  function handleClearAllFilters() {
+    setSelectedOptions([]);
+    dispatch({ type: "RESET_FILTERS" })
+
+    const hasClearShapesRef = clearShapesRef && clearShapesRef.current;
+    
+
+    // Clear shapes via reference
+    if (hasClearShapesRef) {
+      clearShapesRef.current.clearShapes();
+    }
+
+    console.log("All filters and shapes cleared!");
+  }
+
 
 
 
@@ -77,16 +85,17 @@ export function RenderFilter({ setFilterResult,  setReturnFilterResult, setIsDra
 
 
   async function handleFilterSubmit() {
-    setDrawerButtonClicked('');
+    //setDrawerButtonClicked('');
+    dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: '' });
     
     
     const updatedParams = {
       ...selectedOptions, // Spread selected options correctly
-      startDate: startDate, // Ensure start and end dates are included
-      endDate: endDate,
-      polyCoords: polyFilterCoords,
-      startCategory: startCategory,
-      endCategory:endCategory,
+      startDate: state.startDate, // Ensure start and end dates are included
+      endDate: state.endDate,
+      polyCoords: state.polyFilterCoords,
+      startCategory: state.startCategory,
+      endCategory:state.endCategory,
 
     };
 
@@ -95,10 +104,13 @@ export function RenderFilter({ setFilterResult,  setReturnFilterResult, setIsDra
 
     const stormResult = await processFilterRequest(updatedParams, setLoading);
     console.log(stormResult);
-    setFilterResult(stormResult);
+    dispatch({ type: "SET_FILTER_RESULT", payload: stormResult});
     router.push(`/?storms=historical`);
-    setIsDrawerOpen(true);
-    setReturnFilterResult(true);
+
+    //setIsDrawerOpen(true);
+    //setReturnFilterResult(true);
+    dispatch({ type: "TOGGLE_DRAWER", payload: true});
+    dispatch({ type: "TOGGLE_FILTER_RESULT", payload: true});
 
   }
 
@@ -134,7 +146,7 @@ export function RenderFilter({ setFilterResult,  setReturnFilterResult, setIsDra
               tooltipTitle="Clear Filters"
               onClick={(e) => {
                 e.stopPropagation();
-                handleClearAll()
+                handleClearAllFilters()
               }}
             />
             <SpeedDialAction
@@ -168,12 +180,8 @@ export function RenderFilter({ setFilterResult,  setReturnFilterResult, setIsDra
               <RenderDateFilter
                 showOptionsArrow={showOptionsArrow}
                 closeOptionsArrow={closeOptionsArrow}
-                startDate={startDate}
-                endDate={endDate}
-                setStartDate={setStartDate}
-                setEndDate={setEndDate}
-                showDateSelection={showDateSelection}
-                setShowDateSelection={setShowDateSelection}
+                state={state}
+                dispatch={dispatch}
               />
 
             </div>
@@ -184,12 +192,8 @@ export function RenderFilter({ setFilterResult,  setReturnFilterResult, setIsDra
               <RenderCategoryFilter
                   showOptionsArrow={showOptionsArrow}
                   closeOptionsArrow={closeOptionsArrow}
-                  setStartCategory= {setStartCategory}
-                  setEndCategory={setEndCategory}
-                  startCategory={startCategory}
-                  endCategory={endCategory}
-                  showCatSelection ={showCatSelection}
-                  setShowCatSelection = {setShowCatSelection}
+                  state={state}
+                  dispatch={dispatch}
                 />
 
             </div>
@@ -250,25 +254,16 @@ export function RenderFilter({ setFilterResult,  setReturnFilterResult, setIsDra
               <RenderDateFilter
                 showOptionsArrow={showOptionsArrow}
                 closeOptionsArrow={closeOptionsArrow}
-                setSelectedOptions={setSelectedOptions}
-                startDate={startDate}
-                endDate={endDate}
-                setStartDate={setStartDate}
-                setEndDate={setEndDate}
-                showDateSelection={showDateSelection}
-                setShowDateSelection={setShowDateSelection}
+                state={state}
+                dispatch={dispatch}
               />
             </div>
             <div className="filter-group">
               <RenderCategoryFilter
                   showOptionsArrow={showOptionsArrow}
                   closeOptionsArrow={closeOptionsArrow}
-                  setStartCategory= {setStartCategory}
-                  setEndCategory={setEndCategory}
-                  startCategory={startCategory}
-                  endCategory={endCategory}
-                  showCatSelection ={showCatSelection}
-                  setShowCatSelection = {setShowCatSelection}
+                  state={state}
+                  dispatch={dispatch}
                 />
             </div>
             
@@ -299,7 +294,7 @@ export function RenderFilter({ setFilterResult,  setReturnFilterResult, setIsDra
             <Button
               id="cancel-filter-icon"
               className="filter-icons"
-              onClick={() => {handleClearAll(setSelectedOptions, setStartDate, setEndDate,  setPolyFilterCoords, clearShapesRef)}}>
+              onClick={handleClearAllFilters}>
               X
             </Button>
           </Stack>

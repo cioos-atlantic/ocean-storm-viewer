@@ -1,5 +1,5 @@
 // https://iconoir.com/ icon library that can be installed via npm
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useReducer } from "react";
 import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup, Marker, Popup, useMap } from 'react-leaflet'
 import Drawer from '@/components/drawer';
 
@@ -29,6 +29,7 @@ import StormDashboard from "./storm_dashboard/storm_dashboard";
 import { RenderDashboards } from "./Dashboard/dashboard";
 import StormMarker from "./stormPoint";
 import { empty_storm_obj } from "@/lib/storm_utils";
+import { mapReducer, initialMapState } from "./mapReducer";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
@@ -57,6 +58,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
   const [endCategory, setEndCategory] = useState("");
   const [showCatSelection, setShowCatSelection] = useState(false); 
   const [showDateSelection, setShowDateSelection] = useState(false); 
+  const [state, dispatch] = useReducer(mapReducer, initialMapState);
   
   const allDatasetDescriptions = useDatasetDescriptions();
 
@@ -72,26 +74,9 @@ export default function Map({ children, station_data, source_type,  setStationPo
         
         {
           <RenderFilter
-          setFilterResult = {setFilterResult}
-          setReturnFilterResult = {setReturnFilterResult}
-          setIsDrawerOpen= {setIsDrawerOpen}
-          polyFilterCoords={polyFilterCoords}
-          setPolyFilterCoords={setPolyFilterCoords}
           clearShapesRef={clearShapesRef} // Pass the ref to 
-          setDrawerButtonClicked={setDrawerButtonClicked}
-          startDate={startDate}
-          endDate={endDate}
-          startCategory={startCategory}
-          endCategory={endCategory}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
-          setStartCategory={setStartCategory}
-          setEndCategory={setEndCategory}
-          showCatSelection ={showCatSelection}
-          setShowCatSelection = {setShowCatSelection}
-          showDateSelection={showDateSelection}
-          setShowDateSelection={setShowDateSelection}
-
+          state={state}
+          dispatch={dispatch}
           
           
           
