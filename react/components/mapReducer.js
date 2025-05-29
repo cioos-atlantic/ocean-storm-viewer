@@ -59,7 +59,7 @@ export function mapReducer(state, action) {
     case 'SET_DATE_SELECTION':
       return { ...state, showDateSelection: action.payload };
       case "TOGGLE_DATE_SELECTION":
-      return {...state, showDateSelection: !state.showDateSelection,};
+      return {...state, showDateSelection: !state.showDateSelection};
     case 'TOGGLE_DRAWER':
       return { ...state, isDrawerOpen: action.payload };
     case 'CANCEL_FILTERS':

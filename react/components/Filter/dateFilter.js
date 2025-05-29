@@ -105,8 +105,12 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, state, di
 
     {state.showDateSelection && 
       (<DateDisplay 
-        state={state}
-        dispatch={dispatch}  />)}
+        startDate={state.startDate}
+        endDate={state.endDate}
+        setStartDate = {(date) => dispatch({ type: "SET_START_DATE", payload: date })}
+        setEndDate = {(date) => dispatch({ type: "SET_END_DATE", payload: date })}
+        setShowDateSelection = {(date) => dispatch({ type: "SET_DATE_SELECTION", payload: date })}
+         />)}
 
     {console.log(state.startDate, state.endDate)}
     </>
@@ -119,7 +123,7 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, state, di
 
 
 
-export function DateDisplay({state, dispatch}){
+export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate, endDate}){
    
 
   const slotProps={
@@ -157,10 +161,8 @@ export function DateDisplay({state, dispatch}){
     }
   const handleShortcutClick = (getValue) => {
     const [newStartDate, newEndDate] = getValue();    
-    //setStartDate(newStartDate);
-    //setEndDate(newEndDate);}
-    dispatch({ type: "SET_START_DATE", payload: newStartDate });  
-    dispatch({ type: "SET_END_DATE", payload: newEndDate });  
+    setStartDate(newStartDate);
+    setEndDate(newEndDate);}
   return(
     <Card
      sx={{
@@ -211,9 +213,8 @@ export function DateDisplay({state, dispatch}){
             defaultValue={dayjs()} 
             label='Start Date' 
             className='filter-time-input'
-            value={state.startDate}
-            onChange={(newDate) =>
-              dispatch({ type: "SET_START_DATE", payload: newDate })}
+            value={startDate}
+            onChange={setStartDate}
             slotProps={slotProps}
             
             />
@@ -221,13 +222,9 @@ export function DateDisplay({state, dispatch}){
             defaultValue={dayjs()} 
             label='End Date' 
             className='filter-time-input'
-            value={state.endDate}
-            onChange={(newDate) =>
-              dispatch({ type: "SET_END_DATE", payload: newDate })}
+            value={endDate}
+            onChange={setEndDate}
             slotProps={slotProps}
-            minDate={state.startDate}
-            
-
             
             
             
@@ -240,8 +237,10 @@ export function DateDisplay({state, dispatch}){
       className='date-card-content'
       >
         <RangeSlider
-          setStartDate={(date) => dispatch({ type: "SET_START_DATE", payload: date })}
-          setEndDate={(date) => dispatch({ type: "SET_END_DATE", payload: date })}/>
+          startDate={startDate}
+          endDate={endDate}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}/>
       </CardContent>
 
       <CardActions
@@ -252,13 +251,13 @@ export function DateDisplay({state, dispatch}){
               size="small"
               className='filter-submit-button'
               onClick={() => {
-                dispatch({ type: "SET_START_DATE", payload: null }); // Reset to empty string
-                dispatch({ type: "SET_END_DATE", payload: null });   // Reset to empty string
+                setStartDate(null); // Reset to empty string
+                setEndDate(null);   // Reset to empty string
               }}>Clear</Button>
             <Button 
               size="small" 
               className='filter-submit-button' 
-              onClick={()=> {dispatch({ type: "SET_DATE_SELECTION", payload: false })}}>Close</Button>
+              onClick={()=> {setShowDateSelection(false)}}>Close</Button>
 
 
         </Box>
@@ -276,11 +275,11 @@ export function DateDisplay({state, dispatch}){
     </Card>
     
   )
-}}
+}
 
 
 
-export function RangeSlider({  setStartDate, setEndDate }) {
+export function RangeSlider({ startDate, endDate, setStartDate, setEndDate }) {
   const currentYear = dayjs().year();
   
   // Independent state for the slider's range
