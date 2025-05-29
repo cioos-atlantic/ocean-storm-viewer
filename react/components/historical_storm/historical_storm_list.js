@@ -3,7 +3,7 @@ import { getHistoricalStormList } from './historical_storm_utils.js';
 import { useRouter } from 'next/router';
 import {  Box, Button } from '@mui/material';
 import {  handleClick,  handleSearch } from './historical_storm_utils.js';
-import { renderRecentStorms } from './render_recent_storms.js';
+import { RenderRecentStorms } from './render_recent_storms.js';
 import { RenderFilterResult } from '../Filter/renderFilterResult.js';
 import LoadingScreen from '../loading_screen.js';
 import { AppliedFilters } from '../Filter/filtersApplied.js';
@@ -134,7 +134,24 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
           
                 
         />):
-        (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, state.drawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen))}
+        (//renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, state.drawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen)
+        <RenderRecentStorms
+          stormList={stormList}
+          setStationPoints={setStationPoints}
+          setStormPoints={setStormPoints}
+          map={map}
+          Leaflet={Leaflet}
+          router={router}
+          setSelectedStation={setSelectedStation}
+          setLoading={setLoading}
+          drawerButtonClicked={state.drawerButtonClicked}
+          setIsDashOpen={setIsDashOpen}
+          setIsStormDashOpen={setIsStormDashOpen}
+          setIsStationDashOpen={setIsStationDashOpen}
+        />
+        )}
+
+
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
       <Button
       onClick={()=> {
