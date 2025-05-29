@@ -41,7 +41,7 @@ export default function InfoScreen({setInfo, open, onClose }){
             <li> Both dashboards can be viewed at once.</li>
             </ul>
 
-            <h5>🔍 Filters</h5><br/>
+            <h3>🔍 Filters</h3>
 
             <h5>1. Filter by Storm Information</h5>
             <ul>
