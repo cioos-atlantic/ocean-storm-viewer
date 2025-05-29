@@ -8,6 +8,8 @@ export default async function handler(req, res) {
     const storm_names = (req.query["name"]) ? req.query["name"] : "";
     const start_date = (req.query["start_date"]) ? req.query["start_date"] : "";
     const end_date = (req.query["end_date"]) ? req.query["end_date"] : "";
+    const start_category = (req.query["start_category"]) ? req.query["start_category"] : "";
+    const end_category = (req.query["end_category"]) ? req.query["end_category"] : "";
     
     const source = "IBTRACS"; // to gather just ibtracs 
     const category_list = storm_category ? storm_category.split("_").filter(Boolean) : [];
@@ -19,9 +21,10 @@ export default async function handler(req, res) {
 
     if (start_date !== "" && end_date !== "") {
         //filters["(ISO_TIME BETWEEN "] =  `'${start_date}' AND '${end_date}')`;
-        filters["(ISO_TIME_START <= "] = `'${start_date}' AND ISO_TIME_END >= '${end_date}')`};
+        filters["(ISO_TIME_START >= "] = `'${start_date}' AND ISO_TIME_END <= '${end_date}')`};
 
-
+    if (start_category !== "" && end_category !== "") {
+        filters["(USA_SSHS_MIN >= "] = `'${start_category}' AND USA_SSHS_MAX <= '${end_category}')`};
     
 
     if (category_list.length > 0) {

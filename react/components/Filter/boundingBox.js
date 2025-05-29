@@ -10,10 +10,6 @@ import 'leaflet-draw/dist/leaflet.draw.css';
 import 'leaflet-draw';
 
 
-
-
-
-
 export function RenderBoundingBox(map){
   let drawItems = new FeatureGroup();
   map.addLayer(drawItems);
@@ -41,36 +37,6 @@ export function RenderBoundingBox(map){
 };
 
 
-export function RenderSpatialFilter({}){
 
-  return(
-    <Stack
-    direction="column"
-    
-    spacing={0.1}>
-      <IconButton  aria-label='search'className="spatial-filter-icon" sx={{top: "325px"}}
-        >
-      <RectangleOutlinedIcon
-      sx={{
-        fontSize: 'larger',
-        
-      }}
-      />
-      </IconButton>
-      <IconButton  aria-label='search' className="spatial-filter-icon"sx={{top: "375px"}}
-        >
-        <PentagonOutlinedIcon
-        sx={{
-          fontSize: 'larger',
-          
-        }}
-        />
-      </IconButton>
-
-    </Stack>
-    
-  )
-  
-}
 
 

@@ -3,7 +3,7 @@ import { Button, Stack } from "@mui/material";
 import { IconButton, TextField, Box, Typography, Paper } from "@mui/material";
 
 
-export function renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setDrawerButtonClicked){
+export function renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setDrawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen){
   return(
     
       <Stack
@@ -38,7 +38,7 @@ export function renderRecentStorms(stormList, setStationPoints, setStormPoints, 
                     
                   }}
                   onClick={(e) => { 
-                    handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading);
+                    handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
 
                     //console.log(storm);
                     }}>{`${storm.display_name}`}</Button>

@@ -20,6 +20,7 @@ import { basePath } from "@/next.config";
 import LoadingScreen from "../loading_screen";
 import { smallScreenIconButton } from "./filter_utils";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { RenderCategoryFilter } from "./categorySlider";
 import InfoScreen from "../message_screens/info_screen";
 
 
@@ -40,13 +41,22 @@ const showOptionsArrow = <KeyboardDoubleArrowDownIcon />;
 const closeOptionsArrow = <KeyboardDoubleArrowUpIcon />;
 
 
-export function RenderFilter({ filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, polyFilterCoords, setPolyFilterCoords, clearShapesRef, setDrawerButtonClicked }) {
+export function RenderFilter({ filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, polyFilterCoords, setPolyFilterCoords, clearShapesRef, setDrawerButtonClicked, startDate,
+  endDate,
+  startCategory,
+  endCategory,
+  setStartDate,
+  setEndDate,
+  setStartCategory,
+  setEndCategory, showCatSelection, setShowCatSelection, showDateSelection, setShowDateSelection }) {
   const [showFilterIcons, setShowFilterIcons] = useState(false);
   const [showFilterOptions, setShowFilterOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [filterParameters, setFilterParameters] = useState([]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  //const [startDate, setStartDate] = useState(null);
+  //const [endDate, setEndDate] = useState(null);
+  //const [startCategory, setStartCategory] = useState(null);
+  //const [endCategory, setEndCategory] = useState(null);
 
   const [openSpeedDial, setOpenSpeedDial] = useState(false);
 
@@ -84,6 +94,8 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
       startDate: startDate, // Ensure start and end dates are included
       endDate: endDate,
       polyCoords: polyFilterCoords,
+      startCategory: startCategory,
+      endCategory:endCategory,
 
     };
 
@@ -170,7 +182,25 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
                 endDate={endDate}
                 setStartDate={setStartDate}
                 setEndDate={setEndDate}
+                showDateSelection={showDateSelection}
+                setShowDateSelection={setShowDateSelection}
               />
+
+            </div>
+            )
+
+            }
+            {openSpeedDial && (<div className="filter-group">
+              <RenderCategoryFilter
+                  showOptionsArrow={showOptionsArrow}
+                  closeOptionsArrow={closeOptionsArrow}
+                  setStartCategory= {setStartCategory}
+                  setEndCategory={setEndCategory}
+                  startCategory={startCategory}
+                  endCategory={endCategory}
+                  showCatSelection ={showCatSelection}
+                  setShowCatSelection = {setShowCatSelection}
+                />
 
             </div>
             )
@@ -235,8 +265,23 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
                 endDate={endDate}
                 setStartDate={setStartDate}
                 setEndDate={setEndDate}
+                showDateSelection={showDateSelection}
+                setShowDateSelection={setShowDateSelection}
               />
             </div>
+            <div className="filter-group">
+              <RenderCategoryFilter
+                  showOptionsArrow={showOptionsArrow}
+                  closeOptionsArrow={closeOptionsArrow}
+                  setStartCategory= {setStartCategory}
+                  setEndCategory={setEndCategory}
+                  startCategory={startCategory}
+                  endCategory={endCategory}
+                  showCatSelection ={showCatSelection}
+                  setShowCatSelection = {setShowCatSelection}
+                />
+            </div>
+            
 
             {
               filters.map((filter, index) => {
@@ -461,7 +506,9 @@ export async function processFilterRequest(filterParameters, setLoading) {
   const startDate = formatFilterDate(filterParameters['startDate']);
   const endDate = formatFilterDate(filterParameters['endDate']);
   
-  const stormPoly = filterParameters['polyCoords'];
+  const stormPoly = filterParameters['polyCoords'];                       
+  const startCategory= filterParameters['startCategory'];
+  const endCategory = filterParameters['endCategory'];
 
 
   console.log(stormCategory, stormNames, startDate, endDate)
@@ -474,6 +521,8 @@ export async function processFilterRequest(filterParameters, setLoading) {
     start_date: startDate,
     end_date: endDate,
     polygon: stormPoly,
+    start_category: startCategory,
+    end_category: endCategory,
 
   }).toString();
 
