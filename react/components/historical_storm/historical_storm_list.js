@@ -30,8 +30,8 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
   console.log("Historical Storms Loading...");
   const setStormPoints = (point) => dispatch({ type: "SET_STORM_POINT", payload: point });
   const setSelectedStation= (station) => dispatch({ type: "SET_SELECTED_STATION", payload: station });
-  const setReturnFilterResult = (state) => dispatch({ type: "TOGGLE_FILTER_RESULT", payload: state });
-  const setDrawerButtonClicked = (clicked) => dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: clicked });
+  //const setReturnFilterResult = (state) => dispatch({ type: "TOGGLE_FILTER_RESULT", payload: state });
+  //const setDrawerButtonClicked = (clicked) => dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: clicked });
   const setIsDashOpen= (state) => dispatch({ type: "TOGGLE_DASH", payload: state });
   const setIsStormDashOpen= (state) => dispatch({ type: "TOGGLE_STORM_DASH", payload: state });
   const setIsStationDashOpen= (state) => dispatch({ type: "TOGGLE_STATION_DASH", payload: state });

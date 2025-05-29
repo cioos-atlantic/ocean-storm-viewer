@@ -145,7 +145,8 @@ export default function Map({ children, station_data, source_type,  setStationPo
                 {
                   station_data ? (
                     Object.entries(station_data).map((station) => {
-                      const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
+                      console.log("Hover marker state:", state.hover_marker);
+                      const storm_timestamp = new Date(state.hover_marker.properties["TIMESTAMP"])
                       return (
                         <StationMarker
                           station_data={station}
@@ -185,11 +186,9 @@ export default function Map({ children, station_data, source_type,  setStationPo
                       <StormMarker
                         key={point.id}
                         storm_point_data={point}
-                        //setHoverMarker={setHoverMarker}
-                        //setIsStormDashOpen={setIsStormDashOpen}
                         storm_point_hover= {state.hover_marker}
                         dispatch={dispatch}
-                        //setIsDashOpen = {setIsDashOpen}
+
                        
                       />
                     );
@@ -222,7 +221,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
                       <WindSpeedRadius
                         key={radii.id}
                         storm_wind_radii_data={radii}
-                        hover_marker={hover_marker}
+                        hover_marker={state.hover_marker}
                       />
                     );
                   })
@@ -238,7 +237,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
                       <SeaHeightRadius
                         key={radii.id}
                         storm_sea_height_data={radii}
-                        hover_marker={hover_marker}
+                        hover_marker={state.hover_marker}
                       />
                     );
                   })
@@ -249,8 +248,8 @@ export default function Map({ children, station_data, source_type,  setStationPo
 
           {<RenderSpatialFilter
           ref={clearShapesRef} 
-          polyFilterCoords={polyFilterCoords}
-          setPolyFilterCoords={setPolyFilterCoords}
+          polyFilterCoords={state.polyFilterCoords}
+          setPolyFilterCoords={(coords) => dispatch({ type: "SET_POLY_FILTER_COORDS", payload: coords })}
           />} {/* Calling the EditControl function here */}
         </MapContainer>
       </div>
