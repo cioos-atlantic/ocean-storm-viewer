@@ -73,8 +73,8 @@ export function mapReducer(state, action) {
         polyFilterCoords: '',
         startDate: null,
         endDate: null,
-        startCategory: null,
-        endCategory: null,
+        startCategory: "",
+        endCategory: "",
       };
       case 'RESET_FILTERS':
         return {
@@ -82,8 +82,8 @@ export function mapReducer(state, action) {
           polyFilterCoords: '',
           startDate: null,
           endDate: null,
-          startCategory: null,
-          endCategory: null,
+          startCategory: "",
+          endCategory: "",
         };
     default:
       return state;

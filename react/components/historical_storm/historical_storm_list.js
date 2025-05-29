@@ -36,6 +36,8 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
   const setIsStormDashOpen= (state) => dispatch({ type: "TOGGLE_STORM_DASH", payload: state });
   const setIsStationDashOpen= (state) => dispatch({ type: "TOGGLE_STATION_DASH", payload: state });
 
+  const cancelFilters = () => dispatch({ type: 'CANCEL_FILTERS' });
+
 
    // Check query parameters on mount and trigger `handleClick`
    /* This `useEffect` hook is used to run a search query when the component mounts. Here's a breakdown
@@ -130,6 +132,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
           setReturnFilterResult={setReturnFilterResult}
           drawerButtonClicked={state.drawerButtonClicked}
           setDrawerButtonClicked={setDrawerButtonClicked}
+          cancelFilters={cancelFilters}
           
                 
         />):
