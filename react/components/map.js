@@ -157,7 +157,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
             <LayersControl.Overlay checked name="Error Cone">
               <LayerGroup>
                 {
-                  storm_points?.err?.features?.map(err_cone => {
+                  state.storm_points?.err?.features?.map(err_cone => {
                     return (
                       <ErrorCone
                         key={err_cone.id}
@@ -171,7 +171,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
             <LayersControl.Overlay checked name="Points">
               <LayerGroup>
                 {
-                  storm_points?.pts?.features?.map(point => {
+                  state.storm_points?.pts?.features?.map(point => {
                     return (
 
                       <StormMarker
@@ -191,8 +191,8 @@ export default function Map({ children, station_data, source_type,  setStationPo
             <LayersControl.Overlay checked name="Track Line">
               <LayerGroup>
                 {
-                  storm_points?.lin?.features?.length > 0 &&
-                  storm_points?.lin?.features?.map(line => {
+                  state.storm_points?.lin?.features?.length > 0 &&
+                  state.storm_points?.lin?.features?.map(line => {
 
                     return (
                       <LineOfTravel
@@ -207,8 +207,8 @@ export default function Map({ children, station_data, source_type,  setStationPo
             <LayersControl.Overlay checked name="Wind Speed Radius">
               <LayerGroup>
                 {
-                  storm_points?.rad?.features?.length > 0 &&
-                  storm_points?.rad?.features?.map(radii => {
+                  state.storm_points?.rad?.features?.length > 0 &&
+                  state.storm_points?.rad?.features?.map(radii => {
                     return (
                       <WindSpeedRadius
                         key={radii.id}
@@ -223,8 +223,8 @@ export default function Map({ children, station_data, source_type,  setStationPo
             <LayersControl.Overlay checked name="Sea Height Radius">
               <LayerGroup>
                 {
-                  storm_points?.sea?.features?.length > 0 &&
-                  storm_points?.sea?.features?.map(radii => {
+                  state.storm_points?.sea?.features?.length > 0 &&
+                  state.storm_points?.sea?.features?.map(radii => {
                     return (
                       <SeaHeightRadius
                         key={radii.id}
