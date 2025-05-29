@@ -116,19 +116,9 @@ export default function Map({ children, station_data, source_type,  setStationPo
             element_id="left-side"
             classes="left"
             source_type={source_type}
-            setStormPoints={setStormPoints}
             setStationPoints={setStationPoints}
-            setIsDrawerOpen= {setIsDrawerOpen}
-            isDrawerOpen= {isDrawerOpen}
-            setSelectedStation={setSelectedStation}
-            filterResult = {filterResult}
-            returnFilterResult= {returnFilterResult}
-            setReturnFilterResult = {setReturnFilterResult}
-            drawerButtonClicked={drawerButtonClicked}
-            setDrawerButtonClicked={setDrawerButtonClicked}
-            setIsDashOpen={setIsDashOpen}
-            setIsStormDashOpen={setIsStormDashOpen}
-            setIsStationDashOpen ={setIsStationDashOpen}
+            state={state}
+            dispatch={dispatch}
           />
 
           <TileLayer

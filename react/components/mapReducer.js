@@ -9,6 +9,7 @@ export const initialMapState = {
   filterResult: {},
   returnFilterResult: false,
   polyFilterCoords: '',
+  isDashOpen: false,
   isStormDashOpen: false,
   isStationDashOpen: false,
   drawerButtonClicked: '',
@@ -38,6 +39,8 @@ export function mapReducer(state, action) {
       return { ...state, returnFilterResult: action.payload };
     case 'SET_POLY_FILTER_COORDS':
       return { ...state, polyFilterCoords: action.payload };
+      case 'TOGGLE_DASH':
+      return { ...state, isDashOpen: action.payload };
     case 'TOGGLE_STORM_DASH':
       return { ...state, isStormDashOpen: action.payload };
     case 'TOGGLE_STATION_DASH':

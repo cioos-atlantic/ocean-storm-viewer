@@ -16,7 +16,7 @@ import { Tooltip, Box, Button } from '@mui/material';
  * `styles.drawer_interior`. Depending on the `source_type`, either the `ActiveStormList`,
  * `HistoricalStormList`, or a placeholder for the Home Page is rendered within the `Drawer` component.
  */
-export default function Drawer({ children, element_id, classes, source_type, setStormPoints, setStationPoints, setSelectedStation, setIsDrawerOpen, isDrawerOpen, filterResult, returnFilterResult, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen }) {
+export default function Drawer({ children, element_id, classes, source_type, setStationPoints, state, dispatch }) {
 
     let sideClass = null;
     
@@ -41,12 +41,13 @@ export default function Drawer({ children, element_id, classes, source_type, set
                     sx={{
                         maxWidth:{xs:'258px', sm:'258px', md:'258px', lg:'258px',},
                         width:{xs:'100%', sm:'50%', md:'50%', lg:'50%',},
-                        display: isDrawerOpen ? 'block' : 'none',
+                        display: state.isDrawerOpen ? 'block' : 'none',
                     }}
                     onClick={(e) => e.stopPropagation()} // Prevent closing on internal clicks
             >
                 <button className={styles.closeButton}
-                onClick={() => setIsDrawerOpen(false)}
+                onClick={() => {//setIsDrawerOpen(false); 
+                                dispatch({ type: "TOGGLE_DRAWER", payload: false});} }
                 >
                     X
                 </button>
@@ -56,27 +57,21 @@ export default function Drawer({ children, element_id, classes, source_type, set
                     {
                         source_type == "active" ? (
                             <ActiveStormList
-                                setStormPoints={setStormPoints}
+                                setStormPoints = {(point) => dispatch({ type: "SET_STORM_POINT", payload: point })}
                                 map={map}
                                 Leaflet={Leaflet}
-                                setSelectedStation={setSelectedStation}
+                                setSelectedStation = {(station) => dispatch({ type: "SET_SELECTED_STATION", payload: station })}
+                                
                             />
                         ) : 
                         source_type == "historical" ? (
                             <HistoricalStormList
                                 setStationPoints={setStationPoints}
-                                setStormPoints={setStormPoints}
                                 map={map}
                                 Leaflet={Leaflet}
-                                setSelectedStation={setSelectedStation}
-                                filterResult = {filterResult}
-                                returnFilterResult= {returnFilterResult}
-                                setReturnFilterResult = {setReturnFilterResult}
-                                drawerButtonClicked={drawerButtonClicked}
-                                setDrawerButtonClicked={setDrawerButtonClicked}
-                                setIsDashOpen ={setIsDashOpen}
-                                setIsStormDashOpen={setIsStormDashOpen}
-                                setIsStationDashOpen ={setIsStationDashOpen}
+                                state={state}
+                                dispatch={dispatch}
+                                
                         />
                         ) : 
                         (
@@ -100,9 +95,9 @@ export default function Drawer({ children, element_id, classes, source_type, set
                 }}>
                 <Button
                 className={styles.openButton}
-                onClick={() => setIsDrawerOpen(true)} // Open the drawer
+                onClick={() => dispatch({ type: "TOGGLE_DRAWER", payload: true})} // Open the drawer
                 sx={{
-                    display: !isDrawerOpen ? 'grid' : 'none',
+                    display: !state.isDrawerOpen ? 'grid' : 'none',
                 }}
                 >{'>'}
                 </Button>
