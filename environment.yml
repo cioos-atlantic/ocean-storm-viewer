@@ -1,4 +1,4 @@
-name: hurricane_dashboard
+name: storm_viewer
 channels:
   - conda-forge
   - defaults
