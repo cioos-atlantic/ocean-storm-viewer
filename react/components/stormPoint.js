@@ -112,7 +112,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setIsSto
                 >
                     <StormPointDetailsTooltip
                         storm_point_hover={storm_point_data}
-                        setHoverMarker={setHoverMarker}
+                        
                     />
                 </Popup>
 )}

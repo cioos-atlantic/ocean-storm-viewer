@@ -21,7 +21,7 @@ import StormCategory from "../Storm_popup/storm_category";
  */
 
 
-export default function StormDashboard({ storm_data, storm_points, source_type, hover_point, isDrawerOpen, setHoverMarker, isStormDashOpen, setIsStormDashOpen}) {
+export default function StormDashboard({storm_points, hover_point, isStormDashOpen, setIsStormDashOpen}) {
 
   const [selectedStormTab, setSelectedStormTab] = useState(0);
   //console.log(storm_data, storm_points, source_type, hover_point);

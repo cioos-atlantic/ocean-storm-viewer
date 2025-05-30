@@ -10,7 +10,7 @@ import { RenderSmallDashboard } from './Mobile_Dashboard/dashboard_small';
 
 
 
-export function RenderDashboards({storm_data, storm_points, source_type, hover_point, isDrawerOpen, setHoverMarker,selected_station,
+export function RenderDashboards({storm_points, source_type, hover_point, isDrawerOpen, selected_station,
     setSelectedStation,
     station_descriptions,
     time,
@@ -20,7 +20,7 @@ export function RenderDashboards({storm_data, storm_points, source_type, hover_p
     setIsStormDashOpen,
     isStationDashOpen, 
     setIsStationDashOpen,
-    isDashOpen, setIsDashOpen
+    isDashOpen, 
     }){
         
 
@@ -70,12 +70,8 @@ export function RenderDashboards({storm_data, storm_points, source_type, hover_p
         {showStorm && (
             <Box sx={{ flex: flexValue, minWidth: showStation ? "50%" : "100%" }}>
             <StormDashboard
-                storm_data={storm_data}
                 storm_points={storm_points}
-                source_type={source_type}
                 hover_point={hover_point}
-                isDrawerOpen={isDrawerOpen}
-                setHoverMarker={setHoverMarker}
                 isStormDashOpen={isStormDashOpen}
                 setIsStormDashOpen={setIsStormDashOpen}
             />
