@@ -2,33 +2,20 @@
 import React, { useState, useRef, useReducer } from "react";
 import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup, Marker, Popup, useMap } from 'react-leaflet'
 import Drawer from '@/components/drawer';
-
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
 import "leaflet-defaulticon-compatibility";
-
-//import StormMarker from "@/components/storm_point";
 import LineOfTravel from "@/components/line_of_travel";
 import WindSpeedRadius from "@/components/wind_radii";
 import SeaHeightRadius from "@/components/sea_height_radii";
-
 import StationMarker from "./station_marker";
 import ErrorCone from "@/components/error_cone";
-import StormPointDetails, { empty_point_obj } from "@/components/storm_point_details";
 import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
-import { empty_station_obj } from "./layout";
-import StationDashboard from "./station_dashboard/station_dashboard";
-import { RenderStormSearch } from "./render_storm_search";
 import { RenderFilter } from "./Filter/filter";
-import { RenderBoundingBox } from "./Filter/boundingBox";
-//import EditFeature from "./Filter/Edit_spatial_filter";
-//import StationDashboardTest from "./station_dashboard/station_dashboard";
 import { RenderSpatialFilter } from "./Filter/Edit_spatial_filter";
 import CustomZoomControl from "./custom_zoom_control";
-import StormDashboard from "./storm_dashboard/storm_dashboard";
 import { RenderDashboards } from "./Dashboard/dashboard";
 import StormMarker from "./stormPoint";
-import { empty_storm_obj } from "@/lib/storm_utils";
 import { mapReducer, initialMapState } from "./mapReducer";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
@@ -40,24 +27,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
 
   // The state variable that contains the storm point currently being hovered 
   // over or clicked on
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
-  const [storm_points, setStormPoints] = useState(empty_storm_obj);
-  const [hover_marker, setHoverMarker] = useState(empty_point_obj);
-  const [selected_tab, setSelectedTab] = useState(0);
-  const [selected_station, setSelectedStation] = useState(empty_station_obj);
-  const [filterResult, setFilterResult] = useState({}); 
-  const [returnFilterResult, setReturnFilterResult] = useState(false);
-  const [polyFilterCoords, setPolyFilterCoords] = useState('');
-  const [isDashOpen, setIsDashOpen] = useState(false);
-  const [isStormDashOpen, setIsStormDashOpen] = useState(false);
-  const [isStationDashOpen, setIsStationDashOpen] = useState(false);
-  const [drawerButtonClicked, setDrawerButtonClicked] = useState('');
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [startCategory, setStartCategory] = useState("");
-  const [endCategory, setEndCategory] = useState("");
-  const [showCatSelection, setShowCatSelection] = useState(false); 
-  const [showDateSelection, setShowDateSelection] = useState(false); 
+
   const [state, dispatch] = useReducer(mapReducer, initialMapState);
   
   const allDatasetDescriptions = useDatasetDescriptions();
@@ -65,7 +35,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
   
 
   console.log(allDatasetDescriptions)
-  console.debug("Storm Points in map.js: ", storm_points);
+  console.debug("Storm Points in map.js: ", state.storm_points);
 
 
   return (
@@ -77,35 +47,19 @@ export default function Map({ children, station_data, source_type,  setStationPo
           clearShapesRef={clearShapesRef} // Pass the ref to 
           state={state}
           dispatch={dispatch}
-          
-          
-          
           />
         }
         {
           <RenderDashboards
-            //storm_points={storm_points}
             source_type={source_type}
-            //hover_point={hover_marker}
-            //isDrawerOpen={isDrawerOpen}
-            //selected_station={selected_station}
-            //setSelectedStation={setSelectedStation}
             station_descriptions={allDatasetDescriptions}
             time = {new Date()}
             state={state}
             dispatch={dispatch}
-            //selectedTab = {selected_tab}
-            //setSelectedTab = {setSelectedTab}
-            //isStormDashOpen={isStormDashOpen}
-            //setIsStormDashOpen={setIsStormDashOpen}
-            //isStationDashOpen={isStationDashOpen}
-            //setIsStationDashOpen={setIsStationDashOpen}
-            //isDashOpen= {isDashOpen}
-            //setHoverMarker={setHoverMarker}
+            
             />
         }
-        
-       
+
         <MapContainer
           center={defaultPosition}
           zoom={defaultZoom}
@@ -190,7 +144,6 @@ export default function Map({ children, station_data, source_type,  setStationPo
                         storm_point_hover= {state.hover_marker}
                         dispatch={dispatch}
 
-                       
                       />
                     );
                   })
