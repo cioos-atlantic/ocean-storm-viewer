@@ -30,7 +30,7 @@ export default function StormMarker({ storm_point_data, storm_point_hover, dispa
 
     const markerRef = useRef(null);
 
-    console.log(storm_point_hover)
+    //console.log(storm_point_hover)
 
     
     const clickedRef = useRef(false);
@@ -43,7 +43,7 @@ export default function StormMarker({ storm_point_data, storm_point_hover, dispa
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-    console.log(storm_point_data);
+    //console.log(storm_point_data);
 
     useEffect(() => {
         setIsMounted(true);

@@ -16,6 +16,7 @@ export function RenderDashboards({ source_type, station_descriptions, time, stat
 
         const showStorm = state.isStormDashOpen;
         const showStation = state.isStationDashOpen;
+        console.log(showStation, showStorm)
             // Determine width dynamically
         const flexValue = showStorm && showStation ? 1 : 2; // 50% if both, 100% if one
         const theme = useTheme();
@@ -62,28 +63,25 @@ export function RenderDashboards({ source_type, station_descriptions, time, stat
             <StormDashboard
                 state={state}
                 dispatch={dispatch}
-                //storm_points={storm_points}
-                //hover_point={hover_point}
-                //isStormDashOpen={isStormDashOpen}
-                //setIsStormDashOpen={setIsStormDashOpen}
-                //setHoverMarker={setHoverMarker}
+                
             />
             </Box>
         )}
         {showStation && (
             <Box sx={{ flex: flexValue, minWidth: showStorm ? "50%" : "100%" }}>
             <StationDashboard
-                selected_station={selected_station}
-                setSelectedStation={setSelectedStation}
-                stationsDescriptions={station_descriptions}
+                state={state}
+                dispatch={dispatch}
+                //selected_station={selected_station}
+                //setSelectedStation={setSelectedStation}
                 station_descriptions={station_descriptions}
                 storm_timestamp={new Date()}
-                selectedTab={selectedTab}
-                setSelectedTab={setSelectedTab}
+                //selectedTab={selectedTab}
+                //setSelectedTab={setSelectedTab}
                 source_type={source_type}
-                isStationDashOpen={isStationDashOpen}
-                setIsStationDashOpen={setIsStationDashOpen}
-                hover_point={hover_point}
+                //isStationDashOpen={isStationDashOpen}
+                //setIsStationDashOpen={setIsStationDashOpen}
+                //hover_point={hover_point}
             />
             </Box>
         )}

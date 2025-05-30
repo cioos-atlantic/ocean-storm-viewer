@@ -88,10 +88,16 @@ export function mapReducer(state, action) {
       case 'SET_SELECTED_STATION_AND_OPEN_DASHBOARD':
         return {
           ...state,
-          selected_station: action.payload.station,
+          selected_station: action.payload,
           selectedTab: 0,
           isDashOpen: true,
           isStationDashOpen: true,
+        };
+      case 'CLOSE_STATION_DASHBOARD':
+        return {
+          ...state,
+          selected_station: empty_station_obj,
+          selectedTab: 0,
         };
       
     default:

@@ -67,10 +67,8 @@ export default function StationMarker({station_data, station_descriptions, time 
         click: (e) => {
           console.log(e, "SETTING SELECTED STATION", station_data);
           dispatch({
-            type: "SET_SELECTED_STATION_AND_OPEN_DASHES",
-            payload: {
-              station: station_data,
-            },
+            type: 'SET_SELECTED_STATION_AND_OPEN_DASHBOARD',
+            payload: station_data,
           });
           
         }
