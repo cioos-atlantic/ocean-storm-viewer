@@ -25,18 +25,11 @@ export default function Map({ children, station_data, source_type,  setStationPo
 
   const clearShapesRef = useRef(null);
 
-  // The state variable that contains the storm point currently being hovered 
-  // over or clicked on
-
   const [state, dispatch] = useReducer(mapReducer, initialMapState);
   
   const allDatasetDescriptions = useDatasetDescriptions();
-
-  
-
   console.log(allDatasetDescriptions)
   console.debug("Storm Points in map.js: ", state.storm_points);
-
 
   return (
     <div className="map_container">

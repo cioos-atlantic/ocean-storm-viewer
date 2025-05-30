@@ -2,9 +2,12 @@ import React, { useState, useRef, forwardRef, useImperativeHandle } from "react"
 import L from "leaflet";
 import {
   
-  FeatureGroup,
+  FeatureGroup
 } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
+//import 'leaflet/dist/leaflet.css';
+import 'leaflet-draw/dist/leaflet.draw.css';
+//import 'leaflet-draw';
 
 export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({polyFilterCoords, setPolyFilterCoords}, ref) {
   const featureGroupRef = useRef(null);
