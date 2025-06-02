@@ -24,13 +24,13 @@ import { createSvgIconWithText } from "./utils/storm_display_utils";
  *
  * @returns {JSX.Element} - A React Marker component with event handlers and custom icon.
  */
-export default function StormMarker({ storm_point_data, setHoverMarker, setIsStormDashOpen, storm_point_hover, setIsDashOpen }) {
+export default function StormMarker({ storm_point_data, storm_point_hover, dispatch }) {
     const [isMounted, setIsMounted] = useState(false);
     const [customIcon, setCustomIcon] = useState(null);
 
     const markerRef = useRef(null);
 
-    console.log(storm_point_hover)
+    //console.log(storm_point_hover)
 
     
     const clickedRef = useRef(false);
@@ -43,7 +43,7 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setIsSto
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-    console.log(storm_point_data);
+    //console.log(storm_point_data);
 
     useEffect(() => {
         setIsMounted(true);
@@ -83,16 +83,17 @@ export default function StormMarker({ storm_point_data, setHoverMarker, setIsSto
             ref={markerRef}
             eventHandlers={{
                 mouseover: () => {
-                    setHoverMarker(storm_point_data);
+                    //setHoverMarker(storm_point_data);
+                    dispatch({ type: "SET_HOVER_MARKER", payload: storm_point_data});
                     //setIsDashOpen(true);
                     //setIsStormDashOpen(true);
                     
                     markerRef.current?.openPopup();
                 },
                 click: () => {
-                    setHoverMarker(storm_point_data);
-                    setIsDashOpen(true);
-                    setIsStormDashOpen(true);
+                    dispatch({ type: "SET_HOVER_MARKER", payload: storm_point_data});
+                    dispatch({ type: "TOGGLE_DASH", payload: true});
+                    dispatch({ type: "TOGGLE_STORM_DASH", payload: true});
                     clickedRef.current = true;
                 },
                 mouseout: () =>  {
