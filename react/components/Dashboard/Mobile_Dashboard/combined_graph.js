@@ -9,34 +9,22 @@ import { combined_graph_color } from './chart_color';
 
 //import { graph_colour } from './station_dashboard/station_graph/graph_config.js'
 
-
-
-
 // Register necessary components, including the Line controller
-Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, BarController, BarElement, Filler, annotationPlugin, TimeScale );
+Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, BarController, BarElement, Filler, annotationPlugin, TimeScale);
 
 
 /**
  * Renders a line chart using Chart.js to display station data.
  */
-function RenderCombinedChart({ sourceData,  varCategory, timeData, hoverPointTime }) {
-
-  
-
+function RenderCombinedChart({ sourceData, varCategory, timeData, hoverPointTime }) {
   let chartTimeData = timeData;
   const chartRef = useRef(null); // Reference to the canvas element
   const chartInstance = useRef(null); // Store Chart.js instance
 
-  const startAtZero = varCategory === 'Pressure' || 'seaHeight' ? false : true
-
-  
-
-// Find the index of the given time dynamically
-//const highlightIndex = chartTimeData.indexOf(highlightTime);
-  
-
+  // Find the index of the given time dynamically
+  //const highlightIndex = chartTimeData.indexOf(highlightTime);
   useEffect(() => {
-
+    const startAtZero = varCategory === 'Pressure' || 'seaHeight' ? false : true
     const highlightTime = new Date(hoverPointTime).toLocaleString('en-US', {
       year: 'numeric',
       month: 'short',   // full month name
@@ -44,14 +32,12 @@ function RenderCombinedChart({ sourceData,  varCategory, timeData, hoverPointTim
       hour: '2-digit',
       minute: '2-digit',
       hour12: false,
-  
     });
 
 
     // Check if the canvas and data are available
     const canvas = chartRef.current;
     if (!canvas || !sourceData) return;
-
 
     // Always destroy the existing chart before creating a new one
     if (chartInstance.current) {
@@ -62,28 +48,22 @@ function RenderCombinedChart({ sourceData,  varCategory, timeData, hoverPointTim
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-
-    
-    
-    console.log(sourceData);
+    // console.log(sourceData);
     const datasets = makeDataset(sourceData, chartTimeData, hoverPointTime, varCategory);
 
-    console.log(datasets);
-    console.log(chartTimeData);
-  
+    // console.log(datasets);
+    // console.log(chartTimeData);
 
-      
-      
-      // Chart.js configuration
+    // Chart.js configuration
     const chartConfig = {
       type: 'line',
       data: {
         labels: chartTimeData, // Set the labels (time)
         datasets: datasets, // Set the datasets
       },
-      
+
       options: {
-        animation:ProgressiveAnimation(datasets),
+        animation: ProgressiveAnimation(datasets),
         interaction: {
           intersect: false,
           mode: 'index',
@@ -94,17 +74,17 @@ function RenderCombinedChart({ sourceData,  varCategory, timeData, hoverPointTim
               display: true, // Show grid on the x-axis
             },
             type: "time",
-              time: {
-                parser: 'yyyy/MM/dd t',
-                tooltipFormat: 'yyyy/MM/dd t',
-                unit: "day",
-                displayFormats: {
-                  'hour':'MM/dd'
-                }
-              },
-              ticks:{
-                stepSize: 1
+            time: {
+              parser: 'yyyy/MM/dd t',
+              tooltipFormat: 'yyyy/MM/dd t',
+              unit: "day",
+              displayFormats: {
+                'hour': 'MM/dd'
               }
+            },
+            ticks: {
+              stepSize: 1
+            }
           },
           y: {
             grid: {
@@ -115,12 +95,12 @@ function RenderCombinedChart({ sourceData,  varCategory, timeData, hoverPointTim
         },
         responsive: true,
         maintainAspectRatio: true,
-        spanGaps:true,
+        spanGaps: true,
         //maintainAspectRatio: false,
         plugins: {
           annotation: {
             annotations: {
-              
+
             }
           },
           filler: {
@@ -133,19 +113,13 @@ function RenderCombinedChart({ sourceData,  varCategory, timeData, hoverPointTim
               padding: 5,
               boxWidth: 10,
               font: {
-                  size: 10,
+                size: 10,
               }
             },
-            
           },
-
-          
         },
-        
       },
     };
-
-     
 
 
     // Create a new chart
@@ -168,7 +142,7 @@ function RenderCombinedChart({ sourceData,  varCategory, timeData, hoverPointTim
         //yMax: yMax,
         borderColor: 'rgb(255, 99, 132)',
         borderWidth: 2,
-        borderDash: [5,2],
+        borderDash: [5, 2],
         label: {
           display: true,
           content: `Hovered Date: ${highlightTime}`,
@@ -182,11 +156,8 @@ function RenderCombinedChart({ sourceData,  varCategory, timeData, hoverPointTim
           padding: 4
         }
       }
-     chart.update();
+      chart.update();
     }, 500) // set delay to heart's content. Set to anything above 250, 20 cause a very interesting bug
-
- 
-    
 
     // Cleanup function to destroy the chart on unmount
     return () => {
@@ -198,20 +169,16 @@ function RenderCombinedChart({ sourceData,  varCategory, timeData, hoverPointTim
   }, [sourceData, varCategory, hoverPointTime]); // Re-run effect if chartData or stationName changes
 
 
-  
   return (
-
     <div className='chart-render'>
-    <canvas
-      ref={chartRef}
-      style={{
-        top: 0,
-        left: 0,
-        
-      }}
-    />
-  </div>
-
+      <canvas
+        ref={chartRef}
+        style={{
+          top: 0,
+          left: 0,
+        }}
+      />
+    </div>
   );
 }
 
@@ -232,22 +199,18 @@ function getColour(graph_colour_list, var_name, indx) {
 
   colour = var_name in graph_colour_list ? combined_graph_color[var_name][indx] : getRandomColor()
   return colour;
-
-    
 }
-
-
-
 
 //Generate datasets
 function makeDataset(dataList, formattedTimeData, hoverPointTime, varCategory) {
-  const datasets=[];
+  const datasets = [];
   var graph_colour_list = {}
-      Object.assign(graph_colour_list, combined_graph_color);
+  Object.assign(graph_colour_list, combined_graph_color);
 
-
-  dataList.forEach((dataDict, index) => {console.log(dataDict);
-    Object.entries(dataDict).forEach(([key, value]) => {console.log(key)
+  dataList.forEach((dataDict, index) => {
+    console.log(dataDict);
+    Object.entries(dataDict).forEach(([key, value]) => {
+      console.log(key)
       datasets.push({
         label: value.name,
         data: value.data,
@@ -255,24 +218,14 @@ function makeDataset(dataList, formattedTimeData, hoverPointTime, varCategory) {
         backgroundColor: 'rgba(0, 0, 0, 0)',
         fill: true,
         pointRadius: (context) => {
-          return  0;
+          return 0;
         },
-        
       })
-
     })
+  })
 
-    })
-    
-
-
-  
-
-  console.log(datasets);
+  // console.log(datasets);
   return datasets;
 }
-
-
-
 
 export default React.memo(RenderCombinedChart);
