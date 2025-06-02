@@ -3,7 +3,7 @@ import { Marker, Popup } from 'react-leaflet'
 import { Icon, DivIcon, Point } from 'leaflet'
 import { storm_categories, storm_type_info } from '@/lib/storm_class'
 import { remap_coord_array, flip_coords, fetch_value } from "@/lib/storm_utils";
-import {empty_point_obj} from "@/components/storm_point_details"
+import { empty_point_obj } from "@/components/storm_point_details"
 import { Tooltip } from 'react-leaflet';
 import { useMediaQuery, useTheme } from '@mui/material';
 import StormPointDetailsTooltip from "./storm_dashboard/storm_point_details_tooltip";
@@ -30,20 +30,12 @@ export default function StormMarker({ storm_point_data, storm_point_hover, dispa
 
     const markerRef = useRef(null);
 
-    //console.log(storm_point_hover)
-
-    
     const clickedRef = useRef(false);
 
     // Keep track of previously clicked marker to default back to?
-
     const position = flip_coords(storm_point_data.geometry.coordinates);
-    const storm_type = storm_point_data.properties["NATURE"];
-    const storm_category = String(storm_point_data.properties["USA_SSHS"]);
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-
-    //console.log(storm_point_data);
 
     useEffect(() => {
         setIsMounted(true);
@@ -53,9 +45,9 @@ export default function StormMarker({ storm_point_data, storm_point_hover, dispa
     useEffect(() => {
         (async () => {
             const isSelected = storm_point_data.id === storm_point_hover?.id;
-
+            const storm_type = storm_point_data.properties["NATURE"];
+            const storm_category = String(storm_point_data.properties["USA_SSHS"]);
             const fallbackColor = "#e6e1e1";
-            //console.log(storm_category)
             const categoryInfo = storm_categories[storm_category] || {};
 
             const arcColor = isSelected ? "#ff0000" : categoryInfo.arcColor || fallbackColor;
@@ -65,18 +57,12 @@ export default function StormMarker({ storm_point_data, storm_point_hover, dispa
             //console.log(arcColor, textColor)
 
             setCustomIcon(createSvgIconWithText(storm_type, arcColor, iconSize, textColor))
-            
-            
-            
-
-              
         })();
-    }, [storm_category, storm_point_hover, storm_point_data]);
+    }, [storm_point_hover, storm_point_data]);
 
     if (!isMounted || !customIcon) return null;
 
     return (
-        
         <Marker
             key={storm_point_data.id}
             position={position}
@@ -84,27 +70,28 @@ export default function StormMarker({ storm_point_data, storm_point_hover, dispa
             eventHandlers={{
                 mouseover: () => {
                     //setHoverMarker(storm_point_data);
-                    dispatch({ type: "SET_HOVER_MARKER", payload: storm_point_data});
+                    dispatch({ type: "SET_HOVER_MARKER", payload: storm_point_data });
                     //setIsDashOpen(true);
                     //setIsStormDashOpen(true);
-                    
+
                     markerRef.current?.openPopup();
                 },
                 click: () => {
-                    dispatch({ type: "SET_HOVER_MARKER", payload: storm_point_data});
-                    dispatch({ type: "TOGGLE_DASH", payload: true});
-                    dispatch({ type: "TOGGLE_STORM_DASH", payload: true});
+                    dispatch({ type: "SET_HOVER_MARKER", payload: storm_point_data });
+                    dispatch({ type: "TOGGLE_DASH", payload: true });
+                    dispatch({ type: "TOGGLE_STORM_DASH", payload: true });
                     clickedRef.current = true;
                 },
-                mouseout: () =>  {
+                mouseout: () => {
                     if (!clickedRef.current) {
                         //setHoverMarker(empty_point_obj);
                         markerRef.current?.closePopup();
-                    }}
+                    }
+                }
             }}
             icon={customIcon}
         >
-            { storm_point_hover && (
+            {storm_point_hover && (
                 <Popup
                     closeButton={false}
                     autoPan={false}
@@ -114,14 +101,9 @@ export default function StormMarker({ storm_point_data, storm_point_hover, dispa
                 >
                     <StormPointDetailsTooltip
                         storm_point_hover={storm_point_data}
-                        
                     />
                 </Popup>
-)}
+            )}
         </Marker>
     );
 }
-
-
-
-  

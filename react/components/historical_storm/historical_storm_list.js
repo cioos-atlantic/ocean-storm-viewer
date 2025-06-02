@@ -83,7 +83,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
     setPreviousQuery({ name, season, sid });
 
   }
-  }, [router.query, previousQuery]); // 
+  }, [router, previousQuery, Leaflet, dispatch, map, setStationPoints]); // 
 
   useEffect(() => {
     async function fetchStormData() {
