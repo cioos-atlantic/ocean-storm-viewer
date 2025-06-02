@@ -19,27 +19,15 @@ Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryS
  * Renders a line chart using Chart.js to display station data.
  */
 function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }) {
-
-  
-
-  let chartTimeData = timeData;
   const chartRef = useRef(null); // Reference to the canvas element
   const chartInstance = useRef(null); // Store Chart.js instance
 
-  const startAtZero = varCategory === 'Pressure' || 'seaHeight' ? false : true
-
+  // Find the index of the given time dynamically
+  //const highlightIndex = chartTimeData.indexOf(highlightTime);
   
-
-// Find the index of the given time dynamically
-//const highlightIndex = chartTimeData.indexOf(highlightTime);
-
-  const formattedTimeData = chartTimeData.map(timeString=> Date.parse(timeString))
-  
-  
-  Date.parse(chartTimeData);
-  
-
   useEffect(() => {
+    const startAtZero = varCategory === 'Pressure' || 'seaHeight' ? false : true
+    const formattedTimeData = timeData.map(timeString=> Date.parse(timeString))
 
     const highlightTime = new Date(hoverPointTime).toLocaleString('en-US', {
       year: 'numeric',
@@ -48,14 +36,11 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
       hour: '2-digit',
       minute: '2-digit',
       hour12: false,
-  
     });
-
 
     // Check if the canvas and data are available
     const canvas = chartRef.current;
     if (!canvas || !sourceData) return;
-
 
     // Always destroy the existing chart before creating a new one
     if (chartInstance.current) {
@@ -66,16 +51,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-
-    
-    
-    console.log(sourceData);
     const datasets = makeDataset(sourceData, formattedTimeData, hoverPointTime);
-
-    console.log(datasets);
-  
-
-      
       
       // Chart.js configuration
     const chartConfig = {
@@ -139,17 +115,10 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
                   size: 10,
               }
             },
-            
           },
-
-          
         },
-        
       },
     };
-
-     
-
 
     // Create a new chart
     chartInstance.current = new Chart(ctx, chartConfig);
@@ -188,9 +157,6 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
      chart.update();
     }, 500) // set delay to heart's content. Set to anything above 250, 20 cause a very interesting bug
 
- 
-    
-
     // Cleanup function to destroy the chart on unmount
     return () => {
       if (chartInstance.current) {
@@ -198,12 +164,10 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
         chartInstance.current = null;
       }
     };
-  }, [sourceData, varCategory, hoverPointTime]); // Re-run effect if chartData or stationName changes
+  }, [sourceData, timeData, varCategory, hoverPointTime]); // Re-run effect if chartData or stationName changes
 
 
-  
   return (
-
     <div className='chart-render'>
     <canvas
       ref={chartRef}
@@ -214,9 +178,9 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
       }}
     />
   </div>
-
   );
 }
+
 
 // Function to generate a random color for chart lines
 const getRandomColor = () => {
@@ -228,6 +192,7 @@ const getRandomColor = () => {
   return color;
 };
 
+
 function getColour(var_name){
   let colour = '';
   console.log(var_name)
@@ -235,8 +200,6 @@ function getColour(var_name){
   colour = storm_graph_color[var_name] || getRandomColor();
   return colour;
 }
-
-
 
 
 //Generate datasets
@@ -260,20 +223,10 @@ function makeDataset(dataList, formattedTimeData, hoverPointTime) {
           return pointTime === hoverTimeStamp ? 'red' : 'blue';
         },
       })
-
     })
-
     })
-    
-
-
-  
-
-  console.log(datasets);
+ 
   return datasets;
 }
-
-
-
 
 export default React.memo(RenderStormChart);
