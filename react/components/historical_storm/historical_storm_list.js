@@ -8,6 +8,7 @@ import { RenderFilterResult } from '../Filter/renderFilterResult.js';
 import LoadingScreen from '../loading_screen.js';
 import { AppliedFilters } from '../Filter/filtersApplied.js';
 import { empty_storm_obj } from '@/lib/storm_utils.js';
+import { empty_station_obj } from '../point_defaults.js';
 
 
 
@@ -155,7 +156,8 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
       <Button
       onClick={()=> {
-      setStormPoints(empty_storm_obj)
+        dispatch({ type: "CLOSE_STORM_TRACKS" })
+        setStationPoints(empty_station_obj)
     
       router.push(`/?storms=historical`)
       }}
