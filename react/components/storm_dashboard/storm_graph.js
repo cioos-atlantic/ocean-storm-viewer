@@ -24,10 +24,11 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
 
   // Find the index of the given time dynamically
   //const highlightIndex = chartTimeData.indexOf(highlightTime);
-  
+  const formattedTimeData = timeData.map(timeString => Date.parse(timeString));
+  const datasets = makeDataset(sourceData, formattedTimeData, hoverPointTime);
+
   useEffect(() => {
     const startAtZero = varCategory === 'Pressure' || 'seaHeight' ? false : true
-    const formattedTimeData = timeData.map(timeString=> Date.parse(timeString))
 
     const highlightTime = new Date(hoverPointTime).toLocaleString('en-US', {
       year: 'numeric',
@@ -51,7 +52,6 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const datasets = makeDataset(sourceData, formattedTimeData, hoverPointTime);
       
       // Chart.js configuration
     const chartConfig = {
@@ -164,7 +164,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
         chartInstance.current = null;
       }
     };
-  }, [sourceData, timeData, varCategory, hoverPointTime]); // Re-run effect if chartData or stationName changes
+  }, [datasets, varCategory, hoverPointTime]); // Re-run effect if chartData or stationName changes
 
 
   return (
