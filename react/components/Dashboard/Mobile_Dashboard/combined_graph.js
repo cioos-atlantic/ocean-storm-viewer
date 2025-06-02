@@ -17,14 +17,15 @@ Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryS
  * Renders a line chart using Chart.js to display station data.
  */
 function RenderCombinedChart({ sourceData, varCategory, timeData, hoverPointTime }) {
-  let chartTimeData = timeData;
   const chartRef = useRef(null); // Reference to the canvas element
   const chartInstance = useRef(null); // Store Chart.js instance
+
+  const datasets = makeDataset(sourceData, varCategory);
 
   // Find the index of the given time dynamically
   //const highlightIndex = chartTimeData.indexOf(highlightTime);
   useEffect(() => {
-    const startAtZero = varCategory === 'Pressure' || 'seaHeight' ? false : true
+    const startAtZero = varCategory === 'Pressure' || 'seaHeight' ? false : true;
     const highlightTime = new Date(hoverPointTime).toLocaleString('en-US', {
       year: 'numeric',
       month: 'short',   // full month name
@@ -34,10 +35,9 @@ function RenderCombinedChart({ sourceData, varCategory, timeData, hoverPointTime
       hour12: false,
     });
 
-
     // Check if the canvas and data are available
     const canvas = chartRef.current;
-    if (!canvas || !sourceData) return;
+    if (!canvas || !datasets) return;
 
     // Always destroy the existing chart before creating a new one
     if (chartInstance.current) {
@@ -48,17 +48,12 @@ function RenderCombinedChart({ sourceData, varCategory, timeData, hoverPointTime
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // console.log(sourceData);
-    const datasets = makeDataset(sourceData, chartTimeData, hoverPointTime, varCategory);
-
-    // console.log(datasets);
-    // console.log(chartTimeData);
 
     // Chart.js configuration
     const chartConfig = {
       type: 'line',
       data: {
-        labels: chartTimeData, // Set the labels (time)
+        labels: timeData, // Set the labels (time)
         datasets: datasets, // Set the datasets
       },
 
@@ -166,7 +161,7 @@ function RenderCombinedChart({ sourceData, varCategory, timeData, hoverPointTime
         chartInstance.current = null;
       }
     };
-  }, [sourceData, varCategory, hoverPointTime]); // Re-run effect if chartData or stationName changes
+  }, [datasets, timeData, varCategory, hoverPointTime]); // Re-run effect if chartData or stationName changes
 
 
   return (
@@ -194,23 +189,23 @@ const getRandomColor = () => {
 
 function getColour(graph_colour_list, var_name, indx) {
   let colour = '';
-  console.log(var_name);
-  console.log(graph_colour_list);
+  // console.log(var_name);
+  // console.log(graph_colour_list);
 
   colour = var_name in graph_colour_list ? combined_graph_color[var_name][indx] : getRandomColor()
   return colour;
 }
 
 //Generate datasets
-function makeDataset(dataList, formattedTimeData, hoverPointTime, varCategory) {
+function makeDataset(dataList, varCategory) {
   const datasets = [];
   var graph_colour_list = {}
   Object.assign(graph_colour_list, combined_graph_color);
 
   dataList.forEach((dataDict, index) => {
-    console.log(dataDict);
+    // console.log(dataDict);
     Object.entries(dataDict).forEach(([key, value]) => {
-      console.log(key)
+      // console.log(key)
       datasets.push({
         label: value.name,
         data: value.data,

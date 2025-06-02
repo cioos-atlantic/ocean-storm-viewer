@@ -29,7 +29,7 @@ export function RenderDashboards({ source_type, station_descriptions, time, stat
     isExtraSmall && showStorm && showStation ? (
         <RenderSmallDashboard
         selected_station={state.selected_station}
-        hover_point={state.hover_point}
+        hover_point={state.hover_marker}
         station_descriptions={station_descriptions}
         source_type={source_type}
         time={time}
