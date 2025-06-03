@@ -3,9 +3,20 @@ import { Button } from "@mui/material";
 import { IconButton, TextField, Box, Typography, Paper } from "@mui/material";
 import { Stack } from "@mui/system";
 import { handleStormButtonClick } from "../historical_storm/historical_storm_utils";
+import StormListItem from "../storm_list_item";
+import { useEffect } from "react";
+import { empty_storm_obj } from "../point_defaults";
 
 
-export function RenderFilterResult({filterResult, router, drawerButtonClicked,  cancelFilters}){
+export function RenderFilterResult({filterResult, router, drawerButtonClicked,  cancelFilters, setStormPoints}){
+
+  useEffect(() => {
+    if (filterResult?.length > 0) {
+      const newStormPoints = makeStormLines(filterResult);
+      console.log("Setting storm points from filter result", newStormPoints);
+      setStormPoints(newStormPoints);
+    }
+  }, [filterResult, setStormPoints]); // Runs when filterResult changes
   
   
   return(
@@ -34,6 +45,7 @@ export function RenderFilterResult({filterResult, router, drawerButtonClicked,  
               key={storm.storm_id}
               onClick=
                 {(e) => { console.log(`${storm.name} clicked`)
+                setStormPoints({ ...empty_storm_obj });
                 handleStormButtonClick(storm.name, storm.year, storm.storm_id, router);
                                 //triggerReload(); // Reload page when a storm is clicked
               
@@ -68,3 +80,39 @@ export function RenderFilterResult({filterResult, router, drawerButtonClicked,  
     </>
   )
 }
+
+function makeStormLines(stormList){
+  let lin = []
+
+  stormList.forEach((storm)=> {
+    let line_of_travel = {
+      "type": "Feature",
+      "id": "line-of-travel-".concat(storm.display_name),
+      "geometry": {
+          "type": "LineString",
+          "coordinates": storm.storm_lines || []
+      },
+      "properties": {
+          "SEASON": storm.year,
+          "STORMNAME": storm.name,
+      }
+    };
+    lin.push(line_of_travel)
+
+  })
+
+  const storm_obj = 
+  {
+    pts: { features: [] },
+    err: { features: [] },
+    lin: { features: lin },
+    rad: { features: [] },
+    sea: { features: [] },
+  };
+
+
+  return storm_obj;
+  
+};
+
+

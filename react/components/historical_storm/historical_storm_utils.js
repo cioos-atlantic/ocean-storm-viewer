@@ -217,6 +217,7 @@ export function makeStormList(storm_data){
     let year = feature.properties.SEASON;
     let storm_id = feature.properties.SID;
     let display_name= `${name}-${year}`;
+    let storm_lines = feature.geometry.coordinates;
 
 
     if (name === "UNNAMED"){display_name = `${name}-${storm_id}` }
@@ -227,11 +228,13 @@ export function makeStormList(storm_data){
 
     if (name && year && !stormIdentifiers.has(identifier)) {
       stormIdentifiers.add(identifier);
-      uniqueList.push({ name, year, storm_id, display_name, source: "ibtracs" });
+      uniqueList.push({ name, year, storm_id, display_name, source: "ibtracs", storm_lines: storm_lines });
     }
   
   
   })
+
+  console.log(uniqueList);
   
   return uniqueList
 }
@@ -324,6 +327,7 @@ export async function handleClick( storm, setStationPoints, setStormPoints, map,
   setIsDashOpen(false);
   setIsStationDashOpen(false);
   setIsStormDashOpen(false);
+  setStormPoints({ ...empty_storm_obj });
 
   //console.log(Leaflet);
   setSelectedStation(empty_station_obj)
@@ -472,6 +476,7 @@ export async function handleSearch(storm_name, storm_year){
 }
 
 export function handleStormButtonClick(stormName, stormYear, stormID, router){
+   
   const url = `/?storms=historical&name=${stormName}&season=${stormYear}&sid=${stormID}`;
   console.log(url)
   router.push(url);

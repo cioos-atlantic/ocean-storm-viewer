@@ -81,10 +81,10 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
         }
     }
     searchQuery()
-    setPreviousQuery({ name, season, sid });
+    setPreviousQuery({ name, season, sid  });
 
   }
-  }, [router.query, previousQuery]); // 
+  }, [router.query, router.isReady]); // 
 
   useEffect(() => {
     async function fetchStormData() {
@@ -132,6 +132,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
           router={router}
           drawerButtonClicked={state.drawerButtonClicked}
           cancelFilters={cancelFilters}
+          setStormPoints={setStormPoints}
           
                 
         />):
