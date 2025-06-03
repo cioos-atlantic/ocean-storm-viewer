@@ -126,7 +126,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
 
   
 
-      {state.returnFilterResult ? 
+      {state.returnFilterResult  &&  state.filterResult.length > 0 ?
         (<RenderFilterResult 
           filterResult={state.filterResult}
           router={router}
@@ -135,7 +135,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
           
                 
         />):
-        (//renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, state.drawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen)
+        (
         <RenderRecentStorms
           stormList={stormList}
           setStationPoints={setStationPoints}

@@ -6,9 +6,11 @@ import { handleStormButtonClick } from "../historical_storm/historical_storm_uti
 
 
 export function RenderFilterResult({filterResult, router, drawerButtonClicked,  cancelFilters}){
+ 
   
   
-  return(
+  return( 
+    
     <>
       
       <Stack
@@ -19,8 +21,7 @@ export function RenderFilterResult({filterResult, router, drawerButtonClicked,  
           
         }}
       >
-        {console.log(filterResult)}
-        {filterResult.length > 0 ? (
+       
           <>
           <Box
           className='filter_page_drawer_subheader'>
@@ -55,11 +56,7 @@ export function RenderFilterResult({filterResult, router, drawerButtonClicked,  
             ))}
           </Stack>
           </>
-        ): (<Box
-          sx={{
-            color: "white"
-          }}>
-          ...</Box>)}
+        
       </Stack>
       <Button
       onClick={cancelFilters}
