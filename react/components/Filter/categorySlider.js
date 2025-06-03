@@ -20,7 +20,16 @@ export const storm_category_list = [
 ]
 
 export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowCatSelection, startCategory, endCategory }) {
-  const defaultText = "Select a range of storm category between -5 and 5";
+  const stormCategoryLink = "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html";
+  const defaultText = <>
+  Adjust the slider to filter storms by category, from -5 (weakest) to 5 (strongest). <br />
+  Learn more about {" "}
+  <a href={stormCategoryLink}
+     target="_blank"
+     rel="noopener noreferrer">
+    storm categories
+  </a>.
+</>;
 
   const [sliderText, setSliderText] = useState(defaultText);
   
@@ -40,7 +49,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
 
   
   
-  const stormCategoryLink = "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html";
+  
 
 
   useEffect(() => {
@@ -75,16 +84,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
         </>
       );
     } else {
-      setSliderText(
-        <>
-          Adjust the slider to filter storms by category, from -5 (weakest) to 5 (strongest). <br />
-          Learn more about {" "}
-          <a href={stormCategoryLink}
-             target="_blank"
-             rel="noopener noreferrer">
-            storm categories
-          </a>.
-        </>
+      setSliderText(defaultText
       );
     }
   }, [startCategory, endCategory]);
@@ -139,9 +139,9 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
                       className='filter-submit-button'
                       onClick={() => {
                         setValue([minCategory, maxCategory]); // Reset slider range
-                        setSliderText(defaultText); // Optional: reset text too
-                        setStartCategory(null); // Reset to empty string
-                        setEndCategory(null);   // Reset to empty string
+                        setSliderText(defaultText); 
+                        setStartCategory(""); 
+                        setEndCategory("");   
                       }}>Clear</Button>
                     <Button 
                       size="small" 
