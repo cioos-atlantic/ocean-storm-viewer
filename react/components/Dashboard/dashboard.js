@@ -61,8 +61,10 @@ export function RenderDashboards({ source_type, station_descriptions, time, stat
         {showStorm && (
             <Box sx={{ flex: flexValue, minWidth: showStation ? "50%" : "100%" }}>
             <StormDashboard
-                state={state}
                 dispatch={dispatch}
+                hover_marker={state.hover_marker}
+                storm_points={state.storm_points}
+                isStormDashOpen={state.isStormDashOpen}
                 
             />
             </Box>

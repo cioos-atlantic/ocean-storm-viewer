@@ -22,8 +22,9 @@ import { RowingSharp } from "@mui/icons-material";
 
 
 export default function StationDashboard({state, dispatch, station_descriptions, time, source_type
-}) {
 
+}) {
+  //const [selectedTab, setSelectedTab] = useState(0);
   const stationData = state.selected_station;
   console.log(stationData);
   
