@@ -1,18 +1,15 @@
-import React, { useState, useRef } from"react";
+import React, { useState } from"react";
 import { FaWindowClose } from "react-icons/fa";
-import { empty_station_obj } from "../layout";
 import { useMediaQuery, Box, useTheme } from "@mui/material";
 import { fetch_value } from "@/lib/storm_utils";
-import RenderStormChart from "./storm_graph";
 import BasicTabs from "./tabs";
 import { StormSummaryText } from "./storm_details";
 import StormDataLayout from "./storm_layout_small_screen";
 import { convert_unit_data } from "../utils/unit_conversion";
-import StormCategory from "../Storm_popup/storm_category";
-import { empty_point_obj } from "../storm_point_details";
+import { empty_point_obj } from "../point_defaults";
 
 
-//import BasicTabs from "./tabs";
+
 
 
 

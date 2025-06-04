@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController, BarController, BarElement, Filler, TimeScale } from 'chart.js';
 import { storm_graph_color, } from './storm_color';
-import { keyframes } from '@emotion/react';
 import { ProgressiveAnimation } from './utils';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import 'chartjs-adapter-luxon';

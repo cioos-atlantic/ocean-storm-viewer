@@ -1,6 +1,5 @@
-import { Button, CardActions, CardContent, Stack, Card, Box, TextField, Paper,  OutlinedInput, Input, FormControl, InputLabel, IconButton, Tooltip} from "@mui/material"
-import { input_filters } from "./filters_list"
-import { useEffect, useState } from 'react';
+import { Button, Box,  Paper,  OutlinedInput,  FormControl, InputLabel, } from "@mui/material"
+import {  useState } from 'react';
 import { smallScreenIconButton } from "./filter_utils";
 
 

@@ -3,7 +3,7 @@ import { useMap } from "react-leaflet";
 import ActiveStormList from "@/components/active_storm_list";
 import HistoricalStormList from "@/components/historical_storm/historical_storm_list";
 import Leaflet from 'leaflet';
-import React, { useState } from "react";
+import React from "react";
 import { Tooltip, Box, Button } from '@mui/material';
 
 

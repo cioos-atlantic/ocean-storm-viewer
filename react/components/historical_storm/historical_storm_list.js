@@ -6,8 +6,6 @@ import {  handleClick,  handleSearch } from './historical_storm_utils.js';
 import { RenderRecentStorms } from './render_recent_storms.js';
 import { RenderFilterResult } from '../Filter/renderFilterResult.js';
 import LoadingScreen from '../loading_screen.js';
-import { AppliedFilters } from '../Filter/filtersApplied.js';
-import { empty_storm_obj } from '@/lib/storm_utils.js';
 import { empty_station_obj } from '../point_defaults.js';
 
 

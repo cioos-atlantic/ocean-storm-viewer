@@ -1,12 +1,7 @@
 import { subYears } from "date-fns";
-import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
+import {  build_storm_features } from "@/lib/storm_utils";
 import { flyToPoint } from "../storm_list_item";
-import { Button } from "@mui/material";
-import { IconButton, TextField, Box, Typography, Paper } from "@mui/material";
-import Search from "@mui/icons-material/Search";
-import { Stack } from "@mui/system";
-import { empty_station_obj } from "../layout";
-import { handleStormNameClick } from "@/pages/about_page";
+import { empty_station_obj } from "../point_defaults";
 import { basePath } from "@/next.config";
 
 /**

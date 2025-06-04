@@ -2,21 +2,13 @@ import React, { useState, useMemo, useEffect } from "react";
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from './layout.module.css'
-import Link from 'next/link'
-
 import FooterNav from './footer_nav'
-//import StormSearch from "@/components/storm_search";
 import { useRouter } from 'next/router';
-
-import { empty_storm_obj } from '../lib/storm_utils';
 import dynamic from "next/dynamic";
-
-import ErddapHandler from "../pages/api/query_stations";
 import About from "@/pages/about_page";
 import Grid from '@mui/material/Grid2';
 import { Box } from "@mui/material";
 import HeaderNav from "./header_nav";
-import { StormSearchQuery } from "./search_storm_in_header";
 
 
 import { basePath } from "@/next.config";

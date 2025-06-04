@@ -1,6 +1,5 @@
-import { storm_category_filter_list } from "./filters_list";
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
-import { useEffect, useState, Fragment } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Button, Card, CardContent, CardActions, Slider } from "@mui/material";
 import { storm_categories } from "@/lib/storm_class";
 
