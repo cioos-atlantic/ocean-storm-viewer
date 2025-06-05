@@ -21,6 +21,8 @@ export const initialMapState = {
   showDateSelection: false,
   isDrawerOpen: true,
   storm_points: empty_storm_obj,
+  filterQuery:{},
+  filterStormName:'',
 };
 
 export function mapReducer(state, action) {
@@ -55,6 +57,10 @@ export function mapReducer(state, action) {
       return { ...state, startCategory: action.payload };
     case 'SET_END_CATEGORY':
       return { ...state, endCategory: action.payload };
+      case 'SET_FILTER_STORM_NAME':
+        return { ...state, filterStormName: action.payload };
+    case 'SET_FILTER_QUERY':
+      return { ...state, filterQuery: action.payload };
     case 'TOGGLE_CAT_SELECTION':
       return { ...state, showCatSelection: !state.showCatSelection };
     case 'SET_CAT_SELECTION':

@@ -78,6 +78,8 @@ export default function Drawer({ children, element_id, classes, source_type, set
                                 startCategory={state.startCategory}
                                 endCategory={state.endCategory}
                                 polyFilterCoords={state.polyFilterCoords}
+                                filterQuery={state.filterQuery}
+                                filterStormName={state.filterStormName}
                                 
                         />
                         ) : 

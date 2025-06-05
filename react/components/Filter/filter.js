@@ -100,6 +100,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
     };
 
     console.log(updatedParams); // 
+    dispatch({ type: "SET_FILTER_QUERY", payload: updatedParams});
+
 
 
     const stormResult = await processFilterRequest(updatedParams, setLoading);
@@ -170,6 +172,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                     selectedOptions={selectedOptions}
                     showFilterOptions={showFilterOptions}
                     setShowFilterOptions={setShowFilterOptions}
+                    dispatch={dispatch}
                   />
                 </div>
               )
@@ -242,6 +245,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                       selectedOptions={selectedOptions}
                       showFilterOptions={showFilterOptions}
                       setShowFilterOptions={setShowFilterOptions}
+                      dispatch={dispatch}
                     />
 
                   </div>

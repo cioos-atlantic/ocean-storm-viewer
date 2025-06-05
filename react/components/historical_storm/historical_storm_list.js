@@ -7,7 +7,7 @@ import { RenderRecentStorms } from './render_recent_storms.js';
 import { RenderFilterResult } from '../Filter/renderFilterResult.js';
 import LoadingScreen from '../loading_screen.js';
 import { empty_station_obj } from '../point_defaults.js';
-import {  FiltersSelected } from '../Filter/viewFilters.js';
+import {  FiltersSelected, FiltersSubmitted } from '../Filter/viewFilters.js';
 
 
 
@@ -17,7 +17,7 @@ import {  FiltersSelected } from '../Filter/viewFilters.js';
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, map, Leaflet, dispatch, returnFilterResult, filterResult, drawerButtonClicked, startDate, endDate, startCategory, endCategory, polyFilterCoords}) {
+export default function HistoricalStormList({ setStationPoints, map, Leaflet, dispatch, returnFilterResult, filterResult, drawerButtonClicked, startDate, endDate, startCategory, endCategory, polyFilterCoords, filterQuery, filterStormName}) {
 
   const [loading, setLoading] = useState(false);
 
@@ -122,18 +122,36 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, di
           <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>  {/* Bold line */}
 
           
-
-  
+      {!returnFilterResult && (
+        <>
+          <FiltersSelected
+          startDate={startDate}
+          endDate={endDate}
+          startCategory={startCategory}
+          endCategory={endCategory}
+          polyFilterCoords={polyFilterCoords}
+          filterStormName={filterStormName}/>
+          <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>
+        </>
+        )}
+      
+       
 
       {returnFilterResult  &&  filterResult.length > 0 ?
-        (<RenderFilterResult 
+        (<>
+        <FiltersSubmitted 
+        filterQuery={filterQuery}/>
+        
+        
+        <RenderFilterResult 
           filterResult={filterResult}
           router={router}
           drawerButtonClicked={drawerButtonClicked}
           cancelFilters={cancelFilters}
           
                 
-        />):
+        />
+        </> ):
         (
         <RenderRecentStorms
           stormList={stormList}
@@ -164,12 +182,6 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, di
       >Clear Storm Tracks</Button>
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
 
-      {<FiltersSelected
-      startDate={startDate}
-      endDate={endDate}
-      startCategory={startCategory}
-      endCategory={endCategory}
-      polyFilterCoords={polyFilterCoords}/>}
       
           
           
