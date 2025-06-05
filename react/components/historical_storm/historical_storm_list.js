@@ -7,6 +7,7 @@ import { RenderRecentStorms } from './render_recent_storms.js';
 import { RenderFilterResult } from '../Filter/renderFilterResult.js';
 import LoadingScreen from '../loading_screen.js';
 import { empty_station_obj } from '../point_defaults.js';
+import {  FiltersSelected } from '../Filter/viewFilters.js';
 
 
 
@@ -16,7 +17,7 @@ import { empty_station_obj } from '../point_defaults.js';
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, map, Leaflet, state, dispatch}) {
+export default function HistoricalStormList({ setStationPoints, map, Leaflet, dispatch, returnFilterResult, filterResult, drawerButtonClicked, startDate, endDate, startCategory, endCategory, polyFilterCoords}) {
 
   const [loading, setLoading] = useState(false);
 
@@ -124,11 +125,11 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
 
   
 
-      {state.returnFilterResult  &&  state.filterResult.length > 0 ?
+      {returnFilterResult  &&  filterResult.length > 0 ?
         (<RenderFilterResult 
-          filterResult={state.filterResult}
+          filterResult={filterResult}
           router={router}
-          drawerButtonClicked={state.drawerButtonClicked}
+          drawerButtonClicked={drawerButtonClicked}
           cancelFilters={cancelFilters}
           
                 
@@ -143,7 +144,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
           router={router}
           setSelectedStation={setSelectedStation}
           setLoading={setLoading}
-          drawerButtonClicked={state.drawerButtonClicked}
+          drawerButtonClicked={drawerButtonClicked}
           setIsDashOpen={setIsDashOpen}
           setIsStormDashOpen={setIsStormDashOpen}
           setIsStationDashOpen={setIsStationDashOpen}
@@ -161,6 +162,14 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
       }}
       className="cancel-search"
       >Clear Storm Tracks</Button>
+      <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
+
+      {<FiltersSelected
+      startDate={startDate}
+      endDate={endDate}
+      startCategory={startCategory}
+      endCategory={endCategory}
+      polyFilterCoords={polyFilterCoords}/>}
       
           
           

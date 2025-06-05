@@ -69,8 +69,15 @@ export default function Drawer({ children, element_id, classes, source_type, set
                                 setStationPoints={setStationPoints}
                                 map={map}
                                 Leaflet={Leaflet}
-                                state={state}
                                 dispatch={dispatch}
+                                returnFilterResult={state.returnFilterResult}
+                                filterResult={state.filterResult}
+                                drawerButtonClicked={state.drawerButtonClicked}
+                                startDate={state.startDate}
+                                endDate={state.endDate}
+                                startCategory={state.startCategory}
+                                endCategory={state.endCategory}
+                                polyFilterCoords={state.polyFilterCoords}
                                 
                         />
                         ) : 
