@@ -1,11 +1,9 @@
 //import { handleClick } from "./historical_storm_utils";
-import { Button } from "@mui/material";
-import {  Box, Typography, Paper } from "@mui/material";
-import { Stack } from "@mui/system";
+import {  Box, Typography, Paper, Stack, Button } from "@mui/material";
 import { handleStormButtonClick } from "../historical_storm/historical_storm_utils";
 
 
-export function RenderFilterResult({filterResult, router, drawerButtonClicked,  cancelFilters}){
+export function RenderFilterResult({filterResult, router, drawerButtonClicked,  cancelFilters, setDrawerButtonClicked}){
  
   
   
@@ -38,6 +36,7 @@ export function RenderFilterResult({filterResult, router, drawerButtonClicked,  
                   onClick=
                     {(e) => { console.log(`${storm.name} clicked`)
                     handleStormButtonClick(storm.name, storm.year, storm.storm_id, router);
+                    setDrawerButtonClicked(storm.storm_id);
                                     //triggerReload(); // Reload page when a storm is clicked
                   
                                     //console.log(storm);

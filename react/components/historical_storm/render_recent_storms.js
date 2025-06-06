@@ -1,9 +1,9 @@
-import { handleClick, handleStormButtonClick } from "./historical_storm_utils";
-import { Button, Stack } from "@mui/material";
+import {  handleStormButtonClick } from "./historical_storm_utils";
+import { Button, Stack, Typography } from "@mui/material";
 import {  Box,  } from "@mui/material";
 
 
-export function RenderRecentStorms({stormList, router, drawerButtonClicked}){
+export function RenderRecentStorms({stormList, router, drawerButtonClicked, setDrawerButtonClicked}){
   return(
     
       <Stack
@@ -40,11 +40,15 @@ export function RenderRecentStorms({stormList, router, drawerButtonClicked}){
                     
                   }}
                   onClick={(e) => { 
+                    //setDrawerButtonClicked(storm.storm_id);
                     handleStormButtonClick(storm.name, storm.year, storm.storm_id, router);
+                    setDrawerButtonClicked(storm.storm_id);
                     //handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
 
                     //console.log(storm);
-                    }}>{`${storm.display_name}`}</Button>
+                    }}><Typography className='search-output' sx ={{fontWeight: isClicked ? '650': 'normal'}} >
+                    {`${storm.display_name}`}
+                  </Typography></Button>
                 </div>
               )
             })}

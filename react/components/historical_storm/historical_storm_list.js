@@ -74,7 +74,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
           if (selectedStorm) {
             //setDrawerButtonClicked(selectedStorm.storm_id);
             console.log(selectedStorm.storm_id)
-            dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: selectedStorm.storm_id })
+            //dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: selectedStorm.storm_id })
             
 
             await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation,setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
@@ -133,6 +133,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
           router={router}
           drawerButtonClicked={state.drawerButtonClicked}
           cancelFilters={cancelFilters}
+          setDrawerButtonClicked={setDrawerButtonClicked}
           
                 
         />):
@@ -141,6 +142,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
           stormList={stormList}
           router={router}
           drawerButtonClicked={state.drawerButtonClicked}
+          setDrawerButtonClicked={setDrawerButtonClicked}
         />
         )}
 
