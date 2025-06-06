@@ -36,6 +36,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
   const setIsStationDashOpen= (state) => dispatch({ type: "TOGGLE_STATION_DASH", payload: state });
 
   const cancelFilters = () => dispatch({ type: 'CANCEL_FILTERS' });
+  const setDrawerButtonClicked = (buttonClicked) => dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: buttonClicked });
 
 
    // Check query parameters on mount and trigger `handleClick`
@@ -72,7 +73,9 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
           console.log(selectedStorm);
           if (selectedStorm) {
             //setDrawerButtonClicked(selectedStorm.storm_id);
+            console.log(selectedStorm.storm_id)
             dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: selectedStorm.storm_id })
+            
 
             await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation,setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
           }
@@ -136,17 +139,8 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
         (
         <RenderRecentStorms
           stormList={stormList}
-          setStationPoints={setStationPoints}
-          setStormPoints={setStormPoints}
-          map={map}
-          Leaflet={Leaflet}
           router={router}
-          setSelectedStation={setSelectedStation}
-          setLoading={setLoading}
           drawerButtonClicked={state.drawerButtonClicked}
-          setIsDashOpen={setIsDashOpen}
-          setIsStormDashOpen={setIsStormDashOpen}
-          setIsStationDashOpen={setIsStationDashOpen}
         />
         )}
 

@@ -1,9 +1,9 @@
-import { handleClick } from "./historical_storm_utils";
+import { handleClick, handleStormButtonClick } from "./historical_storm_utils";
 import { Button, Stack } from "@mui/material";
 import {  Box,  } from "@mui/material";
 
 
-export function RenderRecentStorms({stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen}){
+export function RenderRecentStorms({stormList, router, drawerButtonClicked}){
   return(
     
       <Stack
@@ -25,6 +25,7 @@ export function RenderRecentStorms({stormList, setStationPoints, setStormPoints,
               
               >
         {stormList.map((storm, index) => {
+          console.log(storm);
             const isClicked = drawerButtonClicked === storm.storm_id;
               return (
                 <div key={storm.storm_id} className={(storm.name)}>
@@ -39,7 +40,8 @@ export function RenderRecentStorms({stormList, setStationPoints, setStormPoints,
                     
                   }}
                   onClick={(e) => { 
-                    handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
+                    handleStormButtonClick(storm.name, storm.year, storm.storm_id, router);
+                    //handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
 
                     //console.log(storm);
                     }}>{`${storm.display_name}`}</Button>
