@@ -447,7 +447,7 @@ export async function handleSearch(storm_name, storm_year){
     //const historical_storm_data = parseStormData(storm_data, storm.name);
     // console.log(historical_station_data);
 
-    console.debug(`historical Storm Data for ${storm_name} and ${storm_year}: `, storm_data);
+    console.log(`historical Storm Data for ${storm_name} and ${storm_year}: `, storm_data);
     // Create a set to track unique IDs and add objects to the result list
     uniqueList = makeStormList(storm_data)
     // Create a set to track unique IDs and add objects to the result list
