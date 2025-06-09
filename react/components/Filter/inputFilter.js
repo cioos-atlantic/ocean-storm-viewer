@@ -1,10 +1,11 @@
 import { Button, Box,  Paper,  OutlinedInput,  FormControl, InputLabel, } from "@mui/material"
 import {  useState } from 'react';
 import { smallScreenIconButton } from "./filter_utils";
+import { CloseOptions, ShowOptions } from "./filter";
 
 
 
-export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions}){
+export function InputFilter({input_filter, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions}){
   const [inputValue, setInputValue] = useState(""); // Controlled input field
   const buttonStyle = {
     backgroundColor: selectedOptions[input_filter.name]?.length > 0 ? '#e55162' : 'white',
@@ -51,8 +52,8 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
           [input_filter.name]: !prev[input_filter.name],
         }));
       }}
-      startIcon={input_filter.icon ? <input_filter.icon /> : null}
-      endIcon={ !showFilterOptions[input_filter.name] ? (showOptionsArrow):(closeOptionsArrow)}
+      startIcon={input_filter.Icon ? <input_filter.Icon /> : null}
+      endIcon={ !showFilterOptions[input_filter.name] ? (<ShowOptions/>):(<CloseOptions/>)}
       sx={{...buttonStyle,
         display: { xs: "none", md: "inline-flex" }}
       }
@@ -60,7 +61,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
 
     </Button>
 
-    {smallScreenIconButton(input_filter.display_name, handleIconClick, buttonStyle, input_filter.icon)}
+    {smallScreenIconButton(input_filter.display_name, handleIconClick, buttonStyle, input_filter.Icon)}
 
     
     

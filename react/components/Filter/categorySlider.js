@@ -2,7 +2,7 @@ import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import { useEffect, useState } from 'react';
 import { Box, Button, Card, CardContent, CardActions, Slider } from "@mui/material";
 import { storm_categories } from "@/lib/storm_class";
-
+import { ShowOptions, CloseOptions } from './filter';
 import { smallScreenIconButton } from './filter_utils';
 export const storm_category_list = [
   { label: "5", value: 5 },
@@ -159,7 +159,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
   );
 }
 
-export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, state, dispatch}){
+export function RenderCategoryFilter({ state, dispatch}){
   
   //const [showCatSelection, setShowCatSelection] = useState(false); 
   const hasValidCategory = state.startCategory && state.endCategory;
@@ -186,7 +186,7 @@ export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, state
     className="filter-badge"
     onClick= {handleIconClick}
     startIcon={<CategoryOutlinedIcon />}
-    endIcon={ !state.showCatSelection ? (showOptionsArrow):(closeOptionsArrow)}
+    endIcon={ !state.showCatSelection ? (<ShowOptions/>):(<CloseOptions/>)}
     sx={{...buttonStyle,
       display: { xs: "none", md: "inline-flex" }, }
     }>
