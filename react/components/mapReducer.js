@@ -90,6 +90,7 @@ export function mapReducer(state, action) {
           endDate: null,
           startCategory: "",
           endCategory: "",
+          filterStormName:"",
         };
       case 'SET_SELECTED_STATION_AND_OPEN_DASHBOARD':
         return {

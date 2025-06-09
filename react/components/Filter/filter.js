@@ -246,6 +246,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                       showFilterOptions={showFilterOptions}
                       setShowFilterOptions={setShowFilterOptions}
                       dispatch={dispatch}
+                      filterStormName={state.filterStormName}
                     />
 
                   </div>
