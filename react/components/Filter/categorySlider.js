@@ -196,7 +196,7 @@ export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, state
       
 
     </Button>
-    {smallScreenIconButton('Storm Category', handleIconClick, buttonStyle, <CategoryOutlinedIcon />)}
+    {smallScreenIconButton('Storm Category', handleIconClick, buttonStyle, CategoryOutlinedIcon)}
     
 
     {state.showCatSelection && 

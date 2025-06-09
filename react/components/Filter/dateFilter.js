@@ -100,7 +100,7 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, state, di
       
 
     </Button>
-    {smallScreenIconButton('Filter by Date', handleIconClick, buttonStyle, <CalendarMonthOutlinedIcon/>)}
+    {smallScreenIconButton('Filter by Date', handleIconClick, buttonStyle, CalendarMonthOutlinedIcon)}
     
 
     {state.showDateSelection && 

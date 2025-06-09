@@ -26,7 +26,7 @@ export function smallScreenIconButton(toolTipTitle, handleIconClick, buttonStyle
     }
       
 
-    }>{Icon}
+    }><Icon/>
     </IconButton> </Tooltip>
   )
 

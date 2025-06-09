@@ -51,7 +51,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
           [input_filter.name]: !prev[input_filter.name],
         }));
       }}
-      startIcon={input_filter.icon}
+      startIcon={input_filter.icon ? <input_filter.icon /> : null}
       endIcon={ !showFilterOptions[input_filter.name] ? (showOptionsArrow):(closeOptionsArrow)}
       sx={{...buttonStyle,
         display: { xs: "none", md: "inline-flex" }}

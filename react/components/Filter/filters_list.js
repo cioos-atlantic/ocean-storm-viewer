@@ -30,7 +30,7 @@ export const input_filters = [
   { 
     "name":'stormName',
     "display_name": 'Storm Name',
-    'icon':<BadgeOutlinedIcon />,
+    'icon':BadgeOutlinedIcon,
     "placeholder": 'Storm1, Storm2',
     
     
