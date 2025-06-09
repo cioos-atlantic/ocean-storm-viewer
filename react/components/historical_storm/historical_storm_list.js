@@ -105,7 +105,11 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, di
   }, []); // Empty dependency array ensures it runs only once on mount
 
 
-  
+  useEffect(() => {
+    if (filterResult.length <= 0 && returnFilterResult) {
+      dispatch({ type: "TOGGLE_FILTER_RESULT", payload: false });
+    }
+  }, [filterResult.length, returnFilterResult, dispatch]);
 
   // const [selected_storm, setSelectedStorm] = useState("");
   return (
@@ -122,7 +126,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, di
           <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>  {/* Bold line */}
 
           
-      {!returnFilterResult && (
+      {(!returnFilterResult )  && (
         <>
           <FiltersSelected
           startDate={startDate}
@@ -137,10 +141,12 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, di
       
        
 
-      {returnFilterResult  &&  filterResult.length > 0 ?
+      {returnFilterResult ?
         (<>
         <FiltersSubmitted 
         filterQuery={filterQuery}/>
+
+        <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>
         
         
         <RenderFilterResult 

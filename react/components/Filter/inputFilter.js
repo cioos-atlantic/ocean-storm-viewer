@@ -36,6 +36,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       [input_filter.name]: "", // Clear the options for the specific filter name
     }));
     setInputValue(""); // Reset input field
+    dispatch({ type: "SET_FILTER_STORM_NAME", payload: inputValue})
   };
 
   function handleIconClick(){
@@ -135,7 +136,9 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
 
       {/* Action Buttons */}
       <Box sx={{ display: "flex", gap: "1px" }}>
-        <Button className="filter-submit-button" type="submit" onClick={()=> {dispatch({ type: "SET_FILTER_STORM_NAME", payload: selectedOptions?.stormName});}}>
+        <Button className="filter-submit-button" type="submit" onClick={()=> {if (state.filterStormName !== inputValue) {
+            dispatch({ type: "SET_FILTER_STORM_NAME", payload: inputValue });
+          }}}>
           Enter
         </Button>
         <Button className="filter-submit-button" onClick={handleClear}>
