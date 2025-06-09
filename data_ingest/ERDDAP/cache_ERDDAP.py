@@ -156,11 +156,14 @@ def match_standard_names(dataset_id):
         )
 
         metadata = pd.read_csv(filepath_or_buffer=metadata_url)
-        
+        station_id_var = ""
+        if(metadata.loc[(metadata['Attribute Name'] == 'cdm_data_type')]['Value'].iloc[0] == 'TimeSeries'):
+            station_id_var = metadata.loc[(metadata['Attribute Name'] == 'cf_role') & (metadata['Value'] == 'timeseries_id')]['Variable Name'].iloc[0]
         dataset = {
-            "vars" : ["time", "latitude", "longitude"] + dataset_vars,
+            "vars" :  [station_id_var, "time", "latitude", "longitude"] + dataset_vars,
             "meta" : metadata
         }
+        log.info(dataset['vars'])
     else:
         log.info(f"{dataset_id} doesn't have any matching variables.")
     return dataset
@@ -174,15 +177,17 @@ def standardize_column_names(dataset, dataset_id):
         else:
             return unit
     # A dictionary to hold the variable name mappings
+    log.info(dataset['vars'])
     replace_cols = {}
-
+    if(dataset['vars'][0]!= 'time'):
+        replace_cols['identifier'] = f"identifier||{dataset['vars'][0]}"
+        dataset['vars'].pop(0)
+    metadata = dataset["meta"]
     for var in dataset["vars"]:
-        metadata = dataset["meta"]
-
         standard_name = erddap_meta(metadata=metadata, attribute_name="standard_name", var_name=var)["value"]
         units = unit_override(erddap_meta(metadata=metadata, attribute_name="units", var_name=var)["value"])
         long_name = erddap_meta(metadata=metadata, attribute_name="long_name", var_name=var)["value"]
-
+ 
         # Time columns usually have the unit of time in unix timestamp
         if units.find("seconds since") > -1:
             units = "UTC"
@@ -190,7 +195,8 @@ def standardize_column_names(dataset, dataset_id):
         # standard_name = metadata[(metadata["Variable Name"] == var) & (metadata["Attribute Name"] == "standard_name")]["Value"].values[0]
         replace_cols[var] = f"{standard_name}|{units}|{long_name}"
 
-        log.debug(f"{var} => {standard_name} | {units} | {long_name}")
+        log.info(f"{var} => {standard_name} | {units} | {long_name}")
+    log.info(replace_cols)
     return replace_cols
 
 # For active storms set id to ACTIVE
@@ -198,14 +204,16 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
     # Once variable names have been 
     e.protocol = "tabledap"
     e.dataset_id = dataset_id
+
+    if not dataset['vars'][0]:
+        dataset['vars'].pop(0)
     e.variables = dataset["vars"]
+
     e.constraints = {
         "time>=": min_time,
         "time<": max_time
     }
     cached_entries = []
-
-    log.info(dataset_id)
 
     try:
         df = e.to_pandas()
@@ -216,6 +224,7 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
         # df.set_index(df['time (UTC)'], inplace=True)
         # df.drop("time (UTC)", axis="columns", inplace=True)
         # del replace_cols['time']
+
 
         # Remap columns to incorporate standard name, long name and units
         replace_cols = standardize_column_names(dataset, dataset_id)
@@ -240,6 +249,7 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
         min_lat= find_df_column_by_standard_name(df, "latitude").min().min()
         max_lon= find_df_column_by_standard_name(df, "longitude").max().max()
         min_lon= find_df_column_by_standard_name(df, "longitude").min().min()
+
 
         # Finds the time column based on standard name and converts the type to be usable as datetime
         time_col = find_df_column_by_standard_name(df, "time").columns.values[0]
@@ -415,6 +425,8 @@ def main():
                 # Interrogate each dataset for the list of variable names using the list 
                 # of standard names above. If a dataset does not have any of those variables it
                 # will be skipped
+                
+        
                 dataset = match_standard_names(dataset_id)
                 if (dataset and dataset_id not in ignore_stations):
                     cached_data.extend(cache_station_data(dataset, dataset_id, storm_id, 
@@ -425,6 +437,7 @@ def main():
                     cache_erddap_data(storm_id = storm_id, df=pd.DataFrame(cached_data),destination_table=pg_erddap_cache_historical_table,
                                         pg_engine=engine,table_schema=erddap_cache_historical_schema)
             elif(arg_dry):
+                log.info(cached_data)
                 log.info("Dry run")
     # ACTIVE
     else:
