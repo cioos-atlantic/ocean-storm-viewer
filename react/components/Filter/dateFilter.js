@@ -113,7 +113,7 @@ export function RenderDateFilter({state, dispatch}){
         setShowDateSelection = {(date) => dispatch({ type: "SET_DATE_SELECTION", payload: date })}
          />)}
 
-    {console.log(state.startDate, state.endDate)}
+    
     </>
 
 
