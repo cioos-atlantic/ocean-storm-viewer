@@ -99,8 +99,14 @@ export function fetch_value(point, property_list) {
     let return_value = null;
 
     property_list.every(value => {
-        if (point.properties[value] !== undefined && point.properties[value] !== null) {
-            return_value = point.properties[value];
+        try{
+            if (point.properties[value] !== undefined && point.properties[value] !== null) {
+                return_value = point.properties[value];
+                return false;
+            }
+        }
+        catch(e){
+            console.error(e, property_list);
             return false;
         }
 

@@ -58,7 +58,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
   
       setSliderText(
         <>
-          You've selected storms from Category <strong>{stormMin}</strong> to <strong>{stormMax}</strong>. <br />
+          You&apos;ve selected storms from Category <strong>{stormMin}</strong> to <strong>{stormMax}</strong>. <br />
           Category{' '}
 
           <a href={storm_categories[stormMin]?.more_info_link}

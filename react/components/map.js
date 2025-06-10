@@ -94,9 +94,10 @@ export default function Map({ children, station_data, source_type,  setStationPo
                 {
                   station_data ? (
                     Object.entries(station_data).map((station) => {
-                      const storm_timestamp = new Date(state.hover_marker.properties["TIMESTAMP"])
+                      const storm_timestamp = new Date(state.hover_marker.properties["TIMESTAMP"]);
                       return (
                         <StationMarker
+                          key={station[0]}
                           station_data={station}
                           station_descriptions={allDatasetDescriptions}
                           time={storm_timestamp}
