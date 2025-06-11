@@ -156,7 +156,7 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
           {...a11yProps(5)} disabled={!variablePresence['air_pressure']}/>
 
           {Object.keys(windSpeedData).map((key, index) => {
-            const label = key.replace(/^wind speed(?=\s+\S)/i, '').trim();;
+            const label = key.replace(/^wind speed(?=\s+\S)/i, '').trim();
             return(
             <Tab label={`WINDROSE-${label}`}  key={`windbin-tab-${key}`} 
             sx={{

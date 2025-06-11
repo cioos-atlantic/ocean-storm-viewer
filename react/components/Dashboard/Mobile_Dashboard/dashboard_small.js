@@ -10,6 +10,8 @@ import StormCategoryChart from "@/components/storm_dashboard/storm_cat_chart";
 import { RenderWindRose } from "@/components/station_dashboard/wind_rose";
 import { StormSummaryText } from "@/components/storm_dashboard/storm_details";
 import { createVarPresenceDict, alignMergedData, mergeData, parseStationData, parseStormData, getStationInfo } from "./utils";
+import { processWindSpeeds } from "@/components/station_dashboard/wind_rose_utils";
+import { RenderPlotlyRose } from "@/components/station_dashboard/plotly_rose";
 
 
 export function RenderSmallDashboard({selected_station, hover_point, station_descriptions, source_type, time, storm_points}){
@@ -40,6 +42,11 @@ export function RenderSmallDashboard({selected_station, hover_point, station_des
 	console.log(unifiedTimes, alignedMergedData);
 
 	const variablePresence = createVarPresenceDict(alignedMergedData, stormCategory, stormType, stationValues);
+	const allStationData =stationValues?.properties?.station_data;
+	const timeData = get_station_field_data(allStationData, "time", "column_std_names").data;
+	const directionData = get_station_field_data(allStationData, 'wind_from_direction', "column_std_names").data;
+	const  windSpeedData = processWindSpeeds(allStationData);
+	console.log(timeData, directionData, windSpeedData);
 	
 
 	function generateGraph(selectedVar){
@@ -153,16 +160,22 @@ export function RenderSmallDashboard({selected_station, hover_point, station_des
 
 			{/* Wind Direction Section */}
 				{variablePresence["wind_from_direction"] && (
-					<section className="station_dashboard_small_screen_section">
+					Object.keys(windSpeedData).map((key, index) => {
+						const label = key.replace(/^wind speed(?=\s+\S)/i, '').trim();
+						return(
+						<section key={`windbin-tab-${key}`} className="station_dashboard_small_screen_section">
 						<Box className="section-header"
 						sx= {{
 							fontSize: { xs: '14px', sm: '16px', md: '18px', lg: '18px' }
-						}}>Wind Direction</Box>
-						<RenderWindRose
-							sourceData={stationValues?.properties?.station_data}
-							hasWindRoseData={variablePresence["wind_from_direction"]}
-						/>
+						}}>{`WINDROSE-${label}`}</Box>
+						<RenderPlotlyRose 
+							windData={windSpeedData[key]}
+							directionData={directionData}
+								timeData={timeData}/>
 					</section>
+
+					)})
+					
 				)}
 				
 				

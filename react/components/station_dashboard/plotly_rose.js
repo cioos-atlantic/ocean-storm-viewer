@@ -100,14 +100,20 @@ export function RenderPlotlyRose ( { windData, directionData, timeData }){
   };
 
   return (
-    <div style={{ textAlign: 'center' }}>
-  <Plot
-    data={data}
-    layout={layout}
-    config={{ responsive: true }}
-    style={{ display: 'inline-block', width: '600px', height: '300px' }}
-  />
-</div>
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+      padding: '1rem'
+    }}>
+      <Plot
+        data={data}
+        layout={layout}
+        config={{ responsive: true }}
+        style={{ width: '400px', height: '400px' }}
+      />
+    </div>
 
   );
 
