@@ -110,8 +110,9 @@ export function RenderPlotlyRose ( { windData, directionData, timeData }){
       <Plot
         data={data}
         layout={layout}
-        config={{ responsive: true }}
-        style={{ width: '400px', height: '400px' }}
+        config={{ responsive: true, modeBarButtonsToRemove: ['select2d', 'lasso2d', 'zoom2d'] }}
+        style={{ width: '400px', height: '300px' }}
+        
       />
     </div>
 
