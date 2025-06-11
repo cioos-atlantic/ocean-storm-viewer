@@ -156,12 +156,16 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
           {...a11yProps(5)} disabled={!variablePresence['air_pressure']}/>
 
           {Object.keys(windSpeedData).map((key, index) => {
-            <Tab label={key}
+            const label = key.replace(/^wind speed(?=\s+\S)/i, '').trim();;
+            return(
+            <Tab label={`WINDROSE-${label}`}  key={`windbin-tab-${key}`} 
             sx={{
               fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
             }}
-            {...a11yProps(5 + index + 1)} disabled={!variablePresence['wind_from_direction']}/>
-          } )}
+            {...a11yProps(6 + index )} disabled={!variablePresence['wind_from_direction']}/>
+          )}
+            
+           )}
         </TabList>
       </Box>
       <CustomTabPanel value={selectedTab} index={0}>
@@ -189,17 +193,15 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
         {generateGraph("air_pressure")}
       </CustomTabPanel>
       {
-            Object.keys(windSpeedData).map((key, index) => {
-              
-              return(
-                <CustomTabPanel key={key} value={selectedTab} index={index + 3}>
+            Object.keys(windSpeedData).map((key, index) => (
+              <CustomTabPanel  key={`windbin-tab-${key}`}  value={selectedTab} index={index + 6}>
                   <RenderPlotlyRose 
                     windData={windSpeedData[key]}
                     directionData={directionData}
                      timeData={timeData}/>
                 </CustomTabPanel>
-              )
-            })
+            )
+            )
       }
       </TabContext>
     </Box>
