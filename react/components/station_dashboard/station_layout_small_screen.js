@@ -2,8 +2,16 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import { RenderWindRose } from "./wind_rose";
 import RenderChart from "../station_graph.js";
+import { RenderPlotlyRose } from "./plotly_rose";
+import { get_station_field_data } from "../utils/station_data_format_util";
+import { processWindSpeeds } from "./wind_rose_utils";
 
 export default function StationDataLayout({stationName, stationData, stationSummaryText, variablePresence, hoverPointTime}){
+  const timeData = get_station_field_data(stationData, "time", "column_std_names").data;
+  const directionData = get_station_field_data(stationData, 'wind_from_direction', "column_std_names").data;
+  const  windSpeedData = processWindSpeeds(stationData);
+    console.log(timeData, directionData, windSpeedData);
+  
   function generateGraph(selectedVar){
       return (
        <div className="station_chart" 
@@ -60,18 +68,24 @@ export default function StationDataLayout({stationName, stationData, stationSumm
       )}
 
       {/* Wind Direction Section */}
-      {variablePresence["wind_from_direction"] && (
-        <section className="station_dashboard_small_screen_section">
-          <Box className="section-header"
-          sx= {{
-            fontSize: { xs: '14px', sm: '16px', md: '18px', lg: '18px' }
-          }}>Wind Direction</Box>
-          <RenderWindRose
-            sourceData={stationData}
-            hasWindRoseData={variablePresence["wind_from_direction"]}
-          />
-        </section>
-      )}
+				{variablePresence["wind_from_direction"] && (
+					Object.keys(windSpeedData).map((key, index) => {
+						const label = key.replace(/^wind speed(?=\s+\S)/i, '').trim();
+						return(
+						<section key={`windbin-tab-${key}`} className="station_dashboard_small_screen_section">
+						<Box className="section-header"
+						sx= {{
+							fontSize: { xs: '14px', sm: '16px', md: '18px', lg: '18px' }
+						}}>{`WINDROSE-${label}`}</Box>
+						<RenderPlotlyRose 
+							windData={windSpeedData[key]}
+							directionData={directionData}
+								timeData={timeData}/>
+					</section>
+
+					)})
+					
+				)}
 
       {/* Temperature Section */}
       {variablePresence["temperature"] && (
