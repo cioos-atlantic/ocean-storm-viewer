@@ -14,7 +14,7 @@ import { processWindSpeeds } from "@/components/station_dashboard/wind_rose_util
 import { RenderPlotlyRose } from "@/components/station_dashboard/plotly_rose";
 
 
-export function RenderSmallDashboard({selected_station, hover_point, station_descriptions, source_type, time, storm_points}){
+export function RenderSmallDashboard({selected_station, hover_point, station_descriptions, source_type, time, storm_points, setIsDashOpen}){
 	const stationData = selected_station;
 	console.log(stationData);
 	const stationName = stationData[0];
@@ -41,7 +41,7 @@ export function RenderSmallDashboard({selected_station, hover_point, station_des
 
 	console.log(unifiedTimes, alignedMergedData);
 
-	const variablePresence = createVarPresenceDict(alignedMergedData, stormCategory, stormType, stationValues);
+	const variablePresence = createVarPresenceDict(alignedMergedData, stormCategory, stormType, stationValues );
 	const allStationData =stationValues?.properties?.station_data;
 	const timeData = get_station_field_data(allStationData, "time", "column_std_names").data;
 	const directionData = get_station_field_data(allStationData, 'wind_from_direction', "column_std_names").data;
@@ -98,7 +98,8 @@ export function RenderSmallDashboard({selected_station, hover_point, station_des
         <button
           className="close"
           onClick={() => {
-            console.log('close button clicked')
+            setIsDashOpen(false);
+
           }}
           title="Close"
           aria-label="Close"

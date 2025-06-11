@@ -11,8 +11,7 @@ import BasicTabs from "./tabs";
 import { RecentStationData, getMatchedStation, getStationDataText, } from "../utils/station_data_format_util";
 //import BasicTabs from "./tabs";
 import { fetch_value } from "@/lib/storm_utils";
-import { RenderSmallDashboard } from "../Dashboard/Mobile_Dashboard/dashboard_small";
-import { RowingSharp } from "@mui/icons-material";
+
 
 
 /**
