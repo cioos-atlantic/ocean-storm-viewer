@@ -19,7 +19,7 @@ import { getDisplayName } from "./utils/station_data_format_util";
  * @param {Date} time Time of the station data to retrieve. Defaults to most recent data if not provided
  * @returns StationMarker JavaScript snippet
  */
-export default function StationMarker(station_data, station_descriptions, time = new Date(), selected_station, setSelectedStation, setSelectedTab, setIsStationDashOpen, setIsDashOpen) {
+export default function StationMarker({station_data, station_descriptions, time = new Date(), selected_station, dispatch}) {
   // Turns selected marker red, others return as blue
   function getMarkerIcon(selected_station, station_name) {
     try {
@@ -66,10 +66,10 @@ export default function StationMarker(station_data, station_descriptions, time =
       eventHandlers={{
         click: (e) => {
           console.log(e, "SETTING SELECTED STATION", station_data);
-          setSelectedStation(station_data);
-          setSelectedTab(0);
-          setIsDashOpen(true)
-          setIsStationDashOpen(true);
+          dispatch({
+            type: 'SET_SELECTED_STATION_AND_OPEN_DASHBOARD',
+            payload: station_data,
+          });
           
         }
       }}

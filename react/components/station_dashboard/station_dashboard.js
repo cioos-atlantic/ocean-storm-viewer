@@ -21,18 +21,11 @@ import { RowingSharp } from "@mui/icons-material";
  */
 
 
-export default function StationDashboard({
-  selected_station,
-  setSelectedStation,
-  station_descriptions,
-  time,
-  selectedTab,
-  setSelectedTab,
-  source_type,
-  isStationDashOpen, setIsStationDashOpen, hover_point
+export default function StationDashboard({state, dispatch, station_descriptions, time, source_type
 }) {
 
-  const stationData = selected_station;
+  const stationData = state.selected_station;
+  console.log(stationData);
   
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('md')); // `md` in MUI = 960px
@@ -97,7 +90,7 @@ export default function StationDashboard({
   });
   console.log(variablePresence);
 
-  const hoverPointTime = fetch_value(hover_point, ["TIMESTAMP", "ISO_TIME"]);
+  const hoverPointTime = fetch_value(state.hover_marker, ["TIMESTAMP", "ISO_TIME"]);
   console.log(hoverPointTime);
 
  
@@ -122,8 +115,7 @@ export default function StationDashboard({
         <button
           className="close"
           onClick={() => {
-            setSelectedStation(empty_station_obj);
-            setSelectedTab(0);
+            dispatch({ type: "CLOSE_STATION_DASHBOARD"});
           }}
           title="Close"
           aria-label="Close"
@@ -162,7 +154,7 @@ export default function StationDashboard({
       <Box
       key="01-station-dashboard"
       className={`station_dashboard`}
-      sx={{display: isStationDashOpen ? 'flex':'none',
+      sx={{display: state.isStationDashOpen ? 'flex':'none',
         //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
         
         
@@ -178,9 +170,9 @@ export default function StationDashboard({
         <button
           className="close"
           onClick={() => {
-            setSelectedStation(empty_station_obj);
-            setSelectedTab(0);
-            setIsStationDashOpen(false);
+            dispatch({ type: "CLOSE_STATION_DASHBOARD"});
+            dispatch({ type: "TOGGLE_STATION_DASH", payload: false});
+            //setIsStationDashOpen(false);
           }}
           title="Close"
           aria-label="Close"
@@ -208,8 +200,8 @@ export default function StationDashboard({
             stationData={stationValues?.properties?.station_data}
             stationSummaryText={dataText}
             variablePresence={variablePresence}
-            selectedTab={selectedTab}
-            setSelectedTab={setSelectedTab}
+            selectedTab={state.selectedTab}
+            setSelectedTab={(tab) => dispatch({ type: "SET_SELECTED_TAB", payload: tab })}
             hoverPointTime={hoverPointTime}
           />
         

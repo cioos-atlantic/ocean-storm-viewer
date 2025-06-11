@@ -5,7 +5,7 @@ import { Stack } from "@mui/system";
 import { handleStormButtonClick } from "../historical_storm/historical_storm_utils";
 
 
-export function RenderFilterResult({filterResult, router, setReturnFilterResult, drawerButtonClicked, setDrawerButtonClicked}){
+export function RenderFilterResult({filterResult, router, drawerButtonClicked,  cancelFilters}){
   
   
   return(
@@ -62,10 +62,7 @@ export function RenderFilterResult({filterResult, router, setReturnFilterResult,
           ...</Box>)}
       </Stack>
       <Button
-      onClick={()=> {
-        setReturnFilterResult(false)
-        setDrawerButtonClicked('')
-      }}
+      onClick={cancelFilters}
       className="cancel-search"
       >Clear Results</Button>
     </>

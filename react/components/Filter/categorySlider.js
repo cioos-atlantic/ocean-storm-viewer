@@ -44,13 +44,13 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
 
 
   useEffect(() => {
-    if (startCategory != null && endCategory != null) {
+    if (startCategory != "" && endCategory != "") {
       const stormMin = `${startCategory}`;
       const stormMax = `${endCategory}`;
   
       setSliderText(
         <>
-          You've selected storms from Category <strong>{stormMin}</strong> to <strong>{stormMax}</strong>. <br />
+          You&apos;ve selected storms from Category <strong>{stormMin}</strong> to <strong>{stormMax}</strong>. <br />
           Category{' '}
 
           <a href={storm_categories[stormMin]?.more_info_link}
@@ -160,19 +160,22 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
   );
 }
 
-export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, setStartCategory, setEndCategory, startCategory, endCategory, showCatSelection, setShowCatSelection}){
+export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, state, dispatch}){
+  
   //const [showCatSelection, setShowCatSelection] = useState(false); 
+  const hasValidCategory = state.startCategory && state.endCategory;
   const buttonStyle = {
-    backgroundColor: startCategory && endCategory  ? '#e55162' : 'white',
-    color: startCategory && endCategory ? 'white' : '#e55162',
+    backgroundColor: hasValidCategory  ? '#e55162' : 'white',
+    color: hasValidCategory ? 'white' : '#e55162',
     '&:hover': {
-      backgroundColor: startCategory && endCategory ? '#ffd1dc' : '#82ccdd',
-      color: startCategory && endCategory ? 'black' : 'black',
+      backgroundColor: hasValidCategory ? '#ffd1dc' : '#82ccdd',
+      color: hasValidCategory ? 'black' : 'black',
     },
   };
 
   function handleIconClick(){
-    setShowCatSelection(prev => !prev);
+    //setShowCatSelection(prev => !prev);
+    dispatch({ type: "TOGGLE_CAT_SELECTION"});
   }
   
 
@@ -184,7 +187,7 @@ export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, setSt
     className="filter-badge"
     onClick= {handleIconClick}
     startIcon={<CategoryOutlinedIcon />}
-    endIcon={ !showCatSelection ? (showOptionsArrow):(closeOptionsArrow)}
+    endIcon={ !state.showCatSelection ? (showOptionsArrow):(closeOptionsArrow)}
     sx={{...buttonStyle,
       display: { xs: "none", md: "inline-flex" }, }
     }>
@@ -197,15 +200,15 @@ export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, setSt
     {smallScreenIconButton('Storm Category', handleIconClick, buttonStyle, <CategoryOutlinedIcon />)}
     
 
-    {showCatSelection && 
+    {state.showCatSelection && 
       (<CategoryRangeSlider 
-        setStartCategory = {setStartCategory}
-        setEndCategory = {setEndCategory}
-        setShowCatSelection={setShowCatSelection}
-        startCategory={startCategory}
-        endCategory={endCategory}/>)}
+        setStartCategory = {(category) => dispatch({ type: "SET_START_CATEGORY", payload: category })}
+        setEndCategory = {(category) => dispatch({ type: "SET_END_CATEGORY", payload: category })}
+        setShowCatSelection={(status) => dispatch({ type: "SET_CAT_SELECTION", payload: status })}
+        startCategory={state.startCategory}
+        endCategory={state.endCategory}/>)}
 
-    {console.log(startCategory, endCategory)}
+    {console.log(state.startCategory, state.endCategory)}
     </>
 
 

@@ -99,8 +99,14 @@ export function fetch_value(point, property_list) {
     let return_value = null;
 
     property_list.every(value => {
-        if (point.properties[value] !== undefined && point.properties[value] !== null) {
-            return_value = point.properties[value];
+        try{
+            if (point.properties[value] !== undefined && point.properties[value] !== null) {
+                return_value = point.properties[value];
+                return false;
+            }
+        }
+        catch(e){
+            console.error(e, property_list);
             return false;
         }
 
@@ -337,6 +343,7 @@ export function build_storm_points(storm_data) {
     for (let i in storm_data.data) {
         switch (storm_data.data[i].geometry.type) {
             case "Point":
+                storm_data.data[i].properties.TIMESTAMP = storm_data.data[i].id.match(/\d+-\d+-\d+[\sT]\d+:\d+:\d+/)[0].replace(" ", "T");
                 storm_points.push(storm_data.data[i])
                 break;
         }
