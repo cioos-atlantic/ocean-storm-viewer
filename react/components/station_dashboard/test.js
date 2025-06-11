@@ -1,3 +1,5 @@
+import React from 'react';
+import Plot from 'react-plotly.js';
 import { windSpeedBins, colorPalette, categorizeWindSpeed, extractWindSpeedBins } from "./wind_rose_utils";
 
 const cardinalPoints = ["North", "N-E", "East", "S-E", "South", "S-W", "West", "N-W"];
@@ -71,48 +73,44 @@ export function makeEmptyfreqObj(windSpeedBins, cardinalPoints){
 
 export function RenderPlotlyRose ( { windData, directionData, timeData }){
   const totalDataPoints= timeData.length;
-  const data = calculateWindSpeedDistribution(directionData, windData, totalDataPoints);
-  const var_data = [];
-  Object.keys(data).forEach((speedBin, index)=>
+  const parsed_data = calculateWindSpeedDistribution(directionData, windData, totalDataPoints);
+  const data = [];
+  Object.keys(parsed_data).forEach((speedBin, index)=>
   (
-    var_data.push({
-      r: data[speedBin],
+    data.push({
+      r: parsed_data[speedBin],
       theta:cardinalPoints,
       name: speedBin,
-      marker:colorPalette[index],
+      marker: { color: colorPalette[index] },
       type: "barpolar"
     })
   ));
 
-  console.log(var_data);
-  var layout = {
-
-    title: {
-
-      text: "Wind Speed Distribution in Laurel, NE"
-
-    },
-
-    font: {size: 16},
-
-    legend: {font: {size: 16}},
-
+  console.log(data);
+  const layout = {
+    font: { size: 13 },
+    legend: { font: { size: 13 } },
     polar: {
-
-      barmode: "overlay",
-
+      barmode: "stack", // Better than "overlay" for wind roses
       bargap: 0,
+      radialaxis: { ticksuffix: "%", angle: 45, dtick: 20 },
+      angularaxis: { direction: "clockwise" }
+    },
+    margin: { t: 50, r: 30, l: 30, b: 30 },
+  };
 
-      radialaxis: {ticksuffix: "%", angle: 45, dtick: 20},
+  return (
+    <div style={{ textAlign: 'center' }}>
+  <Plot
+    data={data}
+    layout={layout}
+    config={{ responsive: true }}
+    style={{ display: 'inline-block', width: '600px', height: '300px' }}
+  />
+</div>
 
-      angularaxis: {direction: "clockwise"}
+  );
 
-    }
-
-  }
-
-
-Plotly.newPlot("myDiv", data, layout)
 
  
 }
