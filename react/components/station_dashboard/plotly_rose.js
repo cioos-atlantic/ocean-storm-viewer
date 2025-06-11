@@ -13,7 +13,7 @@ export function categorizeWindDirection(direction, cardinalPoints) {
 
 
 function calculateWindSpeedDistribution(directions, speeds, totalDataPoints) {
-  console.log(windSpeedBins, cardinalPoints)
+  //console.log(windSpeedBins, cardinalPoints)
   const windSpdLabel = extractWindSpeedBins();
 
   const freqObj = makeEmptyfreqObj(windSpdLabel, cardinalPoints);
@@ -24,7 +24,7 @@ function calculateWindSpeedDistribution(directions, speeds, totalDataPoints) {
   const speedBin =  speeds.map((speed)=> categorizeWindSpeed(speed))
   
   
-  console.log(cardinal, speedBin);
+  //console.log(cardinal, speedBin);
   
   const freqDist = {};
 
@@ -65,13 +65,14 @@ export function makeEmptyfreqObj(windSpeedBins, cardinalPoints){
   windSpeedBins.forEach((bin)=>{
     freqObj[bin] = new Array(cardinalPoints.length).fill(0);});
   
-  console.log(freqObj);
+  //console.log(freqObj);
 
   return freqObj
   
 }
 
 export function RenderPlotlyRose ( { windData, directionData, timeData }){
+  //console.log(windData);
   const totalDataPoints= timeData.length;
   const parsed_data = calculateWindSpeedDistribution(directionData, windData, totalDataPoints);
   const data = [];
@@ -106,13 +107,14 @@ export function RenderPlotlyRose ( { windData, directionData, timeData }){
       justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
-      padding: '1rem'
+      padding: '0px',
+      
     }}>
       <Plot
         data={data}
         layout={layout}
         config={{ responsive: true, modeBarButtonsToRemove: ['select2d', 'lasso2d', 'zoom2d'] }}
-        style={{ width: '450px', height: '350px' }}
+        style={{ width: '400px', height: '350px' }}
         
       />
     </div>

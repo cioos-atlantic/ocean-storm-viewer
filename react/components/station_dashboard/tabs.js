@@ -84,6 +84,8 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
   const timeData = get_station_field_data(stationData, "time", "column_std_names").data;
   const directionData = get_station_field_data(stationData, 'wind_from_direction', "column_std_names").data;
   const  windSpeedData = processWindSpeeds(stationData);
+
+  console.log(windSpeedData);
   console.log(timeData, directionData, windSpeedData);
 
   function generateGraph(selectedVar){
