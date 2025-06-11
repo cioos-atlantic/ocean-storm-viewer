@@ -183,7 +183,7 @@ export default function StormDashboard({state, dispatch}) {
         }}
       ><StormDataLayout
                   stormData={storm_data_dict}
-                  stormSummaryText={<StormSummaryText storm_point_hover={hover_marker}/>}
+                  stormSummaryText={<StormSummaryText storm_point_hover={state.hover_marker}/>}
                   variablePresence={variablePresence}
                   stormTime={stormTime}
                   hoverPointTime={hoverPointTime}
