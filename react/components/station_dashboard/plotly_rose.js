@@ -89,7 +89,8 @@ export function RenderPlotlyRose ( { windData, directionData, timeData }){
   console.log(data);
   const layout = {
     font: { size: 13 },
-    legend: { font: { size: 13 } },
+    showlegend: true,
+    legend: { font: { size: 13 }, x: 1.15, y: 0.5, orientation: "v"},
     polar: {
       barmode: "stack", // Better than "overlay" for wind roses
       bargap: 0,
@@ -111,7 +112,7 @@ export function RenderPlotlyRose ( { windData, directionData, timeData }){
         data={data}
         layout={layout}
         config={{ responsive: true, modeBarButtonsToRemove: ['select2d', 'lasso2d', 'zoom2d'] }}
-        style={{ width: '400px', height: '300px' }}
+        style={{ width: '450px', height: '350px' }}
         
       />
     </div>
