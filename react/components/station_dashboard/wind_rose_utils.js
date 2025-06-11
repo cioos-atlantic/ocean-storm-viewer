@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { get_station_field_data, get_station_field_units, getColumnNameList, getUniqueStdNamesList } from '../utils/station_data_format_util';
+import { convert_unit_data } from '../utils/unit_conversion';
 
 export const windSpeedBins = [
   { min: 0, max: 8, label: "=< 8 m/s" },
@@ -167,8 +168,14 @@ export function processWindSpeeds(sourceData){
 
 
       column_names_list.forEach(col_name => {
-        const station_data_obj = get_station_field_data(sourceData, col_name)
+        const station_data_obj = get_station_field_data(sourceData, col_name);
+        const data_unit = get_station_field_units(sourceData, col_name);
         const values = station_data_obj.data;
+        if (data_unit !== 'm/s'){
+          values.map((value)=> convert_unit_data(value, data_unit, 'm/s'))
+        }
+
+
         const long_name= station_data_obj.long_name;
     
         // Store each instance of wind_speed with a unique name like "wind_speed_1", "wind_speed_2", etc.
