@@ -91,6 +91,7 @@ export default function StationDashboard({state, dispatch, station_descriptions,
 
   const hoverPointTime = fetch_value(state.hover_marker, ["TIMESTAMP", "ISO_TIME"]);
   console.log(hoverPointTime);
+  if (!state.isStationDashOpen) return null;
 
  
 
@@ -100,7 +101,7 @@ export default function StationDashboard({state, dispatch, station_descriptions,
       key="01-station-dashboard"
       className={`station_dashboard`}
       sx={{
-        display:  'flex',
+        display: 'flex',
       }}
     >
       <Box
@@ -115,6 +116,7 @@ export default function StationDashboard({state, dispatch, station_descriptions,
           className="close"
           onClick={() => {
             dispatch({ type: "CLOSE_STATION_DASHBOARD"});
+            dispatch({ type: "TOGGLE_STATION_DASH", payload: false});
           }}
           title="Close"
           aria-label="Close"
@@ -153,7 +155,7 @@ export default function StationDashboard({state, dispatch, station_descriptions,
       <Box
       key="01-station-dashboard"
       className={`station_dashboard`}
-      sx={{display: state.isStationDashOpen ? 'flex':'none',
+      sx={{display:  'flex',
         //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
         
         
