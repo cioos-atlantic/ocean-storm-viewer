@@ -9,7 +9,7 @@ import { RenderWindRose } from './wind_rose';
 import RenderChart from '../station_graph.js'
 import { processWindSpeeds } from './wind_rose_utils';
 import { get_station_field_data } from '../utils/station_data_format_util';
-import { RenderPlotlyRose } from './test';
+import { RenderPlotlyRose } from './plotly_rose';
 
 /**
  * The CustomTabPanel function renders children based on the value and index props.
