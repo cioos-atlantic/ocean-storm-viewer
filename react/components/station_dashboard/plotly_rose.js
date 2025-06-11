@@ -1,8 +1,8 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
-import { windSpeedBins, colorPalette, categorizeWindSpeed, extractWindSpeedBins } from "./wind_rose_utils";
+import { windSpeedBins, colorPalette, categorizeWindSpeed, extractWindSpeedBins, cardinalPoints } from "./wind_rose_utils";
 
-const cardinalPoints = ["North", "N-E", "East", "S-E", "South", "S-W", "West", "N-W"];
+//const cardinalPoints = ["North", "N-E", "East", "S-E", "South", "S-W", "West", "N-W"];
 export function categorizeWindDirection(direction, cardinalPoints) {
   
   const sectors = 360 / cardinalPoints.length;
