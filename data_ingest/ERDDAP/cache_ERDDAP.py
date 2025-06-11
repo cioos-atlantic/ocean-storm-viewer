@@ -19,12 +19,12 @@ import numpy as np
 from datetime import datetime, timedelta, timezone
 import re
 
-log = logging.getLogger('caching.log')
+log = logging.getLogger('logs/caching.log')
 log.setLevel(logging.INFO)
 
 log_formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
 
-file_handler = RotatingFileHandler('caching.log', maxBytes=2_000_000, backupCount=10)
+file_handler = RotatingFileHandler('logs/caching.log', maxBytes=2_000_000, backupCount=10)
 file_handler.setFormatter(log_formatter)
 log.addHandler(file_handler)
 
@@ -163,7 +163,6 @@ def match_standard_names(dataset_id):
             "vars" :  [station_id_var, "time", "latitude", "longitude"] + dataset_vars,
             "meta" : metadata
         }
-        log.info(dataset['vars'])
     else:
         log.info(f"{dataset_id} doesn't have any matching variables.")
     return dataset
@@ -177,7 +176,6 @@ def standardize_column_names(dataset, dataset_id):
         else:
             return unit
     # A dictionary to hold the variable name mappings
-    log.info(dataset['vars'])
     replace_cols = {}
     if(dataset['vars'][0]!= 'time'):
         replace_cols['identifier'] = f"identifier||{dataset['vars'][0]}"
@@ -195,8 +193,7 @@ def standardize_column_names(dataset, dataset_id):
         # standard_name = metadata[(metadata["Variable Name"] == var) & (metadata["Attribute Name"] == "standard_name")]["Value"].values[0]
         replace_cols[var] = f"{standard_name}|{units}|{long_name}"
 
-        log.info(f"{var} => {standard_name} | {units} | {long_name}")
-    log.info(replace_cols)
+        #log.info(f"{var} => {standard_name} | {units} | {long_name}")
     return replace_cols
 
 # For active storms set id to ACTIVE
@@ -233,63 +230,98 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
         # Filter out erroneous values
         df = filter_value_limits(df)
         drop_cols = []
-        for col in df.columns:
-            if len(df[col].value_counts()) == 0:
-                drop_cols.append(col)
 
-        # Drop variables that were marked as empty
-        for col in drop_cols:
-            df = df.drop(col, axis=1)
+        # Split up stations
+        id_col = find_df_column_by_standard_name(df, "identifier")
+        substations = []
+        id_col_name = ''
+        if id_col.empty:
+            substations.append("n/a")
+        else:
+            id_col_name = id_col.columns[0]
+            for substation in id_col[id_col_name].unique():
+                substations.append(substation)
 
-        # If all variables of interest were dropped, skip caching
-        if len(df.columns) < 4:
+        # Need to iterate different station IDs into separate items
+        # TODO: Messy implementation, probably could use a pass at cleaning up when time to refactor
+        multiple_substations = False
+        if len(substations) > 1:
+            multiple_substations = True
+
+        for substation in substations:
+            # If substation is n/a
+            # if substation is a value, make sure that cached entries match
+            # Only one substation, don't care about editing original
+            station_df = df
+            # Going to be dropping columns so want to deep copy for now
+            if multiple_substations:
+                station_df = df[df[id_col_name]==substation].copy()
+
+            for col in station_df.columns:
+                if len(station_df[col].value_counts()) == 0:
+                    drop_cols.append(col)
+
+            if (id_col_name):
+                drop_cols.append(id_col_name)
+
+            # Drop variables that were marked as empty
+            for col in drop_cols:
+                station_df = station_df.drop(col, axis=1)
+
+            # If all variables of interest were dropped, skip caching
+            if len(df.columns) < 4:
+                return cached_entries
+
+            max_lat= find_df_column_by_standard_name(station_df, "latitude").max().max()
+            min_lat= find_df_column_by_standard_name(station_df, "latitude").min().min()
+            max_lon= find_df_column_by_standard_name(station_df, "longitude").max().max()
+            min_lon= find_df_column_by_standard_name(station_df, "longitude").min().min()
+
+            # Finds the time column based on standard name and converts the type to be usable as datetime
+            time_col = find_df_column_by_standard_name(station_df, "time").columns.values[0]
+            station_df[time_col] = pd.to_datetime(station_df[time_col])
+
+            # TODO Redo this now that a substation may not be represented in the full time scale?
+            date_range = pd.date_range(min_time, max_time, freq="12H")
+            # Catch if part of the interval isn't in the range
+            prev_interval = ""
+            for interval in date_range:
+                if(prev_interval):
+                    df_interval = station_df[(station_df[time_col] >= prev_interval.to_pydatetime()) & (station_df[time_col] < interval.to_pydatetime())]
+                    # Might be able to only do the conversion during the 
+                    # df_interval = df_interval[time_col].dt.strftime('%Y-%m-%dT%H:%M:%SZ')
+                    # Change the dataframe to JSON, can change the format or orientation 
+
+                    # Experimental average binning per hour
+                    #times = pd.to_datetime(df_interval[time_col])
+                    df_interval = df_interval.groupby(pd.Grouper(key=time_col, axis=0, freq="h")).mean(numeric_only=True)
+                    station_data = df_interval.reset_index().to_json(orient="records")
+
+                    dataset_name = dataset_id
+                    if(multiple_substations):
+                        dataset_name += " - " + substation
+
+                    entry = {
+                        "storm":storm_id,
+                        "station":dataset_name,
+                        "min_time":prev_interval,
+                        "max_time":interval,
+                        "min_lon":min_lon,
+                        "max_lon":max_lon,
+                        "min_lat":min_lat,
+                        "max_lat":max_lat, 
+                        "station_data":station_data
+                    }
+                    # Avoids caching empty json strings (2 for the brackets)
+                    if(len(station_data) > 2):
+                        cached_entries.append(entry)
+                    # time in ISO format or set column to timestamp (UTC for timezone)
+                prev_interval = interval
+            #log.info(dataset_id + " cached")
             return cached_entries
-
-        max_lat= find_df_column_by_standard_name(df, "latitude").max().max()
-        min_lat= find_df_column_by_standard_name(df, "latitude").min().min()
-        max_lon= find_df_column_by_standard_name(df, "longitude").max().max()
-        min_lon= find_df_column_by_standard_name(df, "longitude").min().min()
-
-
-        # Finds the time column based on standard name and converts the type to be usable as datetime
-        time_col = find_df_column_by_standard_name(df, "time").columns.values[0]
-        df[time_col] = pd.to_datetime(df[time_col])
-        date_range = pd.date_range(min_time, max_time, freq="12H")
-        # Catch if part of the interval isn't in the range
-        prev_interval = ""
-        for interval in date_range:
-            if(prev_interval):
-                df_interval = df[(df[time_col] >= prev_interval.to_pydatetime()) & (df[time_col] < interval.to_pydatetime())]
-                # Might be able to only do the conversion during the 
-                # df_interval = df_interval[time_col].dt.strftime('%Y-%m-%dT%H:%M:%SZ')
-                # Change the dataframe to JSON, can change the format or orientation 
-
-                # Experimental average binning per hour
-                #times = pd.to_datetime(df_interval[time_col])
-                df_interval = df_interval.groupby(pd.Grouper(key=time_col, axis=0, freq="h")).mean(numeric_only=True)
-                station_data = df_interval.reset_index().to_json(orient="records")
-
-                entry = {
-                    "storm":storm_id,
-                    "station":dataset_id,
-                    "min_time":prev_interval,
-                    "max_time":interval,
-                    "min_lon":min_lon,
-                    "max_lon":max_lon,
-                    "min_lat":min_lat,
-                    "max_lat":max_lat, 
-                    "station_data":station_data
-                }
-                # Avoids caching empty json strings (2 for the brackets)
-                if(len(station_data) > 2):
-                    cached_entries.append(entry)
-                # time in ISO format or set column to timestamp (UTC for timezone)
-            prev_interval = interval
-        #log.info(dataset_id + " cached")
-        return cached_entries
     except Exception as ex:
-         log.error("HTTPStatusError", ex)
-         log.error(f" - No data found for time range: {min_time} - {max_time}")
+        log.error("HTTPStatusError", ex)
+        log.error(f" - No data found for time range: {min_time} - {max_time}")
     return cached_entries
 
 #Finds the column name in the dataframe given the standard name
@@ -412,7 +444,6 @@ def main():
         #create_table_from_schema(pg_engine=engine, table_name=pg_erddap_cache_historical_table, schema_file=erddap_cache_historical_schema)
         for i, storm in storms.iterrows():
             log.info(storm)
-
             storm_id = str(storm['SEASON'].values[0]) + "_" + storm['NAME'].values[0]
             min_time = storm['ISO_TIME']['min']
             max_time = storm['ISO_TIME']['max']
@@ -437,7 +468,6 @@ def main():
                     cache_erddap_data(storm_id = storm_id, df=pd.DataFrame(cached_data),destination_table=pg_erddap_cache_historical_table,
                                         pg_engine=engine,table_schema=erddap_cache_historical_schema)
             elif(arg_dry):
-                log.info(cached_data)
                 log.info("Dry run")
     # ACTIVE
     else:
