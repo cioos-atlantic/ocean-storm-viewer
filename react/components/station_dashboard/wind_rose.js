@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef} from 'react';
 import { get_station_field_data, get_station_field_units } from '../utils/station_data_format_util';
 import { Chart } from "@antv/g2";
-import { categorizeWindDirection, categorizeWindSpeed, makeEmptyfreqObj, makeFreqFraction, makeGroupedList, extractWindSpeedBins, processWindSpeeds, parseWindData, windSpeedBins, cardinalPoints, colorPalette } from './wind_rose_utils';
+import {  makeEmptyfreqObj, makeFreqFraction, makeGroupedList, extractWindSpeedBins, processWindSpeeds, parseWindData, windSpeedBins, cardinalPoints, colorPalette } from './wind_rose_utils';
 
 
 /**

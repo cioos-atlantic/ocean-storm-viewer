@@ -3,11 +3,12 @@ import dayjs from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import { useEffect, useState } from 'react';
-import { IconButton, TextField, Box, Typography, Paper, Button, Stack, CardContent, Card, CardActions } from "@mui/material";
+import {  useState } from 'react';
+import {  Box,  Button,  CardContent, Card, CardActions } from "@mui/material";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import {Slider, Tooltip} from '@mui/material';
+import {Slider} from '@mui/material';
 import { smallScreenIconButton } from './filter_utils';
+import { ShowOptions, CloseOptions } from './filter';
 
 
 
@@ -65,7 +66,7 @@ const reset= { label: 'Reset', getValue: () => [null, null] };
 
 
 
-export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, state, dispatch}){
+export function RenderDateFilter({state, dispatch}){
   //const [showDateSelection, setShowDateSelection] = useState(false); 
   const hasValidDates = state.startDate?.isValid?.() && state.endDate?.isValid?.();
   const buttonStyle = {
@@ -90,7 +91,7 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, state, di
     className="filter-badge"
     onClick= {handleIconClick}
     startIcon={<CalendarMonthOutlinedIcon/>}
-    endIcon={ !state.showDateSelection ? (showOptionsArrow):(closeOptionsArrow)}
+    endIcon={ !state.showDateSelection ? (<ShowOptions/>):(<CloseOptions/>)}
     sx={{...buttonStyle,
       display: { xs: "none", md: "inline-flex" }, }
     }>
@@ -100,7 +101,7 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, state, di
       
 
     </Button>
-    {smallScreenIconButton('Filter by Date', handleIconClick, buttonStyle, <CalendarMonthOutlinedIcon/>)}
+    {smallScreenIconButton('Filter by Date', handleIconClick, buttonStyle, CalendarMonthOutlinedIcon)}
     
 
     {state.showDateSelection && 
@@ -112,7 +113,7 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, state, di
         setShowDateSelection = {(date) => dispatch({ type: "SET_DATE_SELECTION", payload: date })}
          />)}
 
-    {console.log(state.startDate, state.endDate)}
+    
     </>
 
 

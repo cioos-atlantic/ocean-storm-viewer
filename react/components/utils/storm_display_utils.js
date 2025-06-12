@@ -1,4 +1,4 @@
-import { Icon, DivIcon, Point } from 'leaflet'
+import { Icon } from 'leaflet'
 
 
 /**

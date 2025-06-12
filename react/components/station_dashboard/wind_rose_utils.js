@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
-import { get_station_field_data, get_station_field_units, getColumnNameList, getUniqueStdNamesList } from '../utils/station_data_format_util';
+import { get_station_field_data,  getColumnNameList, getUniqueStdNamesList } from '../utils/station_data_format_util';
 
 export const windSpeedBins = [
   { min: 0, max: 8, label: "=< 8 m/s" },

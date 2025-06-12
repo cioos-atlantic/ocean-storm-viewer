@@ -99,6 +99,17 @@ export function mapReducer(state, action) {
           selected_station: empty_station_obj,
           selectedTab: 0,
         };
+
+      case 'CLOSE_STORM_TRACKS':
+        return {
+          ...state,
+          storm_points: empty_storm_obj,
+          hover_marker: empty_point_obj,
+          isStormDashOpen: false,
+          isStationDashOpen: false,
+          isDashOpen: false,
+
+        };
       
     default:
       return state;
