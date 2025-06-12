@@ -329,7 +329,7 @@ export function CategoryRangeSliderDrawer({ setStartCategory, setEndCategory, se
   
       setSliderText(
         <>
-          You've selected a storm category range from <strong>{stormMin}</strong> to <strong>{stormMax}</strong>. <br />
+          You&apos;ve selected a storm category range from <strong>{stormMin}</strong> to <strong>{stormMax}</strong>. <br />
           Category <strong>{stormMin}</strong>: {storm_categories[stormMin]?.sub_info}. <br />
           Category <strong>{stormMax}</strong>: {storm_categories[stormMax]?.sub_info}. <br />
           For more details, visit{' '}

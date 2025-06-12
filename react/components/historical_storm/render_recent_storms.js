@@ -1,9 +1,8 @@
-import { handleClick } from "./historical_storm_utils";
-import { Button, Stack } from "@mui/material";
-import {  Box,  } from "@mui/material";
+import {  handleStormButtonClick } from "./historical_storm_utils";
+import { Button, Stack, Typography, Box } from "@mui/material";
 
 
-export function RenderRecentStorms({stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen}){
+export function RenderRecentStorms({stormList, router, drawerButtonClicked, setDrawerButtonClicked}){
   return(
     
       <Stack
@@ -25,6 +24,8 @@ export function RenderRecentStorms({stormList, setStationPoints, setStormPoints,
               
               >
         {stormList.map((storm, index) => {
+          console.log(storm);
+          console.log(drawerButtonClicked);
             const isClicked = drawerButtonClicked === storm.storm_id;
               return (
                 <div key={storm.storm_id} className={(storm.name)}>
@@ -39,10 +40,15 @@ export function RenderRecentStorms({stormList, setStationPoints, setStormPoints,
                     
                   }}
                   onClick={(e) => { 
-                    handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
+                    //setDrawerButtonClicked(storm.storm_id);
+                    handleStormButtonClick(storm.name, storm.year, storm.storm_id, router);
+                    //setDrawerButtonClicked(storm.storm_id);
+                    //handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
 
                     //console.log(storm);
-                    }}>{`${storm.display_name}`}</Button>
+                    }}><Typography className='search-output' sx ={{fontWeight: isClicked ? '650': 'normal'}} >
+                    {`${storm.display_name}`}
+                  </Typography></Button>
                 </div>
               )
             })}

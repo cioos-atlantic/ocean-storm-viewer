@@ -1,6 +1,7 @@
 import { Button, Box,  Paper,  OutlinedInput,  FormControl, InputLabel, } from "@mui/material"
 import {  useState } from 'react';
 import { smallScreenIconButton } from "./filter_utils";
+import { CloseOptions, ShowOptions } from "./filter";
 
 
 
@@ -56,8 +57,8 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
           [input_filter.name]: !prev[input_filter.name],
         }));
       }}
-      startIcon={input_filter.icon}
-      endIcon={ !showFilterOptions[input_filter.name] ? (showOptionsArrow):(closeOptionsArrow)}
+      startIcon={input_filter.Icon ? <input_filter.Icon /> : null}
+      endIcon={ !showFilterOptions[input_filter.name] ? (<ShowOptions/>):(<CloseOptions/>)}
       sx={{...buttonStyle,
         display: { xs: "none", md: "inline-flex" }}
       }
@@ -65,7 +66,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
 
     </Button>
 
-    {smallScreenIconButton(input_filter.display_name, handleIconClick, buttonStyle, input_filter.icon)}
+    {smallScreenIconButton(input_filter.display_name, handleIconClick, buttonStyle, input_filter.Icon)}
 
     
     

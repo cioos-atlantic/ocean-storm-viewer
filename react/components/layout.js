@@ -66,7 +66,7 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
       { setSourceType("historical")
         
       };
-  }, []);
+  }, [active_storms, historical_storms]);
 
   
 

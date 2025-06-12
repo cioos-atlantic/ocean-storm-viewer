@@ -35,8 +35,8 @@ const MenuProps = {
 
 
 
-const showOptionsArrow = <KeyboardDoubleArrowDownIcon />;
-const closeOptionsArrow = <KeyboardDoubleArrowUpIcon />;
+export const ShowOptions = KeyboardDoubleArrowDownIcon;
+export const CloseOptions = KeyboardDoubleArrowUpIcon;
 
 
 export function RenderFilter({  clearShapesRef, state, dispatch }) {
@@ -166,8 +166,6 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                 <div className="filter-group" key={index}>
                   <InputFilter
                     input_filter={input_filter}
-                    showOptionsArrow={showOptionsArrow}
-                    closeOptionsArrow={closeOptionsArrow}
                     setSelectedOptions={setSelectedOptions}
                     selectedOptions={selectedOptions}
                     showFilterOptions={showFilterOptions}
@@ -181,8 +179,6 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
             }
             {openSpeedDial && (<div className="filter-group">
               <RenderDateFilter
-                showOptionsArrow={showOptionsArrow}
-                closeOptionsArrow={closeOptionsArrow}
                 state={state}
                 dispatch={dispatch}
               />
@@ -193,8 +189,6 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
             }
             {openSpeedDial && (<div className="filter-group">
               <RenderCategoryFilter
-                  showOptionsArrow={showOptionsArrow}
-                  closeOptionsArrow={closeOptionsArrow}
                   state={state}
                   dispatch={dispatch}
                 />
@@ -203,7 +197,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
             )
 
             }
-            {openSpeedDial && (filters.map((filter, index) => {
+            {/*openSpeedDial && (filters.map((filter, index) => {
               return (
 
                 <div className="filter-group" key={index}>
@@ -223,7 +217,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
               )
             }))
 
-            }
+            */}
 
           </SpeedDial>
 
@@ -239,8 +233,6 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                   <div className="filter-group" key={index}>
                     <InputFilter
                       input_filter={input_filter}
-                      showOptionsArrow={showOptionsArrow}
-                      closeOptionsArrow={closeOptionsArrow}
                       setSelectedOptions={setSelectedOptions}
                       selectedOptions={selectedOptions}
                       showFilterOptions={showFilterOptions}
@@ -257,23 +249,19 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
 
             <div className="filter-group">
               <RenderDateFilter
-                showOptionsArrow={showOptionsArrow}
-                closeOptionsArrow={closeOptionsArrow}
                 state={state}
                 dispatch={dispatch}
               />
             </div>
             <div className="filter-group">
               <RenderCategoryFilter
-                  showOptionsArrow={showOptionsArrow}
-                  closeOptionsArrow={closeOptionsArrow}
                   state={state}
                   dispatch={dispatch}
                 />
             </div>
             
 
-            {
+            {/*
               filters.map((filter, index) => {
                 return (
 
@@ -288,7 +276,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                   </div>
                 )
               })
-            }
+            */}
 
             <Button
               className="filter-submit-button"
@@ -382,7 +370,7 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
           }));
         }}
         startIcon={filter.icon}
-        endIcon={!showFilterOptions[filter.name] ? (showOptionsArrow) : (closeOptionsArrow)}
+        endIcon={!showFilterOptions[filter.name] ? (<ShowOptions/>) : (<CloseOptions/>)}
         sx={{
           ...buttonStyle,
           display: { xs: "none", md: "inline-flex" }

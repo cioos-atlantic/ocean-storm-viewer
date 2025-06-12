@@ -37,6 +37,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, di
   const setIsStationDashOpen= (state) => dispatch({ type: "TOGGLE_STATION_DASH", payload: state });
 
   const cancelFilters = () => dispatch({ type: 'CANCEL_FILTERS' });
+  const setDrawerButtonClicked = (buttonClicked) => dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: buttonClicked });
 
 
    // Check query parameters on mount and trigger `handleClick`
@@ -73,7 +74,9 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, di
           console.log(selectedStorm);
           if (selectedStorm) {
             //setDrawerButtonClicked(selectedStorm.storm_id);
+            console.log(selectedStorm.storm_id)
             dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: selectedStorm.storm_id })
+            
 
             await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation,setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
           }
@@ -83,7 +86,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, di
     setPreviousQuery({ name, season, sid });
 
   }
-  }, [router.query, previousQuery]); // 
+  }, [router.query, previousQuery, state.drawerButtonClicked]); // 
 
   useEffect(() => {
     async function fetchStormData() {
@@ -154,6 +157,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, di
           router={router}
           drawerButtonClicked={drawerButtonClicked}
           cancelFilters={cancelFilters}
+          setDrawerButtonClicked={setDrawerButtonClicked}
           
                 
         />
@@ -161,17 +165,9 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, di
         (
         <RenderRecentStorms
           stormList={stormList}
-          setStationPoints={setStationPoints}
-          setStormPoints={setStormPoints}
-          map={map}
-          Leaflet={Leaflet}
           router={router}
-          setSelectedStation={setSelectedStation}
-          setLoading={setLoading}
-          drawerButtonClicked={drawerButtonClicked}
-          setIsDashOpen={setIsDashOpen}
-          setIsStormDashOpen={setIsStormDashOpen}
-          setIsStationDashOpen={setIsStationDashOpen}
+          drawerButtonClicked={state.drawerButtonClicked}
+          setDrawerButtonClicked={setDrawerButtonClicked}
         />
         )}
 
