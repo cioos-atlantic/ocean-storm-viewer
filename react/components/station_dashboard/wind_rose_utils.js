@@ -3,23 +3,19 @@ import { get_station_field_data, get_station_field_units, getColumnNameList, get
 import { convert_unit_data } from '../utils/unit_conversion';
 
 export const windSpeedBins = [
-  { min: 0, max: 8, label: "=< 8 m/s" },
-  { min: 8, max: 16, label: "9-16 m/s" },
-  { min: 16, max: 24, label: "17-24 m/s" },
-  { min: 24, max: 32, label: "25-32 m/s" },
-  { min: 32, max: 40, label: "33-40 m/s" },
-  { min: 40, max: 48, label: "41-48 m/s" },
-  { min: 48, max: 56, label: "49-56 m/s" },
-  { min: 56, max: 64, label: "57-64 m/s" },
-  { min: 64, max: undefined, label: ">= 65 m/s" },
-
+  { min: 0, max: 62, label: "< 63 km/h" },
+  { min: 63, max: 117, label: "63–117 km/h" },
+  { min: 118, max: 153, label: "118–153 km/h" },
+  { min: 154, max: 177, label: "154–177 km/h" },
+  { min: 178, max: 208, label: "178–208 km/h" },
+  { min: 209, max: 251, label: "209–251 km/h" },
+  { min: 252, max: Infinity, label: "≥ 252 km/h" }
 ];
 export const colorPalette= [
   '#5E4FA2', // Deep Purple
 '#3288BD', // Blue
 '#66C2A5', // Teal
 '#ABDDA4', // Light Green
-'#E6F598', // Yellow-Green
 '#FEE08B', // Yellow
 '#FDAE61', // Orange
 '#F46D43', // Red-Orange
