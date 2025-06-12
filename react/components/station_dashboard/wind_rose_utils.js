@@ -170,13 +170,21 @@ export function processWindSpeeds(sourceData){
       column_names_list.forEach(col_name => {
         const station_data_obj = get_station_field_data(sourceData, col_name);
         const data_unit = get_station_field_units(sourceData, col_name);
-        const values = station_data_obj.data;
-        if (data_unit !== 'm/s'){
-          values.map((value)=> convert_unit_data(value, data_unit, 'm/s'))
+        let values = station_data_obj.data;
+        console.log(values, data_unit)
+        if (data_unit !== 'km/h'){
+          values= values.map((value)=> {
+            
+            const converted_value = convert_unit_data(value, data_unit, 'km/h');
+            //console.log(value, converted_value.value)
+            return converted_value.value
+          })
         }
+        console.log(values)
 
 
         const long_name= station_data_obj.long_name;
+
     
         // Store each instance of wind_speed with a unique name like "wind_speed_1", "wind_speed_2", etc.
         windSpeed[long_name] = values;
