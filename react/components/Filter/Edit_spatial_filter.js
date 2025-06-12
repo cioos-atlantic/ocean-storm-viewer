@@ -2,11 +2,12 @@ import React, { useState, useRef, forwardRef, useImperativeHandle } from "react"
 import L from "leaflet";
 import {
   
-  FeatureGroup,
+  FeatureGroup
 } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
+import 'leaflet-draw/dist/leaflet.draw.css';
 
-export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({polyFilterCoords, setPolyFilterCoords}, ref) {
+export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({ setPolyFilterCoords}, ref) {
   const featureGroupRef = useRef(null);
   // Get the FeatureGroup reference
   function clearShapes(){

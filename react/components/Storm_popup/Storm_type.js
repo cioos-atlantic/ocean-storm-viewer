@@ -1,7 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import { FaInfoCircle } from "react-icons/fa";
-import Popup from "./storm_more_info_popoup";
 import { storm_type_info } from "@/lib/storm_class";
 
 /**

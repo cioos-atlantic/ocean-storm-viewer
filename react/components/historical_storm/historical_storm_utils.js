@@ -1,12 +1,7 @@
 import { subYears } from "date-fns";
-import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
+import {  build_storm_features } from "@/lib/storm_utils";
 import { flyToPoint } from "../storm_list_item";
-import { Button } from "@mui/material";
-import { IconButton, TextField, Box, Typography, Paper } from "@mui/material";
-import Search from "@mui/icons-material/Search";
-import { Stack } from "@mui/system";
-import { empty_station_obj } from "../layout";
-import { handleStormNameClick } from "@/pages/about_page";
+import { empty_station_obj } from "../point_defaults";
 import { basePath } from "@/next.config";
 
 /**
@@ -452,7 +447,7 @@ export async function handleSearch(storm_name, storm_year){
     //const historical_storm_data = parseStormData(storm_data, storm.name);
     // console.log(historical_station_data);
 
-    console.debug(`historical Storm Data for ${storm_name} and ${storm_year}: `, storm_data);
+    console.log(`historical Storm Data for ${storm_name} and ${storm_year}: `, storm_data);
     // Create a set to track unique IDs and add objects to the result list
     uniqueList = makeStormList(storm_data)
     // Create a set to track unique IDs and add objects to the result list

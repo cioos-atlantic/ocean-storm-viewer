@@ -1,11 +1,11 @@
-import { Button, CardActions, CardContent, Stack, Card, Box, TextField, Paper,  OutlinedInput, Input, FormControl, InputLabel, IconButton, Tooltip} from "@mui/material"
-import { input_filters } from "./filters_list"
-import { useEffect, useState } from 'react';
+import { Button, Box,  Paper,  OutlinedInput,  FormControl, InputLabel, } from "@mui/material"
+import {  useState } from 'react';
 import { smallScreenIconButton } from "./filter_utils";
+import { CloseOptions, ShowOptions } from "./filter";
 
 
 
-export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions}){
+export function InputFilter({input_filter, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions}){
   const [inputValue, setInputValue] = useState(""); // Controlled input field
   const buttonStyle = {
     backgroundColor: selectedOptions[input_filter.name]?.length > 0 ? '#e55162' : 'white',
@@ -52,8 +52,8 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
           [input_filter.name]: !prev[input_filter.name],
         }));
       }}
-      startIcon={input_filter.icon}
-      endIcon={ !showFilterOptions[input_filter.name] ? (showOptionsArrow):(closeOptionsArrow)}
+      startIcon={input_filter.Icon ? <input_filter.Icon /> : null}
+      endIcon={ !showFilterOptions[input_filter.name] ? (<ShowOptions/>):(<CloseOptions/>)}
       sx={{...buttonStyle,
         display: { xs: "none", md: "inline-flex" }}
       }
@@ -61,7 +61,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
 
     </Button>
 
-    {smallScreenIconButton(input_filter.display_name, handleIconClick, buttonStyle, input_filter.icon)}
+    {smallScreenIconButton(input_filter.display_name, handleIconClick, buttonStyle, input_filter.Icon)}
 
     
     
@@ -72,7 +72,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     className="input-filter"
     sx={{top:{xs: '6px', md: '100%',},
     right:{xs: '100%', md: '0px',},
-    width:{xs: '150px', md: '180px' } }}      
+    width:{xs: '210px', md: '210px' } }}      
   >
     <Box
       component="form"
@@ -132,12 +132,16 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       </FormControl>
 
       {/* Action Buttons */}
-      <Box sx={{ display: "flex", gap: "8px" }}>
+      <Box sx={{ display: "flex", gap: "1px" }}>
         <Button className="filter-submit-button" type="submit">
           Enter
         </Button>
         <Button className="filter-submit-button" onClick={handleClear}>
           Clear
+        </Button>
+        <Button className="filter-submit-button" onClick= {() => {
+        setShowFilterOptions(false)}}>
+          Close
         </Button>
       </Box>
     </Box>

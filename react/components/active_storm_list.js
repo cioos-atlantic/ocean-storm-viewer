@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { basePath } from "@/next.config";
-import { populateStormDetails, populateAllStormDetails } from '../lib/storm_utils';
+import { populateAllStormDetails } from '../lib/storm_utils';
 import StormListItem from "./storm_list_item";
 // import { parse, format } from 'date-fns';
 import LoadingScreen from "./loading_screen";

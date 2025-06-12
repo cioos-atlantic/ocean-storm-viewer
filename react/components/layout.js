@@ -2,21 +2,13 @@ import React, { useState, useMemo, useEffect } from "react";
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from './layout.module.css'
-import Link from 'next/link'
-
 import FooterNav from './footer_nav'
-//import StormSearch from "@/components/storm_search";
 import { useRouter } from 'next/router';
-
-import { empty_storm_obj } from '../lib/storm_utils';
 import dynamic from "next/dynamic";
-
-import ErddapHandler from "../pages/api/query_stations";
 import About from "@/pages/about_page";
 import Grid from '@mui/material/Grid2';
 import { Box } from "@mui/material";
 import HeaderNav from "./header_nav";
-import { StormSearchQuery } from "./search_storm_in_header";
 
 
 import { basePath } from "@/next.config";
@@ -32,22 +24,13 @@ export const siteTitle = 'Atlantic Hurricane Dashboard'
  * `topNav`, `logo`, `active_storm_data`, `station_data`, and `querystring`
  */
 export default function Layout({ children, home, topNav, logo, querystring }) {
-
-  const [storms, setStorms] = useState([]);
-  const [selected_forecast, setSelectedForecast] = useState({});
-  const [storm_timeline, setStormTimeline] = useState([]);
-  const [storm_points, setStormPoints] = useState(empty_storm_obj);
-  const [station_points, setStationPoints] = useState({});
-  const [historicalStormData, setHistoricalStormData] = useState(empty_storm_obj); // State for storing historical storm data
-  const [isSearchSubmitted, setIsSearchSubmitted] = useState(false);
-  const [searchResult, setSearchResult] = useState([]);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
-
-
   
+  const [station_points, setStationPoints] = useState({});
+  const [sourceType, setSourceType] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
 
   const router = useRouter();
-  const [isMounted, setIsMounted] = useState(false);
+  
 
   useEffect(() => {
     setIsMounted(true);
@@ -69,27 +52,23 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
     [],
   );
 
-  let storm_data_pass = {};
-  let source_type = "";
-
-  if (active_storms) {
-    storm_data_pass = empty_storm_obj;
-    source_type = "active";
-      // Fetch active station data
-    useEffect(() => {
+  
+  useEffect(() => {
+    if (active_storms) {
+      setSourceType("active");
       fetch(`${basePath}/api/query_stations`)
         .then((res) => res.json())
         .then((data) => {
           setStationPoints(data);
         })
-    }, []);
-  }
+    };
+    if (historical_storms)
+      { setSourceType("historical")
+        
+      };
+  }, [active_storms, historical_storms]);
 
-  if (historical_storms) {
-    storm_data_pass = historicalStormData;
-    source_type = "historical";
-    console.debug("Historical Storm Data in Layout.js: ", historicalStormData);
-  }
+  
 
   return (
     <div className={styles.body}>
@@ -139,26 +118,7 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
             )}
 
           </Grid>
-          {/* Search 
-          <Grid
-            size="fixed"
-            sx={{
-              width: '200px', // Set to desired fixed width
-              height: '30px', // Set to desired fixed height
-              maxWidth: '100%', // Ensures it doesn't exceed container
-              overflow: 'visible',
-              display: { xs: "none", md: "block" }
-            }}
-          >
-            <StormSearchQuery
-            isSearchSubmitted = {isSearchSubmitted}
-            setIsSearchSubmitted= {setIsSearchSubmitted}
-            searchResult= {searchResult}
-            setSearchResult={setSearchResult}
-            setIsDrawerOpen= {setIsDrawerOpen}
-            isDrawerOpen= {isDrawerOpen}
-             />
-          </Grid> */}
+          
 
           {/* Navigation Section */}
           <Grid size ='auto'
@@ -182,18 +142,10 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
             />):(<>
       <main className="body">
         <MapWithNoSSR
-          storm_points={storm_points}
-          storm_data={storm_data_pass}
           station_data={station_points}
-          source_type={source_type}
-          setStormPoints={setStormPoints}
+          source_type={sourceType}
           setStationPoints={setStationPoints}
-          isSearchSubmitted = {isSearchSubmitted}
-          setIsSearchSubmitted= {setIsSearchSubmitted}
-          searchResult= {searchResult}
-          setSearchResult={setSearchResult}
-          setIsDrawerOpen= {setIsDrawerOpen}
-          isDrawerOpen= {isDrawerOpen}
+          
 
         />
       </main>

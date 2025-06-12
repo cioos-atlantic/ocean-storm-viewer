@@ -1,30 +1,13 @@
-import CustomButton from '../../custom/custom-button.js';
-import { addDays, subDays, lightFormat } from "date-fns";
-import { empty_storm_obj, build_storm_features } from "@/lib/storm_utils";
 import { useEffect, useState } from 'react';
-import { getHistoricalStormList, parseStormData, makeStormList, isName, isYear, parseForFlyToPoint, addSearchParams } from './historical_storm_utils.js';
+import { getHistoricalStormList } from './historical_storm_utils.js';
 import { useRouter } from 'next/router';
-
-import { empty_station_obj } from '../layout.js';
-import { Button, Box } from '@mui/material';
-import {  handleClick, handleFormSubmit, handleSearch } from './historical_storm_utils.js';
-import { RenderSearchResult } from './render_search_result.js';
-import { renderRecentStorms } from './render_recent_storms.js';
+import {  Box, Button } from '@mui/material';
+import {  handleClick,  handleSearch } from './historical_storm_utils.js';
+import { RenderRecentStorms } from './render_recent_storms.js';
 import { RenderFilterResult } from '../Filter/renderFilterResult.js';
 import LoadingScreen from '../loading_screen.js';
-import { AppliedFilters } from '../Filter/filtersApplied.js';
+import { empty_station_obj } from '../point_defaults.js';
 
-
-const otherStormList = [
-  { "name": "FIONA", "year": 2022, "source": "ibtracs" },
-  { "name": "ERNESTO", "year": 2018, "source": "ibtracs" },
-  { "name": "EARL", "year": 2022, "source": "ibtracs" },
-  { "name": "LEE", "year": 2017, "source": "ibtracs" },
-  { "name": "IRMA", "year": 2017, "source": "ibtracs" },
-  { "name": "BLAMMO", "year": 1999, "source": "ibtracs" },
-  { "name": "CLAUDETTE", "year": 2015, "source": "ibtracs" },
-
-]
 
 
 
@@ -33,7 +16,7 @@ const otherStormList = [
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, setStormPoints, map, Leaflet, setSelectedStation, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen, drawerButtonClicked, setDrawerButtonClicked}) {
+export default function HistoricalStormList({ setStationPoints, map, Leaflet, state, dispatch}) {
 
   const [loading, setLoading] = useState(false);
 
@@ -44,6 +27,16 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
   const [previousQuery, setPreviousQuery] = useState(null);
 
   console.log("Historical Storms Loading...");
+  const setStormPoints = (point) => dispatch({ type: "SET_STORM_POINT", payload: point });
+  const setSelectedStation= (station) => dispatch({ type: "SET_SELECTED_STATION", payload: station });
+  //const setReturnFilterResult = (state) => dispatch({ type: "TOGGLE_FILTER_RESULT", payload: state });
+  //const setDrawerButtonClicked = (clicked) => dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: clicked });
+  const setIsDashOpen= (state) => dispatch({ type: "TOGGLE_DASH", payload: state });
+  const setIsStormDashOpen= (state) => dispatch({ type: "TOGGLE_STORM_DASH", payload: state });
+  const setIsStationDashOpen= (state) => dispatch({ type: "TOGGLE_STATION_DASH", payload: state });
+
+  const cancelFilters = () => dispatch({ type: 'CANCEL_FILTERS' });
+  const setDrawerButtonClicked = (buttonClicked) => dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: buttonClicked });
 
 
    // Check query parameters on mount and trigger `handleClick`
@@ -79,7 +72,11 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           
           console.log(selectedStorm);
           if (selectedStorm) {
-            setDrawerButtonClicked(selectedStorm.storm_id);
+            //setDrawerButtonClicked(selectedStorm.storm_id);
+            console.log(selectedStorm.storm_id)
+            dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: selectedStorm.storm_id })
+            
+
             await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation,setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
           }
         }
@@ -88,7 +85,7 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
     setPreviousQuery({ name, season, sid });
 
   }
-  }, [router.query, previousQuery]); // 
+  }, [router.query, previousQuery, state.drawerButtonClicked]); // 
 
   useEffect(() => {
     async function fetchStormData() {
@@ -126,31 +123,40 @@ export default function HistoricalStormList({ setStationPoints, setStormPoints, 
           >Historical Storms: </Box>
           <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>  {/* Bold line */}
 
-          {console.log(searchResult)}
+          
 
-      {/*{isSearchSubmitted ? (<RenderSearchResult 
-                searchResult={searchResult}
-                router={router}
-                setIsSearchSubmitted={setIsSearchSubmitted}
-                
-                 />):
-      (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation))}
+  
 
-      <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
-      */}
-
-      {returnFilterResult ? 
+      {state.returnFilterResult  &&  state.filterResult.length > 0 ?
         (<RenderFilterResult 
-          filterResult={filterResult}
+          filterResult={state.filterResult}
           router={router}
-          setReturnFilterResult={setReturnFilterResult}
-          drawerButtonClicked={drawerButtonClicked}
+          drawerButtonClicked={state.drawerButtonClicked}
+          cancelFilters={cancelFilters}
           setDrawerButtonClicked={setDrawerButtonClicked}
           
                 
         />):
-        (renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setDrawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen))}
+        (
+        <RenderRecentStorms
+          stormList={stormList}
+          router={router}
+          drawerButtonClicked={state.drawerButtonClicked}
+          setDrawerButtonClicked={setDrawerButtonClicked}
+        />
+        )}
+
+
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
+      <Button
+      onClick={()=> {
+        dispatch({ type: "CLOSE_STORM_TRACKS" })
+        setStationPoints(empty_station_obj)
+    
+      router.push(`/?storms=historical`)
+      }}
+      className="cancel-search"
+      >Clear Storm Tracks</Button>
       
           
           

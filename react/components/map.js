@@ -1,173 +1,58 @@
 // https://iconoir.com/ icon library that can be installed via npm
-import React, { useState, useRef } from "react";
-import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup, Marker, Popup, useMap } from 'react-leaflet'
+import React, { useState, useRef, useReducer } from "react";
+import { MapContainer, TileLayer, WMSTileLayer, LayersControl, LayerGroup } from 'react-leaflet'
 import Drawer from '@/components/drawer';
-
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
 import "leaflet-defaulticon-compatibility";
-
-//import StormMarker from "@/components/storm_point";
 import LineOfTravel from "@/components/line_of_travel";
 import WindSpeedRadius from "@/components/wind_radii";
 import SeaHeightRadius from "@/components/sea_height_radii";
-
 import StationMarker from "./station_marker";
 import ErrorCone from "@/components/error_cone";
-import StormPointDetails, { empty_point_obj } from "@/components/storm_point_details";
 import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
-import { empty_station_obj } from "./layout";
-import StationDashboard from "./station_dashboard/station_dashboard";
-import { RenderStormSearch } from "./render_storm_search";
 import { RenderFilter } from "./Filter/filter";
-import { RenderBoundingBox } from "./Filter/boundingBox";
-//import EditFeature from "./Filter/Edit_spatial_filter";
-//import StationDashboardTest from "./station_dashboard/station_dashboard";
 import { RenderSpatialFilter } from "./Filter/Edit_spatial_filter";
 import CustomZoomControl from "./custom_zoom_control";
-import StormDashboard from "./storm_dashboard/storm_dashboard";
 import { RenderDashboards } from "./Dashboard/dashboard";
 import StormMarker from "./stormPoint";
+import { mapReducer, initialMapState } from "./mapReducer";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
 
-export default function Map({ children, storm_points, storm_data, station_data, source_type, setStormPoints, setStationPoints, setHistoricalStormData, isSearchSubmitted, setIsSearchSubmitted, searchResult, setSearchResult, setIsDrawerOpen, isDrawerOpen,  }) {
+export default function Map({ children, station_data, source_type,  setStationPoints}) {
 
   const clearShapesRef = useRef(null);
 
-  // The state variable that contains the storm point currently being hovered 
-  // over or clicked on
-  const [hover_marker, setHoverMarker] = useState(empty_point_obj);
-
-  // The state variable that contains the station that was last clicked on
-  
-  const [selected_tab, setSelectedTab] = useState(0);
-  //const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isStormDetOpen, setIsStormDetOpen] = useState(false); 
-  const [selected_station, setSelectedStation] = useState(empty_station_obj);
-  const [filterResult, setFilterResult] = useState({}); 
-  const [returnFilterResult, setReturnFilterResult] = useState(false);
-  const [bboxFilterCoordinates, setBboxFilterCoordinates]= useState('');
-  const [polyFilterCoords, setPolyFilterCoords] = useState('');
-  const [isDashOpen, setIsDashOpen] = useState(false);
-  const [isStormDashOpen, setIsStormDashOpen] = useState(false);
-  const [isStationDashOpen, setIsStationDashOpen] = useState(false);
-  const [drawerButtonClicked, setDrawerButtonClicked] = useState('');
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [startCategory, setStartCategory] = useState(null);
-  const [endCategory, setEndCategory] = useState(null);
-  const [showCatSelection, setShowCatSelection] = useState(false); 
-  const [showDateSelection, setShowDateSelection] = useState(false); 
+  const [state, dispatch] = useReducer(mapReducer, initialMapState);
   
   const allDatasetDescriptions = useDatasetDescriptions();
-
-  
-
   console.log(allDatasetDescriptions)
-  console.debug("Storm Points in map.js: ", storm_points);
-
+  console.debug("Storm Points in map.js: ", state.storm_points);
 
   return (
     <div className="map_container">
       <div className='inner_container'>
-        {/*hover_marker !== empty_point_obj && (
-          <StormPointDetails
-            storm_point_hover={hover_marker}
-            //onClose={() => setHoverMarker(empty_point_obj)} // Close popup when the marker is reset
-            setIsStormDetOpen= {setIsStormDetOpen}
-            setHoverMarker= {setHoverMarker}
-          />
-        )*/}
-
-        {/*
-          <RenderStormSearch
-            isSearchSubmitted = {isSearchSubmitted}
-            setIsSearchSubmitted= {setIsSearchSubmitted}
-            searchResult= {searchResult}
-            setSearchResult={setSearchResult}
-            setIsDrawerOpen= {setIsDrawerOpen}
-            isDrawerOpen= {isDrawerOpen}/>
-         */}
-        {/*hover_marker !== empty_point_obj && (
-          <StormDashboard
-            storm_data={storm_data}
-            storm_points={storm_points}
-            source_type={source_type}
-            hover_point={hover_marker}
-            isDrawerOpen={isDrawerOpen}
-            setHoverMarker={setHoverMarker}/>
-         )*/}
+        
         {
           <RenderFilter
-          filterResult = {filterResult}
-          setFilterResult = {setFilterResult}
-          returnFilterResult= {returnFilterResult}
-          setReturnFilterResult = {setReturnFilterResult}
-          setIsDrawerOpen= {setIsDrawerOpen}
-          bboxFilterCoordinates={bboxFilterCoordinates}
-          setBboxFilterCoordinates={setBboxFilterCoordinates}
-          polyFilterCoords={polyFilterCoords}
-          setPolyFilterCoords={setPolyFilterCoords}
           clearShapesRef={clearShapesRef} // Pass the ref to 
-          setDrawerButtonClicked={setDrawerButtonClicked}
-          startDate={startDate}
-          endDate={endDate}
-          startCategory={startCategory}
-          endCategory={endCategory}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
-          setStartCategory={setStartCategory}
-          setEndCategory={setEndCategory}
-          showCatSelection ={showCatSelection}
-          setShowCatSelection = {setShowCatSelection}
-          showDateSelection={showDateSelection}
-          setShowDateSelection={setShowDateSelection}
-
-          
-          // RenderFilter
-          
+          state={state}
+          dispatch={dispatch}
           />
         }
         {
           <RenderDashboards
-            storm_data={storm_data}
-            storm_points={storm_points}
             source_type={source_type}
-            hover_point={hover_marker}
-            isDrawerOpen={isDrawerOpen}
-            setHoverMarker={setHoverMarker}
-            selected_station={selected_station}
-            setSelectedStation={setSelectedStation}
             station_descriptions={allDatasetDescriptions}
-            storm_timestamp = {new Date()}
-            selectedTab = {selected_tab}
-            setSelectedTab = {setSelectedTab}
-            isStormDashOpen={isStormDashOpen}
-            setIsStormDashOpen={setIsStormDashOpen}
-            isStationDashOpen={isStationDashOpen}
-            setIsStationDashOpen={setIsStationDashOpen}
-            setIsDashOpen={setIsDashOpen}
-            isDashOpen= {isDashOpen}
+            time = {new Date()}
+            state={state}
+            dispatch={dispatch}
+            
             />
         }
-        
-        {/*selected_station !== empty_station_obj && (
-          <StationDashboard
-            selected_station={selected_station}
-            setSelectedStation={setSelectedStation}
-            stationsDescriptions={allDatasetDescriptions}
-            station_descriptions={allDatasetDescriptions}
-            storm_timestamp = {new Date()}
-            selectedTab = {selected_tab}
-            setSelectedTab = {setSelectedTab}
-            isDrawerOpen= {isDrawerOpen}
-            isStormDetOpen= {isStormDetOpen}
-            setIsStormDetOpen= {setIsStormDetOpen}
-            source_type = {source_type}
-          ></StationDashboard>
-        )*/}
+
         <MapContainer
           center={defaultPosition}
           zoom={defaultZoom}
@@ -179,26 +64,10 @@ export default function Map({ children, storm_points, storm_data, station_data, 
           <Drawer
             element_id="left-side"
             classes="left"
-            storm_data={storm_data}
             source_type={source_type}
-            setStormPoints={setStormPoints}
             setStationPoints={setStationPoints}
-            setIsDrawerOpen= {setIsDrawerOpen}
-            isDrawerOpen= {isDrawerOpen}
-            setSelectedStation={setSelectedStation}
-            isSearchSubmitted = {isSearchSubmitted}
-            setIsSearchSubmitted= {setIsSearchSubmitted}
-            searchResult= {searchResult}
-            setSearchResult={setSearchResult}
-            filterResult = {filterResult}
-            setFilterResult = {setFilterResult}
-            returnFilterResult= {returnFilterResult}
-            setReturnFilterResult = {setReturnFilterResult}
-            drawerButtonClicked={drawerButtonClicked}
-            setDrawerButtonClicked={setDrawerButtonClicked}
-            setIsDashOpen={setIsDashOpen}
-            setIsStormDashOpen={setIsStormDashOpen}
-            setIsStationDashOpen ={setIsStationDashOpen}
+            state={state}
+            dispatch={dispatch}
           />
 
           <TileLayer
@@ -225,8 +94,17 @@ export default function Map({ children, storm_points, storm_data, station_data, 
                 {
                   station_data ? (
                     Object.entries(station_data).map((station) => {
-                      const storm_timestamp = new Date(hover_marker.properties["TIMESTAMP"])
-                      return StationMarker(station, allDatasetDescriptions, storm_timestamp, selected_station, setSelectedStation, setSelectedTab, setIsStationDashOpen, setIsDashOpen)
+                      const storm_timestamp = new Date(state.hover_marker.properties["TIMESTAMP"]);
+                      return (
+                        <StationMarker
+                          key={station[0]}
+                          station_data={station}
+                          station_descriptions={allDatasetDescriptions}
+                          time={storm_timestamp}
+                          selected_station={state.selected_station}
+                          dispatch={dispatch} 
+                    />)
+                      
                     })
                   ) : (
                     <></>
@@ -237,7 +115,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             <LayersControl.Overlay checked name="Error Cone">
               <LayerGroup>
                 {
-                  storm_points.err.features.map(err_cone => {
+                  state.storm_points?.err?.features?.map(err_cone => {
                     return (
                       <ErrorCone
                         key={err_cone.id}
@@ -251,17 +129,15 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             <LayersControl.Overlay checked name="Points">
               <LayerGroup>
                 {
-                  storm_points.pts.features.map(point => {
+                  state.storm_points?.pts?.features?.map(point => {
                     return (
 
                       <StormMarker
                         key={point.id}
                         storm_point_data={point}
-                        setHoverMarker={setHoverMarker}
-                        setIsStormDashOpen={setIsStormDashOpen}
-                        storm_point_hover= {hover_marker}
-                        setIsDashOpen = {setIsDashOpen}
-                       
+                        storm_point_hover= {state.hover_marker}
+                        dispatch={dispatch}
+
                       />
                     );
                   })
@@ -271,8 +147,8 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             <LayersControl.Overlay checked name="Track Line">
               <LayerGroup>
                 {
-                  storm_points.lin.features.length > 0 &&
-                  storm_points.lin.features.map(line => {
+                  state.storm_points?.lin?.features?.length > 0 &&
+                  state.storm_points?.lin?.features?.map(line => {
 
                     return (
                       <LineOfTravel
@@ -287,13 +163,13 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             <LayersControl.Overlay checked name="Wind Speed Radius">
               <LayerGroup>
                 {
-                  storm_points.rad.features.length > 0 &&
-                  storm_points.rad.features.map(radii => {
+                  state.storm_points?.rad?.features?.length > 0 &&
+                  state.storm_points?.rad?.features?.map(radii => {
                     return (
                       <WindSpeedRadius
                         key={radii.id}
                         storm_wind_radii_data={radii}
-                        hover_marker={hover_marker}
+                        hover_marker={state.hover_marker}
                       />
                     );
                   })
@@ -303,13 +179,13 @@ export default function Map({ children, storm_points, storm_data, station_data, 
             <LayersControl.Overlay checked name="Sea Height Radius">
               <LayerGroup>
                 {
-                  storm_points.sea.features.length > 0 &&
-                  storm_points.sea.features.map(radii => {
+                  state.storm_points?.sea?.features?.length > 0 &&
+                  state.storm_points?.sea?.features?.map(radii => {
                     return (
                       <SeaHeightRadius
                         key={radii.id}
                         storm_sea_height_data={radii}
-                        hover_marker={hover_marker}
+                        hover_marker={state.hover_marker}
                       />
                     );
                   })
@@ -320,8 +196,7 @@ export default function Map({ children, storm_points, storm_data, station_data, 
 
           {<RenderSpatialFilter
           ref={clearShapesRef} 
-          polyFilterCoords={polyFilterCoords}
-          setPolyFilterCoords={setPolyFilterCoords}
+          setPolyFilterCoords={(coords) => dispatch({ type: "SET_POLY_FILTER_COORDS", payload: coords })}
           />} {/* Calling the EditControl function here */}
         </MapContainer>
       </div>

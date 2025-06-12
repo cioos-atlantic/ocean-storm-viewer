@@ -1,9 +1,8 @@
-import { handleClick } from "./historical_storm_utils";
-import { Button, Stack } from "@mui/material";
-import { IconButton, TextField, Box, Typography, Paper } from "@mui/material";
+import {  handleStormButtonClick } from "./historical_storm_utils";
+import { Button, Stack, Typography, Box } from "@mui/material";
 
 
-export function renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, drawerButtonClicked, setDrawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen){
+export function RenderRecentStorms({stormList, router, drawerButtonClicked, setDrawerButtonClicked}){
   return(
     
       <Stack
@@ -25,23 +24,31 @@ export function renderRecentStorms(stormList, setStationPoints, setStormPoints, 
               
               >
         {stormList.map((storm, index) => {
+          console.log(storm);
+          console.log(drawerButtonClicked);
+            const isClicked = drawerButtonClicked === storm.storm_id;
               return (
                 <div key={storm.storm_id} className={(storm.name)}>
                   <Button 
                   className='historical_storm_button'
                   sx={{
                     fontSize: { xs: '10px', sm: '10px', md: '12px', lg: '12px',},
-                    color: drawerButtonClicked === storm.storm_id ? 'white' : '#e55162', 
-                    backgroundColor: drawerButtonClicked === storm.storm_id ? 'black' : '#f5f5f5',
-                    padding: drawerButtonClicked === storm.storm_id ? '3px' : '0.5px',
-                    fontWeight: drawerButtonClicked === storm.storm_id ? 'bolder': 'normal'
+                    color: isClicked ? 'white' : '#e55162', 
+                    backgroundColor: isClicked ? 'black' : '#f5f5f5',
+                    padding: isClicked ? '3px' : '0.5px',
+                    fontWeight: isClicked ? 'bolder': 'normal'
                     
                   }}
                   onClick={(e) => { 
-                    handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
+                    //setDrawerButtonClicked(storm.storm_id);
+                    handleStormButtonClick(storm.name, storm.year, storm.storm_id, router);
+                    //setDrawerButtonClicked(storm.storm_id);
+                    //handleClick(storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
 
                     //console.log(storm);
-                    }}>{`${storm.display_name}`}</Button>
+                    }}><Typography className='search-output' sx ={{fontWeight: isClicked ? '650': 'normal'}} >
+                    {`${storm.display_name}`}
+                  </Typography></Button>
                 </div>
               )
             })}

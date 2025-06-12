@@ -1,5 +1,6 @@
 import { IconButton, TextField, Box, Typography, Paper, Button, SpeedDial, SpeedDialIcon, SpeedDialAction, Tooltip, Dialog, DialogTitle } from "@mui/material";
 import { useEffect, useState, Fragment } from 'react';
+
 import Stack from '@mui/material/Stack';
 
 //import Chip from '@mui/material/Chip';
@@ -37,30 +38,20 @@ const MenuProps = {
 
 
 
-const showOptionsArrow = <KeyboardDoubleArrowDownIcon />;
-const closeOptionsArrow = <KeyboardDoubleArrowUpIcon />;
+export const ShowOptions = KeyboardDoubleArrowDownIcon;
+export const CloseOptions = KeyboardDoubleArrowUpIcon;
 
 
-export function RenderFilter({ filterResult, setFilterResult, returnFilterResult, setReturnFilterResult, setIsDrawerOpen, polyFilterCoords, setPolyFilterCoords, clearShapesRef, setDrawerButtonClicked, startDate,
-  endDate,
-  startCategory,
-  endCategory,
-  setStartDate,
-  setEndDate,
-  setStartCategory,
-  setEndCategory, showCatSelection, setShowCatSelection, showDateSelection, setShowDateSelection }) {
+export function RenderFilter({  clearShapesRef, state, dispatch }) {
   const [showFilterIcons, setShowFilterIcons] = useState(false);
   const [showFilterOptions, setShowFilterOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [filterParameters, setFilterParameters] = useState([]);
-  //const [startDate, setStartDate] = useState(null);
-  //const [endDate, setEndDate] = useState(null);
-  //const [startCategory, setStartCategory] = useState(null);
-  //const [endCategory, setEndCategory] = useState(null);
+  
 
   const [openSpeedDial, setOpenSpeedDial] = useState(false);
 
-  //const handleSpeedDialToggle = () => setOpenSpeedDial(prev => !prev);
+  
   const handleOpen = () => setOpenSpeedDial(true);
   const handleClose = (event, reason) => {
     if (reason !== "toggle") {
@@ -75,27 +66,35 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
 
   const router = useRouter(); // Next.js useRouter
 
-  async function handleFilterSubmit() {
-    setDrawerButtonClicked('');
+
+  function handleClearAllFilters() {
+    setSelectedOptions([]);
+    dispatch({ type: "RESET_FILTERS" })
+
+    const hasClearShapesRef = clearShapesRef && clearShapesRef.current;
     
-    /*setFilterParameters((prev) => {
-      const updatedParams = {
-        ...prev,
-        ...selectedOptions, // Spread selected options correctly
-        startDate: startDate, // Ensure start and end dates are included
-        endDate: endDate
-      };
-      console.log(updatedParams); // Log the correct updated state
-      return updatedParams;
-    });
-    console.log(filterParameters);*/
+
+    // Clear shapes via reference
+    if (hasClearShapesRef) {
+      clearShapesRef.current.clearShapes();
+    }
+
+    console.log("All filters and shapes cleared!");
+  }
+
+
+  async function handleFilterSubmit() {
+    //setDrawerButtonClicked('');
+    dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: '' });
+    
+    
     const updatedParams = {
       ...selectedOptions, // Spread selected options correctly
-      startDate: startDate, // Ensure start and end dates are included
-      endDate: endDate,
-      polyCoords: polyFilterCoords,
-      startCategory: startCategory,
-      endCategory:endCategory,
+      startDate: state.startDate, // Ensure start and end dates are included
+      endDate: state.endDate,
+      polyCoords: state.polyFilterCoords,
+      startCategory: state.startCategory,
+      endCategory:state.endCategory,
 
     };
 
@@ -104,10 +103,13 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
 
     const stormResult = await processFilterRequest(updatedParams, setLoading);
     console.log(stormResult);
-    setFilterResult(stormResult);
+    dispatch({ type: "SET_FILTER_RESULT", payload: stormResult});
     router.push(`/?storms=historical`);
-    setIsDrawerOpen(true);
-    setReturnFilterResult(true);
+
+    //setIsDrawerOpen(true);
+    //setReturnFilterResult(true);
+    dispatch({ type: "TOGGLE_DRAWER", payload: true});
+    dispatch({ type: "TOGGLE_FILTER_RESULT", payload: true});
 
   }
 
@@ -143,7 +145,7 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
               tooltipTitle="Clear Filters"
               onClick={(e) => {
                 e.stopPropagation();
-                handleClearAll()
+                handleClearAllFilters()
               }}
             />
             <SpeedDialAction
@@ -161,8 +163,6 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
                 <div className="filter-group" key={index}>
                   <InputFilter
                     input_filter={input_filter}
-                    showOptionsArrow={showOptionsArrow}
-                    closeOptionsArrow={closeOptionsArrow}
                     setSelectedOptions={setSelectedOptions}
                     selectedOptions={selectedOptions}
                     showFilterOptions={showFilterOptions}
@@ -175,15 +175,8 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
             }
             {openSpeedDial && (<div className="filter-group">
               <RenderDateFilter
-                showOptionsArrow={showOptionsArrow}
-                closeOptionsArrow={closeOptionsArrow}
-                setSelectedOptions={setSelectedOptions}
-                startDate={startDate}
-                endDate={endDate}
-                setStartDate={setStartDate}
-                setEndDate={setEndDate}
-                showDateSelection={showDateSelection}
-                setShowDateSelection={setShowDateSelection}
+                state={state}
+                dispatch={dispatch}
               />
 
             </div>
@@ -192,21 +185,15 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
             }
             {openSpeedDial && (<div className="filter-group">
               <RenderCategoryFilter
-                  showOptionsArrow={showOptionsArrow}
-                  closeOptionsArrow={closeOptionsArrow}
-                  setStartCategory= {setStartCategory}
-                  setEndCategory={setEndCategory}
-                  startCategory={startCategory}
-                  endCategory={endCategory}
-                  showCatSelection ={showCatSelection}
-                  setShowCatSelection = {setShowCatSelection}
+                  state={state}
+                  dispatch={dispatch}
                 />
 
             </div>
             )
 
             }
-            {openSpeedDial && (filters.map((filter, index) => {
+            {/*openSpeedDial && (filters.map((filter, index) => {
               return (
 
                 <div className="filter-group" key={index}>
@@ -226,7 +213,7 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
               )
             }))
 
-            }
+            */}
 
           </SpeedDial>
 
@@ -242,8 +229,6 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
                   <div className="filter-group" key={index}>
                     <InputFilter
                       input_filter={input_filter}
-                      showOptionsArrow={showOptionsArrow}
-                      closeOptionsArrow={closeOptionsArrow}
                       setSelectedOptions={setSelectedOptions}
                       selectedOptions={selectedOptions}
                       showFilterOptions={showFilterOptions}
@@ -258,32 +243,19 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
 
             <div className="filter-group">
               <RenderDateFilter
-                showOptionsArrow={showOptionsArrow}
-                closeOptionsArrow={closeOptionsArrow}
-                setSelectedOptions={setSelectedOptions}
-                startDate={startDate}
-                endDate={endDate}
-                setStartDate={setStartDate}
-                setEndDate={setEndDate}
-                showDateSelection={showDateSelection}
-                setShowDateSelection={setShowDateSelection}
+                state={state}
+                dispatch={dispatch}
               />
             </div>
             <div className="filter-group">
               <RenderCategoryFilter
-                  showOptionsArrow={showOptionsArrow}
-                  closeOptionsArrow={closeOptionsArrow}
-                  setStartCategory= {setStartCategory}
-                  setEndCategory={setEndCategory}
-                  startCategory={startCategory}
-                  endCategory={endCategory}
-                  showCatSelection ={showCatSelection}
-                  setShowCatSelection = {setShowCatSelection}
+                  state={state}
+                  dispatch={dispatch}
                 />
             </div>
             
 
-            {
+            {/*
               filters.map((filter, index) => {
                 return (
 
@@ -298,7 +270,7 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
                   </div>
                 )
               })
-            }
+            */}
 
             <Button
               className="filter-submit-button"
@@ -309,7 +281,7 @@ export function RenderFilter({ filterResult, setFilterResult, returnFilterResult
             <Button
               id="cancel-filter-icon"
               className="filter-icons"
-              onClick={() => {handleClearAll(setSelectedOptions, setStartDate, setEndDate,  setPolyFilterCoords, clearShapesRef)}}>
+              onClick={handleClearAllFilters}>
               X
             </Button>
             <Button
@@ -406,7 +378,7 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
           }));
         }}
         startIcon={filter.icon}
-        endIcon={!showFilterOptions[filter.name] ? (showOptionsArrow) : (closeOptionsArrow)}
+        endIcon={!showFilterOptions[filter.name] ? (<ShowOptions/>) : (<CloseOptions/>)}
         sx={{
           ...buttonStyle,
           display: { xs: "none", md: "inline-flex" }

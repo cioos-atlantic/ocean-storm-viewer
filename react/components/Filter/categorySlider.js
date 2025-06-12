@@ -1,9 +1,8 @@
-import { storm_category_filter_list } from "./filters_list";
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
-import { useEffect, useState, Fragment } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Button, Card, CardContent, CardActions, Slider } from "@mui/material";
 import { storm_categories } from "@/lib/storm_class";
-
+import { ShowOptions, CloseOptions } from './filter';
 import { smallScreenIconButton } from './filter_utils';
 export const storm_category_list = [
   { label: "5", value: 5 },
@@ -20,7 +19,16 @@ export const storm_category_list = [
 ]
 
 export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowCatSelection, startCategory, endCategory }) {
-  const defaultText = "Select a range of storm category between -5 and 5";
+  const stormCategoryLink = "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html";
+  const defaultText = <>
+  Adjust the slider to filter storms by category, from -5 (weakest) to 5 (strongest). <br />
+  Learn more about {" "}
+  <a href={stormCategoryLink}
+     target="_blank"
+     rel="noopener noreferrer">
+    storm categories
+  </a>.
+</>;
 
   const [sliderText, setSliderText] = useState(defaultText);
   
@@ -40,17 +48,17 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
 
   
   
-  const stormCategoryLink = "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html";
+  
 
 
   useEffect(() => {
-    if (startCategory != null && endCategory != null) {
+    if (startCategory != "" && endCategory != "") {
       const stormMin = `${startCategory}`;
       const stormMax = `${endCategory}`;
   
       setSliderText(
         <>
-          You've selected storms from Category <strong>{stormMin}</strong> to <strong>{stormMax}</strong>. <br />
+          You&apos;ve selected storms from Category <strong>{stormMin}</strong> to <strong>{stormMax}</strong>. <br />
           Category{' '}
 
           <a href={storm_categories[stormMin]?.more_info_link}
@@ -75,16 +83,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
         </>
       );
     } else {
-      setSliderText(
-        <>
-          Adjust the slider to filter storms by category, from -5 (weakest) to 5 (strongest). <br />
-          Learn more about {" "}
-          <a href={stormCategoryLink}
-             target="_blank"
-             rel="noopener noreferrer">
-            storm categories
-          </a>.
-        </>
+      setSliderText(defaultText
       );
     }
   }, [startCategory, endCategory]);
@@ -139,9 +138,9 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
                       className='filter-submit-button'
                       onClick={() => {
                         setValue([minCategory, maxCategory]); // Reset slider range
-                        setSliderText(defaultText); // Optional: reset text too
-                        setStartCategory(null); // Reset to empty string
-                        setEndCategory(null);   // Reset to empty string
+                        setSliderText(defaultText); 
+                        setStartCategory(""); 
+                        setEndCategory("");   
                       }}>Clear</Button>
                     <Button 
                       size="small" 
@@ -160,19 +159,22 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
   );
 }
 
-export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, setStartCategory, setEndCategory, startCategory, endCategory, showCatSelection, setShowCatSelection}){
+export function RenderCategoryFilter({ state, dispatch}){
+  
   //const [showCatSelection, setShowCatSelection] = useState(false); 
+  const hasValidCategory = state.startCategory && state.endCategory;
   const buttonStyle = {
-    backgroundColor: startCategory && endCategory  ? '#e55162' : 'white',
-    color: startCategory && endCategory ? 'white' : '#e55162',
+    backgroundColor: hasValidCategory  ? '#e55162' : 'white',
+    color: hasValidCategory ? 'white' : '#e55162',
     '&:hover': {
-      backgroundColor: startCategory && endCategory ? '#ffd1dc' : '#82ccdd',
-      color: startCategory && endCategory ? 'black' : 'black',
+      backgroundColor: hasValidCategory ? '#ffd1dc' : '#82ccdd',
+      color: hasValidCategory ? 'black' : 'black',
     },
   };
 
   function handleIconClick(){
-    setShowCatSelection(prev => !prev);
+    //setShowCatSelection(prev => !prev);
+    dispatch({ type: "TOGGLE_CAT_SELECTION"});
   }
   
 
@@ -184,7 +186,7 @@ export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, setSt
     className="filter-badge"
     onClick= {handleIconClick}
     startIcon={<CategoryOutlinedIcon />}
-    endIcon={ !showCatSelection ? (showOptionsArrow):(closeOptionsArrow)}
+    endIcon={ !state.showCatSelection ? (<ShowOptions/>):(<CloseOptions/>)}
     sx={{...buttonStyle,
       display: { xs: "none", md: "inline-flex" }, }
     }>
@@ -194,18 +196,18 @@ export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, setSt
       
 
     </Button>
-    {smallScreenIconButton('Storm Category', handleIconClick, buttonStyle, <CategoryOutlinedIcon />)}
+    {smallScreenIconButton('Storm Category', handleIconClick, buttonStyle, CategoryOutlinedIcon)}
     
 
-    {showCatSelection && 
+    {state.showCatSelection && 
       (<CategoryRangeSlider 
-        setStartCategory = {setStartCategory}
-        setEndCategory = {setEndCategory}
-        setShowCatSelection={setShowCatSelection}
-        startCategory={startCategory}
-        endCategory={endCategory}/>)}
+        setStartCategory = {(category) => dispatch({ type: "SET_START_CATEGORY", payload: category })}
+        setEndCategory = {(category) => dispatch({ type: "SET_END_CATEGORY", payload: category })}
+        setShowCatSelection={(status) => dispatch({ type: "SET_CAT_SELECTION", payload: status })}
+        startCategory={state.startCategory}
+        endCategory={state.endCategory}/>)}
 
-    {console.log(startCategory, endCategory)}
+    {console.log(state.startCategory, state.endCategory)}
     </>
 
 

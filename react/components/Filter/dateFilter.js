@@ -3,11 +3,12 @@ import dayjs from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import { useEffect, useState } from 'react';
-import { IconButton, TextField, Box, Typography, Paper, Button, Stack, CardContent, Card, CardActions } from "@mui/material";
+import {  useState } from 'react';
+import {  Box,  Button,  CardContent, Card, CardActions } from "@mui/material";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import {Slider, Tooltip} from '@mui/material';
+import {Slider} from '@mui/material';
 import { smallScreenIconButton } from './filter_utils';
+import { ShowOptions, CloseOptions } from './filter';
 
 
 
@@ -65,19 +66,20 @@ const reset= { label: 'Reset', getValue: () => [null, null] };
 
 
 
-export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelectedOption, startDate, endDate,setStartDate, setEndDate, showDateSelection, setShowDateSelection}){
+export function RenderDateFilter({state, dispatch}){
   //const [showDateSelection, setShowDateSelection] = useState(false); 
+  const hasValidDates = state.startDate?.isValid?.() && state.endDate?.isValid?.();
   const buttonStyle = {
-    backgroundColor: startDate && endDate && startDate.isValid() && endDate.isValid() ? '#e55162' : 'white',
-    color: startDate && endDate && startDate.isValid() && endDate.isValid() ? 'white' : '#e55162',
+    backgroundColor: hasValidDates ? '#e55162' : 'white',
+    color: hasValidDates ? 'white' : '#e55162',
     '&:hover': {
-      backgroundColor: startDate && endDate && startDate.isValid() && endDate.isValid() ? '#ffd1dc' : '#82ccdd',
-      color: startDate && endDate && startDate.isValid() && endDate.isValid() ? 'black' : 'black',
+      backgroundColor: hasValidDates ? '#ffd1dc' : '#82ccdd',
+      color: hasValidDates ? 'black' : 'black',
     },
   };
 
   function handleIconClick(){
-    setShowDateSelection(prev => !prev);
+    dispatch({ type: "TOGGLE_DATE_SELECTION"});
   }
   
 
@@ -87,11 +89,9 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelect
     <>
     <Button
     className="filter-badge"
-    onClick= {() => {
-      setShowDateSelection(prev => !prev)
-     }}
+    onClick= {handleIconClick}
     startIcon={<CalendarMonthOutlinedIcon/>}
-    endIcon={ !showDateSelection ? (showOptionsArrow):(closeOptionsArrow)}
+    endIcon={ !state.showDateSelection ? (<ShowOptions/>):(<CloseOptions/>)}
     sx={{...buttonStyle,
       display: { xs: "none", md: "inline-flex" }, }
     }>
@@ -101,18 +101,19 @@ export function RenderDateFilter({showOptionsArrow, closeOptionsArrow, setSelect
       
 
     </Button>
-    {smallScreenIconButton('Filter by Date', handleIconClick, buttonStyle, <CalendarMonthOutlinedIcon/>)}
+    {smallScreenIconButton('Filter by Date', handleIconClick, buttonStyle, CalendarMonthOutlinedIcon)}
     
 
-    {showDateSelection && 
+    {state.showDateSelection && 
       (<DateDisplay 
-        startDate={startDate}
-        endDate={endDate}
-        setStartDate={setStartDate}
-        setEndDate={setEndDate}
-        setShowDateSelection={setShowDateSelection}  />)}
+        startDate={state.startDate}
+        endDate={state.endDate}
+        setStartDate = {(date) => dispatch({ type: "SET_START_DATE", payload: date })}
+        setEndDate = {(date) => dispatch({ type: "SET_END_DATE", payload: date })}
+        setShowDateSelection = {(date) => dispatch({ type: "SET_DATE_SELECTION", payload: date })}
+         />)}
 
-    {console.log(startDate, endDate)}
+    
     </>
 
 
