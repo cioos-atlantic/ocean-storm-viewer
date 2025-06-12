@@ -75,7 +75,7 @@ export function makeEmptyfreqObj(windSpeedBins, cardinalPoints){
 }
 
 export function RenderPlotlyRose ( { windData, directionData, timeData }){
-  //console.log(windData);
+  console.log(windData, directionData, timeData );
   const totalDataPoints= timeData.length;
   const parsed_data = calculateWindSpeedDistribution(directionData, windData, totalDataPoints);
   const data = [];

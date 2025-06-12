@@ -24,7 +24,7 @@ export const colorPalette= [
 '#FDAE61', // Orange
 '#F46D43', // Red-Orange
 '#D53E4F', // Deep Red
-'#808080', // grey
+'#808080', // grey - unknown storms
 ];
 
 export const cardinalPoints = [

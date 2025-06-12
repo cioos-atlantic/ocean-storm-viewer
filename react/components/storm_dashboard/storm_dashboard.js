@@ -37,6 +37,7 @@ const StormDashboard = React.memo(function StormDashboard({  dispatch, hover_mar
   }
 
   const stormCategory={data:[], name:'Storm Category'}
+  
   const storm_data_dict ={
     direction: [{stormDir: { data: [], name: "Storm Direction (degree)" }}],
     Pressure: [{stormPressure: { data: [], name: "Storm Pressure (kPa)" }}],
