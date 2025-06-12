@@ -15,9 +15,10 @@ export function categorizeWindDirection(direction, cardinalPoints) {
 function calculateWindSpeedDistribution(directions, speeds, totalDataPoints) {
   //console.log(windSpeedBins, cardinalPoints)
   const windSpdLabel = extractWindSpeedBins();
+  windSpdLabel.push('Unknown') // to accomodate negative values which would be wrong and will be filtered out in the future
 
   const freqObj = makeEmptyfreqObj(windSpdLabel, cardinalPoints);
-  //console.log(freqObj)
+  console.log(freqObj)
 
   
   const cardinal =  directions.map((direction)=> categorizeWindDirection(direction, cardinalPoints))
@@ -45,11 +46,13 @@ function calculateWindSpeedDistribution(directions, speeds, totalDataPoints) {
 
   console.log(freqDist);
   const freqFrac= structuredClone(freqObj);
+  console.log(freqFrac);
   Object.keys(freqDist).forEach((speedBin)=>{
 
     Object.keys(freqDist[speedBin]).forEach((cardinalDirection)=>{
       const dirIdx= cardinalPoints.findIndex((point) => point === cardinalDirection);
       const freqPercent = ((freqDist[speedBin][cardinalDirection]/ totalDataPoints) * 100).toFixed(2);
+      console.log(speedBin)
       freqFrac[speedBin][dirIdx]= freqPercent;
     });
     
