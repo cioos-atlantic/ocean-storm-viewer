@@ -144,7 +144,9 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
             
   
             {
-            Object.entries(stormData).map(([key, value], index) => {
+            Object.entries(stormData)
+            .filter(([key]) => key !== "direction") // Exclude "Direction"
+            .map(([key, value], index) => {
               
               return(
                 <Tab 
@@ -178,7 +180,9 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
           />}
       </CustomTabPanel>
       {
-            Object.entries(stormData).map(([key, value], index) => {
+            Object.entries(stormData)
+            .filter(([key]) => key !== "direction") // Exclude "Direction"
+            .map(([key, value], index) => {
               
               return(
                 <CustomTabPanel key={key} value={selectedStormTab} index={index + 4}>

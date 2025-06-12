@@ -57,7 +57,7 @@ export function categorizeWindDirection(direction) {
  * speed falls into. If the input speed does not match any bin, it returns "Unknown".
  */
 export function categorizeWindSpeed(speed) {
-  console.log(speed);
+  //console.log(speed);
   for (const bin of windSpeedBins) {
     if (speed >= bin.min && (bin.max === undefined || speed < bin.max)) {
       return bin.label; // Return the label instead of the index
