@@ -1,11 +1,9 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import TabList from '@mui/lab/TabList';
 import TabContext from '@mui/lab/TabContext';
 import Box from '@mui/material/Box';
-//import { RenderWindRose } from './wind_rose';
 import RenderStormChart from "./storm_graph";
 import StormTypeChart from './storm_type_chart';
 import StormCategoryChart from './storm_cat_chart';

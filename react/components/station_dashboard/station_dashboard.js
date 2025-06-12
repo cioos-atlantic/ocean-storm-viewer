@@ -1,15 +1,9 @@
-import React, { useState, useRef } from"react";
+import React from"react";
 import { FaWindowClose } from "react-icons/fa";
-import { empty_station_obj } from "../layout";
 import { useMediaQuery, Box, useTheme } from "@mui/material";
-//import { empty_station_obj } from "../layout";
-//import { useMediaQuery, Box } from "@mui/material";
 import StationDataLayout from "./station_layout_small_screen";
 import BasicTabs from "./tabs";
-//import { RecentStationData, getMatchedStation } from "../utils/station_data_format_util";
-//import BasicTabs from "./tabs";
-import { RecentStationData, getMatchedStation, getStationDataText, } from "../utils/station_data_format_util";
-//import BasicTabs from "./tabs";
+import {  getMatchedStation, getStationDataText, } from "../utils/station_data_format_util";
 import { fetch_value } from "@/lib/storm_utils";
 
 
@@ -21,8 +15,9 @@ import { fetch_value } from "@/lib/storm_utils";
 
 
 export default function StationDashboard({state, dispatch, station_descriptions, time, source_type
-}) {
 
+}) {
+  //const [selectedTab, setSelectedTab] = useState(0);
   const stationData = state.selected_station;
   console.log(stationData);
   

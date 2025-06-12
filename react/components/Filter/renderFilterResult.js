@@ -1,14 +1,14 @@
 //import { handleClick } from "./historical_storm_utils";
-import { Button } from "@mui/material";
-import { IconButton, TextField, Box, Typography, Paper } from "@mui/material";
-import { Stack } from "@mui/system";
+import {  Box, Typography, Paper, Stack, Button } from "@mui/material";
 import { handleStormButtonClick } from "../historical_storm/historical_storm_utils";
 
 
-export function RenderFilterResult({filterResult, router, drawerButtonClicked,  cancelFilters}){
+export function RenderFilterResult({filterResult, router, drawerButtonClicked,  cancelFilters, setDrawerButtonClicked}){
+ 
   
-  
-  return(
+  console.log (filterResult);
+  return( 
+    
     <>
       
       <Stack
@@ -19,8 +19,7 @@ export function RenderFilterResult({filterResult, router, drawerButtonClicked,  
           
         }}
       >
-        {console.log(filterResult)}
-        {filterResult.length > 0 ? (
+       
           <>
           <Box
           className='filter_page_drawer_subheader'>
@@ -29,37 +28,38 @@ export function RenderFilterResult({filterResult, router, drawerButtonClicked,  
                     paddingLeft: '7px', 
                     paddingRight: '7px'}} 
                   spacing={0.5}>
-            {filterResult.map((storm, index) => (
-            <Paper
-              key={storm.storm_id}
-              onClick=
-                {(e) => { console.log(`${storm.name} clicked`)
-                handleStormButtonClick(storm.name, storm.year, storm.storm_id, router);
-                                //triggerReload(); // Reload page when a storm is clicked
-              
-                                //console.log(storm);
-                        }}
-                sx={{color: drawerButtonClicked === storm.storm_id ? 'white' : 'black', 
-                                  backgroundColor: drawerButtonClicked === storm.storm_id ? 'black' : 'white',
-                                  padding: drawerButtonClicked === storm.storm_id ? '3px' : '0.5px',
-                                  border: drawerButtonClicked === storm.storm_id ? 'solid white 2px': '0',
-                                  
-                                }}      
-            >
-              <Typography className='search-output' sx ={{fontWeight: drawerButtonClicked === storm.storm_id ? '550': 'normal'}} >
-                {`${storm.display_name}`}
-              </Typography>
-              
-            </Paper>
+            {filterResult.map((storm, index) => {
+              const isClicked = drawerButtonClicked === storm.storm_id;
+              return(
+                <Paper
+                  key={storm.storm_id}
+                  onClick=
+                    {(e) => { console.log(`${storm.name} clicked`)
+                    handleStormButtonClick(storm.name, storm.year, storm.storm_id, router);
+                    //setDrawerButtonClicked(storm.storm_id);
+                                    //triggerReload(); // Reload page when a storm is clicked
+                  
+                                    //console.log(storm);
+                            }}
+                    sx={{color: isClicked ? 'white' : 'black', 
+                                      backgroundColor: isClicked ? 'black' : 'white',
+                                      padding: isClicked ? '3px' : '0.5px',
+                                      border: isClicked ? 'solid white 2px': '0',
+                                      
+                                    }}      
+                >
+                  <Typography className='search-output' sx ={{fontWeight: isClicked ? '550': 'normal'}} >
+                    {`${storm.display_name}`}
+                  </Typography>
+                  
+                </Paper>
+              )
             
-            ))}
+            
+            })}
           </Stack>
           </>
-        ): (<Box
-          sx={{
-            color: "white"
-          }}>
-          ...</Box>)}
+        
       </Stack>
       <Button
       onClick={cancelFilters}

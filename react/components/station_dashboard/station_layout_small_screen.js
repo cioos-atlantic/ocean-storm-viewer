@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import { RenderWindRose } from "./wind_rose";
 import RenderChart from "../station_graph.js";
