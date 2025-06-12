@@ -180,7 +180,7 @@ const StormDashboard = React.memo(function StormDashboard({  dispatch, hover_mar
         }}
       ><StormDataLayout
                   stormData={storm_data_dict}
-                  stormSummaryText={<StormSummaryText storm_point_hover={state.hover_marker}/>}
+                  stormSummaryText={<StormSummaryText storm_point_hover={hover_marker}/>}
                   variablePresence={variablePresence}
                   stormTime={stormTime}
                   hoverPointTime={hoverPointTime}
