@@ -1,9 +1,8 @@
-import { storm_category_filter_list } from "./filters_list";
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
-import { useEffect, useState, Fragment } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Button, Card, CardContent, CardActions, Slider } from "@mui/material";
 import { storm_categories } from "@/lib/storm_class";
-
+import { ShowOptions, CloseOptions } from './filter';
 import { smallScreenIconButton } from './filter_utils';
 export const storm_category_list = [
   { label: "5", value: 5 },
@@ -20,7 +19,16 @@ export const storm_category_list = [
 ]
 
 export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowCatSelection, startCategory, endCategory }) {
-  const defaultText = "Select a range of storm category between -5 and 5";
+  const stormCategoryLink = "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html";
+  const defaultText = <>
+  Adjust the slider to filter storms by category, from -5 (weakest) to 5 (strongest). <br />
+  Learn more about {" "}
+  <a href={stormCategoryLink}
+     target="_blank"
+     rel="noopener noreferrer">
+    storm categories
+  </a>.
+</>;
 
   const [sliderText, setSliderText] = useState(defaultText);
   
@@ -40,7 +48,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
 
   
   
-  const stormCategoryLink = "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html";
+  
 
 
   useEffect(() => {
@@ -50,7 +58,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
   
       setSliderText(
         <>
-          You've selected storms from Category <strong>{stormMin}</strong> to <strong>{stormMax}</strong>. <br />
+          You&apos;ve selected storms from Category <strong>{stormMin}</strong> to <strong>{stormMax}</strong>. <br />
           Category{' '}
 
           <a href={storm_categories[stormMin]?.more_info_link}
@@ -75,16 +83,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
         </>
       );
     } else {
-      setSliderText(
-        <>
-          Adjust the slider to filter storms by category, from -5 (weakest) to 5 (strongest). <br />
-          Learn more about {" "}
-          <a href={stormCategoryLink}
-             target="_blank"
-             rel="noopener noreferrer">
-            storm categories
-          </a>.
-        </>
+      setSliderText(defaultText
       );
     }
   }, [startCategory, endCategory]);
@@ -139,9 +138,9 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
                       className='filter-submit-button'
                       onClick={() => {
                         setValue([minCategory, maxCategory]); // Reset slider range
-                        setSliderText(defaultText); // Optional: reset text too
-                        setStartCategory(null); // Reset to empty string
-                        setEndCategory(null);   // Reset to empty string
+                        setSliderText(defaultText); 
+                        setStartCategory(""); 
+                        setEndCategory("");   
                       }}>Clear</Button>
                     <Button 
                       size="small" 
@@ -160,7 +159,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
   );
 }
 
-export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, state, dispatch}){
+export function RenderCategoryFilter({ state, dispatch}){
   
   //const [showCatSelection, setShowCatSelection] = useState(false); 
   const hasValidCategory = state.startCategory && state.endCategory;
@@ -187,7 +186,7 @@ export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, state
     className="filter-badge"
     onClick= {handleIconClick}
     startIcon={<CategoryOutlinedIcon />}
-    endIcon={ !state.showCatSelection ? (showOptionsArrow):(closeOptionsArrow)}
+    endIcon={ !state.showCatSelection ? (<ShowOptions/>):(<CloseOptions/>)}
     sx={{...buttonStyle,
       display: { xs: "none", md: "inline-flex" }, }
     }>
@@ -197,7 +196,7 @@ export function RenderCategoryFilter({showOptionsArrow, closeOptionsArrow, state
       
 
     </Button>
-    {smallScreenIconButton('Storm Category', handleIconClick, buttonStyle, <CategoryOutlinedIcon />)}
+    {smallScreenIconButton('Storm Category', handleIconClick, buttonStyle, CategoryOutlinedIcon)}
     
 
     {state.showCatSelection && 

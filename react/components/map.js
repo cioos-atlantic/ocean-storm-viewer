@@ -1,6 +1,6 @@
 // https://iconoir.com/ icon library that can be installed via npm
 import React, { useState, useRef, useReducer } from "react";
-import { MapContainer, TileLayer, WMSTileLayer, LayersControl, FeatureGroup, LayerGroup, Marker, Popup, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, WMSTileLayer, LayersControl, LayerGroup } from 'react-leaflet'
 import Drawer from '@/components/drawer';
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
@@ -94,9 +94,10 @@ export default function Map({ children, station_data, source_type,  setStationPo
                 {
                   station_data ? (
                     Object.entries(station_data).map((station) => {
-                      const storm_timestamp = new Date(state.hover_marker.properties["TIMESTAMP"])
+                      const storm_timestamp = new Date(state.hover_marker.properties["TIMESTAMP"]);
                       return (
                         <StationMarker
+                          key={station[0]}
                           station_data={station}
                           station_descriptions={allDatasetDescriptions}
                           time={storm_timestamp}
@@ -195,7 +196,6 @@ export default function Map({ children, station_data, source_type,  setStationPo
 
           {<RenderSpatialFilter
           ref={clearShapesRef} 
-          polyFilterCoords={state.polyFilterCoords}
           setPolyFilterCoords={(coords) => dispatch({ type: "SET_POLY_FILTER_COORDS", payload: coords })}
           />} {/* Calling the EditControl function here */}
         </MapContainer>

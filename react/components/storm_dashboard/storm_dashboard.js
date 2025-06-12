@@ -1,18 +1,15 @@
-import React, { useState, useRef } from"react";
+import React, { useState } from"react";
 import { FaWindowClose } from "react-icons/fa";
-import { empty_station_obj } from "../layout";
 import { useMediaQuery, Box, useTheme } from "@mui/material";
 import { fetch_value } from "@/lib/storm_utils";
-import RenderStormChart from "./storm_graph";
 import BasicTabs from "./tabs";
 import { StormSummaryText } from "./storm_details";
 import StormDataLayout from "./storm_layout_small_screen";
 import { convert_unit_data } from "../utils/unit_conversion";
-import StormCategory from "../Storm_popup/storm_category";
-import { empty_point_obj } from "../storm_point_details";
+import { empty_point_obj } from "../point_defaults";
 
 
-//import BasicTabs from "./tabs";
+
 
 
 
@@ -22,13 +19,13 @@ import { empty_point_obj } from "../storm_point_details";
  */
 
 
-export default function StormDashboard({state, dispatch}) {
+const StormDashboard = React.memo(function StormDashboard({  dispatch, hover_marker, storm_points, isStormDashOpen }) {
 
   const [selectedStormTab, setSelectedStormTab] = useState(0);
   //console.log(storm_data, storm_points, source_type, hover_point);
-  console.log(state.storm_points.pts.features)
+  console.log(storm_points.pts.features)
 
-  const stormPoints = state.storm_points.pts.features;
+  const stormPoints = storm_points.pts.features;
   console.log(stormPoints)
   const ibtracs_link = 'https://www.ncei.noaa.gov/products/international-best-track-archive';
 
@@ -94,7 +91,7 @@ export default function StormDashboard({state, dispatch}) {
   const isSmall = useMediaQuery(theme.breakpoints.down('md')); // `md` in MUI = 960px
 
 
-  const hoverPointTime = fetch_value(state.hover_marker, ["TIMESTAMP", "ISO_TIME"]);
+  const hoverPointTime = fetch_value(hover_marker, ["TIMESTAMP", "ISO_TIME"]);
 
 
   console.log(storm_data_dict);
@@ -127,7 +124,7 @@ export default function StormDashboard({state, dispatch}) {
       });
   });
 
-  console.log(state.hover_marker);
+  console.log(hover_marker);
 
 
 
@@ -138,7 +135,7 @@ export default function StormDashboard({state, dispatch}) {
       className={`station_dashboard`}
       sx={{
         //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
-        display: state.isStormDashOpen ? 'flex':'none',
+        display: isStormDashOpen ? 'flex':'none',
         
         
         
@@ -199,7 +196,7 @@ export default function StormDashboard({state, dispatch}) {
       className={`station_dashboard`}
       sx={{
         //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
-        display: state.isStormDashOpen ? 'flex':'none',
+        display: isStormDashOpen ? 'flex':'none',
         
         
       }}
@@ -245,7 +242,7 @@ export default function StormDashboard({state, dispatch}) {
                   stormName={stormName}
                   stormData={storm_data_dict}
                   stormSummaryText={<StormSummaryText 
-                  storm_point_hover={state.hover_marker}/>}
+                  storm_point_hover={hover_marker}/>}
                   variablePresence={variablePresence}
                   selectedStormTab={selectedStormTab}
                   setSelectedStormTab={setSelectedStormTab}
@@ -262,8 +259,9 @@ export default function StormDashboard({state, dispatch}) {
   )
 
   
-}
+});
 
+export default StormDashboard;
 
 
 //do graphh seperate for  storm type because it is categorical

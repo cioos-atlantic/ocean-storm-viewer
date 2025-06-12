@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Chart, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, LineController, TimeScale} from 'chart.js';
-import { get_station_field_data, get_station_field_units, get_station_field_position, getColumnNameList, getUniqueStdNamesList } from './utils/station_data_format_util';
-import { convert_unit_data, windSpeedToKmh, windSpeedToKnots } from './utils/unit_conversion';
+import { get_station_field_data, get_station_field_units,  getColumnNameList, getUniqueStdNamesList } from './utils/station_data_format_util';
+import { convert_unit_data } from './utils/unit_conversion';
 import { graph_colour } from './station_dashboard/station_graph/graph_config.js'
 import { ProgressiveAnimation } from './storm_dashboard/utils';
 import annotationPlugin from 'chartjs-plugin-annotation';

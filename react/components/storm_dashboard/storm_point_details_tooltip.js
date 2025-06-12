@@ -1,12 +1,12 @@
 import { parseISO, format } from 'date-fns';
 import { fetch_value } from "@/lib/storm_utils";
-import React, {useState} from "react";
-import { Box, Tooltip, useMediaQuery } from '@mui/material';
+import React from "react";
 import { storm_type_info } from "@/lib/storm_class";
 
 
 
-export const empty_point_obj = { properties: {}, geometry: {} }
+
+
 
 
 /**

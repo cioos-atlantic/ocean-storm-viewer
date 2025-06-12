@@ -6,8 +6,6 @@ import {  handleClick,  handleSearch } from './historical_storm_utils.js';
 import { RenderRecentStorms } from './render_recent_storms.js';
 import { RenderFilterResult } from '../Filter/renderFilterResult.js';
 import LoadingScreen from '../loading_screen.js';
-import { AppliedFilters } from '../Filter/filtersApplied.js';
-import { empty_storm_obj } from '@/lib/storm_utils.js';
 import { empty_station_obj } from '../point_defaults.js';
 
 
@@ -38,6 +36,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
   const setIsStationDashOpen= (state) => dispatch({ type: "TOGGLE_STATION_DASH", payload: state });
 
   const cancelFilters = () => dispatch({ type: 'CANCEL_FILTERS' });
+  const setDrawerButtonClicked = (buttonClicked) => dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: buttonClicked });
 
 
    // Check query parameters on mount and trigger `handleClick`
@@ -74,7 +73,9 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
           console.log(selectedStorm);
           if (selectedStorm) {
             //setDrawerButtonClicked(selectedStorm.storm_id);
+            console.log(selectedStorm.storm_id)
             dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: selectedStorm.storm_id })
+            
 
             await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation,setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
           }
@@ -84,7 +85,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
     setPreviousQuery({ name, season, sid  });
 
   }
-  }, [router.query, router.isReady]); // 
+  }, [router.query, previousQuery, state.drawerButtonClicked]); // 
 
   useEffect(() => {
     async function fetchStormData() {
@@ -126,7 +127,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
 
   
 
-      {state.returnFilterResult ? 
+      {state.returnFilterResult  &&  state.filterResult.length > 0 ?
         (<RenderFilterResult 
           filterResult={state.filterResult}
           router={router}
@@ -136,20 +137,12 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
           
                 
         />):
-        (//renderRecentStorms(stormList, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, state.drawerButtonClicked, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen)
+        (
         <RenderRecentStorms
           stormList={stormList}
-          setStationPoints={setStationPoints}
-          setStormPoints={setStormPoints}
-          map={map}
-          Leaflet={Leaflet}
           router={router}
-          setSelectedStation={setSelectedStation}
-          setLoading={setLoading}
           drawerButtonClicked={state.drawerButtonClicked}
-          setIsDashOpen={setIsDashOpen}
-          setIsStormDashOpen={setIsStormDashOpen}
-          setIsStationDashOpen={setIsStationDashOpen}
+          setDrawerButtonClicked={setDrawerButtonClicked}
         />
         )}
 
