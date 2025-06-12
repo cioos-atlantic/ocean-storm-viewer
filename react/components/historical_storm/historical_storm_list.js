@@ -86,7 +86,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, di
     setPreviousQuery({ name, season, sid });
 
   }
-  }, [router.query, previousQuery, state.drawerButtonClicked]); // 
+  }, [router.query, previousQuery, drawerButtonClicked]); // 
 
   useEffect(() => {
     async function fetchStormData() {
@@ -166,7 +166,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, di
         <RenderRecentStorms
           stormList={stormList}
           router={router}
-          drawerButtonClicked={state.drawerButtonClicked}
+          drawerButtonClicked={drawerButtonClicked}
           setDrawerButtonClicked={setDrawerButtonClicked}
         />
         )}
