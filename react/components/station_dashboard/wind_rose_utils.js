@@ -20,6 +20,7 @@ export const colorPalette= [
 '#FDAE61', // Orange
 '#F46D43', // Red-Orange
 '#D53E4F', // Deep Red
+'#808080', // grey - unknown storms
 ];
 
 export const cardinalPoints = [
@@ -52,6 +53,7 @@ export function categorizeWindDirection(direction) {
  * speed falls into. If the input speed does not match any bin, it returns "Unknown".
  */
 export function categorizeWindSpeed(speed) {
+  //console.log(speed);
   for (const bin of windSpeedBins) {
     if (speed >= bin.min && (bin.max === undefined || speed < bin.max)) {
       return bin.label; // Return the label instead of the index
