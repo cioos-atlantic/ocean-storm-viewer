@@ -21,37 +21,30 @@ import { mapReducer, initialMapState } from "./mapReducer";
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
 
-export default function Map({ children, station_data, source_type,  setStationPoints}) {
-
+export default function Map({ children, station_data, source_type, setStationPoints }) {
   const clearShapesRef = useRef(null);
-
   const [state, dispatch] = useReducer(mapReducer, initialMapState);
-  
   const allDatasetDescriptions = useDatasetDescriptions();
+
   console.log(allDatasetDescriptions)
   console.debug("Storm Points in map.js: ", state.storm_points);
 
   return (
     <div className="map_container">
       <div className='inner_container'>
-        
-        {
-          <RenderFilter
+        <RenderFilter
           clearShapesRef={clearShapesRef} // Pass the ref to 
           state={state}
           dispatch={dispatch}
-          />
-        }
-        {
-          <RenderDashboards
-            source_type={source_type}
-            station_descriptions={allDatasetDescriptions}
-            time = {new Date()}
-            state={state}
-            dispatch={dispatch}
-            
-            />
-        }
+        />
+
+        <RenderDashboards
+          source_type={source_type}
+          station_descriptions={allDatasetDescriptions}
+          time={new Date()}
+          state={state}
+          dispatch={dispatch}
+        />
 
         <MapContainer
           center={defaultPosition}
@@ -59,8 +52,8 @@ export default function Map({ children, station_data, source_type,  setStationPo
           style={{ height: "100%", width: "100%" }}
           worldCopyJump={true}
           zoomControl={false}
-          
-        > <CustomZoomControl /> 
+        >
+          <CustomZoomControl />
           <Drawer
             element_id="left-side"
             classes="left"
@@ -102,9 +95,8 @@ export default function Map({ children, station_data, source_type,  setStationPo
                           station_descriptions={allDatasetDescriptions}
                           time={storm_timestamp}
                           selected_station={state.selected_station}
-                          dispatch={dispatch} 
-                    />)
-                      
+                          dispatch={dispatch}
+                        />)
                     })
                   ) : (
                     <></>
@@ -135,7 +127,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
                       <StormMarker
                         key={point.id}
                         storm_point_data={point}
-                        storm_point_hover= {state.hover_marker}
+                        storm_point_hover={state.hover_marker}
                         dispatch={dispatch}
 
                       />
@@ -149,7 +141,6 @@ export default function Map({ children, station_data, source_type,  setStationPo
                 {
                   state.storm_points?.lin?.features?.length > 0 &&
                   state.storm_points?.lin?.features?.map(line => {
-
                     return (
                       <LineOfTravel
                         key={line.id}
@@ -194,10 +185,11 @@ export default function Map({ children, station_data, source_type,  setStationPo
             </LayersControl.Overlay>
           </LayersControl>
 
-          {<RenderSpatialFilter
-          ref={clearShapesRef} 
-          setPolyFilterCoords={(coords) => dispatch({ type: "SET_POLY_FILTER_COORDS", payload: coords })}
-          />} {/* Calling the EditControl function here */}
+          <RenderSpatialFilter
+            ref={clearShapesRef}
+            setPolyFilterCoords={(coords) => dispatch({ type: "SET_POLY_FILTER_COORDS", payload: coords })}
+          />
+          {/* Calling the EditControl function here */}
         </MapContainer>
       </div>
     </div>

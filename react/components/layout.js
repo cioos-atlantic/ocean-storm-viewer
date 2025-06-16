@@ -24,13 +24,13 @@ export const siteTitle = 'Atlantic Hurricane Dashboard'
  * `topNav`, `logo`, `active_storm_data`, `station_data`, and `querystring`
  */
 export default function Layout({ children, home, topNav, logo, querystring }) {
-  
+
   const [station_points, setStationPoints] = useState({});
   const [sourceType, setSourceType] = useState("");
   const [isMounted, setIsMounted] = useState(false);
 
   const router = useRouter();
-  
+
 
   useEffect(() => {
     setIsMounted(true);
@@ -52,7 +52,6 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
     [],
   );
 
-  
   useEffect(() => {
     if (active_storms) {
       setSourceType("active");
@@ -61,14 +60,11 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
         .then((data) => {
           setStationPoints(data);
         })
-    };
-    if (historical_storms)
-      { setSourceType("historical")
-        
-      };
+    }
+    if (historical_storms) {
+      setSourceType("historical")
+    }
   }, [active_storms, historical_storms]);
-
-  
 
   return (
     <div className={styles.body}>
@@ -81,32 +77,30 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
         <meta name="og:title" content={siteTitle} />
       </Head>
       <header className={styles.header}>
-        <Grid container alignItems="center" spacing={1}  
-        sx={{ justifyContent: 'space-between', flexWrap: 'nowrap',  maxHeight: { xs: '80px', sm: '100px', md: '120px', lg: '140px' }, // Responsive max height for the header 
-        //maxWidth: '50%'
-        }}
+        <Grid container alignItems="center" spacing={1}
+          sx={{
+            justifyContent: 'space-between', flexWrap: 'nowrap', maxHeight: { xs: '80px', sm: '100px', md: '120px', lg: '140px' }, // Responsive max height for the header 
+            //maxWidth: '50%'
+          }}
         >
           {/* Logo Section */}
-          <Grid size ='auto' 
-                sx={{maxWidth: '50%'}} >
-          
-              <a href={logo.href}>
-                <Image
-                  src={logo.src}
-                  width={200}
-                  height={100}
-                  className="logo" // Preserving your existing class for the logo
-                  alt="logo"
-                  
-                />
-              </a>
-            
+          <Grid size='auto'
+            sx={{ maxWidth: '50%' }} >
+
+            <a href={logo.href}>
+              <Image
+                src={logo.src}
+                width={200}
+                height={100}
+                className="logo" // Preserving your existing class for the logo
+                alt="logo"
+
+              />
+            </a>
           </Grid>
-          
 
           {/* Content Section */}
-          <Grid size ='auto' >
-          
+          <Grid size='auto' >
             {home ? (
               <>
                 {/* Home Page Header Content */}
@@ -116,12 +110,10 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
                 {/* Other Page Header Content */}
               </>
             )}
-
           </Grid>
-          
 
           {/* Navigation Section */}
-          <Grid size ='auto'
+          <Grid size='auto'
             sx={{
               maxWidth: '100%', // Ensures responsiveness
               overflow: 'visible', // 
@@ -131,32 +123,29 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
               fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '18px', xl: '20px', xxl: '22px' }, // Font size changes based on breakpoints
             }} ><HeaderNav navItems={topNav} />
           </Grid>
-
-          
-          
         </Grid>
       </header>
-      {!isMounted ? null : about_page ?  (
+      {!isMounted ? null : about_page ? (
         <About
-            
-            />):(<>
-      <main className="body">
-        <MapWithNoSSR
-          station_data={station_points}
-          source_type={sourceType}
-          setStationPoints={setStationPoints}
-          
 
         />
-      </main>
-      </>)}
+      ) : (
+        <>
+          <main className="body">
+            <MapWithNoSSR
+              station_data={station_points}
+              source_type={sourceType}
+              setStationPoints={setStationPoints}
+            />
+          </main>
+        </>
+      )}
       <footer>
         <Box sx={{
-          height:{ xs: '20px', sm: '30px', md: '35px', lg: '50px', xl: '50px', xxl: '50px' }, // if changed, remember to change the station dashboard bottom in the station_dashboard.js
+          height: { xs: '20px', sm: '30px', md: '35px', lg: '50px', xl: '50px', xxl: '50px' }, // if changed, remember to change the station dashboard bottom in the station_dashboard.js
         }}>
-        <FooterNav></FooterNav>
+          <FooterNav></FooterNav>
         </Box>
-        
       </footer>
     </div>
   )
