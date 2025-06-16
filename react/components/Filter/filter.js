@@ -1,5 +1,6 @@
-import { IconButton,  Box, Typography, Paper, Button, SpeedDial,  SpeedDialAction,  } from "@mui/material";
-import {  useState } from 'react';
+import { IconButton, TextField, Box, Typography, Paper, Button, SpeedDial, SpeedDialIcon, SpeedDialAction, Tooltip, Dialog, DialogTitle } from "@mui/material";
+import { useEffect, useState, Fragment } from 'react';
+
 import Stack from '@mui/material/Stack';
 
 //import Chip from '@mui/material/Chip';
@@ -10,6 +11,7 @@ import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { RenderDateFilter } from "./dateFilter";
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
+import InfoIcon from '@mui/icons-material/Info';
 import dayjs from 'dayjs';
 import { makeStormList } from "../historical_storm/historical_storm_utils";
 import { filters, input_filters } from "@/components/Filter/filters_list";
@@ -20,6 +22,7 @@ import LoadingScreen from "../loading_screen";
 import { smallScreenIconButton } from "./filter_utils";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { RenderCategoryFilter } from "./categorySlider";
+import InfoScreen from "../message_screens/info_screen";
 
 
 const ITEM_HEIGHT = 35;
@@ -59,8 +62,10 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
 
 
   const [loading, setLoading] = useState(false);
+  const [info, setInfo] = useState(true)
 
   const router = useRouter(); // Next.js useRouter
+
 
   function handleClearAllFilters() {
     setSelectedOptions([]);
@@ -76,12 +81,6 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
 
     console.log("All filters and shapes cleared!");
   }
-
-
-
-
-
-
 
 
   async function handleFilterSubmit() {
@@ -285,7 +284,21 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
               onClick={handleClearAllFilters}>
               X
             </Button>
+            <Button
+              id="info-icon"
+              className="info-icons"
+              startIcon={<InfoIcon />}
+              onClick={() => {
+                setInfo(true)
+              }}
+              >
+            </Button>
           </Stack>
+        <InfoScreen
+          setInfo = {setInfo}
+          open={info}
+          onClose = {info}
+        />
         </>
       )
       };
