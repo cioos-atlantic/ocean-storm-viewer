@@ -7,6 +7,7 @@ import { RenderRecentStorms } from './render_recent_storms.js';
 import { RenderFilterResult } from '../Filter/renderFilterResult.js';
 import LoadingScreen from '../loading_screen.js';
 import { empty_station_obj } from '../point_defaults.js';
+import {  FiltersSelected, FiltersSubmitted } from '../Filter/viewFilters.js';
 
 
 
@@ -16,7 +17,7 @@ import { empty_station_obj } from '../point_defaults.js';
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, map, Leaflet, state, dispatch}) {
+export default function HistoricalStormList({ setStationPoints, map, Leaflet, dispatch, returnFilterResult, filterResult, drawerButtonClicked, startDate, endDate, startCategory, endCategory, polyFilterCoords, filterQuery, filterStormName}) {
 
   const [loading, setLoading] = useState(false);
 
@@ -85,7 +86,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
     setPreviousQuery({ name, season, sid });
 
   }
-  }, [router.query, previousQuery, state.drawerButtonClicked]); // 
+  }, [router.query, previousQuery, drawerButtonClicked]); // 
 
   useEffect(() => {
     async function fetchStormData() {
@@ -107,7 +108,11 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
   }, []); // Empty dependency array ensures it runs only once on mount
 
 
-  
+  useEffect(() => {
+    if (filterResult.length <= 0 && returnFilterResult) {
+      dispatch({ type: "TOGGLE_FILTER_RESULT", payload: false });
+    }
+  }, [filterResult.length, returnFilterResult, dispatch]);
 
   // const [selected_storm, setSelectedStorm] = useState("");
   return (
@@ -124,24 +129,44 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
           <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>  {/* Bold line */}
 
           
+      {(!returnFilterResult )  && (
+        <>
+          <FiltersSelected
+          startDate={startDate}
+          endDate={endDate}
+          startCategory={startCategory}
+          endCategory={endCategory}
+          polyFilterCoords={polyFilterCoords}
+          filterStormName={filterStormName}/>
+          <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>
+        </>
+        )}
+      
+       
 
-  
+      {returnFilterResult ?
+        (<>
+        <FiltersSubmitted 
+        filterQuery={filterQuery}/>
 
-      {state.returnFilterResult  &&  state.filterResult.length > 0 ?
-        (<RenderFilterResult 
-          filterResult={state.filterResult}
+        <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>
+        
+        
+        <RenderFilterResult 
+          filterResult={filterResult}
           router={router}
-          drawerButtonClicked={state.drawerButtonClicked}
+          drawerButtonClicked={drawerButtonClicked}
           cancelFilters={cancelFilters}
           setDrawerButtonClicked={setDrawerButtonClicked}
           
                 
-        />):
+        />
+        </> ):
         (
         <RenderRecentStorms
           stormList={stormList}
           router={router}
-          drawerButtonClicked={state.drawerButtonClicked}
+          drawerButtonClicked={drawerButtonClicked}
           setDrawerButtonClicked={setDrawerButtonClicked}
         />
         )}
@@ -157,6 +182,8 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
       }}
       className="cancel-search"
       >Clear Storm Tracks</Button>
+      <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
+
       
           
           

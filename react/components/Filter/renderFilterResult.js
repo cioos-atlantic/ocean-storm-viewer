@@ -24,6 +24,7 @@ export function RenderFilterResult({filterResult, router, drawerButtonClicked,  
           <Box
           className='filter_page_drawer_subheader'>
           Filter Result: ({filterResult.length} result(s) found)</Box >
+          
           <Stack sx={{overflowX: 'hidden', 
                     paddingLeft: '7px', 
                     paddingRight: '7px'}} 
