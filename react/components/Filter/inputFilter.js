@@ -24,6 +24,7 @@ export function InputFilter({input_filter, setSelectedOptions, selectedOptions, 
       ...prev,
       [input_filter.name]: inputValue // Clear the options for the specific filter name
     }));
+    handleIconClick();
     console.log({ [input_filter.name]: [] }); // Log the cleared options
   };
 
@@ -42,6 +43,7 @@ export function InputFilter({input_filter, setSelectedOptions, selectedOptions, 
       [input_filter.name]: !prev[input_filter.name],
     }));
   }
+  
   return(
     <>
     <Button

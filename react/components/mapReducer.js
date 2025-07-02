@@ -39,7 +39,7 @@ export function mapReducer(state, action) {
       return { ...state, returnFilterResult: action.payload };
     case 'SET_POLY_FILTER_COORDS':
       return { ...state, polyFilterCoords: action.payload };
-      case 'TOGGLE_DASH':
+    case 'TOGGLE_DASH':
       return { ...state, isDashOpen: action.payload };
     case 'TOGGLE_STORM_DASH':
       return { ...state, isStormDashOpen: action.payload };
@@ -61,8 +61,8 @@ export function mapReducer(state, action) {
       return { ...state, showCatSelection: action.payload };
     case 'SET_DATE_SELECTION':
       return { ...state, showDateSelection: action.payload };
-      case "TOGGLE_DATE_SELECTION":
-      return {...state, showDateSelection: !state.showDateSelection};
+    case "TOGGLE_DATE_SELECTION":
+      return { ...state, showDateSelection: !state.showDateSelection };
     case 'TOGGLE_DRAWER':
       return { ...state, isDrawerOpen: action.payload };
     case 'CANCEL_FILTERS':
@@ -76,41 +76,41 @@ export function mapReducer(state, action) {
         startCategory: "",
         endCategory: "",
       };
-      case 'RESET_FILTERS':
-        return {
-          ...state,
-          polyFilterCoords: '',
-          startDate: null,
-          endDate: null,
-          startCategory: "",
-          endCategory: "",
-        };
-      case 'SET_SELECTED_STATION_AND_OPEN_DASHBOARD':
-        return {
-          ...state,
-          selected_station: action.payload,
-          selectedTab: 0,
-          isDashOpen: true,
-          isStationDashOpen: true,
-        };
-      case 'CLOSE_STATION_DASHBOARD':
-        return {
-          ...state,
-          selected_station: empty_station_obj,
-          selectedTab: 0,
-        };
+    case 'RESET_FILTERS':
+      return {
+        ...state,
+        polyFilterCoords: '',
+        startDate: null,
+        endDate: null,
+        startCategory: "",
+        endCategory: "",
+      };
+    case 'SET_SELECTED_STATION_AND_OPEN_DASHBOARD':
+      return {
+        ...state,
+        selected_station: action.payload,
+        selectedTab: 0,
+        isDashOpen: true,
+        isStationDashOpen: true,
+      };
+    case 'CLOSE_STATION_DASHBOARD':
+      return {
+        ...state,
+        selected_station: empty_station_obj,
+        selectedTab: 0,
+      };
 
-      case 'CLOSE_STORM_TRACKS':
-        return {
-          ...state,
-          storm_points: empty_storm_obj,
-          hover_marker: empty_point_obj,
-          isStormDashOpen: false,
-          isStationDashOpen: false,
-          isDashOpen: false,
+    case 'CLOSE_STORM_TRACKS':
+      return {
+        ...state,
+        storm_points: empty_storm_obj,
+        hover_marker: empty_point_obj,
+        isStormDashOpen: false,
+        isStationDashOpen: false,
+        isDashOpen: false,
 
-        };
-      
+      };
+
     default:
       return state;
   }

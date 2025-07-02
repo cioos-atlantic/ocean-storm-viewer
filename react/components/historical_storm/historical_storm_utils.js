@@ -218,6 +218,40 @@ export function makeStormList(storm_data) {
   return uniqueList
 }
 
+
+/**
+ * 
+ * @param {*} stormList 
+ * @returns 
+ */
+export function makeStormLines(stormList) {
+  let lin = [];
+
+  stormList.forEach((storm) => {
+    let line_of_travel = {
+      "type": "Feature",
+      "id": "line-of-travel-".concat(storm.display_name),
+      "geometry": {
+        "type": "LineString",
+        "coordinates": storm.storm_lines || []
+      },
+      "properties": {
+        "SEASON": storm.year,
+        "STORMNAME": storm.name,
+      }
+    };
+    lin.push(line_of_travel)
+  })
+
+  let storm_obj = structuredClone(empty_storm_obj);
+  storm_obj.lin = lin;
+  
+  return storm_obj;
+}
+
+
+
+
 /**
  * The function `isYear` checks if the input is a valid year in the format of exactly 4 digits.
  * @param input - The `isYear` function is designed to check if the input is a valid year in the format

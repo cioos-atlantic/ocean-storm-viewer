@@ -1,5 +1,5 @@
-import { IconButton,  Box, Typography, Paper, Button, SpeedDial,  SpeedDialAction,  } from "@mui/material";
-import {  useState } from 'react';
+import { IconButton, Box, Typography, Paper, Button, SpeedDial, SpeedDialAction, } from "@mui/material";
+import { useState } from 'react';
 import Stack from '@mui/material/Stack';
 
 //import Chip from '@mui/material/Chip';
@@ -11,7 +11,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { RenderDateFilter } from "./dateFilter";
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
 import dayjs from 'dayjs';
-import { makeStormList } from "../historical_storm/historical_storm_utils";
+import { makeStormLines, makeStormList } from "../historical_storm/historical_storm_utils";
 import { filters, input_filters } from "@/components/Filter/filters_list";
 import { useRouter } from 'next/router';
 import { InputFilter } from "./inputFilter";
@@ -39,16 +39,16 @@ export const ShowOptions = KeyboardDoubleArrowDownIcon;
 export const CloseOptions = KeyboardDoubleArrowUpIcon;
 
 
-export function RenderFilter({  clearShapesRef, state, dispatch }) {
+export function RenderFilter({ clearShapesRef, state, dispatch }) {
   const [showFilterIcons, setShowFilterIcons] = useState(false);
   const [showFilterOptions, setShowFilterOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [filterParameters, setFilterParameters] = useState([]);
-  
+
 
   const [openSpeedDial, setOpenSpeedDial] = useState(false);
 
-  
+
   const handleOpen = () => setOpenSpeedDial(true);
   const handleClose = (event, reason) => {
     if (reason !== "toggle") {
@@ -67,7 +67,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
     dispatch({ type: "RESET_FILTERS" })
 
     const hasClearShapesRef = clearShapesRef && clearShapesRef.current;
-    
+
 
     // Clear shapes via reference
     if (hasClearShapesRef) {
@@ -87,31 +87,38 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
   async function handleFilterSubmit() {
     //setDrawerButtonClicked('');
     dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: '' });
-    
-    
+
+
     const updatedParams = {
       ...selectedOptions, // Spread selected options correctly
       startDate: state.startDate, // Ensure start and end dates are included
       endDate: state.endDate,
       polyCoords: state.polyFilterCoords,
       startCategory: state.startCategory,
-      endCategory:state.endCategory,
+      endCategory: state.endCategory,
 
     };
 
-    console.log(updatedParams); // 
+    console.debug("Updated Search Parameters: ", updatedParams); // 
 
+    const [stormResult, stormLines] = await processFilterRequest(updatedParams, setLoading);
 
-    const stormResult = await processFilterRequest(updatedParams, setLoading);
-    console.log(stormResult);
-    dispatch({ type: "SET_FILTER_RESULT", payload: stormResult});
-    router.push(`/?storms=historical`);
+    console.log("processFilterRequest Complete:");
+
+    console.debug("Setting Filter Result...", stormResult);
+    dispatch({ type: "SET_FILTER_RESULT", payload: stormResult });
+
+    console.debug("Setting Storm Points...", stormLines);
+    dispatch({ type: "SET_STORM_POINT", payload: stormLines });
+
+    // router.push(`/?storms=historical`);
 
     //setIsDrawerOpen(true);
     //setReturnFilterResult(true);
-    dispatch({ type: "TOGGLE_DRAWER", payload: true});
-    dispatch({ type: "TOGGLE_FILTER_RESULT", payload: true});
-
+    dispatch({ type: "TOGGLE_DRAWER", payload: true });
+    dispatch({ type: "TOGGLE_FILTER_RESULT", payload: true });
+    
+    console.debug("Drawer and Filter results toggled to 'True'.");
   }
 
 
@@ -186,36 +193,14 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
             }
             {openSpeedDial && (<div className="filter-group">
               <RenderCategoryFilter
-                  state={state}
-                  dispatch={dispatch}
-                />
+                state={state}
+                dispatch={dispatch}
+              />
 
             </div>
             )
 
             }
-            {/*openSpeedDial && (filters.map((filter, index) => {
-              return (
-
-                <div className="filter-group" key={index}>
-
-
-                  <Badges
-                    filter={filter}
-                    showFilterOptions={showFilterOptions}
-                    setShowFilterOptions={setShowFilterOptions}
-                    setSelectedOptions={setSelectedOptions}
-                    selectedOptions={selectedOptions}
-                  />
-
-                </div>
-
-
-              )
-            }))
-
-            */}
-
           </SpeedDial>
 
           <Stack
@@ -235,7 +220,6 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                       showFilterOptions={showFilterOptions}
                       setShowFilterOptions={setShowFilterOptions}
                     />
-
                   </div>
                 )
               })
@@ -250,28 +234,10 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
             </div>
             <div className="filter-group">
               <RenderCategoryFilter
-                  state={state}
-                  dispatch={dispatch}
-                />
+                state={state}
+                dispatch={dispatch}
+              />
             </div>
-            
-
-            {/*
-              filters.map((filter, index) => {
-                return (
-
-                  <div className="filter-group" key={index}>
-                    <Badges
-                      filter={filter}
-                      showFilterOptions={showFilterOptions}
-                      setShowFilterOptions={setShowFilterOptions}
-                      setSelectedOptions={setSelectedOptions}
-                      selectedOptions={selectedOptions}
-                    />
-                  </div>
-                )
-              })
-            */}
 
             <Button
               className="filter-submit-button"
@@ -279,6 +245,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
               startIcon={<PublishRoundedIcon />}>
               Submit
             </Button>
+
             <Button
               id="cancel-filter-icon"
               className="filter-icons"
@@ -293,180 +260,18 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
   )
 }
 
-  // Function to clear all filters and shapes
-  export function handleClearAll(setSelectedOptions, setStartDate, setEndDate,  setPolyFilterCoords, clearShapesRef) {
-    setSelectedOptions([]);
-    setStartDate(null); // Reset to empty string
-    setEndDate(null);   // Reset to empty string;
-    //setFilterResult([]);         // Clear filter results
-    //setReturnFilterResult(false); // Reset return state
-    setPolyFilterCoords('');      // Clear polygon filter
-    
-
-    // Clear shapes via reference
-    if (clearShapesRef && clearShapesRef.current) {
-      clearShapesRef.current.clearShapes();
-    }
-
-    console.log("All filters and shapes cleared!");
-  }
-
-export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions }) {
-  const buttonStyle = {
-    backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#e55162' : 'white',
-    color: selectedOptions[filter.name]?.length > 0 ? 'white' : '#e55162',
-    '&:hover': {
-      backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#ffd1dc' : '#82ccdd',
-      color: selectedOptions[filter.name]?.length > 0 ? 'black' : 'black',
-    },
-  };
-
-  const handleCheckboxChange = (option) => {
-    setSelectedOptions((prev) => {
-      const currentOptions = prev[filter.name] || []; // Get current options for this filter
-      const isSelected = currentOptions.includes(option.value);
-
-      // Toggle selection
-      const updatedOptions = isSelected
-        ? currentOptions.filter((item) => item !== option.value) // Remove if selected
-        : [...currentOptions, option.value];                    // Add if not selected
-
-      return {
-        ...prev,
-        [filter.name]: updatedOptions // Set as name: options
-      };
-    });
-  };
-
-  function handleClear(name) {
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [name]: [] // Clear the options for the specific filter name
-    }));
-    console.log({ [name]: [] }); // Log the cleared options
-  };
-
-  function handleIconClick() {
-    setShowFilterOptions((prev) => ({
-      ...prev,
-      [filter.name]: !prev[filter.name],
-    }));
-  }
-
-  return (
-    <>
-
-      <Button
-        className="filter-badge"
-        onClick={() => {
-          setShowFilterOptions((prev) => ({
-            ...prev,
-            [filter.name]: !prev[filter.name],
-          }));
-        }}
-        startIcon={filter.icon}
-        endIcon={!showFilterOptions[filter.name] ? (<ShowOptions/>) : (<CloseOptions/>)}
-        sx={{
-          ...buttonStyle,
-          display: { xs: "none", md: "inline-flex" }
-        }
-        }>
-
-        {filter.display_name}
-
-        {console.log(showFilterOptions)}
-
-      </Button>
-
-      {smallScreenIconButton(filter.display_name, handleIconClick, buttonStyle, filter.icon)}
-
-
-
-      {showFilterOptions[filter.name] && (
-        <Paper className="filter-dropdown-menu"
-          sx={{
-            top: { xs: '6px', md: '100%', },
-            right: { xs: '100%', md: '0px', },
-            //transform:{xs: 'translateX(-100%)', },
-            width: { xs: '150px', md: '100%' }
-          }}>
-
-          <Stack
-            direction="column"
-            sx={{
-              padding: '5px',
-              height: '200px',
-              overflow: 'scroll',
-              width: '100%',
-
-            }}
-            spacing={1}>
-            {filter.options.map((option, optIndex) => {
-              return (
-                <FormControlLabel
-
-                  key={optIndex}
-                  label={<Typography sx={{ fontSize: '12px' }}>
-                    {option.label}
-                  </Typography>}
-                  control={
-                    <Checkbox
-                      checked={selectedOptions[filter.name]?.includes(option.value) || false}
-                      onChange={() => handleCheckboxChange(option)}
-                      sx={{
-                        color: "#e55162",
-                        '&.Mui-checked': { color: 'grey', }
-
-
-
-
-                      }}
-
-                    />
-                  }
-                />
-              )
-            })}
-
-            <Box
-              sx={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
-              <Button
-                onClick={() => handleClear(filter.name)}
-                className="filter-submit-button"
-              >
-                Clear
-              </Button>
-            </Box>
-
-          </Stack>
-
-
-
-          {console.log(selectedOptions)}
-          {console.log(filter.options)}
-
-        </Paper>
-      )}
-
-    </>
-
-  )
-
-};
-
-
 
 export async function processFilterRequest(filterParameters, setLoading) {
 
   console.log(filterParameters);
-  let uniqueList;
+  let uniqueList, stormLines;
   const stormCategory = formatStormCategory(filterParameters['stormCategory']);
   const stormNames = formatStormName(filterParameters['stormName']);
   const startDate = formatFilterDate(filterParameters['startDate']);
   const endDate = formatFilterDate(filterParameters['endDate']);
-  
-  const stormPoly = filterParameters['polyCoords'];                       
-  const startCategory= filterParameters['startCategory'];
+
+  const stormPoly = filterParameters['polyCoords'];
+  const startCategory = filterParameters['startCategory'];
   const endCategory = filterParameters['endCategory'];
 
 
@@ -497,8 +302,9 @@ export async function processFilterRequest(filterParameters, setLoading) {
 
     console.debug(`historical Storm Data for ${stormCategory} Between  ${startDate} and ${endDate}: `, storm_data);
     // Create a set to track unique IDs and add objects to the result list
-    uniqueList = makeStormList(storm_data)
+    uniqueList = makeStormList(storm_data);
     // Create a set to track unique IDs and add objects to the result list
+    stormLines = makeStormLines(uniqueList);
     setLoading(false);
 
     console.log(uniqueList);
@@ -511,11 +317,8 @@ export async function processFilterRequest(filterParameters, setLoading) {
     setLoading(false);
     console.error('Error fetching storm or station data:', error);
   }
-  return uniqueList
 
-
-
-
+  return [uniqueList, stormLines];
 }
 
 export function formatFilterDate(date) {
@@ -539,8 +342,3 @@ export function formatStormName(storm_names = "") {
   const formattedStormList = storm_list.join("_");
   return formattedStormList;
 }
-
-
-
-
-

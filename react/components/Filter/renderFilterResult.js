@@ -6,16 +6,18 @@ import { useEffect } from "react";
 import { empty_storm_obj } from "../point_defaults";
 
 
-export function RenderFilterResult({ filterResult, router, drawerButtonClicked, cancelFilters, setStormPoints }) {
-  useEffect(() => {
-    if (filterResult?.length > 0) {
-      const newStormPoints = makeStormLines(filterResult);
-      console.log("Setting storm points from filter result", newStormPoints);
-      setStormPoints(newStormPoints);
-    }
-  }, [filterResult, setStormPoints]); // Runs when filterResult changes
+export function RenderFilterResult({ filterResult, router, drawerButtonClicked, cancelFilters }) {
+  // console.log("FilterResult Before: ", filterResult);
+  
+  // useEffect(() => {
+  //   if (filterResult?.length > 0) {
+  //     const newStormPoints = makeStormLines(filterResult);
+  //     console.log("Setting storm points from filter result", newStormPoints);
+  //     setStormPoints(newStormPoints);
+  //   }
+  // }, [filterResult, setStormPoints]); // Runs when filterResult changes
 
-  console.log(filterResult);
+  // console.log("FilterResult After: ", filterResult);
 
   return (
     <>
@@ -69,35 +71,4 @@ export function RenderFilterResult({ filterResult, router, drawerButtonClicked, 
       >Clear Results</Button>
     </>
   )
-}
-
-function makeStormLines(stormList) {
-  let lin = []
-
-  stormList.forEach((storm) => {
-    let line_of_travel = {
-      "type": "Feature",
-      "id": "line-of-travel-".concat(storm.display_name),
-      "geometry": {
-        "type": "LineString",
-        "coordinates": storm.storm_lines || []
-      },
-      "properties": {
-        "SEASON": storm.year,
-        "STORMNAME": storm.name,
-      }
-    };
-    lin.push(line_of_travel)
-  })
-
-  const storm_obj =
-  {
-    pts: { features: [] },
-    err: { features: [] },
-    lin: { features: lin },
-    rad: { features: [] },
-    sea: { features: [] },
-  };
-
-  return storm_obj;
 }

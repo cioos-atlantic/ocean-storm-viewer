@@ -6,7 +6,7 @@ import {  handleClick,  handleSearch } from './historical_storm_utils.js';
 import { RenderRecentStorms } from './render_recent_storms.js';
 import { RenderFilterResult } from '../Filter/renderFilterResult.js';
 import LoadingScreen from '../loading_screen.js';
-import { empty_station_obj } from '../point_defaults.js';
+import { empty_station_obj, empty_storm_obj } from '../point_defaults.js';
 
 
 
@@ -45,7 +45,9 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
    useEffect(() => { 
     if (!router.isReady) return; // Ensure router is ready
     const { name, season, sid } = router.query;
-    console.log( name, season, sid )
+    
+    console.log("Running Search Query", name, season, sid )
+
     if (previousQuery?.name !== name || previousQuery?.season !== season || previousQuery?.sid !== sid ) {
     
       async function searchQuery(){
@@ -54,36 +56,39 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
         parameters received from the router. If both parameters exist, it calls the `handleSearch`
         function with the `name` and `season` values to fetch storm data based on the search
         criteria. */
-        console.log('here')
+
         if (name && season) {
           const stormObjectList = await handleSearch(name, season);
-          console.log(stormObjectList);
+
+          console.log("Storm Object List: ", stormObjectList);
 
           let selectedStorm;
           if (stormObjectList.length > 1){ // this accounts for unnamed storms that has the same name and season
             stormObjectList.forEach((stormObj) => {
               if (stormObj['storm_id'] === sid){
-                selectedStorm= stormObj;
+                selectedStorm = stormObj;
               }
             })
 
           }
-          else{selectedStorm = stormObjectList[0];}
+          else{
+            selectedStorm = stormObjectList[0];
+          }
           
-          console.log(selectedStorm);
+          console.log("Selected Storm", selectedStorm);
           if (selectedStorm) {
             //setDrawerButtonClicked(selectedStorm.storm_id);
-            console.log(selectedStorm.storm_id)
+            console.log("Selected Storm ID: ", selectedStorm.storm_id);
+
             dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: selectedStorm.storm_id })
             
-
             await handleClick(selectedStorm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation,setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen);
           }
         }
     }
-    searchQuery()
-    setPreviousQuery({ name, season, sid  });
 
+    searchQuery()
+    setPreviousQuery({ name, season, sid });
   }
   }, [router.query, previousQuery, state.drawerButtonClicked]); // 
 
@@ -106,8 +111,6 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
     
   }, []); // Empty dependency array ensures it runs only once on mount
 
-
-  
 
   // const [selected_storm, setSelectedStorm] = useState("");
   return (
@@ -133,9 +136,6 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
           router={router}
           drawerButtonClicked={state.drawerButtonClicked}
           cancelFilters={cancelFilters}
-          setStormPoints={setStormPoints}
-          
-                
         />):
         (
         <RenderRecentStorms
@@ -150,10 +150,9 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, st
       <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/> 
       <Button
       onClick={()=> {
-        dispatch({ type: "CLOSE_STORM_TRACKS" })
-        setStationPoints(empty_station_obj)
-    
-      router.push(`/?storms=historical`)
+        dispatch({ type: "CLOSE_STORM_TRACKS" });
+        setStationPoints(empty_station_obj);
+        setStormPoints(empty_storm_obj);
       }}
       className="cancel-search"
       >Clear Storm Tracks</Button>
