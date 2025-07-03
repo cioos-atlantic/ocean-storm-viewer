@@ -19,14 +19,14 @@
 }
 
 .drawer_interior {
-    margin-top: 5rem;
-    padding: 0.8rem;
+    margin-top: 2.2rem;
+    padding: 0.6rem;
 }
 
 
 .closeButton {
     position: absolute;
-    top: 4.5rem; /* Adjust vertical position */
+    top: 2.4rem; /* Adjust vertical position */
     right: 0.6rem; /* Adjust horizontal position */
     width: 1.5rem; /* Button width */
     height: 1.5rem; /* Button height */

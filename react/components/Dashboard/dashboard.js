@@ -32,6 +32,9 @@ export function RenderDashboards({ source_type, station_descriptions, time, stat
         source_type={source_type}
         time={time}
         storm_points={state.storm_points}
+        setIsDashOpen= {(state) => dispatch({ type: "TOGGLE_DASH", payload: state })}
+        setIsStormDashOpen={(state) => dispatch({ type: "TOGGLE_STORM_DASH", payload: state })}
+        setIsStationDashOpen={(state) => dispatch({ type: "TOGGLE_STATION_DASH", payload: state })}
         />
     ) : (
         <Stack

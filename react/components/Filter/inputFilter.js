@@ -5,7 +5,7 @@ import { CloseOptions, ShowOptions } from "./filter";
 
 
 
-export function InputFilter({input_filter, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions}){
+export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions, dispatch, filterStormName}){
   const [inputValue, setInputValue] = useState(""); // Controlled input field
   const buttonStyle = {
     backgroundColor: selectedOptions[input_filter.name]?.length > 0 ? '#e55162' : 'white',
@@ -24,6 +24,9 @@ export function InputFilter({input_filter, setSelectedOptions, selectedOptions, 
       ...prev,
       [input_filter.name]: inputValue // Clear the options for the specific filter name
     }));
+    console.log(selectedOptions)
+    
+
     handleIconClick();
     console.log({ [input_filter.name]: [] }); // Log the cleared options
   };
@@ -34,7 +37,9 @@ export function InputFilter({input_filter, setSelectedOptions, selectedOptions, 
       ...prev,
       [input_filter.name]: "", // Clear the options for the specific filter name
     }));
-    setInputValue(""); // Reset input field
+    //setInputValue(""); // Reset input field
+    dispatch({ type: "SET_FILTER_STORM_NAME", payload: ""})
+    setInputValue("");
   };
 
   function handleIconClick(){
@@ -135,7 +140,9 @@ export function InputFilter({input_filter, setSelectedOptions, selectedOptions, 
 
       {/* Action Buttons */}
       <Box sx={{ display: "flex", gap: "1px" }}>
-        <Button className="filter-submit-button" type="submit">
+        <Button className="filter-submit-button" type="submit" onClick={()=> {if (filterStormName !== inputValue) {
+            dispatch({ type: "SET_FILTER_STORM_NAME", payload: inputValue });
+          }}}>
           Enter
         </Button>
         <Button className="filter-submit-button" onClick={handleClear}>
