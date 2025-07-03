@@ -24,7 +24,7 @@ import { empty_point_obj } from './point_defaults';
  * 
  * The function then renders the storm point details in a JSX format, including the extracted information and any additional details.
  */
-export default function StormPointDetails({ storm_point_hover,  setIsStormDetOpen, setHoverMarker }) {
+export default function StormPointDetails({ storm_point_hover, setIsStormDetOpen, setHoverMarker }) {
     // If properties has no items, it's an empty storm_point_hover object and should return
     // immediately
     if (Object.keys(storm_point_hover.properties).length == 0) {
@@ -55,24 +55,25 @@ export default function StormPointDetails({ storm_point_hover,  setIsStormDetOpe
 
     return (
 
-         <Box className="info_pane"
-        sx={{
-            padding: 2,
-            fontSize: { xs: '12px', sm: '12px', md: '16px', lg: '16px' }, // Adjust font size for different screen widths
-            marginTop:  { xs: '35%', sm: '18%', md: '15%', lg: '11%' } , // Adjust margin-top for different screen widths
-            
-            bottom: {sm: '7%', md: '10%', lg: '10%'},
-            display:{xs: 'none', md: 'block'},
+        <Box className="info_pane"
+            sx={{
+                padding: 2,
+                fontSize: { xs: '12px', sm: '12px', md: '16px', lg: '16px' }, // Adjust font size for different screen widths
+                marginTop: { xs: '35%', sm: '18%', md: '15%', lg: '11%' }, // Adjust margin-top for different screen widths
 
-          }}>
+                bottom: { sm: '7%', md: '10%', lg: '10%' },
+                display: { xs: 'none', md: 'block' },
+
+            }}>
             <div>
-                <button 
-                onClick={() =>{
-                    setHoverMarker(empty_point_obj)
-                    setIsStormDetOpen(false);}
-                    } 
-                style={{ float: "right", cursor: "pointer" }}
-                aria-label="Close Storm Details"
+                <button
+                    onClick={() => {
+                        setHoverMarker(empty_point_obj)
+                        setIsStormDetOpen(false);
+                    }
+                    }
+                    style={{ float: "right", cursor: "pointer" }}
+                    aria-label="Close Storm Details"
                 >✖
                 </button>
                 <h3>{STORMNAME}</h3>
@@ -91,10 +92,10 @@ export default function StormPointDetails({ storm_point_hover,  setIsStormDetOpe
 
         </Box>
 
-        
-       
-        
-        
+
+
+
+
     )
 }
 

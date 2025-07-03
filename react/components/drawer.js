@@ -31,61 +31,62 @@ export default function Drawer({ children, element_id, classes, source_type, set
 
   const map = useMap();
 
-    return ( 
-        <>   
-            <Box id={element_id} 
-                    className={styles.drawer + " h-100 " + sideClass}
-                    sx={{
-                        maxWidth:{xs:'258px', sm:'258px', md:'258px', lg:'258px',},
-                        width:{xs:'100%', sm:'50%', md:'50%', lg:'50%',},
-                        display: state.isDrawerOpen ? 'block' : 'none',
-                    }}
-                    onClick={(e) => e.stopPropagation()} // Prevent closing on internal clicks
-            >
-                <button className={styles.closeButton}
-                onClick={() => {//setIsDrawerOpen(false); 
-                                dispatch({ type: "TOGGLE_DRAWER", payload: false});} }
-                >
-                    X
-                </button>
-                <Box className={styles.drawer_interior}
-                    
-                    >
-                    {
-                        source_type == "active" ? (
-                            <ActiveStormList
-                                setStormPoints = {(point) => dispatch({ type: "SET_STORM_POINT", payload: point })}
-                                map={map}
-                                Leaflet={Leaflet}
-                                setSelectedStation = {(station) => dispatch({ type: "SET_SELECTED_STATION", payload: station })}
-                                
-                            />
-                        ) : 
-                        source_type == "historical" ? (
-                            <HistoricalStormList
-                                setStationPoints={setStationPoints}
-                                map={map}
-                                Leaflet={Leaflet}
-                                dispatch={dispatch}
-                                returnFilterResult={state.returnFilterResult}
-                                filterResult={state.filterResult}
-                                drawerButtonClicked={state.drawerButtonClicked}
-                                startDate={state.startDate}
-                                endDate={state.endDate}
-                                startCategory={state.startCategory}
-                                endCategory={state.endCategory}
-                                polyFilterCoords={state.polyFilterCoords}
-                                filterQuery={state.filterQuery}
-                                filterStormName={state.filterStormName}
-                                
-                        />
-                        ) : 
-                        (
-                            <>
-                                <div>Placeholder for Home Page</div>
-                            </>
-                        )
-                    }
+  return (
+    <>
+      <Box id={element_id}
+        className={styles.drawer + " h-100 " + sideClass}
+        sx={{
+          maxWidth: { xs: '258px', sm: '258px', md: '258px', lg: '258px', },
+          width: { xs: '100%', sm: '50%', md: '50%', lg: '50%', },
+          display: state.isDrawerOpen ? 'block' : 'none',
+        }}
+        onClick={(e) => e.stopPropagation()} // Prevent closing on internal clicks
+      >
+        <button className={styles.closeButton}
+          onClick={() => {//setIsDrawerOpen(false); 
+            dispatch({ type: "TOGGLE_DRAWER", payload: false });
+          }}
+        >
+          X
+        </button>
+        <Box className={styles.drawer_interior}
+
+        >
+          {
+            source_type == "active" ? (
+              <ActiveStormList
+                setStormPoints={(point) => dispatch({ type: "SET_STORM_POINT", payload: point })}
+                map={map}
+                Leaflet={Leaflet}
+                setSelectedStation={(station) => dispatch({ type: "SET_SELECTED_STATION", payload: station })}
+
+              />
+            ) :
+              source_type == "historical" ? (
+                <HistoricalStormList
+                  setStationPoints={setStationPoints}
+                  map={map}
+                  Leaflet={Leaflet}
+                  dispatch={dispatch}
+                  returnFilterResult={state.returnFilterResult}
+                  filterResult={state.filterResult}
+                  drawerButtonClicked={state.drawerButtonClicked}
+                  startDate={state.startDate}
+                  endDate={state.endDate}
+                  startCategory={state.startCategory}
+                  endCategory={state.endCategory}
+                  polyFilterCoords={state.polyFilterCoords}
+                  filterQuery={state.filterQuery}
+                  filterStormName={state.filterStormName}
+
+                />
+              ) :
+                (
+                  <>
+                    <div>Placeholder for Home Page</div>
+                  </>
+                )
+          }
 
         </Box>
       </Box>

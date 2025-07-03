@@ -13,7 +13,7 @@ import { getDisplayName } from "./utils/station_data_format_util";
  * @param {Date} time Time of the station data to retrieve. Defaults to most recent data if not provided
  * @returns StationMarker JavaScript snippet
  */
-export default function StationMarker({station_data, station_descriptions, time = new Date(), selected_station, dispatch}) {
+export default function StationMarker({ station_data, station_descriptions, time = new Date(), selected_station, dispatch }) {
   // Turns selected marker red, others return as blue
   function getMarkerIcon(selected_station, station_name) {
     try {
@@ -64,7 +64,7 @@ export default function StationMarker({station_data, station_descriptions, time 
             type: 'SET_SELECTED_STATION_AND_OPEN_DASHBOARD',
             payload: station_data,
           });
-          
+
         }
       }}
     >

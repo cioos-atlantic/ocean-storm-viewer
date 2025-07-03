@@ -99,7 +99,7 @@ export function RenderFilter({ clearShapesRef, state, dispatch }) {
     };
 
     console.debug("Updated Search Parameters: ", updatedParams); // 
-    dispatch({ type: "SET_FILTER_QUERY", payload: updatedParams});
+    dispatch({ type: "SET_FILTER_QUERY", payload: updatedParams });
 
 
     const [stormResult, stormLines] = await processFilterRequest(updatedParams, setLoading);
@@ -118,7 +118,7 @@ export function RenderFilter({ clearShapesRef, state, dispatch }) {
     //setReturnFilterResult(true);
     dispatch({ type: "TOGGLE_DRAWER", payload: true });
     dispatch({ type: "TOGGLE_FILTER_RESULT", payload: true });
-    
+
     console.debug("Drawer and Filter results toggled to 'True'.");
   }
 
@@ -263,14 +263,14 @@ export function RenderFilter({ clearShapesRef, state, dispatch }) {
               onClick={() => {
                 setInfo(true)
               }}
-              >
+            >
             </Button>
           </Stack>
-        <InfoScreen
-          setInfo = {setInfo}
-          open={info}
-          onClose = {info}
-        />
+          <InfoScreen
+            setInfo={setInfo}
+            open={info}
+            onClose={info}
+          />
         </>
       )
       };

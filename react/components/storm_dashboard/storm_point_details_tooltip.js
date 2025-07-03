@@ -53,20 +53,20 @@ export default function StormPointDetailsTooltip({ storm_point_hover }) {
 
     return (
 
-         <div >
+        <div >
             <div><strong>{STORMNAME}</strong></div>
-                <div><strong>Type:</strong> {storm_type_info[STORMTYPE]["name"]["en"]}</div>
-                <div><strong>Category:</strong> {STORMFORCE}</div>
-                <div><strong>Timestamp:</strong> {TIMESTAMP}</div>
-                <em>Click for more details</em>
-                
-                
+            <div><strong>Type:</strong> {storm_type_info[STORMTYPE]["name"]["en"]}</div>
+            <div><strong>Category:</strong> {STORMFORCE}</div>
+            <div><strong>Timestamp:</strong> {TIMESTAMP}</div>
+            <em>Click for more details</em>
 
-                
-            
+
+
+
+
         </div>
-        
-        
+
+
     )
 }
 

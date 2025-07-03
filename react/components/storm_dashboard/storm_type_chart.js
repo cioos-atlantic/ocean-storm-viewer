@@ -15,12 +15,12 @@ function StormTypeChart({ chartData }) {
     if (!chartData || !chartData.data) return;
 
     const uniqueStormTypes = [...new Set(chartData.data)];
-    
-    
+
+
     // Extract background colors based on storm types
     const labels = uniqueStormTypes.map(type => storm_type_info[type]?.name.en || type);
-    const backgroundColors = uniqueStormTypes.map(type => 
-    storm_type_info[type]?.chart_color || "#CCCCCC" // Default color if type is missing
+    const backgroundColors = uniqueStormTypes.map(type =>
+      storm_type_info[type]?.chart_color || "#CCCCCC" // Default color if type is missing
     );
 
     const data = {
@@ -42,7 +42,7 @@ function StormTypeChart({ chartData }) {
         responsive: true,
         maintainAspectRatio: true,
         plugins: {
-          
+
           legend: { position: 'top' },
           title: { display: true, text: 'Storm Type Distribution (Data Points)' },
         },
@@ -75,7 +75,7 @@ export default StormTypeChart;
 
 
 
-function getLabelName(name_code){
+function getLabelName(name_code) {
   const labelName = storm_type_info[name_code]['name']['en']
   return labelName
 }

@@ -245,7 +245,7 @@ export function makeStormLines(stormList) {
 
   let storm_obj = structuredClone(empty_storm_obj);
   storm_obj.lin = lin;
-  
+
   return storm_obj;
 }
 

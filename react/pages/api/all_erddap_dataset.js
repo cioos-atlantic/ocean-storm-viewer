@@ -108,7 +108,7 @@ async function fetchDatasetMetadata(datasetID) {
  *  - If there is an error fetching the dataset descriptions, the promise will reject with an error message.
  */
 async function fetchAllDatasetDescriptions() {
-  const allDatasets = await fetchAllDatasets(); 
+  const allDatasets = await fetchAllDatasets();
 
   const datasetDescriptions = await Promise.all(
     allDatasets.map(async dataset => {

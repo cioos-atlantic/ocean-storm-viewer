@@ -1,7 +1,7 @@
 import { wfs_query } from "./wfs_query"
 
 export default async function handler(req, res) {
-    
+
     const storm_name = (req.query["name"]) ? req.query["name"] : "";
     const season = (req.query["season"]) ? req.query["season"] : "";
     const storm_id = (req.query["id"]) ? req.query["id"] : "";
@@ -11,16 +11,17 @@ export default async function handler(req, res) {
     const min_time = (req.query["minTime"]) ? req.query["minTime"] : "";
     let filters;
 
-    if (min_time !== ""){
-         filters= {
-            "ISO_TIME_START >=": min_time}
+    if (min_time !== "") {
+        filters = {
+            "ISO_TIME_START >=": min_time
         }
-    else{filters = ""}
+    }
+    else { filters = "" }
 
 
     const source_type = "HISTORICAL";
 
-    console.log("handler", storm_name, season, source, source_type, storm_id, filters, );
+    console.log("handler", storm_name, season, source, source_type, storm_id, filters,);
 
     try {
         const result = await wfs_query(storm_name, season, source, source_type, storm_id, filters, "", true)

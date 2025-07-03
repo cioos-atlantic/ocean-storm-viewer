@@ -43,8 +43,8 @@ export default function StormSearch({ onSearch, onPopulateStormDetails, onPopula
         }
         {
           timeline_days.map(date => {
-            let formatted_date = format(parse(date,'yyyyMMdd', new Date()), 'PP');
-            
+            let formatted_date = format(parse(date, 'yyyyMMdd', new Date()), 'PP');
+
             const times = storm_timeline.map(storm => {
               if (storm.storm_date == date) {
                 const item_class = (selected_forecast.path == storm.path) ? 'selected' : '';
@@ -60,16 +60,16 @@ export default function StormSearch({ onSearch, onPopulateStormDetails, onPopula
                 );
               }
             });
-            
+
             return (
-                <ul key={date + "_parent_list"}>
-                  <li key={date}>
-                    {formatted_date}
-                    <ul key={date + "_sub_list"}>
-                      {times}
-                    </ul>
-                  </li>
-                </ul>
+              <ul key={date + "_parent_list"}>
+                <li key={date}>
+                  {formatted_date}
+                  <ul key={date + "_sub_list"}>
+                    {times}
+                  </ul>
+                </li>
+              </ul>
             );
           })
         }

@@ -68,7 +68,7 @@ function a11yProps(index) {
  * selected category. The Summary tab includes station summary text and a link to view full data. The
  * Wind Speed, Temperature, Waves, and
  */
-export default function BasicTabs({stormName, stormData, stormSummaryText, variablePresence, selectedStormTab, setSelectedStormTab, stormTime, hoverPointTime, stormType, stormCategory}) {
+export default function BasicTabs({ stormName, stormData, stormSummaryText, variablePresence, selectedStormTab, setSelectedStormTab, stormTime, hoverPointTime, stormType, stormCategory }) {
   /**
    * The function `generateGraph` returns a JSX element containing a chart component with specified
    * data and styling.
@@ -76,121 +76,122 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
    * "station_chart" and some inline styles for height, width, and padding. Inside the `div`, there is
    * a `RenderChart` component with props `sourceData`, `stationName`, and `varCategory`.
    */
-  
+
   //console.log(stationName, stationData, stationSummaryText, variablePresence, selectedTab, setSelectedTab)
-  const stormWindSpeed=stormData['Wind Speed']?.find(obj => "stormWindSpeed" in obj)?.stormWindSpeed;//[stormWindSpeed]?.data
+  const stormWindSpeed = stormData['Wind Speed']?.find(obj => "stormWindSpeed" in obj)?.stormWindSpeed;//[stormWindSpeed]?.data
 
   const windData = stormWindSpeed?.data;
-  const stormDir=stormData?.direction?.find(obj => "stormDir" in obj)?.stormDir;
+  const stormDir = stormData?.direction?.find(obj => "stormDir" in obj)?.stormDir;
   const directionData = stormDir?.data;
-  console.log(stormData, windData, directionData );
+  console.log(stormData, windData, directionData);
 
-  function generateGraph(selectedVar){
+  function generateGraph(selectedVar) {
     console.log('plotting charts');
     return (
-     <div className="station_chart" key='chart01' >
-     <RenderStormChart   
-         sourceData={stormData[selectedVar]}
-         varCategory={selectedVar}
+      <div className="station_chart" key='chart01' >
+        <RenderStormChart
+          sourceData={stormData[selectedVar]}
+          varCategory={selectedVar}
           timeData={stormTime}
           hoverPointTime={hoverPointTime}
-       />
-   </div>
+        />
+      </div>
     )
-   }
+  }
 
   //const [value, setValue] = React.useState(0);
   //const [hasData, setHasData] = React.useState(true); // State to track if data is available
 
-  
+
   const handleChange = (event, newValue) => {
     console.log(newValue)
     setSelectedStormTab(newValue);
   };
 
   return (
-    <Box sx={{ width: '100%'}} key='tabs 01'>
+    <Box sx={{ width: '100%' }} key='tabs 01'>
       <TabContext value={(selectedStormTab)}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <TabList 
-          value={selectedStormTab} 
-          onChange={handleChange} 
-          aria-label="storm data tabs"
-          variant="scrollable"
-          scrollButtons="auto"
-          allowScrollButtonsMobile // Ensures scroll buttons appear on mobile devices
-          sx={{
-            '.MuiTabs-flexContainer': {
-              justifyContent: 'space-between',},
-            '.MuiTabScrollButton-root': {
-              display: 'block', // Ensure scroll buttons are visible
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <TabList
+            value={selectedStormTab}
+            onChange={handleChange}
+            aria-label="storm data tabs"
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile // Ensures scroll buttons appear on mobile devices
+            sx={{
+              '.MuiTabs-flexContainer': {
+                justifyContent: 'space-between',
               },
-          }}>
+              '.MuiTabScrollButton-root': {
+                display: 'block', // Ensure scroll buttons are visible
+              },
+            }}>
             <Tab label="Summary" sx={{
               fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
             }} {...a11yProps(0)} />
             <Tab label={stormType['name']}
-             sx={{
-              fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
-            }} {...a11yProps(1)} />
+              sx={{
+                fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+              }} {...a11yProps(1)} />
             <Tab label={stormCategory['name']}
-             sx={{
-              fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
-            }} {...a11yProps(2)} />
+              sx={{
+                fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+              }} {...a11yProps(2)} />
             <Tab label='WINDROSE'
-             sx={{
-              fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
-            }} {...a11yProps(3)} />
-            
-  
+              sx={{
+                fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+              }} {...a11yProps(3)} />
+
+
             {
-            Object.entries(stormData)
-            .filter(([key]) => key !== "direction") // Exclude "Direction"
-            .map(([key, value], index) => {
-              
-              return(
-                <Tab 
-                key={key}
-                label={key}
-                sx={{
-                    fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
-                  }}
-               {...a11yProps(index + 4)}
-                disabled={!variablePresence?.[key]}/>
-              )
-              
-            })
+              Object.entries(stormData)
+                .filter(([key]) => key !== "direction") // Exclude "Direction"
+                .map(([key, value], index) => {
+
+                  return (
+                    <Tab
+                      key={key}
+                      label={key}
+                      sx={{
+                        fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+                      }}
+                      {...a11yProps(index + 4)}
+                      disabled={!variablePresence?.[key]} />
+                  )
+
+                })
             }
-        </TabList>
-      </Box>
-      <CustomTabPanel value={selectedStormTab} index={0}>
-        {stormSummaryText}
-      </CustomTabPanel>
-      <CustomTabPanel value={selectedStormTab} index={1} >
-        {<StormTypeChart chartData={stormType}/>}
-      </CustomTabPanel>
-      <CustomTabPanel value={selectedStormTab} index={2}>
-        {<StormCategoryChart chartData={stormCategory}/>}
-      </CustomTabPanel>
-      <CustomTabPanel value={selectedStormTab} index={3}>
-      {<RenderPlotlyRose 
-          windData={windData}
-          directionData={directionData}
-          timeData={stormTime}
+          </TabList>
+        </Box>
+        <CustomTabPanel value={selectedStormTab} index={0}>
+          {stormSummaryText}
+        </CustomTabPanel>
+        <CustomTabPanel value={selectedStormTab} index={1} >
+          {<StormTypeChart chartData={stormType} />}
+        </CustomTabPanel>
+        <CustomTabPanel value={selectedStormTab} index={2}>
+          {<StormCategoryChart chartData={stormCategory} />}
+        </CustomTabPanel>
+        <CustomTabPanel value={selectedStormTab} index={3}>
+          {<RenderPlotlyRose
+            windData={windData}
+            directionData={directionData}
+            timeData={stormTime}
           />}
-      </CustomTabPanel>
-      {
-            Object.entries(stormData)
+        </CustomTabPanel>
+        {
+          Object.entries(stormData)
             .filter(([key]) => key !== "direction") // Exclude "Direction"
             .map(([key, value], index) => {
-              
-              return(
+
+              return (
                 <CustomTabPanel key={key} value={selectedStormTab} index={index + 4}>
                   {generateGraph(key)}
                 </CustomTabPanel>
               )
             })
-      }
+        }
       </TabContext>
     </Box>
   );

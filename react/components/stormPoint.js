@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Marker, Popup } from 'react-leaflet'
 import { storm_categories } from '@/lib/storm_class'
-import { flip_coords,  } from "@/lib/storm_utils";
+import { flip_coords, } from "@/lib/storm_utils";
 import { useMediaQuery, useTheme } from '@mui/material';
 import StormPointDetailsTooltip from "./storm_dashboard/storm_point_details_tooltip";
 import { createSvgIconWithText } from "./utils/storm_display_utils";

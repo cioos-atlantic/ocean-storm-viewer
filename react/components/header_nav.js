@@ -14,7 +14,7 @@ export default function HeaderNav({ children, navItems }) {
     };
 
 
-    function handleIconClick(){
+    function handleIconClick() {
         setHeaderDrawerOpen((prevState) => !prevState); // Toggles the drawer open/close
     }
 
@@ -22,7 +22,7 @@ export default function HeaderNav({ children, navItems }) {
         <Box
             component="nav"
             className="header_nav"
-            
+
         >
             {/* Hamburger Menu Button for Small Screens */}
             <IconButton
@@ -39,14 +39,15 @@ export default function HeaderNav({ children, navItems }) {
             <Box
                 component="ul"
                 sx={{
-                    display: { xs: "none", md: "flex" },}}
+                    display: { xs: "none", md: "flex" },
+                }}
             >
                 {navItems.map((link) => (
                     <Box component="li" key={link.href}>
                         <a
                             href={link.href}
                             className="header-drawer-big-screens"
-                            
+
                         >
                             {link.name}
                         </a>
@@ -60,25 +61,27 @@ export default function HeaderNav({ children, navItems }) {
                 open={headerDrawerOpen}
                 onClose={toggleDrawer(false)}
                 sx={{
-                    "& .MuiDrawer-paper": { width: 200, 
-                                            marginTop: '50px',
-                                            backgroundColor:"#f5f5f5",
-                                            padding: "2px"},
+                    "& .MuiDrawer-paper": {
+                        width: 200,
+                        marginTop: '50px',
+                        backgroundColor: "#f5f5f5",
+                        padding: "2px"
+                    },
                     zIndex: '8000',
-                    
+
                 }}
             >
-                
+
                 <List onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
                     {navItems.map((link) => (
                         <ListItem button key={link.href}
-                        sx={{padding:'4px'}}>
+                            sx={{ padding: '4px' }}>
                             <ListItemText
                                 primary={
                                     <a
                                         href={link.href}
                                         className="header-drawer-small-screens"
-                                        
+
                                     >
                                         {link.name}
                                     </a>
@@ -87,8 +90,8 @@ export default function HeaderNav({ children, navItems }) {
                         </ListItem>
                     ))}
                 </List>
-                
-                
+
+
 
             </Drawer>
 

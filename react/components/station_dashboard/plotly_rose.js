@@ -4,7 +4,7 @@ import { windSpeedBins, colorPalette, categorizeWindSpeed, extractWindSpeedBins,
 
 //const cardinalPoints = ["North", "N-E", "East", "S-E", "South", "S-W", "West", "N-W"];
 export function categorizeWindDirection(direction, cardinalPoints) {
-  
+
   const sectors = 360 / cardinalPoints.length;
   const index = Math.round(direction / sectors) % cardinalPoints.length;
   //console.log(cardinalPoints[index])
@@ -20,13 +20,13 @@ function calculateWindSpeedDistribution(directions, speeds, totalDataPoints) {
   const freqObj = makeEmptyfreqObj(windSpdLabel, cardinalPoints);
   console.log(freqObj)
 
-  
-  const cardinal =  directions.map((direction)=> categorizeWindDirection(direction, cardinalPoints))
-  const speedBin =  speeds.map((speed)=> categorizeWindSpeed(speed))
-  
-  
+
+  const cardinal = directions.map((direction) => categorizeWindDirection(direction, cardinalPoints))
+  const speedBin = speeds.map((speed) => categorizeWindSpeed(speed))
+
+
   //console.log(cardinal, speedBin);
-  
+
   const freqDist = {};
 
   for (let i = 0; i < cardinal.length; i++) {
@@ -45,45 +45,46 @@ function calculateWindSpeedDistribution(directions, speeds, totalDataPoints) {
   }
 
   console.log(freqDist);
-  const freqFrac= structuredClone(freqObj);
+  const freqFrac = structuredClone(freqObj);
   console.log(freqFrac);
-  Object.keys(freqDist).forEach((speedBin)=>{
+  Object.keys(freqDist).forEach((speedBin) => {
 
-    Object.keys(freqDist[speedBin]).forEach((cardinalDirection)=>{
-      const dirIdx= cardinalPoints.findIndex((point) => point === cardinalDirection);
-      const freqPercent = ((freqDist[speedBin][cardinalDirection]/ totalDataPoints) * 100).toFixed(2);
+    Object.keys(freqDist[speedBin]).forEach((cardinalDirection) => {
+      const dirIdx = cardinalPoints.findIndex((point) => point === cardinalDirection);
+      const freqPercent = ((freqDist[speedBin][cardinalDirection] / totalDataPoints) * 100).toFixed(2);
       console.log(speedBin)
-      freqFrac[speedBin][dirIdx]= freqPercent;
+      freqFrac[speedBin][dirIdx] = freqPercent;
     });
-    
+
   });
   console.log(freqFrac)
   return freqFrac
 
-  
+
 }
 
-export function makeEmptyfreqObj(windSpeedBins, cardinalPoints){
-  const freqObj =  {};
-  windSpeedBins.forEach((bin)=>{
-    freqObj[bin] = new Array(cardinalPoints.length).fill(0);});
-  
+export function makeEmptyfreqObj(windSpeedBins, cardinalPoints) {
+  const freqObj = {};
+  windSpeedBins.forEach((bin) => {
+    freqObj[bin] = new Array(cardinalPoints.length).fill(0);
+  });
+
   //console.log(freqObj);
 
   return freqObj
-  
+
 }
 
-export function RenderPlotlyRose ( { windData, directionData, timeData }){
-  console.log(windData, directionData, timeData );
-  const totalDataPoints= timeData.length;
+export function RenderPlotlyRose({ windData, directionData, timeData }) {
+  console.log(windData, directionData, timeData);
+  const totalDataPoints = timeData.length;
   const parsed_data = calculateWindSpeedDistribution(directionData, windData, totalDataPoints);
   const data = [];
-  Object.keys(parsed_data).forEach((speedBin, index)=>
+  Object.keys(parsed_data).forEach((speedBin, index) =>
   (
     data.push({
       r: parsed_data[speedBin],
-      theta:cardinalPoints,
+      theta: cardinalPoints,
       name: speedBin,
       marker: { color: colorPalette[index] },
       type: "barpolar"
@@ -94,7 +95,7 @@ export function RenderPlotlyRose ( { windData, directionData, timeData }){
   const layout = {
     font: { size: 13 },
     showlegend: true,
-    legend: { font: { size: 13 }, x: 1.15, y: 0.5, orientation: "v"},
+    legend: { font: { size: 13 }, x: 1.15, y: 0.5, orientation: "v" },
     polar: {
       barmode: "stack", // Better than "overlay" for wind roses
       bargap: 0,
@@ -111,19 +112,19 @@ export function RenderPlotlyRose ( { windData, directionData, timeData }){
       alignItems: 'center',
       width: '100%',
       padding: '0px',
-      
+
     }}>
       <Plot
         data={data}
         layout={layout}
         config={{ responsive: true, modeBarButtonsToRemove: ['select2d', 'lasso2d', 'zoom2d'] }}
         style={{ width: '400px', height: '350px' }}
-        
+
       />
     </div>
 
   );
 
 
- 
+
 }

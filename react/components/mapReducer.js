@@ -21,8 +21,8 @@ export const initialMapState = {
   showDateSelection: false,
   isDrawerOpen: true,
   storm_points: empty_storm_obj,
-  filterQuery:{},
-  filterStormName:'',
+  filterQuery: {},
+  filterStormName: '',
 };
 
 export function mapReducer(state, action) {
@@ -57,8 +57,8 @@ export function mapReducer(state, action) {
       return { ...state, startCategory: action.payload };
     case 'SET_END_CATEGORY':
       return { ...state, endCategory: action.payload };
-      case 'SET_FILTER_STORM_NAME':
-        return { ...state, filterStormName: action.payload };
+    case 'SET_FILTER_STORM_NAME':
+      return { ...state, filterStormName: action.payload };
     case 'SET_FILTER_QUERY':
       return { ...state, filterQuery: action.payload };
     case 'TOGGLE_CAT_SELECTION':
@@ -82,30 +82,30 @@ export function mapReducer(state, action) {
         startCategory: "",
         endCategory: "",
       };
-      case 'RESET_FILTERS':
-        return {
-          ...state,
-          polyFilterCoords: '',
-          startDate: null,
-          endDate: null,
-          startCategory: "",
-          endCategory: "",
-          filterStormName:"",
-        };
-      case 'SET_SELECTED_STATION_AND_OPEN_DASHBOARD':
-        return {
-          ...state,
-          selected_station: action.payload,
-          selectedTab: 0,
-          isDashOpen: true,
-          isStationDashOpen: true,
-        };
-      case 'CLOSE_STATION_DASHBOARD':
-        return {
-          ...state,
-          selected_station: empty_station_obj,
-          selectedTab: 0,
-        };
+    case 'RESET_FILTERS':
+      return {
+        ...state,
+        polyFilterCoords: '',
+        startDate: null,
+        endDate: null,
+        startCategory: "",
+        endCategory: "",
+        filterStormName: "",
+      };
+    case 'SET_SELECTED_STATION_AND_OPEN_DASHBOARD':
+      return {
+        ...state,
+        selected_station: action.payload,
+        selectedTab: 0,
+        isDashOpen: true,
+        isStationDashOpen: true,
+      };
+    case 'CLOSE_STATION_DASHBOARD':
+      return {
+        ...state,
+        selected_station: empty_station_obj,
+        selectedTab: 0,
+      };
 
     case 'CLOSE_STORM_TRACKS':
       return {

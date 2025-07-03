@@ -32,11 +32,11 @@ const logo = {
 export default function StormDashboard() {
   const router = useRouter()
   const qs = queryString.parseUrl(process.env.BASE_URL + router.asPath)
-  
+
   return (
-    <Layout 
-      topNav={top_nav} 
-      logo={logo} 
+    <Layout
+      topNav={top_nav}
+      logo={logo}
       querystring={qs}
     ></Layout>
   )

@@ -1,16 +1,16 @@
 import React, { useState, useRef, forwardRef, useImperativeHandle } from "react";
 import L from "leaflet";
 import {
-  
+
   FeatureGroup
 } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import 'leaflet-draw/dist/leaflet.draw.css';
 
-export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({ setPolyFilterCoords}, ref) {
+export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter({ setPolyFilterCoords }, ref) {
   const featureGroupRef = useRef(null);
   // Get the FeatureGroup reference
-  function clearShapes(){
+  function clearShapes() {
     const featureGroup = featureGroupRef.current;
     if (featureGroup) {
       // Remove all existing layers (only one shape allowed at a time)
@@ -22,9 +22,9 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({ se
   }
   // Expose clearShapes to parent component
   useImperativeHandle(ref, () => ({
-      clearShapes
+    clearShapes
   }));
-  
+
 
 
 
@@ -34,43 +34,43 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({ se
       numEdited += 1;
     });
     console.log(`_onEdited: edited ${numEdited} layers`, e);
-     
-    
+
+
 
     // this._onChange();
   };
 
   const _onCreated = e => {
-    
+
     let type = e.layerType;
     let layer = e.layer;
     console.log(layer);
-    
+
 
     featureGroupRef.current.addLayer(layer);
 
-    
-  
-     
- 
-     // Add the new shape
-     //featureGroupRef.current.addLayer(layer);
 
-  
+
+
+
+    // Add the new shape
+    //featureGroupRef.current.addLayer(layer);
+
+
     if (type === "rectangle") {
       console.log("_onCreated: Rectangle created");
-      
+
     } else if (type === "polygon") {
       console.log("_onCreated: Polygon created");
-      
-    } 
-      const poly = processPolygon(layer.getLatLngs())
-      setPolyFilterCoords(poly);
+
+    }
+    const poly = processPolygon(layer.getLatLngs())
+    setPolyFilterCoords(poly);
 
 
-  
 
-  
+
+
     console.log("GeoJSON", layer.toGeoJSON());
   };
 
@@ -79,7 +79,7 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({ se
     e.layers.eachLayer(layer => {
       numDeleted += 1;
     });
-    
+
     setPolyFilterCoords('');      // Clear polygon filter
     console.log(`onDeleted: removed ${numDeleted} layers`, e);
 
@@ -99,25 +99,25 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({ se
     const featureGroup = featureGroupRef.current;
 
     if (featureGroup) {
-        featureGroup.eachLayer((layer) => {
-            /*if (layer instanceof L.Rectangle) {
-                const bbox = processRectangle(layer.getLatLngs());
-                setPolyFilterCoords('');
-                setBboxFilterCoordinates(bbox);
-                console.log("Updated BBOX Coordinates:", bbox);
+      featureGroup.eachLayer((layer) => {
+        /*if (layer instanceof L.Rectangle) {
+            const bbox = processRectangle(layer.getLatLngs());
+            setPolyFilterCoords('');
+            setBboxFilterCoordinates(bbox);
+            console.log("Updated BBOX Coordinates:", bbox);
 
-            } else if (layer instanceof L.Polygon) {
-                const poly = processPolygon(layer.getLatLngs());
-                setBboxFilterCoordinates('');
-                setPolyFilterCoords(poly);
-                console.log("Updated Polygon Coordinates:", poly);
-            }*/
-                const poly = processPolygon(layer.getLatLngs());
-                setPolyFilterCoords(poly);
-                console.log("Updated Polygon Coordinates:", poly);
-        });
+        } else if (layer instanceof L.Polygon) {
+            const poly = processPolygon(layer.getLatLngs());
+            setBboxFilterCoordinates('');
+            setPolyFilterCoords(poly);
+            console.log("Updated Polygon Coordinates:", poly);
+        }*/
+        const poly = processPolygon(layer.getLatLngs());
+        setPolyFilterCoords(poly);
+        console.log("Updated Polygon Coordinates:", poly);
+      });
     }
-    
+
   };
 
   const _onDeleteStart = e => {
@@ -129,9 +129,9 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter ({ se
   };
 
   const _onDrawStart = e => {
-    clearShapes(); 
+    clearShapes();
     console.log("_onDrawStart", e);
-    
+
   };
 
   /*onEdited	function	hook to leaflet-draw's draw:edited event
@@ -171,7 +171,7 @@ onEditVertex	function	hook to leaflet-draw's draw:editvertex event*/
 });
 
 
-export function processRectangle(coords){
+export function processRectangle(coords) {
   console.log(coords)
   const latitudes = coords.flat().map(coord => coord.lat);
   const longitudes = coords.flat().map(coord => coord.lng);
@@ -189,12 +189,12 @@ export function processRectangle(coords){
   console.log("Max Longitude:", maxLng);
   return `${minLat}_${minLng}_${maxLat}_${maxLng}`
 
-}; 
+};
 
 
-export function ProcessPolygon({}){};
+export function ProcessPolygon({ }) { };
 
-export function processPolygon(coords){
+export function processPolygon(coords) {
   coords = coords.flat();
   let polyList = [];
   coords.forEach(point => {
@@ -204,14 +204,14 @@ export function processPolygon(coords){
   const first_point = coords[0];
 
   polyList.push(`${first_point.lat} ${first_point.lng}`);
-  
+
   const polyCoords = polyList.join(",")
-  
+
 
   console.log(polyList);
   console.log(polyCoords);
   return polyCoords;
 
-  
+
 
 };

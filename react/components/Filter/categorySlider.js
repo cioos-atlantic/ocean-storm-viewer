@@ -21,21 +21,21 @@ export const storm_category_list = [
 export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowCatSelection, startCategory, endCategory }) {
   const stormCategoryLink = "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html";
   const defaultText = <>
-  Adjust the slider to filter storms by category, from -5 (weakest) to 5 (strongest). <br />
-  Learn more about {" "}
-  <a href={stormCategoryLink}
-     target="_blank"
-     rel="noopener noreferrer">
-    storm categories
-  </a>.
-</>;
+    Adjust the slider to filter storms by category, from -5 (weakest) to 5 (strongest). <br />
+    Learn more about {" "}
+    <a href={stormCategoryLink}
+      target="_blank"
+      rel="noopener noreferrer">
+      storm categories
+    </a>.
+  </>;
 
   const [sliderText, setSliderText] = useState(defaultText);
-  
+
   const values = storm_category_list.map(item => item.value);
   const minCategory = Math.min(...values);
   const maxCategory = Math.max(...values);
-  
+
   // Independent state for the slider's range
   const [value, setValue] = useState([minCategory, maxCategory]);
 
@@ -46,28 +46,28 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
   };
 
 
-  
-  
-  
+
+
+
 
 
   useEffect(() => {
     if (startCategory != "" && endCategory != "") {
       const stormMin = `${startCategory}`;
       const stormMax = `${endCategory}`;
-  
+
       setSliderText(
         <>
           You&apos;ve selected storms from Category <strong>{stormMin}</strong> to <strong>{stormMax}</strong>. <br />
           Category{' '}
 
           <a href={storm_categories[stormMin]?.more_info_link}
-             target="_blank"
-             rel="noopener noreferrer">
+            target="_blank"
+            rel="noopener noreferrer">
             <strong>{stormMin}</strong>
           </a>
-            - {storm_categories[stormMin]?.sub_info}. <br />
-            Category{' '}
+          - {storm_categories[stormMin]?.sub_info}. <br />
+          Category{' '}
 
           <a href={storm_categories[stormMax]?.more_info_link}
             target="_blank"
@@ -76,8 +76,8 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
           </a> - {storm_categories[stormMax]?.sub_info}. <br />
           [See more details{' '}
           <a href={stormCategoryLink}
-             target="_blank"
-             rel="noopener noreferrer">
+            target="_blank"
+            rel="noopener noreferrer">
             here
           </a>.]
         </>
@@ -92,79 +92,79 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
     <Card
       sx={{
         position: 'absolute',
-        top:{xs: '6px', md: '100%',},
-        right:{xs: '100%', md: '0px',},
-        width:{xs: '220px', md: '320px',},
-        height:{xs: '200px',  md: 'inherit',},
-        overflow:{xs: 'scroll', md: 'hidden', },
+        top: { xs: '6px', md: '100%', },
+        right: { xs: '100%', md: '0px', },
+        width: { xs: '220px', md: '320px', },
+        height: { xs: '200px', md: 'inherit', },
+        overflow: { xs: 'scroll', md: 'hidden', },
         padding: '6px',
         backgroundColor: "#f4f4f4",
         alignContent: 'center',
         border: '2px solid #e55162',
         borderRadius: '10px',
-        zIndex:'9001',
-        
+        zIndex: '9001',
+
 
       }}>
-        <CardContent className='date-card-content' sx={{fontSize: '13px'}}>
-          {sliderText}
-        </CardContent>
-        <CardContent
-          className='date-card-content'>
-            <Box sx={{ width: {sx: 130, md: 300} }}>
-              <Slider
-              sx={{
-                width: '85%',
-                color: '#e55162',
-                
-              }}
-                getAriaLabel={() => 'Category range'}
-                value={value}
-                onChange={handleChange}
-                //valueLabelDisplay="auto"
-                min={minCategory}
-                max={maxCategory}
-                marks={ [...storm_category_list].sort((a, b) => a.value - b.value) }
-              />
-            </Box>
+      <CardContent className='date-card-content' sx={{ fontSize: '13px' }}>
+        {sliderText}
+      </CardContent>
+      <CardContent
+        className='date-card-content'>
+        <Box sx={{ width: { sx: 130, md: 300 } }}>
+          <Slider
+            sx={{
+              width: '85%',
+              color: '#e55162',
 
-        </CardContent>
-        <CardActions
-              className='date-card-content'>
-                <Box 
-                  sx={{ display: 'flex', justifyContent: 'center', gap: '2px', width: '100%' }}>
-                    <Button 
-                      size="small"
-                      className='filter-submit-button'
-                      onClick={() => {
-                        setValue([minCategory, maxCategory]); // Reset slider range
-                        setSliderText(defaultText); 
-                        setStartCategory(""); 
-                        setEndCategory("");   
-                      }}>Clear</Button>
-                    <Button 
-                      size="small" 
-                      className='filter-submit-button' 
-                      onClick={()=> {setShowCatSelection(false)}}>Close</Button>
-        
-        
-                </Box>
-                
-                
-        
-              </CardActions>
+            }}
+            getAriaLabel={() => 'Category range'}
+            value={value}
+            onChange={handleChange}
+            //valueLabelDisplay="auto"
+            min={minCategory}
+            max={maxCategory}
+            marks={[...storm_category_list].sort((a, b) => a.value - b.value)}
+          />
+        </Box>
+
+      </CardContent>
+      <CardActions
+        className='date-card-content'>
+        <Box
+          sx={{ display: 'flex', justifyContent: 'center', gap: '2px', width: '100%' }}>
+          <Button
+            size="small"
+            className='filter-submit-button'
+            onClick={() => {
+              setValue([minCategory, maxCategory]); // Reset slider range
+              setSliderText(defaultText);
+              setStartCategory("");
+              setEndCategory("");
+            }}>Clear</Button>
+          <Button
+            size="small"
+            className='filter-submit-button'
+            onClick={() => { setShowCatSelection(false) }}>Close</Button>
+
+
+        </Box>
+
+
+
+      </CardActions>
 
     </Card>
-    
+
   );
 }
 
-export function RenderCategoryFilter({ state, dispatch}){
-  
+export function RenderCategoryFilter({ state, dispatch }) {
+
   //const [showCatSelection, setShowCatSelection] = useState(false); 
   const hasValidCategory = state.startCategory && state.endCategory;
   const buttonStyle = {
-    backgroundColor: hasValidCategory  ? '#e55162' : 'white',
+    backgroundColor: hasValidCategory ? '#e55162' : 'white',
     color: hasValidCategory ? 'white' : '#e55162',
     '&:hover': {
       backgroundColor: hasValidCategory ? '#ffd1dc' : '#82ccdd',
@@ -172,46 +172,48 @@ export function RenderCategoryFilter({ state, dispatch}){
     },
   };
 
-  function handleIconClick(){
+  function handleIconClick() {
     //setShowCatSelection(prev => !prev);
-    dispatch({ type: "TOGGLE_CAT_SELECTION"});
+    dispatch({ type: "TOGGLE_CAT_SELECTION" });
   }
-  
+
 
 
 
   return (
     <>
-    <Button
-    className="filter-badge"
-    onClick= {handleIconClick}
-    startIcon={<CategoryOutlinedIcon />}
-    endIcon={ !state.showCatSelection ? (<ShowOptions/>):(<CloseOptions/>)}
-    sx={{...buttonStyle,
-      display: { xs: "none", md: "inline-flex" }, }
-    }>
-      
-      Storm Category
-      
-      
+      <Button
+        className="filter-badge"
+        onClick={handleIconClick}
+        startIcon={<CategoryOutlinedIcon />}
+        endIcon={!state.showCatSelection ? (<ShowOptions />) : (<CloseOptions />)}
+        sx={{
+          ...buttonStyle,
+          display: { xs: "none", md: "inline-flex" },
+        }
+        }>
 
-    </Button>
-    {smallScreenIconButton('Storm Category', handleIconClick, buttonStyle, CategoryOutlinedIcon)}
-    
+        Storm Category
 
-    {state.showCatSelection && 
-      (<CategoryRangeSlider 
-        setStartCategory = {(category) => dispatch({ type: "SET_START_CATEGORY", payload: category })}
-        setEndCategory = {(category) => dispatch({ type: "SET_END_CATEGORY", payload: category })}
-        setShowCatSelection={(status) => dispatch({ type: "SET_CAT_SELECTION", payload: status })}
-        startCategory={state.startCategory}
-        endCategory={state.endCategory}/>)}
 
-    {console.log(state.startCategory, state.endCategory)}
+
+      </Button>
+      {smallScreenIconButton('Storm Category', handleIconClick, buttonStyle, CategoryOutlinedIcon)}
+
+
+      {state.showCatSelection &&
+        (<CategoryRangeSlider
+          setStartCategory={(category) => dispatch({ type: "SET_START_CATEGORY", payload: category })}
+          setEndCategory={(category) => dispatch({ type: "SET_END_CATEGORY", payload: category })}
+          setShowCatSelection={(status) => dispatch({ type: "SET_CAT_SELECTION", payload: status })}
+          startCategory={state.startCategory}
+          endCategory={state.endCategory} />)}
+
+      {console.log(state.startCategory, state.endCategory)}
     </>
 
 
-    
+
   );
 };
 

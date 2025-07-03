@@ -15,11 +15,11 @@ function StormCategoryChart({ chartData }) {
     if (!chartData || !chartData.data) return;
 
     const uniqueStormCats = [...new Set(chartData.data)];
-    
-    
+
+
     // Extract background colors based on storm types
     const labels = uniqueStormCats.map(category => storm_categories[category]?.name.en || 'No Data');
-    const backgroundColors = uniqueStormCats.map(category => 
+    const backgroundColors = uniqueStormCats.map(category =>
       storm_categories[category]?.arcColor || "#CCCCCC" // Default color if type is missing
     );
 
@@ -73,7 +73,7 @@ export default StormCategoryChart;
 
 
 
-function getLabelName(name_code){
+function getLabelName(name_code) {
   const labelName = storm_type_info[name_code]['name']['en']
   return labelName
 }

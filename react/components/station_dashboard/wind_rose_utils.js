@@ -11,16 +11,16 @@ export const windSpeedBins = [
   { min: 209, max: 251, label: "209–251 km/h" },
   { min: 252, max: Infinity, label: "≥ 252 km/h" }
 ];
-export const colorPalette= [
+export const colorPalette = [
   '#5E4FA2', // Deep Purple
-'#3288BD', // Blue
-'#66C2A5', // Teal
-'#ABDDA4', // Light Green
-'#FEE08B', // Yellow
-'#FDAE61', // Orange
-'#F46D43', // Red-Orange
-'#D53E4F', // Deep Red
-'#808080', // grey - unknown storms
+  '#3288BD', // Blue
+  '#66C2A5', // Teal
+  '#ABDDA4', // Light Green
+  '#FEE08B', // Yellow
+  '#FDAE61', // Orange
+  '#F46D43', // Red-Orange
+  '#D53E4F', // Deep Red
+  '#808080', // grey - unknown storms
 ];
 
 export const cardinalPoints = [
@@ -71,15 +71,16 @@ export function categorizeWindSpeed(speed) {
  * cardinal points and values as arrays filled with zeros based on the length of the `windSpeedBins`
  * array.
  */
-export function makeEmptyfreqObj(windSpeedBins, cardinalPoints){
-  const freqObj =  {};
-  cardinalPoints.forEach((point)=>{
-    freqObj[point] = new Array(windSpeedBins.length).fill(0);});
-  
+export function makeEmptyfreqObj(windSpeedBins, cardinalPoints) {
+  const freqObj = {};
+  cardinalPoints.forEach((point) => {
+    freqObj[point] = new Array(windSpeedBins.length).fill(0);
+  });
+
   console.log(freqObj);
 
   return freqObj
-  
+
 }
 
 /**
@@ -89,16 +90,16 @@ export function makeEmptyfreqObj(windSpeedBins, cardinalPoints){
  * the object have been transformed to represent the percentage of the total data points that they
  * account for.
  */
-export function makeFreqFraction(freqObj, totalDataPoints){
+export function makeFreqFraction(freqObj, totalDataPoints) {
   console.log(totalDataPoints)
-  const freqFrac= structuredClone(freqObj);
+  const freqFrac = structuredClone(freqObj);
 
-  Object.values(freqFrac).forEach((point) =>{
+  Object.values(freqFrac).forEach((point) => {
     //console.log(point)
 
 
     point.forEach((value, index) => {
-      
+
       point[index] = (value / totalDataPoints) * 100
 
     });
@@ -112,13 +113,12 @@ export function makeFreqFraction(freqObj, totalDataPoints){
  * The function `extractWindSpeedBins` extracts and returns an array of wind speed labels from a given a set of wind speed bins.
 
  */
-export function extractWindSpeedBins(){
-  const windSpdLabel= []
-    
-    windSpeedBins.forEach((obj) =>
-      {windSpdLabel.push(obj.label)})
+export function extractWindSpeedBins() {
+  const windSpdLabel = []
 
-    return windSpdLabel
+  windSpeedBins.forEach((obj) => { windSpdLabel.push(obj.label) })
+
+  return windSpdLabel
 };
 
 /**
@@ -126,23 +126,23 @@ export function extractWindSpeedBins(){
  * returns a list of objects with wind speed, speed bin, direction, and cardinal direction.
  
  */
-export function makeGroupedList(directions, speeds){
-    const groupedList = [];
-    directions.forEach((direction, index) => {
-    
-        const cardinal = categorizeWindDirection(direction);
-        //console.log(cardinal)
-        const speedBin = categorizeWindSpeed(speeds[index]);
-    
-        groupedList.push({
-          windSpeed : speeds[index],
-          speedBin : speedBin,
-          direction : direction,
-          cardinal : cardinal,
-        });
-      });
+export function makeGroupedList(directions, speeds) {
+  const groupedList = [];
+  directions.forEach((direction, index) => {
 
-    return groupedList
+    const cardinal = categorizeWindDirection(direction);
+    //console.log(cardinal)
+    const speedBin = categorizeWindSpeed(speeds[index]);
+
+    groupedList.push({
+      windSpeed: speeds[index],
+      speedBin: speedBin,
+      direction: direction,
+      cardinal: cardinal,
+    });
+  });
+
+  return groupedList
 
 }
 
@@ -150,17 +150,17 @@ export function makeGroupedList(directions, speeds){
  * The function `processWindSpeeds` processes wind speed data from a source and stores it in an object with unique keys like "wind_speed_1", "wind_speed_2",
  * etc.
  */
-export function processWindSpeeds(sourceData){
-    const include_var = [ "wind_speed"]
-    // Initialize the result object
-    const windSpeed = {};
-    const  column_names = sourceData.column_names;
-  
-    const column_std_names = sourceData.column_std_names;
-    const uniqueColStdNames= getUniqueStdNamesList(column_std_names);
-    console.log(uniqueColStdNames);
-  
-    uniqueColStdNames.filter((variable) => include_var.includes(variable))
+export function processWindSpeeds(sourceData) {
+  const include_var = ["wind_speed"]
+  // Initialize the result object
+  const windSpeed = {};
+  const column_names = sourceData.column_names;
+
+  const column_std_names = sourceData.column_std_names;
+  const uniqueColStdNames = getUniqueStdNamesList(column_std_names);
+  console.log(uniqueColStdNames);
+
+  uniqueColStdNames.filter((variable) => include_var.includes(variable))
     .forEach((variable, index) => {
       const column_names_list = getColumnNameList(column_std_names, column_names, variable)
 
@@ -170,9 +170,9 @@ export function processWindSpeeds(sourceData){
         const data_unit = get_station_field_units(sourceData, col_name);
         let values = station_data_obj.data;
         console.log(values, data_unit)
-        if (data_unit !== 'km/h'){
-          values= values.map((value)=> {
-            
+        if (data_unit !== 'km/h') {
+          values = values.map((value) => {
+
             const converted_value = convert_unit_data(value, data_unit, 'km/h');
             //console.log(value, converted_value.value)
             return converted_value.value
@@ -181,18 +181,18 @@ export function processWindSpeeds(sourceData){
         console.log(values)
 
 
-        const long_name= station_data_obj.long_name;
+        const long_name = station_data_obj.long_name;
 
-    
+
         // Store each instance of wind_speed with a unique name like "wind_speed_1", "wind_speed_2", etc.
         windSpeed[long_name] = values;
       });
-  
+
     });
-  
-    return windSpeed;
-  }
-  
+
+  return windSpeed;
+}
+
 /**
  * The function `parseWindData` takes frequency fraction data and wind speed labels, and organizes them
  * into an array of objects with direction, value, and wind speed bin properties.
@@ -202,21 +202,21 @@ export function processWindSpeeds(sourceData){
  * corresponds to the key from the `freqFrac` object, the `value` property corresponds to the value at
  * a specific index in the points array, and the `windSpeedBin` property
  */
-export function parseWindData(freqFrac, windSpdLabel){
-    const data = [];
-    Object.entries(freqFrac).forEach(([key, points]) => {
+export function parseWindData(freqFrac, windSpdLabel) {
+  const data = [];
+  Object.entries(freqFrac).forEach(([key, points]) => {
 
-        points.forEach((value, index)=> {
-            data.push(
-                {
-                direction: key,
-                    value: value,
-                    windSpeedBin: windSpdLabel[index]
-                }
-            )
-        })
-    });
-    //console.log(data)
-    return data;
+    points.forEach((value, index) => {
+      data.push(
+        {
+          direction: key,
+          value: value,
+          windSpeedBin: windSpdLabel[index]
+        }
+      )
+    })
+  });
+  //console.log(data)
+  return data;
 
 }

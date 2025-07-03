@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     }
 }
 
-export async function wfs_query(storm_name, season, source, source_type, storm_id, filters, selected_features = "", storm_line_filter= false) {
+export async function wfs_query(storm_name, season, source, source_type, storm_id, filters, selected_features = "", storm_line_filter = false) {
     // https://dev.cioosatlantic.ca/geoserver/cioos-atlantic/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=cioos-atlantic%3Aibtracs_active_storms&maxFeatures=50&outputFormat=application%2Fjson
 
     /*
@@ -115,32 +115,32 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
 
         responses["ib_data"] = await fetch_wfs_data(ib_features_url);
 
-        
-
-        
 
 
-        if (storm_line_filter){
+
+
+
+        if (storm_line_filter) {
             responses["ib_data"].features = responses["ib_data"].features.map((storm_line) => {
                 storm_line.properties.STORMNAME = storm_line.properties.NAME;
-    
+
                 return storm_line;
             });
 
-            
+
         }
-        else{
+        else {
             responses["ib_data"].features = responses["ib_data"].features.map((storm_point) => {
                 storm_point.properties.TIMESTAMP = storm_point.id.match(/\d+-\d+-\d+[\sT]\d+:\d+:\d+/)[0].replace(" ", "T");
                 storm_point.properties.STORMNAME = storm_point.properties.NAME;
-    
+
                 return storm_point;
             });
         }
 
-        
 
-        
+
+
     }
 
     if (get_eccc) {

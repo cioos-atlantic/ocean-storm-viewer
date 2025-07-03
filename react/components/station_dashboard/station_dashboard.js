@@ -1,9 +1,9 @@
-import React from"react";
+import React from "react";
 import { FaWindowClose } from "react-icons/fa";
 import { useMediaQuery, Box, useTheme } from "@mui/material";
 import StationDataLayout from "./station_layout_small_screen";
 import BasicTabs from "./tabs";
-import {  getMatchedStation, getStationDataText, } from "../utils/station_data_format_util";
+import { getMatchedStation, getStationDataText, } from "../utils/station_data_format_util";
 import { fetch_value } from "@/lib/storm_utils";
 
 
@@ -14,13 +14,13 @@ import { fetch_value } from "@/lib/storm_utils";
  */
 
 
-export default function StationDashboard({state, dispatch, station_descriptions, time, source_type
+export default function StationDashboard({ state, dispatch, station_descriptions, time, source_type
 
 }) {
   //const [selectedTab, setSelectedTab] = useState(0);
   const stationData = state.selected_station;
   console.log(stationData);
-  
+
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('md')); // `md` in MUI = 960px
   const isExtraSmall = useMediaQuery(theme.breakpoints.down('sm'));
@@ -63,24 +63,24 @@ export default function StationDashboard({state, dispatch, station_descriptions,
   standardNames.forEach((varName, indx) => {
     if (!excludeVars.includes(varName)) {
 
-      
+
       rowData.forEach((datalist) => {
-         if (datalist[indx]) {
-            variablePresence.wind_speed ||= varName.includes("wind_speed");
-            variablePresence.wind_from_direction ||= varName.includes("wind_from_direction");
-            variablePresence.temperature ||= varName.includes("temperature");
-            variablePresence.wave ||= varName.includes("wave");
-            variablePresence.air_pressure ||= varName.includes("air_pressure");
-         }
+        if (datalist[indx]) {
+          variablePresence.wind_speed ||= varName.includes("wind_speed");
+          variablePresence.wind_from_direction ||= varName.includes("wind_from_direction");
+          variablePresence.temperature ||= varName.includes("temperature");
+          variablePresence.wave ||= varName.includes("wave");
+          variablePresence.air_pressure ||= varName.includes("air_pressure");
+        }
       })
 
 
-      
-      
+
+
     }
-    
-   
-    
+
+
+
   });
   console.log(variablePresence);
 
@@ -88,53 +88,53 @@ export default function StationDashboard({state, dispatch, station_descriptions,
   console.log(hoverPointTime);
   if (!state.isStationDashOpen) return null;
 
- 
+
 
   return (
     isExtraSmall ? (
       <Box
-      key="01-station-dashboard"
-      className={`station_dashboard`}
-      sx={{
-        display: 'flex',
-      }}
-    >
-      <Box
-        className="dash-header"
+        key="01-station-dashboard"
+        className={`station_dashboard`}
         sx={{
-          fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
-          padding: "10px",
-          
+          display: 'flex',
         }}
       >
-        <button
-          className="close"
-          onClick={() => {
-            dispatch({ type: "CLOSE_STATION_DASHBOARD"});
-            dispatch({ type: "TOGGLE_STATION_DASH", payload: false});
+        <Box
+          className="dash-header"
+          sx={{
+            fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
+            padding: "10px",
+
           }}
-          title="Close"
-          aria-label="Close"
         >
-          <FaWindowClose />
-        </button>
-        <div>
-          <strong key={displayName}>{displayName}</strong>
-        </div>
-        <div>
-          <a href={institutionLink} target="_blank" rel="noopener noreferrer">
-            {institution}
-          </a>
-        </div>
-      </Box>
-      <Box
-        className="dash-body"
-        sx={{
-          fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
-          
-        }}
-      >
-        
+          <button
+            className="close"
+            onClick={() => {
+              dispatch({ type: "CLOSE_STATION_DASHBOARD" });
+              dispatch({ type: "TOGGLE_STATION_DASH", payload: false });
+            }}
+            title="Close"
+            aria-label="Close"
+          >
+            <FaWindowClose />
+          </button>
+          <div>
+            <strong key={displayName}>{displayName}</strong>
+          </div>
+          <div>
+            <a href={institutionLink} target="_blank" rel="noopener noreferrer">
+              {institution}
+            </a>
+          </div>
+        </Box>
+        <Box
+          className="dash-body"
+          sx={{
+            fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
+
+          }}
+        >
+
           <StationDataLayout
             stationName={stationName}
             stationData={stationValues?.properties?.station_data}
@@ -142,55 +142,56 @@ export default function StationDashboard({state, dispatch, station_descriptions,
             variablePresence={variablePresence}
             hoverPointTime={hoverPointTime}
           />
-        
-        
+
+
+        </Box>
       </Box>
-    </Box>
-    ):(
+    ) : (
       <Box
-      key="01-station-dashboard"
-      className={`station_dashboard`}
-      sx={{display:  'flex',
-        //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
-        
-        
-      }}
-    >
-      <Box
-        className="dash-header"
+        key="01-station-dashboard"
+        className={`station_dashboard`}
         sx={{
-          fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
-          padding: "10px",
+          display: 'flex',
+          //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
+
+
         }}
       >
-        <button
-          className="close"
-          onClick={() => {
-            dispatch({ type: "CLOSE_STATION_DASHBOARD"});
-            dispatch({ type: "TOGGLE_STATION_DASH", payload: false});
-            //setIsStationDashOpen(false);
+        <Box
+          className="dash-header"
+          sx={{
+            fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
+            padding: "10px",
           }}
-          title="Close"
-          aria-label="Close"
         >
-          <FaWindowClose />
-        </button>
-        <div>
-          <strong key={displayName}>{displayName}</strong>
-        </div>
-        <div>
-          <a href={institutionLink} target="_blank" rel="noopener noreferrer">
-            {institution}
-          </a>
-        </div>
-      </Box>
-      <Box
-        className="dash-body"
-        sx={{
-          fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
-           
-        }}
-      >
+          <button
+            className="close"
+            onClick={() => {
+              dispatch({ type: "CLOSE_STATION_DASHBOARD" });
+              dispatch({ type: "TOGGLE_STATION_DASH", payload: false });
+              //setIsStationDashOpen(false);
+            }}
+            title="Close"
+            aria-label="Close"
+          >
+            <FaWindowClose />
+          </button>
+          <div>
+            <strong key={displayName}>{displayName}</strong>
+          </div>
+          <div>
+            <a href={institutionLink} target="_blank" rel="noopener noreferrer">
+              {institution}
+            </a>
+          </div>
+        </Box>
+        <Box
+          className="dash-body"
+          sx={{
+            fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
+
+          }}
+        >
           <BasicTabs
             stationName={stationName}
             stationData={stationValues?.properties?.station_data}
@@ -200,11 +201,10 @@ export default function StationDashboard({state, dispatch, station_descriptions,
             setSelectedTab={(tab) => dispatch({ type: "SET_SELECTED_TAB", payload: tab })}
             hoverPointTime={hoverPointTime}
           />
-        
+
+        </Box>
       </Box>
-    </Box>
     )
 
   );
 }
-  

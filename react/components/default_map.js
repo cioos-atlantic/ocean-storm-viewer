@@ -21,7 +21,7 @@ export default function Map() {
   return (
     <div className="map_container">
       <div className='inner_container'>
-        
+
         <MapContainer
           center={defaultPosition}
           zoom={defaultZoom}
@@ -45,9 +45,9 @@ export default function Map() {
                 />
               </LayerGroup>
             </LayersControl.Overlay>
-            </LayersControl>
+          </LayersControl>
 
-          
+
         </MapContainer>
       </div>
     </div>

@@ -18,22 +18,22 @@ export const storm_category_filter_list = [
 ]
 
 export const filters = [
-  
- 
-  
+
+
+
 
 
 ]
 
 
 export const input_filters = [
-  { 
-    "name":'stormName',
+  {
+    "name": 'stormName',
     "display_name": 'Storm Name',
-    'Icon':BadgeOutlinedIcon,
+    'Icon': BadgeOutlinedIcon,
     "placeholder": 'Storm1, Storm2',
-    
-    
+
+
   },
   /*{ 
     "name":'stormYear',

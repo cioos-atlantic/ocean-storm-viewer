@@ -11,13 +11,13 @@ import 'chartjs-adapter-luxon';
 
 
 // Register necessary components, including the Line controller
-Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, BarController, BarElement, Filler, annotationPlugin, TimeScale );
+Chart.register(LineController, LineElement, LinearScale, PointElement, CategoryScale, Tooltip, Legend, BarController, BarElement, Filler, annotationPlugin, TimeScale);
 
 
 /**
  * Renders a line chart using Chart.js to display station data.
  */
-function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }) {
+function RenderStormChart({ sourceData, varCategory, timeData, hoverPointTime }) {
   const chartRef = useRef(null); // Reference to the canvas element
   const chartInstance = useRef(null); // Store Chart.js instance
 
@@ -51,17 +51,17 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-      
-      // Chart.js configuration
+
+    // Chart.js configuration
     const chartConfig = {
       type: 'line',
       data: {
         labels: formattedTimeData, // Set the labels (time)
         datasets: datasets, // Set the datasets
       },
-      
+
       options: {
-        animation:ProgressiveAnimation(datasets),
+        animation: ProgressiveAnimation(datasets),
         interaction: {
           intersect: false,
           mode: 'index',
@@ -72,17 +72,17 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
               display: true, // Show grid on the x-axis
             },
             type: "time",
-              time: {
-                parser: 'yyyy/MM/dd t',
-                tooltipFormat: 'yyyy/MM/dd t',
-                unit: "day",
-                displayFormats: {
-                  'hour':'MM/dd'
-                }
-              },
-              ticks:{
-                stepSize: 1
+            time: {
+              parser: 'yyyy/MM/dd t',
+              tooltipFormat: 'yyyy/MM/dd t',
+              unit: "day",
+              displayFormats: {
+                'hour': 'MM/dd'
               }
+            },
+            ticks: {
+              stepSize: 1
+            }
           },
           y: {
             grid: {
@@ -93,12 +93,12 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
         },
         responsive: true,
         maintainAspectRatio: true,
-        spanGaps:true,
+        spanGaps: true,
         //maintainAspectRatio: false,
         plugins: {
           annotation: {
             annotations: {
-              
+
             }
           },
           filler: {
@@ -111,7 +111,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
               padding: 5,
               boxWidth: 10,
               font: {
-                  size: 10,
+                size: 10,
               }
             },
           },
@@ -139,7 +139,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
         //yMax: yMax,
         borderColor: 'rgb(255, 99, 132)',
         borderWidth: 2,
-        borderDash: [5,2],
+        borderDash: [5, 2],
         label: {
           display: true,
           content: `Hovered Date: ${highlightTime}`,
@@ -153,7 +153,7 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
           padding: 4
         }
       }
-     chart.update();
+      chart.update();
     }, 500) // set delay to heart's content. Set to anything above 250, 20 cause a very interesting bug
 
     // Cleanup function to destroy the chart on unmount
@@ -168,15 +168,15 @@ function RenderStormChart({ sourceData,  varCategory, timeData, hoverPointTime }
 
   return (
     <div className='chart-render'>
-    <canvas
-      ref={chartRef}
-      style={{
-        top: 0,
-        left: 0,
-        
-      }}
-    />
-  </div>
+      <canvas
+        ref={chartRef}
+        style={{
+          top: 0,
+          left: 0,
+
+        }}
+      />
+    </div>
   );
 }
 
@@ -192,7 +192,7 @@ const getRandomColor = () => {
 };
 
 
-function getColour(var_name){
+function getColour(var_name) {
   let colour = '';
   console.log(var_name)
   console.log(storm_graph_color)
@@ -203,10 +203,12 @@ function getColour(var_name){
 
 //Generate datasets
 function makeDataset(dataList, formattedTimeData, hoverPointTime) {
-  const datasets=[];
+  const datasets = [];
   const hoverTimeStamp = new Date(hoverPointTime).getTime();
-  dataList.forEach((dataDict) => {console.log(dataDict);
-    Object.entries(dataDict).forEach(([key, value]) => {console.log(key)
+  dataList.forEach((dataDict) => {
+    console.log(dataDict);
+    Object.entries(dataDict).forEach(([key, value]) => {
+      console.log(key)
       datasets.push({
         label: value.name,
         data: value.data,
@@ -223,8 +225,8 @@ function makeDataset(dataList, formattedTimeData, hoverPointTime) {
         },
       })
     })
-    })
- 
+  })
+
   return datasets;
 }
 

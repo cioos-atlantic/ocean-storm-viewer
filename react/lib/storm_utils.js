@@ -21,44 +21,44 @@ const hurricane_categories = {
         "min": 157,
         "max": null,
         "name": { "en": "Category 5", "fr": "catégorie 5" },
-        "img" : `${basePath}/data/img/storm_categories/Category_5_hurricane_icon.svg`
+        "img": `${basePath}/data/img/storm_categories/Category_5_hurricane_icon.svg`
     },
     "4": {
         "min": 113,
         "max": 136,
         "name": { "en": "Category 4", "fr": "catégorie 4" },
-        "img" : `${basePath}/data/img/storm_categories/Category_4_hurricane_icon.svg`
+        "img": `${basePath}/data/img/storm_categories/Category_4_hurricane_icon.svg`
     },
     "3": {
         "min": 96,
         "max": 112,
         "name": { "en": "Category 3", "fr": "catégorie 3" },
-        "img" : `${basePath}/data/img/storm_categories/Category_3_hurricane_icon.svg`
+        "img": `${basePath}/data/img/storm_categories/Category_3_hurricane_icon.svg`
     },
     "2": {
         "min": 83,
         "max": 95,
         "name": { "en": "Category 2", "fr": "catégorie 2" },
-        "img" : `${basePath}/data/img/storm_categories/Category_2_hurricane_icon.svg`
+        "img": `${basePath}/data/img/storm_categories/Category_2_hurricane_icon.svg`
     },
     "1": {
         "min": 64,
         "max": 82,
         "name": { "en": "Category 1", "fr": "catégorie 1" },
-        "img" : `${basePath}/data/img/storm_categories/Category_1_hurricane_icon.svg`
+        "img": `${basePath}/data/img/storm_categories/Category_1_hurricane_icon.svg`
     },
     "TS": {
         "min": 34,
         "max": 63,
         "name": { "en": "Tropical Storm", "fr": "Tempête tropicale" },
-        "img" : `${basePath}/data/img/storm_categories/Category_TS_hurricane_icon.svg`
+        "img": `${basePath}/data/img/storm_categories/Category_TS_hurricane_icon.svg`
     },
     "TD": {
         "min": 33,
         "max": null,
         "name": { "en": "Tropical Depression", "fr": "Dépression tropicale" },
-        "img" : `${basePath}/data/img/storm_categories/Category_TD_hurricane_icon.svg`
-        
+        "img": `${basePath}/data/img/storm_categories/Category_TD_hurricane_icon.svg`
+
     },
 }
 
@@ -99,13 +99,13 @@ export function fetch_value(point, property_list) {
     let return_value = null;
 
     property_list.every(value => {
-        try{
+        try {
             if (point.properties[value] !== undefined && point.properties[value] !== null) {
                 return_value = point.properties[value];
                 return false;
             }
         }
-        catch(e){
+        catch (e) {
             console.error(e, property_list);
             return false;
         }
@@ -205,7 +205,7 @@ export function build_sea_height_radii(storm_data_pt, height, storm_center, ne_r
     return final_polygon;
 }
 
-export function generate_radii_coords(final_polygon, storm_center, ne_rad, se_rad, sw_rad, nw_rad){
+export function generate_radii_coords(final_polygon, storm_center, ne_rad, se_rad, sw_rad, nw_rad) {
 
     // Calculate arc per quadrant
     const quadrants = ['NE', 'SE', 'SW', 'NW'];
@@ -499,7 +499,7 @@ export function build_storm_features(storm_data) {
     return storm_features;
 }
 
-export function populateStormDetails(event, storm_data, setSelectedStorm, setStormPoints,  setSelectedStation) {
+export function populateStormDetails(event, storm_data, setSelectedStorm, setStormPoints, setSelectedStation) {
     setStormPoints(empty_storm_obj);
     setSelectedStation(empty_station_obj);
 
