@@ -80,7 +80,6 @@ def cache_erddap_data(storm_id, df, destination_table, pg_engine, table_schema, 
     # populate table
     log.info("Populating Table...")
 
-
     with pg_engine.begin() as pg_conn: 
         
         if(storm_id):
@@ -93,7 +92,7 @@ def cache_erddap_data(storm_id, df, destination_table, pg_engine, table_schema, 
     result = df.to_sql(destination_table, pg_engine, chunksize=1000, method='multi', 
                        if_exists='append', index=False, schema='public')
     
-    
+
     with pg_engine.begin() as pg_conn: 
         
        #log.info("Updating Geometry...")
@@ -109,6 +108,23 @@ def cache_erddap_data(storm_id, df, destination_table, pg_engine, table_schema, 
         pg_conn.execute(text("COMMIT;"))
         log.info("Cached " + storm_id)
     return
+
+def find_station_info(dataset, station, metadata, destination_table, pg_engine, add_if_not_exists=True):
+    # populate table
+    
+    institution = erddap_meta(metadata=metadata, attribute_name="institution")["value"].replace("'", "''")
+    institution_link = erddap_meta(metadata=metadata, attribute_name="infoUrl")["value"].replace("'", "''")
+    station_id = None
+
+    with pg_engine.begin() as pg_conn: 
+        sql = f"SELECT station_id FROM public.{destination_table} WHERE source_url = '{server}' AND dataset = '{dataset}' AND station = '{station}';"
+        station_id = pg_conn.execute(text(sql)).fetchone()
+        if not station_id and add_if_not_exists:
+            log.info("Populating station table...")
+            sql = f"INSERT INTO public.{destination_table} (source_url, dataset, station, institution, institution_link)"
+            sql+= f" VALUES ('{server}', '{dataset}', '{station}', '{institution}', '{institution_link}') RETURNING (station_id)"
+            station_id = pg_conn.execute(text(sql)).fetchone()
+    return station_id[0] #Returns a 1 item row object otherwise
 
 def create_table_from_schema(pg_engine, table_name, schema_file, pg_schema='public'):
     # Create ECCC Tables if not exist
@@ -206,6 +222,8 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
         dataset['vars'].pop(0)
     e.variables = dataset["vars"]
 
+    metadata = dataset['meta']
+
     e.constraints = {
         "time>=": min_time,
         "time<": max_time
@@ -229,7 +247,6 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
 
         # Filter out erroneous values
         df = filter_value_limits(df)
-        drop_cols = []
 
         # Split up stations
         id_col = find_df_column_by_standard_name(df, "identifier")
@@ -254,74 +271,79 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
             # Only one substation, don't care about editing original
             station_df = df
             # Going to be dropping columns so want to deep copy for now
+            station_id= find_station_info(dataset_id, substation,metadata,'erddap_stations', engine, True)
+            
             if multiple_substations:
                 station_df = df[df[id_col_name]==substation].copy()
 
+            drop_cols = []
             for col in station_df.columns:
                 if len(station_df[col].value_counts()) == 0:
                     drop_cols.append(col)
 
             if (id_col_name):
                 drop_cols.append(id_col_name)
-
+            
             # Drop variables that were marked as empty
             for col in drop_cols:
                 station_df = station_df.drop(col, axis=1)
 
-            # If all variables of interest were dropped, skip caching
-            if len(df.columns) < 4:
-                return cached_entries
-
-            max_lat= find_df_column_by_standard_name(station_df, "latitude").max().max()
-            min_lat= find_df_column_by_standard_name(station_df, "latitude").min().min()
-            max_lon= find_df_column_by_standard_name(station_df, "longitude").max().max()
-            min_lon= find_df_column_by_standard_name(station_df, "longitude").min().min()
-
-            # Finds the time column based on standard name and converts the type to be usable as datetime
-            time_col = find_df_column_by_standard_name(station_df, "time").columns.values[0]
-            station_df[time_col] = pd.to_datetime(station_df[time_col])
-
-            # TODO Redo this now that a substation may not be represented in the full time scale?
-            date_range = pd.date_range(min_time, max_time, freq="12H")
-            # Catch if part of the interval isn't in the range
-            prev_interval = ""
-            for interval in date_range:
-                if(prev_interval):
-                    df_interval = station_df[(station_df[time_col] >= prev_interval.to_pydatetime()) & (station_df[time_col] < interval.to_pydatetime())]
-                    # Might be able to only do the conversion during the 
-                    # df_interval = df_interval[time_col].dt.strftime('%Y-%m-%dT%H:%M:%SZ')
-                    # Change the dataframe to JSON, can change the format or orientation 
-
-                    # Experimental average binning per hour
-                    #times = pd.to_datetime(df_interval[time_col])
-                    df_interval = df_interval.groupby(pd.Grouper(key=time_col, axis=0, freq="h")).mean(numeric_only=True)
-                    station_data = df_interval.reset_index().to_json(orient="records")
-
-                    dataset_name = dataset_id
-                    if(multiple_substations):
-                        dataset_name += " - " + substation
-
-                    entry = {
-                        "storm":storm_id,
-                        "station":dataset_name,
-                        "min_time":prev_interval,
-                        "max_time":interval,
-                        "min_lon":min_lon,
-                        "max_lon":max_lon,
-                        "min_lat":min_lat,
-                        "max_lat":max_lat, 
-                        "station_data":station_data
-                    }
-                    # Avoids caching empty json strings (2 for the brackets)
-                    if(len(station_data) > 2):
-                        cached_entries.append(entry)
-                    # time in ISO format or set column to timestamp (UTC for timezone)
-                prev_interval = interval
-            #log.info(dataset_id + " cached")
-            return cached_entries
+            station_info = get_station_data(station_df, dataset_id, storm_id, min_time, max_time, station_id)
+            cached_entries.extend(station_info)
     except Exception as ex:
         log.error("HTTPStatusError", ex)
         log.error(f" - No data found for time range: {min_time} - {max_time}")
+    return cached_entries
+
+def get_station_data(station_df, dataset_id, storm_id, min_time, max_time, station_id):
+    # If all variables of interest were dropped, skip caching
+    cached_entries = []
+
+    if len(station_df.columns) < 4:
+        return cached_entries
+
+    max_lat= find_df_column_by_standard_name(station_df, "latitude").max().max()
+    min_lat= find_df_column_by_standard_name(station_df, "latitude").min().min()
+    max_lon= find_df_column_by_standard_name(station_df, "longitude").max().max()
+    min_lon= find_df_column_by_standard_name(station_df, "longitude").min().min()
+
+    # Finds the time column based on standard name and converts the type to be usable as datetime
+    time_col = find_df_column_by_standard_name(station_df, "time").columns.values[0]
+    station_df[time_col] = pd.to_datetime(station_df[time_col])
+
+    # TODO Redo this now that a substation may not be represented in the full time scale?
+    date_range = pd.date_range(min_time, max_time, freq="12H")
+    # Catch if part of the interval isn't in the range
+    prev_interval = ""
+    for interval in date_range:
+        if(prev_interval):
+            df_interval = station_df[(station_df[time_col] >= prev_interval.to_pydatetime()) & (station_df[time_col] < interval.to_pydatetime())]
+            # Might be able to only do the conversion during the 
+            # df_interval = df_interval[time_col].dt.strftime('%Y-%m-%dT%H:%M:%SZ')
+            # Change the dataframe to JSON, can change the format or orientation 
+
+            # Experimental average binning per hour
+            #times = pd.to_datetime(df_interval[time_col])
+            df_interval = df_interval.groupby(pd.Grouper(key=time_col, axis=0, freq="h")).mean(numeric_only=True)
+            station_data = df_interval.reset_index().to_json(orient="records")
+
+            entry = {
+                "storm":storm_id,
+                "station":station_id,
+                "min_time":prev_interval,
+                "max_time":interval,
+                "min_lon":min_lon,
+                "max_lon":max_lon,
+                "min_lat":min_lat,
+                "max_lat":max_lat, 
+                "station_data":station_data,
+                "station_id":station_id
+            }
+            # Avoids caching empty json strings (2 for the brackets)
+            if(len(station_data) > 2):
+                cached_entries.append(entry)
+            # time in ISO format or set column to timestamp (UTC for timezone)
+        prev_interval = interval
     return cached_entries
 
 #Finds the column name in the dataframe given the standard name
@@ -419,7 +441,7 @@ def main():
     subparsers.required = True  
 
     parser_historical = subparsers.add_parser("historical")
-    parser_historical.add_argument("--storm", help="The storm identifier, in the format of YYYY_stormname (lowercase). Example: 2022_fiona", nargs='?', type=storm_format)
+    parser_historical.add_argument("--storm", help="The storm identifier, in the format of YYYY_stormname (lowercase). Example: 2022_FIONA", nargs='?', type=storm_format)
     parser_historical.add_argument("--min", help="The start time of data in the storm interval. Format: YYYY", nargs='?', type=int)
     parser_historical.add_argument("--max", help="The end time of data in the storm interval. Format: YYYY", nargs='?', type=int)
     parser_historical.add_argument("--dry", help="Dry run. Will grab from ERDDAP but not commit the data to the database", action="store_true")
