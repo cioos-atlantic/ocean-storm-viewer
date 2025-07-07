@@ -3,7 +3,7 @@ import { useMap } from "react-leaflet";
 import ActiveStormList from "@/components/active_storm_list";
 import HistoricalStormList from "@/components/historical_storm/historical_storm_list";
 import Leaflet from 'leaflet';
-import React, { useState } from "react";
+import React from "react";
 import { Tooltip, Box, Button } from '@mui/material';
 
 
@@ -69,8 +69,17 @@ export default function Drawer({ children, element_id, classes, source_type, set
                                 setStationPoints={setStationPoints}
                                 map={map}
                                 Leaflet={Leaflet}
-                                state={state}
                                 dispatch={dispatch}
+                                returnFilterResult={state.returnFilterResult}
+                                filterResult={state.filterResult}
+                                drawerButtonClicked={state.drawerButtonClicked}
+                                startDate={state.startDate}
+                                endDate={state.endDate}
+                                startCategory={state.startCategory}
+                                endCategory={state.endCategory}
+                                polyFilterCoords={state.polyFilterCoords}
+                                filterQuery={state.filterQuery}
+                                filterStormName={state.filterStormName}
                                 
                         />
                         ) : 

@@ -1,28 +1,26 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { get_station_field_data, get_station_field_units, getColumnNameList, getUniqueStdNamesList } from '../utils/station_data_format_util';
+import { convert_unit_data } from '../utils/unit_conversion';
 
 export const windSpeedBins = [
-  { min: 0, max: 8, label: "=< 8 m/s" },
-  { min: 8, max: 16, label: "9-16 m/s" },
-  { min: 16, max: 24, label: "17-24 m/s" },
-  { min: 24, max: 32, label: "25-32 m/s" },
-  { min: 32, max: 40, label: "33-40 m/s" },
-  { min: 40, max: 48, label: "41-48 m/s" },
-  { min: 48, max: 56, label: "49-56 m/s" },
-  { min: 56, max: 64, label: "57-64 m/s" },
-  { min: 64, max: undefined, label: ">= 65 m/s" },
-
+  { min: 0, max: 62, label: "< 63 km/h" },
+  { min: 63, max: 117, label: "63–117 km/h" },
+  { min: 118, max: 153, label: "118–153 km/h" },
+  { min: 154, max: 177, label: "154–177 km/h" },
+  { min: 178, max: 208, label: "178–208 km/h" },
+  { min: 209, max: 251, label: "209–251 km/h" },
+  { min: 252, max: Infinity, label: "≥ 252 km/h" }
 ];
 export const colorPalette= [
   '#5E4FA2', // Deep Purple
 '#3288BD', // Blue
 '#66C2A5', // Teal
 '#ABDDA4', // Light Green
-'#E6F598', // Yellow-Green
 '#FEE08B', // Yellow
 '#FDAE61', // Orange
 '#F46D43', // Red-Orange
 '#D53E4F', // Deep Red
+'#808080', // grey - unknown storms
 ];
 
 export const cardinalPoints = [
@@ -55,6 +53,7 @@ export function categorizeWindDirection(direction) {
  * speed falls into. If the input speed does not match any bin, it returns "Unknown".
  */
 export function categorizeWindSpeed(speed) {
+  //console.log(speed);
   for (const bin of windSpeedBins) {
     if (speed >= bin.min && (bin.max === undefined || speed < bin.max)) {
       return bin.label; // Return the label instead of the index
@@ -167,9 +166,23 @@ export function processWindSpeeds(sourceData){
 
 
       column_names_list.forEach(col_name => {
-        const station_data_obj = get_station_field_data(sourceData, col_name)
-        const values = station_data_obj.data;
+        const station_data_obj = get_station_field_data(sourceData, col_name);
+        const data_unit = get_station_field_units(sourceData, col_name);
+        let values = station_data_obj.data;
+        console.log(values, data_unit)
+        if (data_unit !== 'km/h'){
+          values= values.map((value)=> {
+            
+            const converted_value = convert_unit_data(value, data_unit, 'km/h');
+            //console.log(value, converted_value.value)
+            return converted_value.value
+          })
+        }
+        console.log(values)
+
+
         const long_name= station_data_obj.long_name;
+
     
         // Store each instance of wind_speed with a unique name like "wind_speed_1", "wind_speed_2", etc.
         windSpeed[long_name] = values;

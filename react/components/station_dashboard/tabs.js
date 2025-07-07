@@ -1,12 +1,14 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import TabList from '@mui/lab/TabList';
 import TabContext from '@mui/lab/TabContext';
 import Box from '@mui/material/Box';
 import { RenderWindRose } from './wind_rose';
 import RenderChart from '../station_graph.js'
+import { processWindSpeeds } from './wind_rose_utils';
+import { get_station_field_data } from '../utils/station_data_format_util';
+import { RenderPlotlyRose } from './plotly_rose';
 
 /**
  * The CustomTabPanel function renders children based on the value and index props.
@@ -76,6 +78,14 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
    */
   
   //console.log(stationName, stationData, stationSummaryText, variablePresence, selectedTab, setSelectedTab)
+  console.log(stationData)
+
+  const timeData = get_station_field_data(stationData, "time", "column_std_names").data;
+  const directionData = get_station_field_data(stationData, 'wind_from_direction', "column_std_names").data;
+  const  windSpeedData = processWindSpeeds(stationData);
+
+  console.log(windSpeedData);
+  console.log(timeData, directionData, windSpeedData);
 
   function generateGraph(selectedVar){
     
@@ -125,26 +135,38 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
           sx={{
             fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
           }} {...a11yProps(1)} disabled={!variablePresence['wind_speed']}/>
-          <Tab label="Wind Dir." 
+          {/*<Tab label="Wind Dir." 
           sx={{
             fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
           }}
-          {...a11yProps(2)} disabled={!variablePresence['wind_from_direction']} />
+          {...a11yProps(2)} disabled={!variablePresence['wind_from_direction']} />*/}
           <Tab label="Temperature"
           sx={{
             fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
           }}
-          {...a11yProps(3)} disabled={!variablePresence['temperature']}/>
+          {...a11yProps(2)} disabled={!variablePresence['temperature']}/>
           <Tab label="Waves"
           sx={{
             fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
           }}
-          {...a11yProps(4)} disabled={!variablePresence['wave']}/>
+          {...a11yProps(3)} disabled={!variablePresence['wave']}/>
           <Tab label="Pressure"
           sx={{
             fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
           }}
-          {...a11yProps(5)} disabled={!variablePresence['air_pressure']}/>
+          {...a11yProps(4)} disabled={!variablePresence['air_pressure']}/>
+
+          {Object.keys(windSpeedData).map((key, index) => {
+            const label = key.replace(/^wind speed(?=\s+\S)/i, '').trim();
+            return(
+            <Tab label={`WINDROSE-${label}`}  key={`windbin-tab-${key}`} 
+            sx={{
+              fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+            }}
+            {...a11yProps(5 + index )} disabled={!variablePresence['wind_from_direction']}/>
+          )}
+            
+           )}
         </TabList>
       </Box>
       <CustomTabPanel value={selectedTab} index={0}>
@@ -156,21 +178,32 @@ export default function BasicTabs({stationName, stationData, stationSummaryText,
       <CustomTabPanel value={selectedTab} index={1}>
         {generateGraph("wind_speed")}
       </CustomTabPanel>
-      <CustomTabPanel value={selectedTab} index={2}>
+      {/*<CustomTabPanel value={selectedTab} index={2}>
       <RenderWindRose  
                 sourceData={stationData}
                 hasWindRoseData={variablePresence['wind_from_direction']}
                 /> 
-      </CustomTabPanel>
-      <CustomTabPanel value={selectedTab} index={3}>
+      </CustomTabPanel>*/}
+      <CustomTabPanel value={selectedTab} index={2}>
         {generateGraph("temperature")}
       </CustomTabPanel>
-      <CustomTabPanel value={selectedTab} index={4}>
+      <CustomTabPanel value={selectedTab} index={3}>
         {generateGraph("wave")}
       </CustomTabPanel>
-      <CustomTabPanel value={selectedTab} index={5}>
+      <CustomTabPanel value={selectedTab} index={4}>
         {generateGraph("air_pressure")}
       </CustomTabPanel>
+      {
+            Object.keys(windSpeedData).map((key, index) => (
+              <CustomTabPanel  key={`windbin-tab-${key}`}  value={selectedTab} index={index + 5}>
+                  <RenderPlotlyRose 
+                    windData={windSpeedData[key]}
+                    directionData={directionData}
+                     timeData={timeData}/>
+                </CustomTabPanel>
+            )
+            )
+      }
       </TabContext>
     </Box>
   );

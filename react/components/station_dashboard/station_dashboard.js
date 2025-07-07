@@ -1,18 +1,11 @@
-import React, { useState, useRef } from"react";
+import React from"react";
 import { FaWindowClose } from "react-icons/fa";
-import { empty_station_obj } from "../layout";
 import { useMediaQuery, Box, useTheme } from "@mui/material";
-//import { empty_station_obj } from "../layout";
-//import { useMediaQuery, Box } from "@mui/material";
 import StationDataLayout from "./station_layout_small_screen";
 import BasicTabs from "./tabs";
-//import { RecentStationData, getMatchedStation } from "../utils/station_data_format_util";
-//import BasicTabs from "./tabs";
-import { RecentStationData, getMatchedStation, getStationDataText, } from "../utils/station_data_format_util";
-//import BasicTabs from "./tabs";
+import {  getMatchedStation, getStationDataText, } from "../utils/station_data_format_util";
 import { fetch_value } from "@/lib/storm_utils";
-import { RenderSmallDashboard } from "../Dashboard/Mobile_Dashboard/dashboard_small";
-import { RowingSharp } from "@mui/icons-material";
+
 
 
 /**
@@ -22,8 +15,9 @@ import { RowingSharp } from "@mui/icons-material";
 
 
 export default function StationDashboard({state, dispatch, station_descriptions, time, source_type
-}) {
 
+}) {
+  //const [selectedTab, setSelectedTab] = useState(0);
   const stationData = state.selected_station;
   console.log(stationData);
   
@@ -92,6 +86,7 @@ export default function StationDashboard({state, dispatch, station_descriptions,
 
   const hoverPointTime = fetch_value(state.hover_marker, ["TIMESTAMP", "ISO_TIME"]);
   console.log(hoverPointTime);
+  if (!state.isStationDashOpen) return null;
 
  
 
@@ -101,7 +96,7 @@ export default function StationDashboard({state, dispatch, station_descriptions,
       key="01-station-dashboard"
       className={`station_dashboard`}
       sx={{
-        display:  'flex',
+        display: 'flex',
       }}
     >
       <Box
@@ -116,6 +111,7 @@ export default function StationDashboard({state, dispatch, station_descriptions,
           className="close"
           onClick={() => {
             dispatch({ type: "CLOSE_STATION_DASHBOARD"});
+            dispatch({ type: "TOGGLE_STATION_DASH", payload: false});
           }}
           title="Close"
           aria-label="Close"
@@ -154,7 +150,7 @@ export default function StationDashboard({state, dispatch, station_descriptions,
       <Box
       key="01-station-dashboard"
       className={`station_dashboard`}
-      sx={{display: state.isStationDashOpen ? 'flex':'none',
+      sx={{display:  'flex',
         //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
         
         

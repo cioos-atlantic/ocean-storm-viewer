@@ -1,8 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import StormDashboard from '../storm_dashboard/storm_dashboard';
 import StationDashboard from '../station_dashboard/station_dashboard';
-import { empty_point_obj } from '../storm_point_details';
-import {empty_station_obj} from '../layout'
 import { Stack } from '@mui/material';
 import { useMediaQuery, Box, useTheme } from "@mui/material";
 import { RenderSmallDashboard } from './Mobile_Dashboard/dashboard_small';
@@ -34,6 +32,9 @@ export function RenderDashboards({ source_type, station_descriptions, time, stat
         source_type={source_type}
         time={time}
         storm_points={state.storm_points}
+        setIsDashOpen= {(state) => dispatch({ type: "TOGGLE_DASH", payload: state })}
+        setIsStormDashOpen={(state) => dispatch({ type: "TOGGLE_STORM_DASH", payload: state })}
+        setIsStationDashOpen={(state) => dispatch({ type: "TOGGLE_STATION_DASH", payload: state })}
         />
     ) : (
         <Stack
@@ -61,8 +62,10 @@ export function RenderDashboards({ source_type, station_descriptions, time, stat
         {showStorm && (
             <Box sx={{ flex: flexValue, minWidth: showStation ? "50%" : "100%" }}>
             <StormDashboard
-                state={state}
                 dispatch={dispatch}
+                hover_marker={state.hover_marker}
+                storm_points={state.storm_points}
+                isStormDashOpen={state.isStormDashOpen}
                 
             />
             </Box>

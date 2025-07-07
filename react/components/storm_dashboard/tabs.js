@@ -1,14 +1,14 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import TabList from '@mui/lab/TabList';
 import TabContext from '@mui/lab/TabContext';
 import Box from '@mui/material/Box';
-//import { RenderWindRose } from './wind_rose';
 import RenderStormChart from "./storm_graph";
 import StormTypeChart from './storm_type_chart';
 import StormCategoryChart from './storm_cat_chart';
+import { RenderPlotlyRose } from '../station_dashboard/plotly_rose';
+import { convert_unit_data } from '../utils/unit_conversion';
 
 /**
  * The CustomTabPanel function renders children based on the value and index props.
@@ -78,6 +78,12 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
    */
   
   //console.log(stationName, stationData, stationSummaryText, variablePresence, selectedTab, setSelectedTab)
+  const stormWindSpeed=stormData['Wind Speed']?.find(obj => "stormWindSpeed" in obj)?.stormWindSpeed;//[stormWindSpeed]?.data
+
+  const windData = stormWindSpeed?.data;
+  const stormDir=stormData?.direction?.find(obj => "stormDir" in obj)?.stormDir;
+  const directionData = stormDir?.data;
+  console.log(stormData, windData, directionData );
 
   function generateGraph(selectedVar){
     console.log('plotting charts');
@@ -131,10 +137,16 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
              sx={{
               fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
             }} {...a11yProps(2)} />
+            <Tab label='WINDROSE'
+             sx={{
+              fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+            }} {...a11yProps(3)} />
             
   
             {
-            Object.entries(stormData).map(([key, value], index) => {
+            Object.entries(stormData)
+            .filter(([key]) => key !== "direction") // Exclude "Direction"
+            .map(([key, value], index) => {
               
               return(
                 <Tab 
@@ -143,7 +155,7 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
                 sx={{
                     fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
                   }}
-               {...a11yProps(index + 3)}
+               {...a11yProps(index + 4)}
                 disabled={!variablePresence?.[key]}/>
               )
               
@@ -160,11 +172,20 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
       <CustomTabPanel value={selectedStormTab} index={2}>
         {<StormCategoryChart chartData={stormCategory}/>}
       </CustomTabPanel>
+      <CustomTabPanel value={selectedStormTab} index={3}>
+      {<RenderPlotlyRose 
+          windData={windData}
+          directionData={directionData}
+          timeData={stormTime}
+          />}
+      </CustomTabPanel>
       {
-            Object.entries(stormData).map(([key, value], index) => {
+            Object.entries(stormData)
+            .filter(([key]) => key !== "direction") // Exclude "Direction"
+            .map(([key, value], index) => {
               
               return(
-                <CustomTabPanel key={key} value={selectedStormTab} index={index + 3}>
+                <CustomTabPanel key={key} value={selectedStormTab} index={index + 4}>
                   {generateGraph(key)}
                 </CustomTabPanel>
               )

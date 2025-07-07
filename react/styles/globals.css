@@ -490,9 +490,17 @@ footer {
   position: sticky;
   top: 0;
   z-index: 1;
-  background-color: white;
+  background-color: lightgrey;
   padding: 8px;
   border-bottom: 2px solid #ccc;
+}
+
+
+.view-filters-content{
+  background-color: white;
+  padding: 8px;
+  margin-top: 3px;
+  
 }
 
 .filter_page_drawer_subheader{
@@ -589,6 +597,19 @@ footer {
   padding: 12px;
   background-color: #e55162;
   height: 300px;
+  border-radius: 4px;
+  border: 1px solid white;
+  overflow: auto;
+  max-height: 500;
+  width: 100%;
+  position: relative;
+
+}
+
+.view-filter-space{
+  text-align: left;
+  padding: 12px;
+  background-color: #e55162;
   border-radius: 4px;
   border: 1px solid white;
   overflow: auto;

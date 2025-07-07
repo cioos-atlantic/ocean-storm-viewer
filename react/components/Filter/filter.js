@@ -1,5 +1,6 @@
-import { IconButton, TextField, Box, Typography, Paper, Button, SpeedDial, SpeedDialIcon, SpeedDialAction, Tooltip } from "@mui/material";
+import { IconButton, TextField, Box, Typography, Paper, Button, SpeedDial, SpeedDialIcon, SpeedDialAction, Tooltip, Dialog, DialogTitle } from "@mui/material";
 import { useEffect, useState, Fragment } from 'react';
+
 import Stack from '@mui/material/Stack';
 
 //import Chip from '@mui/material/Chip';
@@ -10,6 +11,7 @@ import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { RenderDateFilter } from "./dateFilter";
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
+import InfoIcon from '@mui/icons-material/Info';
 import dayjs from 'dayjs';
 import { makeStormList } from "../historical_storm/historical_storm_utils";
 import { filters, input_filters } from "@/components/Filter/filters_list";
@@ -20,6 +22,7 @@ import LoadingScreen from "../loading_screen";
 import { smallScreenIconButton } from "./filter_utils";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { RenderCategoryFilter } from "./categorySlider";
+import InfoScreen from "../message_screens/info_screen";
 
 
 const ITEM_HEIGHT = 35;
@@ -35,8 +38,8 @@ const MenuProps = {
 
 
 
-const showOptionsArrow = <KeyboardDoubleArrowDownIcon />;
-const closeOptionsArrow = <KeyboardDoubleArrowUpIcon />;
+export const ShowOptions = KeyboardDoubleArrowDownIcon;
+export const CloseOptions = KeyboardDoubleArrowUpIcon;
 
 
 export function RenderFilter({  clearShapesRef, state, dispatch }) {
@@ -59,8 +62,10 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
 
 
   const [loading, setLoading] = useState(false);
+  const [info, setInfo] = useState(true)
 
   const router = useRouter(); // Next.js useRouter
+
 
   function handleClearAllFilters() {
     setSelectedOptions([]);
@@ -76,12 +81,6 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
 
     console.log("All filters and shapes cleared!");
   }
-
-
-
-
-
-
 
 
   async function handleFilterSubmit() {
@@ -100,6 +99,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
     };
 
     console.log(updatedParams); // 
+    dispatch({ type: "SET_FILTER_QUERY", payload: updatedParams});
+
 
 
     const stormResult = await processFilterRequest(updatedParams, setLoading);
@@ -164,12 +165,11 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                 <div className="filter-group" key={index}>
                   <InputFilter
                     input_filter={input_filter}
-                    showOptionsArrow={showOptionsArrow}
-                    closeOptionsArrow={closeOptionsArrow}
                     setSelectedOptions={setSelectedOptions}
                     selectedOptions={selectedOptions}
                     showFilterOptions={showFilterOptions}
                     setShowFilterOptions={setShowFilterOptions}
+                    dispatch={dispatch}
                   />
                 </div>
               )
@@ -178,8 +178,6 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
             }
             {openSpeedDial && (<div className="filter-group">
               <RenderDateFilter
-                showOptionsArrow={showOptionsArrow}
-                closeOptionsArrow={closeOptionsArrow}
                 state={state}
                 dispatch={dispatch}
               />
@@ -190,8 +188,6 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
             }
             {openSpeedDial && (<div className="filter-group">
               <RenderCategoryFilter
-                  showOptionsArrow={showOptionsArrow}
-                  closeOptionsArrow={closeOptionsArrow}
                   state={state}
                   dispatch={dispatch}
                 />
@@ -200,7 +196,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
             )
 
             }
-            {openSpeedDial && (filters.map((filter, index) => {
+            {/*openSpeedDial && (filters.map((filter, index) => {
               return (
 
                 <div className="filter-group" key={index}>
@@ -220,7 +216,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
               )
             }))
 
-            }
+            */}
 
           </SpeedDial>
 
@@ -236,12 +232,12 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                   <div className="filter-group" key={index}>
                     <InputFilter
                       input_filter={input_filter}
-                      showOptionsArrow={showOptionsArrow}
-                      closeOptionsArrow={closeOptionsArrow}
                       setSelectedOptions={setSelectedOptions}
                       selectedOptions={selectedOptions}
                       showFilterOptions={showFilterOptions}
                       setShowFilterOptions={setShowFilterOptions}
+                      dispatch={dispatch}
+                      filterStormName={state.filterStormName}
                     />
 
                   </div>
@@ -252,23 +248,19 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
 
             <div className="filter-group">
               <RenderDateFilter
-                showOptionsArrow={showOptionsArrow}
-                closeOptionsArrow={closeOptionsArrow}
                 state={state}
                 dispatch={dispatch}
               />
             </div>
             <div className="filter-group">
               <RenderCategoryFilter
-                  showOptionsArrow={showOptionsArrow}
-                  closeOptionsArrow={closeOptionsArrow}
                   state={state}
                   dispatch={dispatch}
                 />
             </div>
             
 
-            {
+            {/*
               filters.map((filter, index) => {
                 return (
 
@@ -283,7 +275,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                   </div>
                 )
               })
-            }
+            */}
 
             <Button
               className="filter-submit-button"
@@ -297,7 +289,21 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
               onClick={handleClearAllFilters}>
               X
             </Button>
+            <Button
+              id="info-icon"
+              className="info-icons"
+              startIcon={<InfoIcon />}
+              onClick={() => {
+                setInfo(true)
+              }}
+              >
+            </Button>
           </Stack>
+        <InfoScreen
+          setInfo = {setInfo}
+          open={info}
+          onClose = {info}
+        />
         </>
       )
       };
@@ -377,7 +383,7 @@ export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSel
           }));
         }}
         startIcon={filter.icon}
-        endIcon={!showFilterOptions[filter.name] ? (showOptionsArrow) : (closeOptionsArrow)}
+        endIcon={!showFilterOptions[filter.name] ? (<ShowOptions/>) : (<CloseOptions/>)}
         sx={{
           ...buttonStyle,
           display: { xs: "none", md: "inline-flex" }
