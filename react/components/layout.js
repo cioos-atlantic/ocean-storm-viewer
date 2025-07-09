@@ -5,7 +5,6 @@ import styles from './layout.module.css'
 import FooterNav from '../pages/parts/footer_nav'
 import { useRouter } from 'next/router';
 import dynamic from "next/dynamic";
-import About from "@/pages/about_page";
 import Grid from '@mui/material/Grid2';
 import { Box } from "@mui/material";
 import HeaderNav from "../pages/parts/header_nav";
@@ -125,21 +124,15 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
           </Grid>
         </Grid>
       </header>
-      {!isMounted ? null : about_page ? (
-        <About
 
+      <main className="body">
+        <MapWithNoSSR
+          station_data={station_points}
+          source_type={sourceType}
+          setStationPoints={setStationPoints}
         />
-      ) : (
-        <>
-          <main className="body">
-            <MapWithNoSSR
-              station_data={station_points}
-              source_type={sourceType}
-              setStationPoints={setStationPoints}
-            />
-          </main>
-        </>
-      )}
+      </main>
+
       <footer>
         <Box sx={{
           height: { xs: '20px', sm: '30px', md: '35px', lg: '50px', xl: '50px', xxl: '50px' }, // if changed, remember to change the station dashboard bottom in the station_dashboard.js
