@@ -3,7 +3,7 @@ import { basePath } from "@/next.config";
 import Head from 'next/head';
 import Image from 'next/image';
 import Grid from '@mui/material/Grid2';
-import HeaderNav from "@/components/header_nav";
+import HeaderNav from "@/pages/parts/header_nav";
 import { CssBaseline } from "@mui/material";
 
 export default function PageHeader({ page_subtitle, page_description }) {

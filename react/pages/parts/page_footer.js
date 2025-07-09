@@ -1,4 +1,4 @@
-import FooterNav from "@/components/footer_nav";
+import FooterNav from "@/pages/parts/footer_nav";
 import { Box } from "@mui/material";
 
 export default function PageFooter({ }) {

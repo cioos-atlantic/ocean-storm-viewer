@@ -2,13 +2,13 @@ import React, { useState, useMemo, useEffect } from "react";
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from './layout.module.css'
-import FooterNav from './footer_nav'
+import FooterNav from '../pages/parts/footer_nav'
 import { useRouter } from 'next/router';
 import dynamic from "next/dynamic";
 import About from "@/pages/about_page";
 import Grid from '@mui/material/Grid2';
 import { Box } from "@mui/material";
-import HeaderNav from "./header_nav";
+import HeaderNav from "../pages/parts/header_nav";
 
 
 import { basePath } from "@/next.config";
