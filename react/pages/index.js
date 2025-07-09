@@ -3,6 +3,7 @@ import PageHeader from './parts/page_header';
 import PageFooter from './parts/page_footer';
 import dynamic from 'next/dynamic';
 import { basePath } from '@/next.config';
+import Layout from './layout';
 
 export default function ActiveStormsPage() {
   const [station_points, setStationPoints] = useState({});
@@ -27,21 +28,17 @@ export default function ActiveStormsPage() {
   }, []);
 
   return (
-    <>
-      <PageHeader
-        page_description={"Displays storms that are currently in progress and being monitored."}
-        page_subtitle={"Active Storms"}
+    <Layout
+      page_description={"Displays storms that are currently in progress and being monitored."}
+      page_subtitle={"Active Storms"}
+    >
+
+      <MapWithNoSSR
+        station_data={station_points}
+        source_type={"active"}
+        setStationPoints={setStationPoints}
       />
-      <main className="body">
 
-        <MapWithNoSSR
-          station_data={station_points}
-          source_type={"active"}
-          setStationPoints={setStationPoints}
-        />
-
-      </main>
-      <PageFooter />
-    </>
+    </Layout>
   );
 }

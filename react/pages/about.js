@@ -1,5 +1,4 @@
-import PageHeader from './parts/page_header';
-import PageFooter from './parts/page_footer';
+import Layout from './layout';
 import { useRouter } from 'next/router';
 import aboutStyles from '@/styles/About.module.css';
 import Image from "next/image";
@@ -21,12 +20,10 @@ export default function AboutPage() {
     const router = useRouter();
 
     return (
-        <>
-            <PageHeader
-                page_description={"Learn more about the Ocean Storm Viewer, its purpose, and the team behind it."}
-                page_subtitle={"About Hurricanes"}
-            />
-
+        <Layout
+            page_description={"Learn more about the Ocean Storm Viewer, its purpose, and the team behind it."}
+            page_subtitle={"About Hurricanes"}
+        >
             <main className={aboutStyles.mainContent}>
                 <section className={aboutStyles.aboutSection}>
                     <h1>Table of Content</h1>
@@ -139,8 +136,6 @@ export default function AboutPage() {
 
                 </section>
             </main>
-
-            <PageFooter />
-        </>
+        </Layout>
     )
 }

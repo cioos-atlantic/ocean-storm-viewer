@@ -1,7 +1,7 @@
 
 import * as geolib from 'geolib';
 import { show_all_storms } from '../components/active_storm_list';
-import { empty_station_obj } from '@/components/layout';
+import { empty_station_obj } from '@/pages/layout';
 import { basePath } from '@/next.config.js';
 
 export const nmi_to_m = 1852.216;
