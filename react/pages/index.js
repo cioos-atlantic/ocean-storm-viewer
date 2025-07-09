@@ -19,8 +19,11 @@ import { basePath } from '@/next.config';
 const top_nav = [
   { name: "Home", href: basePath },
   { name: "Active Storms", href: basePath + "?storms=active" },
+  { name: "Active Storms (new)", href: basePath + "/active_storms" },
   { name: "Historical Storms", href: basePath + "?storms=historical" },
+  { name: "Historical Storms (new)", href: basePath + "/historical_storms" },
   { name: "About Hurricanes", href: basePath + "?storms=hurricanes" },
+  { name: "About Hurricanes (new)", href: basePath + "/about" },
 ]
 
 const logo = {
