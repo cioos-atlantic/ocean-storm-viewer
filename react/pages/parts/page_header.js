@@ -4,16 +4,14 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Grid from '@mui/material/Grid2';
 import HeaderNav from "@/components/header_nav";
+import { CssBaseline } from "@mui/material";
 
 export default function PageHeader({ page_subtitle, page_description }) {
     const top_nav = [
         { name: "Home", href: basePath },
-        { name: "Active Storms", href: basePath + "?storms=active" },
-        { name: "Active Storms (new)", href: basePath + "/active_storms" },
-        { name: "Historical Storms", href: basePath + "?storms=historical" },
-        { name: "Historical Storms (new)", href: basePath + "/historical_storms" },
-        { name: "About Hurricanes", href: basePath + "?storms=hurricanes" },
-        { name: "About Hurricanes (new)", href: basePath + "/about" },
+        { name: "Active Storms", href: basePath + "/active_storms" },
+        { name: "Historical Storms", href: basePath + "/historical_storms" },
+        { name: "About Hurricanes", href: basePath + "/about" },
     ];
 
     const logo = {
@@ -26,6 +24,7 @@ export default function PageHeader({ page_subtitle, page_description }) {
 
     return (
         <>
+            <CssBaseline />
             <Head>
                 <link rel="icon" href={`${basePath}/favicon.ico`} />
                 <meta
