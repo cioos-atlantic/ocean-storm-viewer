@@ -1,7 +1,5 @@
 import PageHeader from './parts/page_header';
 import PageFooter from './parts/page_footer';
-
-// import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import aboutStyles from '@/styles/About.module.css';
 import Image from "next/image";
