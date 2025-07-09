@@ -1,46 +1,47 @@
-// https://www.freecodecamp.org/news/best-practices-for-security-of-your-react-js-application/
-
-// Checkout DOMPurify for security https://github.com/cure53/DOMPurify
-// used with dangerouslySetInnerHTML()
-
-// URL Validation:
-// function validateURL(url) {
-// 	const parsed = new URL(url)
-// 	return ['https:', 'http:'].includes(parsed.protocol)
-// }
-// <a href={validateURL(url) ? url : ''}>This is a link!</a>
-
-
-import { useRouter } from 'next/router'
-import queryString from 'query-string';
-import Layout from '../components/layout'
+import React, { useState, useEffect, useMemo } from 'react';
+import PageHeader from './parts/page_header';
+import PageFooter from './parts/page_footer';
+import dynamic from 'next/dynamic';
 import { basePath } from '@/next.config';
 
-const top_nav = [
-  { name: "Home", href: basePath },
-  { name: "Active Storms", href: basePath + "?storms=active" },
-  { name: "Active Storms (new)", href: basePath + "/active_storms" },
-  { name: "Historical Storms", href: basePath + "?storms=historical" },
-  { name: "Historical Storms (new)", href: basePath + "/historical_storms" },
-  { name: "About Hurricanes", href: basePath + "?storms=hurricanes" },
-  { name: "About Hurricanes (new)", href: basePath + "/about" },
-]
+export default function ActiveStormsPage() {
+  const [station_points, setStationPoints] = useState({});
 
-const logo = {
-  src: `${basePath}/cioos-atlantic_EN.svg`,
-  alt: "CIOOS Atlantic - Hurricane Dashboard",
-  href: "https://cioosatlantic.ca/"
-}
+  // useMemo() tells React to "memorize" the map component.
+  // Without this, the map will get redrawn by many interactions 
+  // and cause flashing - this lets us update map layers without
+  // the map constant flashing with each change and click.
+  const MapWithNoSSR = useMemo(
+    () => (dynamic(() => import("../components/map"), {
+      ssr: false
+    })),
+    [],
+  );
 
-export default function StormDashboard() {
-  const router = useRouter()
-  const qs = queryString.parseUrl(process.env.BASE_URL + router.asPath)
+  useEffect(() => {
+    fetch(`${basePath}/api/query_stations`)
+      .then((res) => res.json())
+      .then((data) => {
+        setStationPoints(data);
+      })
+  }, []);
 
   return (
-    <Layout
-      topNav={top_nav}
-      logo={logo}
-      querystring={qs}
-    ></Layout>
-  )
+    <>
+      <PageHeader
+        page_description={"Displays storms that are currently in progress and being monitored."}
+        page_subtitle={"Active Storms"}
+      />
+      <main className="body">
+
+        <MapWithNoSSR
+          station_data={station_points}
+          source_type={"active"}
+          setStationPoints={setStationPoints}
+        />
+
+      </main>
+      <PageFooter />
+    </>
+  );
 }

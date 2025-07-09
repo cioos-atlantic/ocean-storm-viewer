@@ -8,8 +8,7 @@ import { CssBaseline } from "@mui/material";
 
 export default function PageHeader({ page_subtitle, page_description }) {
     const top_nav = [
-        { name: "Home", href: basePath },
-        { name: "Active Storms", href: basePath + "/active_storms" },
+        { name: "Active Storms", href: basePath },
         { name: "Historical Storms", href: basePath + "/historical_storms" },
         { name: "About Hurricanes", href: basePath + "/about" },
     ];
