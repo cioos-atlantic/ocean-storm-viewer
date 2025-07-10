@@ -31,6 +31,8 @@ export default function Drawer({ children, element_id, classes, source_type, set
 
   const map = useMap();
 
+  if(!state) return(<></>);
+
   return (
     <>
       <Box id={element_id}
