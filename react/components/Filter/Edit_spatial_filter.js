@@ -1,14 +1,12 @@
 import React, { useState, useRef, forwardRef, useImperativeHandle } from "react";
 import L from "leaflet";
-import {
-
-  FeatureGroup
-} from "react-leaflet";
+import { FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import 'leaflet-draw/dist/leaflet.draw.css';
 
 export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter({ setPolyFilterCoords }, ref) {
   const featureGroupRef = useRef(null);
+
   // Get the FeatureGroup reference
   function clearShapes() {
     const featureGroup = featureGroupRef.current;
@@ -18,15 +16,12 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter({ set
         featureGroup.removeLayer(existingLayer);
       });
     }
-
   }
+
   // Expose clearShapes to parent component
   useImperativeHandle(ref, () => ({
     clearShapes
   }));
-
-
-
 
   const _onEdited = e => {
     let numEdited = 0;
@@ -34,42 +29,26 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter({ set
       numEdited += 1;
     });
     console.log(`_onEdited: edited ${numEdited} layers`, e);
-
-
-
     // this._onChange();
   };
 
   const _onCreated = e => {
-
     let type = e.layerType;
     let layer = e.layer;
     console.log(layer);
 
-
     featureGroupRef.current.addLayer(layer);
-
-
-
-
 
     // Add the new shape
     //featureGroupRef.current.addLayer(layer);
-
-
     if (type === "rectangle") {
       console.log("_onCreated: Rectangle created");
-
     } else if (type === "polygon") {
       console.log("_onCreated: Polygon created");
-
     }
+
     const poly = processPolygon(layer.getLatLngs())
     setPolyFilterCoords(poly);
-
-
-
-
 
     console.log("GeoJSON", layer.toGeoJSON());
   };
@@ -117,7 +96,6 @@ export const RenderSpatialFilter = forwardRef(function RenderSpatialFilter({ set
         console.log("Updated Polygon Coordinates:", poly);
       });
     }
-
   };
 
   const _onDeleteStart = e => {
@@ -176,7 +154,6 @@ export function processRectangle(coords) {
   const latitudes = coords.flat().map(coord => coord.lat);
   const longitudes = coords.flat().map(coord => coord.lng);
 
-
   console.log(latitudes, longitudes);
   const minLat = Math.min(...latitudes);
   const maxLat = Math.max(...latitudes);
@@ -188,9 +165,7 @@ export function processRectangle(coords) {
   console.log("Min Longitude:", minLng);
   console.log("Max Longitude:", maxLng);
   return `${minLat}_${minLng}_${maxLat}_${maxLng}`
-
-};
-
+}
 
 export function ProcessPolygon({ }) { };
 
@@ -207,11 +182,8 @@ export function processPolygon(coords) {
 
   const polyCoords = polyList.join(",")
 
-
   console.log(polyList);
   console.log(polyCoords);
+
   return polyCoords;
-
-
-
-};
+}
