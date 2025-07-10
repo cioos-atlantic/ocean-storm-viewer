@@ -941,10 +941,10 @@ button.filter-badge{
 /* Adjust the width of the Draw Control toolbar */
 
 .filters-speed-dial{
-  color: #e55162;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
+  color: #e55162 !important;
+  text-decoration: none !important;
+  display: flex !important;
+  align-items: center !important;
   width: 40px;
   height: 40px;
   margin: 8px;
@@ -957,8 +957,8 @@ button.filter-badge{
               0px 1px 18px 0px rgba(0, 0, 0, 0.12);}
 
 .filters-speed-dial:hover{
-    color: white;
-    background-color: #e55162;}
+    color: white !important;
+    background-color: #e55162 !important; }
 .chart-render{
   width: 100%;
   max-height: 300px;
