@@ -700,17 +700,17 @@ footer {
 }
 
 .cancel-search{
-  text-align : center;
-  align-content : center;
+  text-align : center !important;
+  align-content : center !important;
   width: 100%;
-  background-color: #e55162;
-  color: white;
-  font-weight: bold;
+  background-color: #e55162 !important;
+  color: white !important;
+  font-weight: bold !important;
 
 }
 .cancel-search:hover{
-  background-color: white;
-  color: #e55162;
+  background-color: white !important;
+  color: #e55162 !important;
 }
 
 #filter-icon{
