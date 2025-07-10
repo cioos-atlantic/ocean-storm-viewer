@@ -825,26 +825,26 @@ button.filter-badge{
 }
 
 .shortcut-button{
-  background-color: white;
-  border: 1px solid #e55162;
-  color: #e55162;
+  background-color: white !important;
+  border: 1px solid #e55162 !important;
+  color: #e55162 !important;
   margin: 0.8px;
   cursor: pointer;
-  align-items: center;
-  justify-content: center;
+  align-items: center !important;
+  justify-content: center !important;
   position: relative;
   display: inline-flex;
   max-width: 100%;
-  font-size: 0.8125rem;
+  font-size: 0.8125rem !important;
   height: 32px;
-  border-radius: 16px;
+  border-radius: 16px !important;
   transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  text-transform: none;
+  text-transform: none !important;
 }
 
 .shortcut-button:hover{
-  background-color: #e55162;
-  color: white;
+  background-color: #e55162 !important;
+  color: white !important;
 }
 
 .filter-submit-button{
@@ -887,8 +887,8 @@ button.filter-badge{
 
 
 .date-card-content{
-  padding: 9px;
-  text-align: center;
+  padding: 9px !important;
+  text-align: center !important;
   overflow: hidden;
 }
 
