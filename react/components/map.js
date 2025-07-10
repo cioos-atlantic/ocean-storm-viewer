@@ -21,13 +21,18 @@ import { mapReducer, initialMapState } from "./mapReducer";
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
 
-export default function Map({ children, station_data, source_type, setStationPoints }) {
+/* 
+TODO: Rebuild with a focus on passing data down from parent pages, this can include filters and the like.
+ */
+
+export default function Map({ children, station_data, storm_data, source_type, setStationPoints }) {
   const clearShapesRef = useRef(null);
   const [state, dispatch] = useReducer(mapReducer, initialMapState);
   const allDatasetDescriptions = useDatasetDescriptions();
 
-  console.log(allDatasetDescriptions)
-  console.debug("Storm Points in map.js: ", state.storm_points);
+  // console.log(allDatasetDescriptions)
+  // console.debug("Storm Points in map.js: ", state.storm_points);
+  console.debug("Storm Data in map.js: ", storm_data);
 
   return (
     <div className="map_container">
@@ -57,6 +62,7 @@ export default function Map({ children, station_data, source_type, setStationPoi
           <Drawer
             element_id="left-side"
             classes="left"
+            storm_data={storm_data}
             source_type={source_type}
             setStationPoints={setStationPoints}
             state={state}
@@ -107,79 +113,103 @@ export default function Map({ children, station_data, source_type, setStationPoi
             <LayersControl.Overlay checked name="Error Cone">
               <LayerGroup>
                 {
-                  state.storm_points?.err?.features?.map(err_cone => {
-                    return (
-                      <ErrorCone
-                        key={err_cone.id}
-                        error_cone_data={err_cone}
-                      />
-                    );
-                  })
+                  // state.storm_points?.err?.features?.map(err_cone => {
+                  storm_data ? (
+                    storm_data.err.features.map(err_cone => {
+                      return (
+                        <ErrorCone
+                          key={err_cone.id}
+                          error_cone_data={err_cone}
+                        />
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )
                 }
               </LayerGroup>
             </LayersControl.Overlay>
             <LayersControl.Overlay checked name="Points">
               <LayerGroup>
                 {
-                  state.storm_points?.pts?.features?.map(point => {
-                    return (
-
-                      <StormMarker
-                        key={point.id}
-                        storm_point_data={point}
-                        storm_point_hover={state.hover_marker}
-                        dispatch={dispatch}
-
-                      />
-                    );
-                  })
+                  storm_data ? (
+                    // state.storm_points?.pts?.features?.map(point => {
+                    storm_data.pts.features.map(point => {
+                      return (
+                        <StormMarker
+                          key={point.id}
+                          storm_point_data={point}
+                          storm_point_hover={state.hover_marker}
+                          dispatch={dispatch}
+                        />
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )
                 }
               </LayerGroup>
             </LayersControl.Overlay>
             <LayersControl.Overlay checked name="Track Line">
               <LayerGroup>
                 {
-                  state.storm_points?.lin?.features?.length > 0 &&
-                  state.storm_points?.lin?.features?.map(line => {
-                    return (
-                      <LineOfTravel
-                        key={line.id}
-                        storm_line_data={line}
-                      />
-                    );
-                  })
+                  
+                  // state.storm_points?.lin?.features?.length > 0 &&
+                  // state.storm_points?.lin?.features?.map(line => {
+                  storm_data ? (
+                    storm_data.lin.features.map(line => {
+                      return (
+                        <LineOfTravel
+                          key={line.id}
+                          storm_line_data={line}
+                        />
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )
                 }
               </LayerGroup>
             </LayersControl.Overlay>
             <LayersControl.Overlay checked name="Wind Speed Radius">
               <LayerGroup>
                 {
-                  state.storm_points?.rad?.features?.length > 0 &&
-                  state.storm_points?.rad?.features?.map(radii => {
-                    return (
-                      <WindSpeedRadius
-                        key={radii.id}
-                        storm_wind_radii_data={radii}
-                        hover_marker={state.hover_marker}
-                      />
-                    );
-                  })
+                  // state.storm_points?.rad?.features?.length > 0 &&
+                  // state.storm_points?.rad?.features?.map(radii => {
+                  storm_data ? (
+                    storm_data.rad.features.map(radii => {
+                      return (
+                        <WindSpeedRadius
+                          key={radii.id}
+                          storm_wind_radii_data={radii}
+                          hover_marker={state.hover_marker}
+                        />
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )
                 }
               </LayerGroup>
             </LayersControl.Overlay>
             <LayersControl.Overlay checked name="Sea Height Radius">
               <LayerGroup>
                 {
-                  state.storm_points?.sea?.features?.length > 0 &&
-                  state.storm_points?.sea?.features?.map(radii => {
-                    return (
-                      <SeaHeightRadius
-                        key={radii.id}
-                        storm_sea_height_data={radii}
-                        hover_marker={state.hover_marker}
-                      />
-                    );
-                  })
+                  // state.storm_points?.sea?.features?.length > 0 &&
+                  // state.storm_points?.sea?.features?.map(radii => {
+                  storm_data ? (
+                    storm_data.sea.features.map(radii => {
+                      return (
+                        <SeaHeightRadius
+                          key={radii.id}
+                          storm_sea_height_data={radii}
+                          hover_marker={state.hover_marker}
+                        />
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )
                 }
               </LayerGroup>
             </LayersControl.Overlay>
