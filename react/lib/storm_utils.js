@@ -3,18 +3,10 @@ import * as geolib from 'geolib';
 import { show_all_storms } from '../components/active_storm_list';
 import { empty_station_obj } from '@/pages/layout';
 import { basePath } from '@/next.config.js';
+import { empty_storm_obj } from '@/components/point_defaults';
 
 export const nmi_to_m = 1852.216;
 export const ft_to_m = 0.3048;
-
-export const empty_storm_obj = {
-    pts: { features: [] },
-    err: { features: [] },
-    lin: { features: [] },
-    rad: { features: [] },
-    sea: { features: [] },
-};
-
 
 const hurricane_categories = {
     "5": {
@@ -497,6 +489,27 @@ export function build_storm_features(storm_data) {
     }
 
     return storm_features;
+}
+
+export function build_ib_active_storm_features(active_storm_data){
+    let final_storm_features = structuredClone(empty_storm_obj);
+
+    // Build features from IBTRACS data
+    console.debug("Build Features from IBTRACS data...")
+    for (let ib_storm in active_storm_data) {
+        const storm_features = build_storm_features(active_storm_data[ib_storm]);
+
+        // final_storm_features.err.features = final_storm_features.err.features.concat(storm_features.err.features);
+        final_storm_features.lin.features = final_storm_features.lin.features.concat(storm_features.lin.features);
+        final_storm_features.pts.features = final_storm_features.pts.features.concat(storm_features.pts.features);
+        final_storm_features.rad.features = final_storm_features.rad.features.concat(storm_features.rad.features);
+        final_storm_features.sea.features = final_storm_features.sea.features.concat(storm_features.sea.features);
+    }
+
+    // Return storm details along with storm features
+    final_storm_features.list = active_storm_data;
+
+    return final_storm_features;
 }
 
 export function populateStormDetails(event, storm_data, setSelectedStorm, setStormPoints, setSelectedStation) {
