@@ -93,24 +93,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, di
     }
   }, [router.query, previousQuery, drawerButtonClicked]); // 
 
-  useEffect(() => {
-    async function fetchStormData() {
-      try {
-        const fetchedStormList = await getHistoricalStormList();
-        setStormList(fetchedStormList);
 
-
-        console.log(fetchedStormList);  // Log the returned storm list
-      } catch (error) {
-        console.error('Error fetching storm list:', error);
-      }
-    }
-
-    fetchStormData();  // Call the async function
-
-
-
-  }, []); // Empty dependency array ensures it runs only once on mount
 
 
   useEffect(() => {
