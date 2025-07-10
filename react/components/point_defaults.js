@@ -5,6 +5,7 @@ export const empty_storm_obj = {
   lin: { features: [] },
   rad: { features: [] },
   sea: { features: [] },
+  list: {},
 };
 
 export const empty_station_obj = {}
