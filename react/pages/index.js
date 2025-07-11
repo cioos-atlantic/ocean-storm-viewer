@@ -29,7 +29,7 @@ export default function ActiveStormsPage() {
       .then((res) => res.json())
       .then((active_storm_data) => {
         let storm_details = {};
-        
+
         console.debug("Active Storm Data from /api/active_storms", active_storm_data);
 
         if (active_storm_data.ib_data?.features.length > 0 || active_storm_data.eccc_data?.features.length > 0) {
@@ -49,7 +49,7 @@ export default function ActiveStormsPage() {
         console.debug("Storm Details from /api/active_storms", storm_details);
 
         const storm_points = storm_utils.build_ib_active_storm_features(storm_details);
-        
+
         console.debug("Final storm points built from active storm data", storm_points);
         setStormPoints(storm_points);
 
@@ -76,13 +76,17 @@ export default function ActiveStormsPage() {
       page_description={"Displays storms that are currently in progress and being monitored."}
       page_subtitle={"Active Storms"}
     >
+      <div className="map_container">
+        <div className='inner_container'>
 
-      <MapWithNoSSR
-        station_data={station_points}
-        storm_data={storm_data}
-        source_type={"active"}
-        setStationPoints={setStationPoints}
-      />
+          <MapWithNoSSR
+            station_data={station_points}
+            storm_data={storm_data}
+            source_type={"active"}
+            setStationPoints={setStationPoints}
+          />
+        </div>
+      </div>
 
     </Layout>
   );

@@ -35,193 +35,202 @@ export default function Map({ children, station_data, storm_data, source_type, s
   console.debug("Storm Data in map.js: ", storm_data);
 
   return (
-    <div className="map_container">
-      <div className='inner_container'>
-        <RenderFilter
-          clearShapesRef={clearShapesRef} // Pass the ref to 
-          state={state}
-          dispatch={dispatch}
-        />
+    <>
+      <MapContainer
+        center={defaultPosition}
+        zoom={defaultZoom}
+        style={{ height: "100%", width: "100%" }}
+        worldCopyJump={true}
+        zoomControl={false}
+      >
 
-        <RenderDashboards
+        {children}
+        
+        {
+          // Only show filters for historical storms
+          source_type == "historical" ? (
+            <>
+              <RenderFilter
+                clearShapesRef={clearShapesRef} // Pass the ref to 
+                state={state}
+                dispatch={dispatch}
+              />
+
+              <RenderDashboards
+                source_type={source_type}
+                station_descriptions={allDatasetDescriptions}
+                time={new Date()}
+                state={state}
+                dispatch={dispatch}
+              />
+
+              <RenderSpatialFilter
+                ref={clearShapesRef}
+                setPolyFilterCoords={(coords) => dispatch({ type: "SET_POLY_FILTER_COORDS", payload: coords })}
+              />
+            </>
+          ) : (
+            <></>
+          )}
+
+        <CustomZoomControl />
+        <Drawer
+          element_id="left-side"
+          classes="left"
+          storm_data={storm_data}
           source_type={source_type}
-          station_descriptions={allDatasetDescriptions}
-          time={new Date()}
+          setStationPoints={setStationPoints}
           state={state}
           dispatch={dispatch}
         />
 
-        <MapContainer
-          center={defaultPosition}
-          zoom={defaultZoom}
-          style={{ height: "100%", width: "100%" }}
-          worldCopyJump={true}
-          zoomControl={false}
-        >
-          <CustomZoomControl />
-          <Drawer
-            element_id="left-side"
-            classes="left"
-            storm_data={storm_data}
-            source_type={source_type}
-            setStationPoints={setStationPoints}
-            state={state}
-            dispatch={dispatch}
-          />
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+        />
 
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-          />
+        <LayersControl position="bottomright">
+          <LayersControl.Overlay checked name="ECCC Hurricane Response Zone">
+            <LayerGroup>
+              <WMSTileLayer
+                url="https://geo.weather.gc.ca/geomet"
+                layers='HURRICANE_RESPONSE_ZONE'
+                format='image/png'
+                transparent='true'
+                styles='HURRICANE_LINE_BLACK_DASHED'
+                attribution='<a href=&quot;https://www.canada.ca/en/environment-climate-change.html&quot;>ECCC</a>'
+                version='1.3.0'
+              />
+            </LayerGroup>
+          </LayersControl.Overlay>
+          <LayersControl.Overlay checked name="Stations">
+            <LayerGroup>
+              {
+                station_data ? (
+                  Object.entries(station_data).map((station) => {
+                    const storm_timestamp = new Date(state.hover_marker.properties["TIMESTAMP"]);
+                    return (
+                      <StationMarker
+                        key={station[0]}
+                        station_data={station}
+                        station_descriptions={allDatasetDescriptions}
+                        time={storm_timestamp}
+                        selected_station={state.selected_station}
+                        dispatch={dispatch}
+                      />)
+                  })
+                ) : (
+                  <></>
+                )
+              }
+            </LayerGroup>
+          </LayersControl.Overlay>
+          <LayersControl.Overlay checked name="Error Cone">
+            <LayerGroup>
+              {
+                // state.storm_points?.err?.features?.map(err_cone => {
+                storm_data ? (
+                  storm_data.err.features.map(err_cone => {
+                    return (
+                      <ErrorCone
+                        key={err_cone.id}
+                        error_cone_data={err_cone}
+                      />
+                    );
+                  })
+                ) : (
+                  <></>
+                )
+              }
+            </LayerGroup>
+          </LayersControl.Overlay>
+          <LayersControl.Overlay checked name="Points">
+            <LayerGroup>
+              {
+                storm_data ? (
+                  // state.storm_points?.pts?.features?.map(point => {
+                  storm_data.pts.features.map(point => {
+                    return (
+                      <StormMarker
+                        key={point.id}
+                        storm_point_data={point}
+                        storm_point_hover={state.hover_marker}
+                        dispatch={dispatch}
+                      />
+                    );
+                  })
+                ) : (
+                  <></>
+                )
+              }
+            </LayerGroup>
+          </LayersControl.Overlay>
+          <LayersControl.Overlay checked name="Track Line">
+            <LayerGroup>
+              {
 
-          <LayersControl position="bottomright">
-            <LayersControl.Overlay checked name="ECCC Hurricane Response Zone">
-              <LayerGroup>
-                <WMSTileLayer
-                  url="https://geo.weather.gc.ca/geomet"
-                  layers='HURRICANE_RESPONSE_ZONE'
-                  format='image/png'
-                  transparent='true'
-                  styles='HURRICANE_LINE_BLACK_DASHED'
-                  attribution='<a href=&quot;https://www.canada.ca/en/environment-climate-change.html&quot;>ECCC</a>'
-                  version='1.3.0'
-                />
-              </LayerGroup>
-            </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Stations">
-              <LayerGroup>
-                {
-                  station_data ? (
-                    Object.entries(station_data).map((station) => {
-                      const storm_timestamp = new Date(state.hover_marker.properties["TIMESTAMP"]);
-                      return (
-                        <StationMarker
-                          key={station[0]}
-                          station_data={station}
-                          station_descriptions={allDatasetDescriptions}
-                          time={storm_timestamp}
-                          selected_station={state.selected_station}
-                          dispatch={dispatch}
-                        />)
-                    })
-                  ) : (
-                    <></>
-                  )
-                }
-              </LayerGroup>
-            </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Error Cone">
-              <LayerGroup>
-                {
-                  // state.storm_points?.err?.features?.map(err_cone => {
-                  storm_data ? (
-                    storm_data.err.features.map(err_cone => {
-                      return (
-                        <ErrorCone
-                          key={err_cone.id}
-                          error_cone_data={err_cone}
-                        />
-                      );
-                    })
-                  ) : (
-                    <></>
-                  )
-                }
-              </LayerGroup>
-            </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Points">
-              <LayerGroup>
-                {
-                  storm_data ? (
-                    // state.storm_points?.pts?.features?.map(point => {
-                    storm_data.pts.features.map(point => {
-                      return (
-                        <StormMarker
-                          key={point.id}
-                          storm_point_data={point}
-                          storm_point_hover={state.hover_marker}
-                          dispatch={dispatch}
-                        />
-                      );
-                    })
-                  ) : (
-                    <></>
-                  )
-                }
-              </LayerGroup>
-            </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Track Line">
-              <LayerGroup>
-                {
-                  
-                  // state.storm_points?.lin?.features?.length > 0 &&
-                  // state.storm_points?.lin?.features?.map(line => {
-                  storm_data ? (
-                    storm_data.lin.features.map(line => {
-                      return (
-                        <LineOfTravel
-                          key={line.id}
-                          storm_line_data={line}
-                        />
-                      );
-                    })
-                  ) : (
-                    <></>
-                  )
-                }
-              </LayerGroup>
-            </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Wind Speed Radius">
-              <LayerGroup>
-                {
-                  // state.storm_points?.rad?.features?.length > 0 &&
-                  // state.storm_points?.rad?.features?.map(radii => {
-                  storm_data ? (
-                    storm_data.rad.features.map(radii => {
-                      return (
-                        <WindSpeedRadius
-                          key={radii.id}
-                          storm_wind_radii_data={radii}
-                          hover_marker={state.hover_marker}
-                        />
-                      );
-                    })
-                  ) : (
-                    <></>
-                  )
-                }
-              </LayerGroup>
-            </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Sea Height Radius">
-              <LayerGroup>
-                {
-                  // state.storm_points?.sea?.features?.length > 0 &&
-                  // state.storm_points?.sea?.features?.map(radii => {
-                  storm_data ? (
-                    storm_data.sea.features.map(radii => {
-                      return (
-                        <SeaHeightRadius
-                          key={radii.id}
-                          storm_sea_height_data={radii}
-                          hover_marker={state.hover_marker}
-                        />
-                      );
-                    })
-                  ) : (
-                    <></>
-                  )
-                }
-              </LayerGroup>
-            </LayersControl.Overlay>
-          </LayersControl>
-
-          <RenderSpatialFilter
-            ref={clearShapesRef}
-            setPolyFilterCoords={(coords) => dispatch({ type: "SET_POLY_FILTER_COORDS", payload: coords })}
-          />
-          {/* Calling the EditControl function here */}
-        </MapContainer>
-      </div>
-    </div>
+                // state.storm_points?.lin?.features?.length > 0 &&
+                // state.storm_points?.lin?.features?.map(line => {
+                storm_data ? (
+                  storm_data.lin.features.map(line => {
+                    return (
+                      <LineOfTravel
+                        key={line.id}
+                        storm_line_data={line}
+                      />
+                    );
+                  })
+                ) : (
+                  <></>
+                )
+              }
+            </LayerGroup>
+          </LayersControl.Overlay>
+          <LayersControl.Overlay checked name="Wind Speed Radius">
+            <LayerGroup>
+              {
+                // state.storm_points?.rad?.features?.length > 0 &&
+                // state.storm_points?.rad?.features?.map(radii => {
+                storm_data ? (
+                  storm_data.rad.features.map(radii => {
+                    return (
+                      <WindSpeedRadius
+                        key={radii.id}
+                        storm_wind_radii_data={radii}
+                        hover_marker={state.hover_marker}
+                      />
+                    );
+                  })
+                ) : (
+                  <></>
+                )
+              }
+            </LayerGroup>
+          </LayersControl.Overlay>
+          <LayersControl.Overlay checked name="Sea Height Radius">
+            <LayerGroup>
+              {
+                // state.storm_points?.sea?.features?.length > 0 &&
+                // state.storm_points?.sea?.features?.map(radii => {
+                storm_data ? (
+                  storm_data.sea.features.map(radii => {
+                    return (
+                      <SeaHeightRadius
+                        key={radii.id}
+                        storm_sea_height_data={radii}
+                        hover_marker={state.hover_marker}
+                      />
+                    );
+                  })
+                ) : (
+                  <></>
+                )
+              }
+            </LayerGroup>
+          </LayersControl.Overlay>
+        </LayersControl>
+        {/* Calling the EditControl function here */}
+      </MapContainer>
+    </>
   )
 }
