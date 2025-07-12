@@ -9,8 +9,10 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Slider } from '@mui/material';
 import { smallScreenIconButton } from './filter_utils';
 import { ShowOptions, CloseOptions } from './filter';
+import { useMap } from 'react-leaflet';
 
-
+const currentYear = new Date().getFullYear();
+const defaultStartYear = 1860;
 
 export const shortcutsItems = [
   {
@@ -68,7 +70,15 @@ const reset = { label: 'Reset', getValue: () => [null, null] };
 
 export function RenderDateFilter({ state, dispatch }) {
   //const [showDateSelection, setShowDateSelection] = useState(false); 
-  const hasValidDates = state.startDate?.isValid?.() && state.endDate?.isValid?.();
+  let hasValidDates = false;
+
+  try {
+    hasValidDates = state.startDate?.isValid?.() && state.endDate?.isValid?.();
+  }
+  catch (err) {
+    console.error("State does not have valid start & end dates")
+  }
+
   const buttonStyle = {
     backgroundColor: hasValidDates ? '#e55162' : 'white',
     color: hasValidDates ? 'white' : '#e55162',
@@ -127,7 +137,7 @@ export function RenderDateFilter({ state, dispatch }) {
 
 
 export function DateDisplay({ setStartDate, setEndDate, setShowDateSelection, startDate, endDate }) {
-
+  const map = useMap();
 
   const slotProps = {
     popper: { sx: { zIndex: 9999 }, },
@@ -184,7 +194,11 @@ export function DateDisplay({ setStartDate, setEndDate, setShowDateSelection, st
         zIndex: '9001',
 
 
-      }}>
+      }}
+
+      onMouseOver={map.dragging.disable()}
+      onMouseOut={map.dragging.enable()}
+    >
       <CardContent
         className='date-card-content'
         sx={{ display: { xs: "none", md: "block" }, }}>
@@ -284,10 +298,16 @@ export function DateDisplay({ setStartDate, setEndDate, setShowDateSelection, st
 
 
 export function RangeSlider({ startDate, endDate, setStartDate, setEndDate }) {
-  const currentYear = dayjs().year();
+  if (!startDate) {
+    startDate = defaultStartYear;
+  }
+
+  if (!endDate) {
+    endDate = currentYear;
+  }
 
   // Independent state for the slider's range
-  const [value, setValue] = useState([1860, currentYear]);
+  const [value, setValue] = useState([startDate, endDate]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
