@@ -4,6 +4,8 @@ import { Box, Button, Card, CardContent, CardActions, Slider } from "@mui/materi
 import { storm_categories } from "@/lib/storm_class";
 import { ShowOptions, CloseOptions } from './filter';
 import { smallScreenIconButton } from './filter_utils';
+import { useMap } from 'react-leaflet';
+
 export const storm_category_list = [
   { label: "5", value: 5 },
   { label: "4", value: 4 },
@@ -32,12 +34,23 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
 
   const [sliderText, setSliderText] = useState(defaultText);
 
+  const map = useMap();
+
   const values = storm_category_list.map(item => item.value);
   const minCategory = Math.min(...values);
   const maxCategory = Math.max(...values);
 
+  if (!startCategory) {
+    startCategory = minCategory;
+  }
+
+  if (!endCategory) {
+    endCategory = maxCategory;
+  }
+
+
   // Independent state for the slider's range
-  const [value, setValue] = useState([minCategory, maxCategory]);
+  const [value, setValue] = useState([startCategory, endCategory]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -83,8 +96,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
         </>
       );
     } else {
-      setSliderText(defaultText
-      );
+      setSliderText(defaultText);
     }
   }, [startCategory, endCategory]);
 
@@ -105,7 +117,12 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
         zIndex: '9001',
 
 
-      }}>
+      }}
+      
+      onMouseOver={map.dragging.disable()}
+      onMouseOut={map.dragging.enable()}
+
+    >
       <CardContent className='date-card-content' sx={{ fontSize: '13px' }}>
         {sliderText}
       </CardContent>
