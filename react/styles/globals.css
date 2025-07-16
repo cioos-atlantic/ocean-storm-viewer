@@ -446,15 +446,16 @@ footer {
   padding: 10px;
 }
 .historical_storm_button{
-  text-decoration: none;
+  text-decoration: none !important;
   display: block;        /* Ensures it takes full width for easier clicks */
   transition: color 0.3s ease; /* Smooth transition for hover effects */
-  border-bottom: 1px solid #e55162; /* Light grey border to outline the block */
-  border-radius: 4px;       /* Optional: adds rounded corners */
+  border-bottom: 1px solid #e55162 !important; /* Light grey border to outline the block */
+  border-radius: 4px !important;       /* Optional: adds rounded corners */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  text-align: center;
+  text-align: center !important;
   width: 100%;
   padding-bottom : 5px;
+  font-weight: bold !important;
 }
 .historical_storm_button:hover {
   background-color: #e55162; /* Light grey background on hover */
@@ -578,7 +579,7 @@ footer {
   padding : 5px;
 }
 .search-output{
-  font-size: 12px;
+  font-size: 12px !important;
   cursor: pointer;
   text-align: center;
   padding: 1.5px;
@@ -699,17 +700,17 @@ footer {
 }
 
 .cancel-search{
-  text-align : center;
-  align-content : center;
+  text-align : center !important;
+  align-content : center !important;
   width: 100%;
-  background-color: #e55162;
-  color: white;
-  font-weight: bold;
+  background-color: #e55162 !important;
+  color: white !important;
+  font-weight: bold !important;
 
 }
 .cancel-search:hover{
-  background-color: white;
-  color: #e55162;
+  background-color: white !important;
+  color: #e55162 !important;
 }
 
 #filter-icon{
@@ -728,11 +729,11 @@ footer {
   color: white;
 }
 #cancel-filter-icon{
-  background-color: white;
+  background-color: white ;
   color: #e55162;
-  font-size: 20px;
+  font-size: 20px !important;
   min-width: 0px;
-  font-weight: bold;
+  font-weight: bold !important;
   width: 35px;
 
 }
@@ -752,37 +753,37 @@ footer {
 
 
 .filter-icons{
-  background-color: white;
-  border-radius: 15px;
-  color: #e55162;
+  background-color: white !important;
+  border-radius: 15px !important;
+  color: #e55162 !important;
   height: 35px;
-  font-size: 12px;
+  font-size: 12px !important;
   min-width: 0px;
-  padding: 6px;
-  border: 1px solid #e55162;
-  text-transform: none;
+  padding: 6px !important;
+  border: 1px solid #e55162 !important;
+  text-transform: none !important;
 }
 
 .filter-icons:hover{
-  background-color: #e55162;
-  color: white;
+  background-color: #e55162 !important;
+  color: white !important;
 }
 
-.filter-badge{
+button.filter-badge{
   
-  border: 1px solid #e55162;
+  border: 1px solid #e55162 !important;
   
   margin: 0.8px;
   cursor: pointer;
-  align-items: center;
-  justify-content: center;
+  align-items: center !important;
+  justify-content: center !important;
   position: relative;
   max-width: 100%;
-  font-size: 0.8125rem;
-  height: 32px;
-  border-radius: 16px;
+  font-size: 0.8125rem !important;
+  height: 32px !important;
+  border-radius: 16px !important;
   transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  text-transform: none;
+  text-transform: none !important;
 }
 
 
@@ -824,48 +825,48 @@ footer {
 }
 
 .shortcut-button{
-  background-color: white;
-  border: 1px solid #e55162;
-  color: #e55162;
+  background-color: white !important;
+  border: 1px solid #e55162 !important;
+  color: #e55162 !important;
   margin: 0.8px;
   cursor: pointer;
-  align-items: center;
-  justify-content: center;
+  align-items: center !important;
+  justify-content: center !important;
   position: relative;
   display: inline-flex;
   max-width: 100%;
-  font-size: 0.8125rem;
+  font-size: 0.8125rem !important;
   height: 32px;
-  border-radius: 16px;
+  border-radius: 16px !important;
   transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  text-transform: none;
+  text-transform: none !important;
 }
 
 .shortcut-button:hover{
-  background-color: #e55162;
-  color: white;
+  background-color: #e55162 !important;
+  color: white !important;
 }
 
 .filter-submit-button{
-  background-color: white;
-  border: 1px solid #e55162;
-  color: #e55162;
+  background-color: white !important;
+  border: 1px solid #e55162 !important;
+  color: #e55162 !important;
   margin: 0.8px;
-  padding: 10px;
-  text-align: center;
+  padding: 10px !important;
+  text-align: center !important;
   cursor: pointer;
   position: relative;
   max-width: 60%;
-  font-size: 0.8125rem;
-  height: 32px;
-  border-radius: 16px;
+  font-size: 0.8125rem !important;
+  height: 32px !important;
+  border-radius: 16px !important;
   transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  text-transform: none;
+  text-transform: none !important;
 }
 
 .filter-submit-button:hover{
-  background-color: #e55162;
-  color: white;
+  background-color: #e55162 !important;
+  color: white !important;
 }
 
 
@@ -886,8 +887,8 @@ footer {
 
 
 .date-card-content{
-  padding: 9px;
-  text-align: center;
+  padding: 9px !important;
+  text-align: center !important;
   overflow: hidden;
 }
 
@@ -940,10 +941,10 @@ footer {
 /* Adjust the width of the Draw Control toolbar */
 
 .filters-speed-dial{
-  color: #e55162;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
+  color: #e55162 !important;
+  text-decoration: none !important;
+  display: flex !important;
+  align-items: center !important;
   width: 40px;
   height: 40px;
   margin: 8px;
@@ -956,8 +957,8 @@ footer {
               0px 1px 18px 0px rgba(0, 0, 0, 0.12);}
 
 .filters-speed-dial:hover{
-    color: white;
-    background-color: #e55162;}
+    color: white !important;
+    background-color: #e55162 !important; }
 .chart-render{
   width: 100%;
   max-height: 300px;

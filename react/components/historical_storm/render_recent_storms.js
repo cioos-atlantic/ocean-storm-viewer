@@ -32,7 +32,7 @@ export function RenderRecentStorms({stormList, router, drawerButtonClicked, setD
                   <Button 
                   className='historical_storm_button'
                   sx={{
-                    fontSize: { xs: '10px', sm: '10px', md: '12px', lg: '12px',},
+                    fontSize: { xs: '10px', sm: '10px', md: '12px'},
                     color: isClicked ? 'white' : '#e55162', 
                     backgroundColor: isClicked ? 'black' : '#f5f5f5',
                     padding: isClicked ? '3px' : '0.5px',
