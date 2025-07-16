@@ -13,7 +13,7 @@ import { getDisplayName } from "./utils/station_data_format_util";
  * @param {Date} time Time of the station data to retrieve. Defaults to most recent data if not provided
  * @returns StationMarker JavaScript snippet
  */
-export default function StationMarker({station_data, station_descriptions, time = new Date(), selected_station, dispatch}) {
+export default function StationMarker({station_data, time = new Date(), selected_station, dispatch}) {
   // Turns selected marker red, others return as blue
   function getMarkerIcon(selected_station, station_name) {
     try {
@@ -34,15 +34,12 @@ export default function StationMarker({station_data, station_descriptions, time 
   const station_name = station_data[0]
   const station_values = station_data[1]
   // Change to call from ERDDAP
-  const display_name = station_values?.properties?.dataset_title//getDisplayName(station_descriptions, station_name);
+  const display_name = station_values?.properties?.dataset_title
 
   const exclude_var = ['time', 'latitude', 'longitude', 'wind_from_direction', 'relative_humidity',
     'sea_surface_wave_from_direction', 'sea_surface_wave_maximum_period'
   ]
   const standardNames = station_values?.properties?.station_data?.column_std_names
-
-
-  //const display_name = (station_name in station_names) ? station_names[station_name]['display']:station_name
 
   // Data for station doesn't exist at the provided time
   const redIcon = new L.Icon.Default({

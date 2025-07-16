@@ -10,7 +10,6 @@ import WindSpeedRadius from "@/components/wind_radii";
 import SeaHeightRadius from "@/components/sea_height_radii";
 import StationMarker from "./station_marker";
 import ErrorCone from "@/components/error_cone";
-import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
 import { RenderFilter } from "./Filter/filter";
 import { RenderSpatialFilter } from "./Filter/Edit_spatial_filter";
 import CustomZoomControl from "./custom_zoom_control";
@@ -27,8 +26,6 @@ export default function Map({ children, station_data, source_type,  setStationPo
 
   const [state, dispatch] = useReducer(mapReducer, initialMapState);
   
-  const allDatasetDescriptions = useDatasetDescriptions();
-  console.log(allDatasetDescriptions)
   console.debug("Storm Points in map.js: ", state.storm_points);
 
   return (
@@ -45,7 +42,6 @@ export default function Map({ children, station_data, source_type,  setStationPo
         {
           <RenderDashboards
             source_type={source_type}
-            station_descriptions={allDatasetDescriptions}
             time = {new Date()}
             state={state}
             dispatch={dispatch}
@@ -99,7 +95,6 @@ export default function Map({ children, station_data, source_type,  setStationPo
                         <StationMarker
                           key={station[0]}
                           station_data={station}
-                          station_descriptions={allDatasetDescriptions}
                           time={storm_timestamp}
                           selected_station={state.selected_station}
                           dispatch={dispatch} 
