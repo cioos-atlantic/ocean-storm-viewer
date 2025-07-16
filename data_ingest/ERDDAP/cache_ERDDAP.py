@@ -115,7 +115,6 @@ def find_station_info(dataset, station, metadata, destination_table, pg_engine, 
     institution = erddap_meta(metadata=metadata, attribute_name="institution")["value"].replace("'", "''")
     institution_link = erddap_meta(metadata=metadata, attribute_name="infoUrl")["value"].replace("'", "''")
     dataset_title = erddap_meta(metadata=metadata, attribute_name="title")["value"].replace("'", "''")
-    log.info(dataset_title)
     station_id = None
 
     with pg_engine.begin() as pg_conn: 
@@ -127,7 +126,7 @@ def find_station_info(dataset, station, metadata, destination_table, pg_engine, 
             sql+= f" VALUES ('{server}', '{dataset}', '{station}', '{institution}', '{institution_link}', '{dataset_title}') RETURNING (station_id)"
             station_id = pg_conn.execute(text(sql)).fetchone()[0]
             
-    return station_id #Returns a 1 item row object otherwise
+    return station_id
 
 def create_table_from_schema(pg_engine, table_name, schema_file, pg_schema='public'):
     # Create ECCC Tables if not exist
