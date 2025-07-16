@@ -175,9 +175,9 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
 
         console.debug("Getting ERDDAP data");
         // cioos-atlantic:erddap_cache
-        wfs_sources.push("erddap_cache_active");
+        wfs_sources.push("erddap_active_cache");
 
-        let erddap_source = "erddap_cache_active&sortby=station,max_time"
+        let erddap_source = "erddap_cache_active&sortby=station_id,max_time"
         const erddap_features_url = build_wfs_query(workspace + erddap_source, [], source_type)
 
         console.debug("ERDDAP URL: ", erddap_features_url)
@@ -196,9 +196,9 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
 
         console.debug("Getting ERDDAP data");
         // cioos-atlantic:erddap_cache
-        wfs_sources.push("erddap_cache");
+        wfs_sources.push("erddap_historical_cache");
 
-        let erddap_source = "erddap_cache&sortby=station,max_time"
+        let erddap_source = "erddap_historical_cache&sortby=station_id,max_time"
         const erddap_features_url = build_wfs_query(workspace + erddap_source, erddap_filters, source_type)
 
         console.debug("ERDDAP URL: ", erddap_features_url)
