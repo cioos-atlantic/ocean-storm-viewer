@@ -4,6 +4,10 @@ Use `npm install` to install necessary modules.
 
 Use `npm run dev` to start development build.
 
+# Setup
+
+Copy .env.template to .env and fill out PostGres connection details
+
 # Errors
 
 > version `GLIBC_2.28' not found (required by node)
