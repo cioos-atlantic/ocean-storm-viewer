@@ -14,7 +14,7 @@ import { processWindSpeeds } from "@/components/station_dashboard/wind_rose_util
 import { RenderPlotlyRose } from "@/components/station_dashboard/plotly_rose";
 
 
-export function RenderSmallDashboard({selected_station, hover_point, station_descriptions, source_type, time, storm_points, setIsDashOpen, setIsStormDashOpen, setIsStationDashOpen  }){
+export function RenderSmallDashboard({selected_station, hover_point, source_type, time, storm_points, setIsDashOpen, setIsStormDashOpen, setIsStationDashOpen  }){
 	const stationData = selected_station;
 	console.log(stationData);
 	const stationName = stationData[0];
@@ -26,7 +26,7 @@ export function RenderSmallDashboard({selected_station, hover_point, station_des
 	console.log(stationDataDict);
 	const ibtracs_link = 'https://www.ncei.noaa.gov/products/international-best-track-archive';
 
-	const [stationSummary, stationDisplayName, institution, institutionLink] = getStationInfo(stationValues, station_descriptions, stationName, source_type, time);
+	const [stationSummary, stationDisplayName, institution, institutionLink] = getStationInfo(stationValues, stationName, source_type, time);
   console.log(stationSummary, stationDisplayName, institution, institutionLink);
 	const [stormName, stormTimes, stormType, stormDataDict, stormCategory] = parseStormData(storm_points);
 

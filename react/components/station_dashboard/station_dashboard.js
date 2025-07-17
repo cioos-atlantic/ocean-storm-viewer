@@ -26,7 +26,6 @@ export default function StationDashboard({state, dispatch, station_descriptions,
   const isExtraSmall = useMediaQuery(theme.breakpoints.down('sm'));
   if (!stationData) return null;
 
-  const stationName = stationData[0];
   const stationValues = stationData[1];
   // Determine if active or historic
   const isHistorical = source_type == "historical" ? true : false
@@ -34,10 +33,17 @@ export default function StationDashboard({state, dispatch, station_descriptions,
 
   if (!dataText) return null;
 
-  const stationDescription = getMatchedStation(station_descriptions, stationName);
-  const displayName = stationDescription.title || "Unknown Station";
-  const institution = stationDescription.institution || "Unknown Institution";
-  const institutionLink = stationDescription.institution_link || "#";
+  // const stationDescription = getMatchedStation(station_descriptions, stationName);
+  // const displayName = stationDescription.title || "Unknown Station";
+  //const institution = stationDescription.institution || "Unknown Institution";
+   //const institutionLink = stationDescription.institution_link || "#";\
+
+   console.log(stationValues.properties)
+
+  const displayName = stationValues?.properties?.dataset_title || "Unknown Station";
+  const stationName = stationValues?.properties?.station
+  const institution = stationValues?.properties?.institution || "Unknown Institution";
+  const institutionLink = stationValues?.properties?.institutionLink || "#";  
 
   const excludeVars = [
     "time",
@@ -122,6 +128,7 @@ export default function StationDashboard({state, dispatch, station_descriptions,
           <strong key={displayName}>{displayName}</strong>
         </div>
         <div>
+          <p key={stationName}>{stationName}</p>
           <a href={institutionLink} target="_blank" rel="noopener noreferrer">
             {institution}
           </a>
@@ -179,6 +186,7 @@ export default function StationDashboard({state, dispatch, station_descriptions,
           <strong key={displayName}>{displayName}</strong>
         </div>
         <div>
+          <p key={stationName}>{stationName}</p>
           <a href={institutionLink} target="_blank" rel="noopener noreferrer">
             {institution}
           </a>

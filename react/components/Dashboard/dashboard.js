@@ -8,7 +8,7 @@ import { RenderSmallDashboard } from './Mobile_Dashboard/dashboard_small';
 
 
 
-export function RenderDashboards({ source_type, station_descriptions, time, state, dispatch
+export function RenderDashboards({ source_type, time, state, dispatch
     }){
         
 
@@ -28,7 +28,6 @@ export function RenderDashboards({ source_type, station_descriptions, time, stat
         <RenderSmallDashboard
         selected_station={state.selected_station}
         hover_point={state.hover_marker}
-        station_descriptions={station_descriptions}
         source_type={source_type}
         time={time}
         storm_points={state.storm_points}
@@ -77,7 +76,6 @@ export function RenderDashboards({ source_type, station_descriptions, time, stat
                 dispatch={dispatch}
                 //selected_station={selected_station}
                 //setSelectedStation={setSelectedStation}
-                station_descriptions={station_descriptions}
                 storm_timestamp={new Date()}
                 //selectedTab={selectedTab}
                 //setSelectedTab={setSelectedTab}
