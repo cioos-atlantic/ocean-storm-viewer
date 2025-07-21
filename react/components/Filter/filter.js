@@ -568,7 +568,7 @@ export async function queryStormName() {
   try {
     const resource = await fetch(`${basePath}/api/storm_names?`);
     const storm_data = await resource.json();
-    console.log(storm_data)
+    //console.log(storm_data)
     
     uniqueList = makeStormNameList(storm_data)
     // Create a set to track unique IDs and add objects to the result list
@@ -584,6 +584,7 @@ export async function queryStormName() {
     console.error('Error fetching storm or station data:', error);
   }
   console.log(uniqueList) 
+  return uniqueList
 
 }
 
