@@ -52,6 +52,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     <Button
       className="filter-badge"
       onClick= {() => {
+        input_filter.query()
         setShowFilterOptions((prev) => ({
           ...prev,
           [input_filter.name]: !prev[input_filter.name],

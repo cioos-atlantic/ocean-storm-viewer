@@ -91,7 +91,7 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
             ib_filters.push("SID='" + storm_id + "'");
         }
 
-        if (Object.keys(filters).length > 0) {
+        if (Object.keys(filters).length > 0 || storm_line_filter) {
             ib_source = "ibtracs_historical_storm_lines&sortby=SID ASC, ISO_TIME_START ASC"
             const filter_string = Object.entries(filters)
                 .map(([key, value]) => {

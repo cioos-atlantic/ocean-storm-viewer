@@ -562,3 +562,52 @@ export function formatStormName(storm_names = "") {
 
 
 
+export async function queryStormName() {
+  
+  let uniqueList;
+  try {
+    const resource = await fetch(`${basePath}/api/storm_names?`);
+    const storm_data = await resource.json();
+    console.log(storm_data)
+    
+    uniqueList = makeStormNameList(storm_data)
+    // Create a set to track unique IDs and add objects to the result list
+    
+    console.log(uniqueList);
+    if (uniqueList.length === 0) {
+      alert("No result found for this search, please try again...")
+    }
+
+
+  } catch (error) {
+    
+    console.error('Error fetching storm or station data:', error);
+  }
+  console.log(uniqueList) 
+
+}
+
+export function makeStormNameList(storm_data){
+  // Create a set to track unique IDs and add objects to the result list
+  const uniqueList = [];
+  const stormIdentifiers = new Set();
+  const stormData = storm_data?.ib_data?.features
+
+  
+
+  stormData?.forEach(feature => {
+    let name = feature.properties.NAME;
+
+
+    // check if name and year exists and if storm identifier does not have the identifier
+
+    if (name && !stormIdentifiers.has(name)) {
+      stormIdentifiers.add(name);
+      uniqueList.push(name);
+    }
+  
+  
+  })
+  
+  return uniqueList
+}
