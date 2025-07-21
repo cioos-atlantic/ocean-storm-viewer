@@ -9,6 +9,7 @@ import About from "@/pages/about_page";
 import Grid from '@mui/material/Grid2';
 import { Box } from "@mui/material";
 import HeaderNav from "./header_nav";
+import { loadSpace } from "@usersnap/browser";
 
 
 import { basePath } from "@/next.config";
@@ -30,6 +31,13 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
   const [isMounted, setIsMounted] = useState(false);
 
   const router = useRouter();
+
+  const spaceApiKey = 'c3945788-3d5c-4a7e-baff-c55c0580a359'
+  // Will need to find some way to store as secret
+
+  loadSpace(spaceApiKey).then((api) => {
+    api.init()
+  })
   
 
   useEffect(() => {
