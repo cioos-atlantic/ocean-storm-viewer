@@ -609,6 +609,7 @@ export function makeStormNameList(storm_data){
   
   
   })
-  
+
+  uniqueList.sort();
   return uniqueList
 }

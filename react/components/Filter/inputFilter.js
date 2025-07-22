@@ -90,7 +90,6 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       <FormControl variant="outlined" sx={{ width:{xs: '130px', md: '160px' } }}>
         <Autocomplete
         multiple
-        id="tags-outlined"
         options={stormNameList}
         getOptionLabel={(option) => option}
         defaultValue={[stormNameList[1]]}
