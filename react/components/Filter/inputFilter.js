@@ -143,8 +143,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
           id="custom-outlined-input"
           type="text"
           placeholder={input_filter.placeholder}
-          value={getDisplayValue()}
-          readOnly
+          value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           label={input_filter.display_name}
           sx={{
