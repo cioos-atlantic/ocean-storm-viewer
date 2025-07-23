@@ -1,4 +1,4 @@
-import { Button, Box,  Paper,  OutlinedInput,  FormControl, InputLabel, Autocomplete, TextField, Checkbox,  } from "@mui/material"
+import { Button, Box,  Paper,  OutlinedInput,  FormControl, InputLabel, Autocomplete, TextField, Checkbox, Stack, Select, MenuItem, ListItemText  } from "@mui/material"
 import {  useState } from 'react';
 import { smallScreenIconButton } from "./filter_utils";
 import { CloseOptions, ShowOptions } from "./filter";
@@ -10,13 +10,26 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions, dispatch, filterStormName}){
   const [inputValue, setInputValue] = useState(""); // Controlled input field
-  const [stormNameList, setStormNameList] = useState([])
+  const [stormNameList, setStormNameList] = useState([]);
+  const [selectedStorms, setSelectedStorms] = useState([]);
   const buttonStyle = {
     backgroundColor: selectedOptions[input_filter.name]?.length > 0 ? '#e55162' : 'white',
     color: selectedOptions[input_filter.name]?.length > 0 ? 'white' : '#e55162',
     '&:hover': {
       backgroundColor: selectedOptions[input_filter.name]?.length > 0 ? '#ffd1dc' : '#82ccdd', 
       color: selectedOptions[input_filter.name]?.length > 0 ? 'black' : 'black',
+    },
+  };
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      sx: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        //overflow: 'hidden',
+        
+        
+      },
     },
   };
 
@@ -44,6 +57,28 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     dispatch({ type: "SET_FILTER_STORM_NAME", payload: ""})
     setInputValue("");
   };
+
+  const handleSelectAll = () => {
+  if (selectedStorms.length === stormNameList.length) {
+    setSelectedStorms([]); // Unselect all
+  } else {
+    setSelectedStorms(stormNameList); // Select all
+  }
+};
+
+  const handleClearAll = () => {
+    setSelectedStorms([]);
+  };
+  const toggleStorm = (name) => {
+  setSelectedStorms(prev =>
+    prev.includes(name) ? prev.filter(s => s !== name) : [...prev, name]
+  );
+  };
+  const getDisplayValue = () => {
+  if (selectedStorms.length === 0) return '';
+  if (selectedStorms.length <= 2) return selectedStorms.join(', ');
+  return `${selectedStorms.length} selected`;
+};
 
   async function handleIconClick(){
     const stormNames = await input_filter.query(); 
@@ -75,85 +110,93 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     
     {/* Filter Input Popup */}
     {showFilterOptions[input_filter.name] && (
-  <Paper
-    elevation={3}
-    className="input-filter"
-    sx={{top:{xs: '6px', md: '100%',},
-    right:{xs: '100%', md: '0px',},
-    width:{xs: '210px', md: '240px' } }}      
-  >
-    <Box
-      component="form"
-      noValidate
-      autoComplete="off"
-      onSubmit={handleSubmit}
-      className="input-filter-box"
-    >
-      
-      <FormControl variant="outlined" sx={{ width:{xs: '130px', md: '210px' } }}>
-        <Autocomplete
-          multiple
-          size="small"
-          options={stormNameList}
-          getOptionLabel={(option) => option}
-          //disableCloseOnSelect
-          defaultValue={[stormNameList[1]]}
-          renderOption={(props, option, { selected }) => {
-          const { key, ...optionProps } = props;
-          return (
-          <li key={key} {...optionProps}>
-            <Checkbox
-              icon={icon}
-              checkedIcon={checkedIcon}
-              style={{ marginRight: 8 }}
-              checked={selected}
-            />
-            {option}
-          </li>
-        );
-      }}
-      renderInput={(params) => (
-          <TextField
-            {...params}
-            label={input_filter.display_name}
-            placeholder={input_filter.placeholder}
-            slotProps={{
-              
-              inputLabel: {
-                sx: {
-                  color: '#e55162', // Default label color
-                  fontSize: '14px',
-                  '&.Mui-focused': {
-                    color: 'red',
-                    transform: 'translate(11px, -6px) scale(1)',
-                    fontSize: '12px',
-                  },
-                },
+  
+      <Paper
+        elevation={3}
+        className="input-filter"
+        sx={{top:{xs: '6px', md: '100%',},
+        right:{xs: '100%', md: '0px',},
+        width:{xs: '210px', md: '240px' } }}    >
+        {/* Native Input Field */}
+        <FormControl variant="outlined" sx={{ }}>
+          <InputLabel
+            htmlFor="custom-outlined-input"
+            //shrink
+            sx={{
+              color: "#e55162", // Default label color
+              fontSize: '14px',
+              padding:'0px',
+              display: inputValue ? "block" : "none", // Show if input has value
+              "&.Mui-focused": {
+                display: "block",
+                color: "red", // Label color when focused
+                transform: "translate(11px, -6px) scale(1)",
+                fontSize:'12px'
               },
+              //transform: "translate(8px, 12px) scale(1)", // Adjust label position when not focused
+              
             }}
-          />
-        )}
-      />
-        
+            >
+            {input_filter.display_name}
+        </InputLabel>
+        <OutlinedInput
+          id="custom-outlined-input"
+          type="text"
+          placeholder={input_filter.placeholder}
+          value={getDisplayValue()}
+          readOnly
+          onChange={(e) => setInputValue(e.target.value)}
+          label={input_filter.display_name}
+          sx={{
+            width:'100%',
+            height: "35px",
+            padding: "6px",
+            fontSize: "14px",
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#e55162", // Default outline color
+            },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#ffd1dc", // Outline color on hover
+            },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "red", // Outline color when focused
+            },
+            "& .MuiInputBase-input": {
+              padding: "9px 14px", // Adjust text input padding
+            },
+          }}
+        />
+        <Box sx={{ maxHeight: 250, overflowY: 'auto' }}>
+          {stormNameList
+            .filter(name => name.toLowerCase().includes(inputValue.toLowerCase()))
+            .map((name) => (
+              <MenuItem key={name} onClick={() => toggleStorm(name)} disableRipple>
+                <Checkbox checked={selectedStorms.includes(name)} />
+                <ListItemText primary={name} />
+              </MenuItem>
+            ))}
+        </Box>
       </FormControl>
-
-      {/* Action Buttons */}
-      <Box sx={{ display: "flex", gap: "1px" }}>
-        <Button className="filter-submit-button" type="submit" onClick={()=> {if (filterStormName !== inputValue) {
-            dispatch({ type: "SET_FILTER_STORM_NAME", payload: inputValue });
-          }}}>
-          Enter
-        </Button>
-        <Button className="filter-submit-button" onClick={handleClear}>
-          Clear
-        </Button>
-        <Button className="filter-submit-button" onClick= {() => {
-        setShowFilterOptions(false)}}>
-          Close
-        </Button>
-      </Box>
+    
+    
+    <Box>
+      <Button className="filter-submit-button" onClick={handleSelectAll}>Select All</Button>
+      <Button className="filter-submit-button" onClick={handleClearAll}>Clear</Button>
+      <Button className="filter-submit-button" onClick={() => setShowFilterOptions({ ...showFilterOptions, [input_filter.name]: false })}>
+        Close
+      </Button>
     </Box>
   </Paper>
+      
+      
+        
+        
+      
+      
+    
+    //</Stack>
+    
+  //</Paper>
 )}
     </>
   )
