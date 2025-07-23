@@ -32,10 +32,10 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
 
   const router = useRouter();
 
-  const spaceApiKey = 'c3945788-3d5c-4a7e-baff-c55c0580a359'
-  // Will need to find some way to store as secret
+  const spaceKey = 'dbba29d9-e060-4d56-8a09-923ef07e516d'
+  // Will need to find some better way to store as secret
 
-  loadSpace(spaceApiKey).then((api) => {
+  loadSpace(spaceKey).then((api) => {
     api.init()
   })
   
