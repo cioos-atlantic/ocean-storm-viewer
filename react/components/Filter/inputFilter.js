@@ -1,9 +1,12 @@
-import { Button, Box,  Paper,  OutlinedInput,  FormControl, InputLabel, Autocomplete, TextField } from "@mui/material"
+import { Button, Box,  Paper,  OutlinedInput,  FormControl, InputLabel, Autocomplete, TextField, Checkbox,  } from "@mui/material"
 import {  useState } from 'react';
 import { smallScreenIconButton } from "./filter_utils";
 import { CloseOptions, ShowOptions } from "./filter";
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
-
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions, dispatch, filterStormName}){
   const [inputValue, setInputValue] = useState(""); // Controlled input field
@@ -77,7 +80,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     className="input-filter"
     sx={{top:{xs: '6px', md: '100%',},
     right:{xs: '100%', md: '0px',},
-    width:{xs: '210px', md: '210px' } }}      
+    width:{xs: '210px', md: '240px' } }}      
   >
     <Box
       component="form"
@@ -86,19 +89,48 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       onSubmit={handleSubmit}
       className="input-filter-box"
     >
-      {/* Native Input Field */}
-      <FormControl variant="outlined" sx={{ width:{xs: '130px', md: '160px' } }}>
+      
+      <FormControl variant="outlined" sx={{ width:{xs: '130px', md: '210px' } }}>
         <Autocomplete
-        multiple
-        options={stormNameList}
-        getOptionLabel={(option) => option}
-        defaultValue={[stormNameList[1]]}
-        renderInput={(params) => (
+          multiple
+          size="small"
+          options={stormNameList}
+          getOptionLabel={(option) => option}
+          //disableCloseOnSelect
+          defaultValue={[stormNameList[1]]}
+          renderOption={(props, option, { selected }) => {
+          const { key, ...optionProps } = props;
+          return (
+          <li key={key} {...optionProps}>
+            <Checkbox
+              icon={icon}
+              checkedIcon={checkedIcon}
+              style={{ marginRight: 8 }}
+              checked={selected}
+            />
+            {option}
+          </li>
+        );
+      }}
+      renderInput={(params) => (
           <TextField
             {...params}
-            variant="standard"
             label={input_filter.display_name}
             placeholder={input_filter.placeholder}
+            slotProps={{
+              
+              inputLabel: {
+                sx: {
+                  color: '#e55162', // Default label color
+                  fontSize: '14px',
+                  '&.Mui-focused': {
+                    color: 'red',
+                    transform: 'translate(11px, -6px) scale(1)',
+                    fontSize: '12px',
+                  },
+                },
+              },
+            }}
           />
         )}
       />
