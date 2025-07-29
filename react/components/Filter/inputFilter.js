@@ -1,4 +1,4 @@
-import { Button, Box,  Paper,  OutlinedInput,  FormControl, InputLabel, Autocomplete, TextField, Checkbox, Stack, Select, MenuItem, ListItemText  } from "@mui/material"
+import { Button, Box,  Paper,  OutlinedInput,  FormControl, InputLabel, Autocomplete, TextField, Checkbox, Stack, Select, MenuItem, ListItemText, Popper  } from "@mui/material"
 import {  useState } from 'react';
 import { smallScreenIconButton } from "./filter_utils";
 import { CloseOptions, ShowOptions } from "./filter";
@@ -111,81 +111,75 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     {/* Filter Input Popup */}
     {showFilterOptions[input_filter.name] && (
   
-      <Paper
-        elevation={3}
+      <Paper elevation={3} 
         className="input-filter"
         sx={{top:{xs: '6px', md: '100%',},
         right:{xs: '100%', md: '0px',},
-        width:{xs: '210px', md: '240px' } }}    >
-        {/* Native Input Field */}
-        <FormControl variant="outlined" sx={{ }}>
-          <InputLabel
-            htmlFor="custom-outlined-input"
-            //shrink
-            sx={{
-              color: "#e55162", // Default label color
-              fontSize: '14px',
-              padding:'0px',
-              display: inputValue ? "block" : "none", // Show if input has value
-              "&.Mui-focused": {
-                display: "block",
-                color: "red", // Label color when focused
-                transform: "translate(11px, -6px) scale(1)",
-                fontSize:'12px'
-              },
-              //transform: "translate(8px, 12px) scale(1)", // Adjust label position when not focused
-              
-            }}
-            >
-            {input_filter.display_name}
-        </InputLabel>
-        <OutlinedInput
-          id="custom-outlined-input"
-          type="text"
-          placeholder={input_filter.placeholder}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          label={input_filter.display_name}
-          sx={{
-            width:'100%',
-            height: "35px",
-            padding: "6px",
-            fontSize: "14px",
-            "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#e55162", // Default outline color
+        width:{xs: '210px', md: '240px' },
+        }}>
+      <Autocomplete
+        multiple
+        fullWidth
+        //disableCloseOnSelect
+        options={stormNameList}
+        value={selectedStorms}
+        size='small'
+        onChange={(event, newValue) => setSelectedStorms(newValue)}
+        limitTags={1}
+        getOptionLabel={(option) => option}
+        renderOption={(props, option, { selected }) => (
+          <li {...props} key={option}>
+            <Checkbox
+            fullWidth
+              icon={icon}
+              checkedIcon={checkedIcon}
+              sx={{ marginRight: 1.5, color: '#e55162' }}
+              checked={selected}
+            />
+            {option}
+          </li>
+        )}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            //label={input_filter.display_name}
+            placeholder="Search storms"
+            
+          />
+        )}
+        ListboxProps={{
+          style: {
+            maxHeight: "250px",
+            overflowY: "auto",
+            
+          }
+        }}
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: "0px",
+              boxShadow: "0px 6px 16px #00000026",
             },
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#ffd1dc", // Outline color on hover
-            },
-            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "red", // Outline color when focused
-            },
-            "& .MuiInputBase-input": {
-              padding: "9px 14px", // Adjust text input padding
-            },
-          }}
-        />
-        <Box sx={{ maxHeight: 250, overflowY: 'auto' }}>
-          {stormNameList
-            .filter(name => name.toLowerCase().includes(inputValue.toLowerCase()))
-            .map((name) => (
-              <MenuItem key={name} onClick={() => toggleStorm(name)} disableRipple>
-                <Checkbox checked={selectedStorms.includes(name)} />
-                <ListItemText primary={name} />
-              </MenuItem>
-            ))}
-        </Box>
-      </FormControl>
-    
-    
-    <Box>
-      <Button className="filter-submit-button" onClick={handleSelectAll}>Select All</Button>
-      <Button className="filter-submit-button" onClick={handleClearAll}>Clear</Button>
-      <Button className="filter-submit-button" onClick={() => setShowFilterOptions({ ...showFilterOptions, [input_filter.name]: false })}>
-        Close
-      </Button>
-    </Box>
-  </Paper>
+          },
+        }}
+        PopperComponent={(props) => (
+          <Popper {...props} placement="top"  >
+            <Paper >
+              {props.children}
+              <Box sx={{padding: "5px", borderTop: '1px solid #e55162' }}>
+                <Button size="small"className="filter-submit-button" onClick={handleSelectAll}>Select All</Button>
+              <Button size="small" className="filter-submit-button" onClick={handleClearAll}>Clear</Button>
+              <Button size="small" className="filter-submit-button" onClick={() => setShowFilterOptions({ ...showFilterOptions, [input_filter.name]: false })}>
+                Close
+              </Button>
+
+              </Box>
+               
+            </Paper>
+          </Popper>
+        )}
+      />
+    </Paper>
       
       
         
