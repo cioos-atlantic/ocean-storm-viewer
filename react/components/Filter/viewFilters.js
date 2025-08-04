@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 
 export function FiltersSelected({startDate, endDate, startCategory, endCategory, polyFilterCoords, filterStormName}){
   console.log(filterStormName);
-  const isFiltered = startDate || endDate || startCategory || endCategory || polyFilterCoords || filterStormName;
+  const isFiltered = startDate || endDate || startCategory || endCategory || polyFilterCoords || filterStormName.length;
   console.log(filterStormName)
   return(
     <Box className='view-filter-space'>
