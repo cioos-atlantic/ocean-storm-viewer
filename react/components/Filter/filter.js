@@ -51,7 +51,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
   
 
   const [openSpeedDial, setOpenSpeedDial] = useState(false);
-  const setSelectedStormNames = (state) => dispatch({ type: "SET_SET_SELECTED_STORM_NAMES", payload: state });
+  const setFilterStormName = (state) => dispatch({ type: "SET_FILTER_STORM_NAME", payload: state });
 
   
   const handleOpen = () => setOpenSpeedDial(true);
@@ -90,6 +90,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
     dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: '' });
     
     
+    
     const updatedParams = {
       //...selectedOptions, // Spread selected options correctly
       startDate: state.startDate, // Ensure start and end dates are included
@@ -97,7 +98,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
       polyCoords: state.polyFilterCoords,
       startCategory: state.startCategory,
       endCategory:state.endCategory,
-      stormNames:state.selectedStormNames
+      stormName:state.filterStormName
 
     };
 
@@ -173,8 +174,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                     showFilterOptions={showFilterOptions}
                     setShowFilterOptions={setShowFilterOptions}
                     dispatch={dispatch}
-                    selectedStormNames= {state.selectedStormNames}
-                    setSelectedStormNames= {setSelectedStormNames}
+                    filterStormName={state.filterStormName}
+                    setFilterStormName= {setFilterStormName}
                   />
                 </div>
               )
@@ -243,8 +244,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                       setShowFilterOptions={setShowFilterOptions}
                       dispatch={dispatch}
                       filterStormName={state.filterStormName}
-                      selectedStormNames= {state.selectedStormNames}
-                    setSelectedStormNames= {setSelectedStormNames}
+                      setFilterStormName= {setFilterStormName}
+                    
                     />
 
                   </div>
@@ -557,10 +558,10 @@ export function formatStormCategory(category_list = []) {
   return formattedCategoryList;
 }
 
-export function formatStormName(storm_names = "") {
-  storm_names = storm_names.replace(/\s+/g, ''); // Remove all spaces
-  console.log(storm_names);
-  const storm_list = storm_names.split(",");
+export function formatStormName(storm_list = []) {
+  //storm_names = storm_names.replace(/\s+/g, ''); // Remove all spaces
+  //console.log(storm_names);
+  //const storm_list = storm_names.split(",");
   const formattedStormList = storm_list.join("_");
   return formattedStormList;
 }

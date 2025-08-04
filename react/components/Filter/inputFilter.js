@@ -9,16 +9,18 @@ import React, { forwardRef } from 'react';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions, dispatch, filterStormName, selectedStormNames, setSelectedStormNames}){
+export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions, dispatch, filterStormName, setFilterStormName}){
   const [inputValue, setInputValue] = useState(""); // Controlled input field
   const [stormNameList, setStormNameList] = useState([]);
+
+  const validStormList = filterStormName;
   
   const buttonStyle = {
-    backgroundColor: selectedStormNames?.length > 0 ? '#e55162' : 'white',
-    color: selectedStormNames?.length > 0 ? 'white' : '#e55162',
+    backgroundColor: validStormList?.length > 0 ? '#e55162' : 'white',
+    color: validStormList?.length > 0 ? 'white' : '#e55162',
     '&:hover': {
-      backgroundColor: selectedStormNames?.length > 0 ? '#ffd1dc' : '#82ccdd', 
-      color: selectedStormNames?.length > 0 ? 'black' : 'black',
+      backgroundColor: validStormList?.length > 0 ? '#ffd1dc' : '#82ccdd', 
+      color: validStormList?.length > 0 ? 'black' : 'black',
     },
   };
   const ITEM_HEIGHT = 48;
@@ -125,25 +127,25 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
   };
 
   const handleSelectAll = () => {
-  if (selectedStormNames.length === stormNameList.length) {
-    setSelectedStormNames([]); // Unselect all
+  if (filterStormName.length === stormNameList.length) {
+    setFilterStormName([]); // Unselect all
   } else {
-    setSelectedStormNames(stormNameList); // Select all
+    setFilterStormName(stormNameList); // Select all
   }
 };
 
   const handleClearAll = () => {
-    setSelectedStormNames([]);
+    setFilterStormName([]);
   };
   const toggleStorm = (name) => {
-  setSelectedStormNames(prev =>
+  setFilterStormName(prev =>
     prev.includes(name) ? prev.filter(s => s !== name) : [...prev, name]
   );
   };
   const getDisplayValue = () => {
-  if (selectedStormNames.length === 0) return '';
-  if (selectedStormNames.length <= 2) return selectedStormNames.join(', ');
-  return `${selectedStormNames.length} selected`;
+  if (filterStormName.length === 0) return '';
+  if (filterStormName.length <= 2) return filterStormName.join(', ');
+  return `${filterStormName.length} selected`;
 };
 
   async function handleIconClick(){
@@ -189,10 +191,10 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
         disableCloseOnSelect
         //disablePortal
         options={stormNameList}
-        value={selectedStormNames}
+        value={filterStormName}
         disabled={false}
         size='small'
-        onChange={(event, newValue) => setSelectedStormNames(newValue)}
+        onChange={(event, newValue) => setFilterStormName(newValue)}
         limitTags={1}
         getOptionLabel={(option) => option}
         renderOption={(props, option, { selected }) => (

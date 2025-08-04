@@ -22,7 +22,7 @@ export const initialMapState = {
   isDrawerOpen: true,
   storm_points: empty_storm_obj,
   filterQuery:{},
-  filterStormName:'',
+  filterStormName:[],
   selectedStormNames:[]
 };
 
