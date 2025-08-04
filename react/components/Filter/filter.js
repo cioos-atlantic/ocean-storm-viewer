@@ -48,8 +48,10 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [filterParameters, setFilterParameters] = useState([]);
   
+  
 
   const [openSpeedDial, setOpenSpeedDial] = useState(false);
+  const setSelectedStormNames = (state) => dispatch({ type: "SET_SET_SELECTED_STORM_NAMES", payload: state });
 
   
   const handleOpen = () => setOpenSpeedDial(true);
@@ -89,12 +91,13 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
     
     
     const updatedParams = {
-      ...selectedOptions, // Spread selected options correctly
+      //...selectedOptions, // Spread selected options correctly
       startDate: state.startDate, // Ensure start and end dates are included
       endDate: state.endDate,
       polyCoords: state.polyFilterCoords,
       startCategory: state.startCategory,
       endCategory:state.endCategory,
+      stormNames:state.selectedStormNames
 
     };
 
@@ -170,6 +173,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                     showFilterOptions={showFilterOptions}
                     setShowFilterOptions={setShowFilterOptions}
                     dispatch={dispatch}
+                    selectedStormNames= {state.selectedStormNames}
+                    setSelectedStormNames= {setSelectedStormNames}
                   />
                 </div>
               )
@@ -238,6 +243,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                       setShowFilterOptions={setShowFilterOptions}
                       dispatch={dispatch}
                       filterStormName={state.filterStormName}
+                      selectedStormNames= {state.selectedStormNames}
+                    setSelectedStormNames= {setSelectedStormNames}
                     />
 
                   </div>

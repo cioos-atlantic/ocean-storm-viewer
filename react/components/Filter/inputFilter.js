@@ -4,20 +4,21 @@ import { smallScreenIconButton } from "./filter_utils";
 import { CloseOptions, ShowOptions } from "./filter";
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import React, { forwardRef } from 'react';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions, dispatch, filterStormName}){
+export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions, dispatch, filterStormName, selectedStormNames, setSelectedStormNames}){
   const [inputValue, setInputValue] = useState(""); // Controlled input field
   const [stormNameList, setStormNameList] = useState([]);
-  const [selectedStorms, setSelectedStorms] = useState([]);
+  
   const buttonStyle = {
-    backgroundColor: selectedOptions[input_filter.name]?.length > 0 ? '#e55162' : 'white',
-    color: selectedOptions[input_filter.name]?.length > 0 ? 'white' : '#e55162',
+    backgroundColor: selectedStormNames?.length > 0 ? '#e55162' : 'white',
+    color: selectedStormNames?.length > 0 ? 'white' : '#e55162',
     '&:hover': {
-      backgroundColor: selectedOptions[input_filter.name]?.length > 0 ? '#ffd1dc' : '#82ccdd', 
-      color: selectedOptions[input_filter.name]?.length > 0 ? 'black' : 'black',
+      backgroundColor: selectedStormNames?.length > 0 ? '#ffd1dc' : '#82ccdd', 
+      color: selectedStormNames?.length > 0 ? 'black' : 'black',
     },
   };
   const ITEM_HEIGHT = 48;
@@ -32,6 +33,71 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       },
     },
   };
+  const CustomPopper = forwardRef(function CustomPopper(props, ref) {
+  const { children, ...other } = props;
+
+  return (
+    <Popper {...other} ref={ref} placement="top" modifiers={[
+      { name: 'offset', options: { offset: [0, 8] } },
+    ]}>
+      <Paper
+        sx={{
+          borderRadius: '8px',
+          boxShadow: '0px 6px 16px rgba(0, 0, 0, 0.15)',
+          overflow: 'hidden',
+        }}
+      >
+        {children}
+        <Box
+          sx={{
+            padding: "4px",
+            borderTop: '1px solid #e55162',
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 0.1,
+            backgroundColor: '#fff',
+          }}
+        >
+          <Button
+            size="small"
+            className="filter-submit-button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleSelectAll();
+            }}
+          >
+            Select All
+          </Button>
+          <Button
+            size="small"
+            className="filter-submit-button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClearAll();
+            }}
+          >
+            Clear
+          </Button>
+          <Button
+            size="small"
+            className="filter-submit-button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowFilterOptions((prev) => ({
+                ...prev,
+                [input_filter.name]: false,
+              }));
+            }}
+          >
+            Close
+          </Button>
+        </Box>
+      </Paper>
+    </Popper>
+  );
+});
+
 
 
   // Handle form submission
@@ -59,25 +125,25 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
   };
 
   const handleSelectAll = () => {
-  if (selectedStorms.length === stormNameList.length) {
-    setSelectedStorms([]); // Unselect all
+  if (selectedStormNames.length === stormNameList.length) {
+    setSelectedStormNames([]); // Unselect all
   } else {
-    setSelectedStorms(stormNameList); // Select all
+    setSelectedStormNames(stormNameList); // Select all
   }
 };
 
   const handleClearAll = () => {
-    setSelectedStorms([]);
+    setSelectedStormNames([]);
   };
   const toggleStorm = (name) => {
-  setSelectedStorms(prev =>
+  setSelectedStormNames(prev =>
     prev.includes(name) ? prev.filter(s => s !== name) : [...prev, name]
   );
   };
   const getDisplayValue = () => {
-  if (selectedStorms.length === 0) return '';
-  if (selectedStorms.length <= 2) return selectedStorms.join(', ');
-  return `${selectedStorms.length} selected`;
+  if (selectedStormNames.length === 0) return '';
+  if (selectedStormNames.length <= 2) return selectedStormNames.join(', ');
+  return `${selectedStormNames.length} selected`;
 };
 
   async function handleIconClick(){
@@ -110,8 +176,8 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     
     {/* Filter Input Popup */}
     {showFilterOptions[input_filter.name] && (
-  
       <Paper elevation={3} 
+        key={input_filter.name}
         className="input-filter"
         sx={{top:{xs: '6px', md: '100%',},
         right:{xs: '100%', md: '0px',},
@@ -120,17 +186,18 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       <Autocomplete
         multiple
         fullWidth
-        //disableCloseOnSelect
+        disableCloseOnSelect
+        //disablePortal
         options={stormNameList}
-        value={selectedStorms}
+        value={selectedStormNames}
+        disabled={false}
         size='small'
-        onChange={(event, newValue) => setSelectedStorms(newValue)}
+        onChange={(event, newValue) => setSelectedStormNames(newValue)}
         limitTags={1}
         getOptionLabel={(option) => option}
         renderOption={(props, option, { selected }) => (
-          <li {...props} key={option}>
+          <li {...props} key={`option-${option}`}>
             <Checkbox
-            fullWidth
               icon={icon}
               checkedIcon={checkedIcon}
               sx={{ marginRight: 1.5, color: '#e55162' }}
@@ -144,16 +211,17 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
             {...params}
             //label={input_filter.display_name}
             placeholder="Search storms"
+            inputProps={{
+            ...params.inputProps,
+            'aria-label': 'Search storms'
+          }}
+            
             
           />
         )}
-        ListboxProps={{
-          style: {
-            maxHeight: "250px",
-            overflowY: "auto",
-            
-          }
-        }}
+        slots={{popper: CustomPopper,
+          }}
+        
         slotProps={{
           paper: {
             sx: {
@@ -161,35 +229,17 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
               boxShadow: "0px 6px 16px #00000026",
             },
           },
+          listbox: {
+            sx:{maxHeight: "250px",
+            overflowY: "auto",}
+          },
+          
         }}
-        PopperComponent={(props) => (
-          <Popper {...props} placement="top"  >
-            <Paper >
-              {props.children}
-              <Box sx={{padding: "5px", borderTop: '1px solid #e55162' }}>
-                <Button size="small"className="filter-submit-button" onClick={handleSelectAll}>Select All</Button>
-              <Button size="small" className="filter-submit-button" onClick={handleClearAll}>Clear</Button>
-              <Button size="small" className="filter-submit-button" onClick={() => setShowFilterOptions({ ...showFilterOptions, [input_filter.name]: false })}>
-                Close
-              </Button>
-
-              </Box>
-               
-            </Paper>
-          </Popper>
-        )}
+        
       />
     </Paper>
-      
-      
-        
-        
-      
-      
+
     
-    //</Stack>
-    
-  //</Paper>
 )}
     </>
   )
