@@ -189,6 +189,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
         multiple
         fullWidth
         disableCloseOnSelect
+        autoComplete
         //disablePortal
         options={stormNameList}
         value={filterStormName}
