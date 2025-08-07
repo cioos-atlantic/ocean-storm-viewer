@@ -1,12 +1,18 @@
 import { Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, } from "@mui/material";
 
+
 export default function InfoScreen({setInfo, open, onClose }){
+  
     const handleClose = () => {
       setInfo(false)
     };
 
     return(
-      <Dialog onClose = {handleClose} open={open} PaperPropssx={{ align: 'center', display:'flex', justifyContent: 'center' }}>
+      <Dialog 
+      onClose = {handleClose} 
+      open={open} 
+      slotProps ={{paper:{sx:{alignItems: 'center', display:'flex', justifyContent: 'center'}}, }} 
+      >
         <DialogTitle>Ocean Storm Viewer - User Guide</DialogTitle>
         <DialogContent dividers={scroll === 'paper'} style={{height:'60vh'}}>
         <p>
