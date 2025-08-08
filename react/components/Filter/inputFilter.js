@@ -185,8 +185,20 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
         right:{xs: '100%', md: '0px',},
         width:{xs: '210px', md: '240px' },
         }}>
+          <Stack direction="row" spacing={1} sx={{ mt: 0.5, mb:1 }}>
+        
+            <Button size="small"className="filter-submit-button" onClick={handleSelectAll}>Select All</Button>
+            <Button size="small" className="filter-submit-button" onClick={handleClearAll}>Clear</Button>
+            <Button size="small" className="filter-submit-button" onClick={() => setShowFilterOptions({ ...showFilterOptions, [input_filter.name]: false })}>
+              Close
+            </Button>
+    
+      </Stack>
+
+
       <Autocomplete
         multiple
+        limitTags={1}
         fullWidth
         disableCloseOnSelect
         autoComplete
@@ -196,7 +208,8 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
         disabled={false}
         size='small'
         onChange={(event, newValue) => setFilterStormName(newValue)}
-        limitTags={1}
+        
+        //getLimitTagsText={(more) => `+${more} names`}
         getOptionLabel={(option) => option}
         renderOption={(props, option, { selected }) => (
           <li {...props} key={`option-${option}`}>
@@ -222,8 +235,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
             
           />
         )}
-        slots={{popper: CustomPopper,
-          }}
+        
         
         slotProps={{
           paper: {
@@ -238,8 +250,12 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
           },
           
         }}
+         
+    
         
       />
+      {/* Action buttons OUTSIDE popper */}
+      
     </Paper>
 
     

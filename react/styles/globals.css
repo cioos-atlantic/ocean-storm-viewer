@@ -900,8 +900,8 @@ button.filter-badge{
   border: 2px solid #e55162;
   background-color: #f4f4f4;
   border-radius: 8px;
-  display: flex;
-  flex-direction: column;
+  /*display: flex;
+  flex-direction: column;*/
   
   
 }

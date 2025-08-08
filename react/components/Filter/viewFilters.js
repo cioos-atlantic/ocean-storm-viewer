@@ -55,7 +55,7 @@ export function FiltersSubmitted({filterQuery}){
           >Filter Query: </Box>
         <Box className='view-filters-content'>
           {filterQuery?.stormName && (<Box>
-            Storm Name(s): {filterQuery.stormName}
+            Storm Name(s): {filterQuery.stormName.join(", ")}
           </Box>)}
           {filterQuery?.startDate && filterQuery?.endDate && (<Box>
             Date Range: {dayjs(filterQuery.startDate).format('DD/MM/YYYY') } - {dayjs(filterQuery.endDate).format('DD/MM/YYYY') }
