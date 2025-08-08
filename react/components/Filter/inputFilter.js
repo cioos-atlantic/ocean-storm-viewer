@@ -211,6 +211,20 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
         
         //getLimitTagsText={(more) => `+${more} names`}
         getOptionLabel={(option) => option}
+        renderTags={(value, getTagProps) => {
+    if (value.length === 0) return null;
+
+    return [
+      <span key="first" {...getTagProps({ index: 0 })}>
+        {value[0]}
+      </span>,
+      value.length > 1 && (
+        <span key="more" style={{ marginLeft: 4 }}>
+          +{value.length - 1}
+        </span>
+      )
+    ];
+  }}
         renderOption={(props, option, { selected }) => (
           <li {...props} key={`option-${option}`}>
             <Checkbox
