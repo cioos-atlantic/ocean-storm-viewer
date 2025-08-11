@@ -15,6 +15,10 @@ import { useRouter } from 'next/router'
 import queryString from 'query-string';
 import Layout from '../components/layout'
 import { basePath } from '@/next.config';
+import InfoScreen from '@/components/message_screens/info_screen';
+import { useState } from 'react';
+import { Button } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 
 const top_nav = [
   { name: "Home", href: basePath },
@@ -32,12 +36,32 @@ const logo = {
 export default function StormDashboard() {
   const router = useRouter()
   const qs = queryString.parseUrl(process.env.BASE_URL + router.asPath)
+
+  const [info, setInfo] = useState(true)
   
   return (
+    <>
+    <Button
+                  id="info-icon"
+                  className="info-icons"
+                  startIcon={<InfoIcon />}
+                  onClick={() => {
+                    setInfo(true)
+                  }}
+                  >
+                </Button>
+              
+            <InfoScreen
+              setInfo = {setInfo}
+              open={info}
+              onClose = {info}
+            />
     <Layout 
       topNav={top_nav} 
       logo={logo} 
       querystring={qs}
     ></Layout>
+    </>
+     
   )
 }
