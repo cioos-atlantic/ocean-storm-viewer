@@ -42,20 +42,20 @@ export default function StormDashboard() {
   return (
     <>
     <Button
-                  id="info-icon"
-                  className="info-icons"
-                  startIcon={<InfoIcon />}
-                  onClick={() => {
-                    setInfo(true)
-                  }}
-                  >
-                </Button>
+      id="info-icon"
+      className="info-icons"
+      startIcon={<InfoIcon />}
+      onClick={() => {
+        setInfo(true)
+      }}
+      >
+    </Button>
               
-            <InfoScreen
-              setInfo = {setInfo}
-              open={info}
-              onClose = {info}
-            />
+      <InfoScreen
+        setInfo = {setInfo}
+        open={info}
+        onClose = {info}
+      />
     <Layout 
       topNav={top_nav} 
       logo={logo} 
