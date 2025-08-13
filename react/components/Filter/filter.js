@@ -307,7 +307,11 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
               >
             </Button>}
           </Stack>
-        
+        {<InfoScreen
+          setInfo = {setInfo}
+          open={info}
+          onClose = {info}
+        />}
         </>
       )
       };
