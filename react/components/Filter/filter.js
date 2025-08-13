@@ -180,6 +180,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
               <RenderDateFilter
                 state={state}
                 dispatch={dispatch}
+                setShowFilterOptions={setShowFilterOptions}
+
               />
 
             </div>
@@ -190,6 +192,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
               <RenderCategoryFilter
                   state={state}
                   dispatch={dispatch}
+                  setShowFilterOptions={setShowFilterOptions}
                 />
 
             </div>
@@ -250,12 +253,14 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
               <RenderDateFilter
                 state={state}
                 dispatch={dispatch}
+                setShowFilterOptions={setShowFilterOptions}
               />
             </div>
             <div className="filter-group">
               <RenderCategoryFilter
                   state={state}
                   dispatch={dispatch}
+                  setShowFilterOptions={setShowFilterOptions}
                 />
             </div>
             
