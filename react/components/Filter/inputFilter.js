@@ -5,13 +5,25 @@ import { CloseOptions, ShowOptions } from "./filter";
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import React, { forwardRef } from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
+function sleep(duration) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, duration);
+  });
+}
+
+
 export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions, dispatch, filterStormName, setFilterStormName}){
   const [inputValue, setInputValue] = useState(""); // Controlled input field
   const [stormNameList, setStormNameList] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const validStormList = filterStormName;
   
@@ -35,70 +47,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       },
     },
   };
-  const CustomPopper = forwardRef(function CustomPopper(props, ref) {
-  const { children, ...other } = props;
-
-  return (
-    <Popper {...other} ref={ref} placement="top" modifiers={[
-      { name: 'offset', options: { offset: [0, 8] } },
-    ]}>
-      <Paper
-        sx={{
-          borderRadius: '8px',
-          boxShadow: '0px 6px 16px rgba(0, 0, 0, 0.15)',
-          overflow: 'hidden',
-        }}
-      >
-        {children}
-        <Box
-          sx={{
-            padding: "4px",
-            borderTop: '1px solid #e55162',
-            display: 'flex',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 0.1,
-            backgroundColor: '#fff',
-          }}
-        >
-          <Button
-            size="small"
-            className="filter-submit-button"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleSelectAll();
-            }}
-          >
-            Select All
-          </Button>
-          <Button
-            size="small"
-            className="filter-submit-button"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleClearAll();
-            }}
-          >
-            Clear
-          </Button>
-          <Button
-            size="small"
-            className="filter-submit-button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowFilterOptions((prev) => ({
-                ...prev,
-                [input_filter.name]: false,
-              }));
-            }}
-          >
-            Close
-          </Button>
-        </Box>
-      </Paper>
-    </Popper>
-  );
-});
+  
 
 
 
@@ -149,13 +98,27 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
 };
 
   async function handleIconClick(){
-    const stormNames = await input_filter.query(); 
-    setStormNameList(stormNames);
+    
     setShowFilterOptions((prev) => ({
       ...prev,
       [input_filter.name]: !prev[input_filter.name],
     }));
   }
+  const handleOpen = () => {
+    setOpen(true);
+    (async () => {
+      setLoading(true);
+      const stormNames = await input_filter.query(); 
+      
+      setLoading(false);
+      setStormNameList([...stormNames]);
+    })();
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setStormNameList([]);
+  };
 
   console.log(stormNameList);
   return(
@@ -208,6 +171,10 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
         disabled={false}
         size='small'
         onChange={(event, newValue) => setFilterStormName(newValue)}
+        open={open}
+        onOpen={handleOpen}
+        onClose={handleClose}
+        loading={loading}
         
         //getLimitTagsText={(more) => `+${more} names`}
         getOptionLabel={(option) => option}
@@ -241,10 +208,17 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
             {...params}
             //label={input_filter.display_name}
             placeholder="Search storms"
-            inputProps={{
-            ...params.inputProps,
-            'aria-label': 'Search storms'
-          }}
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                endAdornment: (
+                  <React.Fragment>
+                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                    {params.InputProps.endAdornment}
+                  </React.Fragment>
+                ),
+              },
+            }}
             
             
           />
