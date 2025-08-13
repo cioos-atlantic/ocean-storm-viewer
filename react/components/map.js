@@ -37,6 +37,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
           clearShapesRef={clearShapesRef} // Pass the ref to 
           state={state}
           dispatch={dispatch}
+          setStationPoints={setStationPoints}
           />
         }
         {
