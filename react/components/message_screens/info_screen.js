@@ -11,8 +11,9 @@ export default function InfoScreen({setInfo, open, onClose }){
       <Dialog 
       onClose = {handleClose} 
       open={open} 
-      container={typeof window !== 'undefined' ? document.body : undefined}
-      slotProps ={{paper:{sx:{alignItems: 'center', display:'flex', justifyContent: 'center'}}, backdrop:{sx:{zIndex:'9999', position: 'fixed', }} }} 
+      disablePortal={false}
+      slotProps ={{paper:{sx:{alignItems: 'center', display:'flex', justifyContent: 'center'}}, root:{sx:{zIndex:'9999', position: 'fixed',
+         }} }} 
       >
         <DialogTitle>Ocean Storm Viewer - User Guide</DialogTitle>
         <DialogContent  style={{height:'60vh'}}>

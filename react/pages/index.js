@@ -17,8 +17,6 @@ import Layout from '../components/layout'
 import { basePath } from '@/next.config';
 import InfoScreen from '@/components/message_screens/info_screen';
 import { useState } from 'react';
-import { Button } from '@mui/material';
-import InfoIcon from '@mui/icons-material/Info';
 
 const top_nav = [
   { name: "Home", href: basePath },
@@ -41,21 +39,15 @@ export default function StormDashboard() {
   
   return (
     <>
-    <Button
-      id="info-icon"
-      className="info-icons"
-      startIcon={<InfoIcon />}
-      onClick={() => {
-        setInfo(true)
-      }}
-      >
-    </Button>
+    {<InfoScreen
+          setInfo = {setInfo}
+          open={info}
+          onClose = {info}
+        />
               
-      <InfoScreen
-        setInfo = {setInfo}
-        open={info}
-        onClose = {info}
-      />
+    }
+
+    
     <Layout 
       topNav={top_nav} 
       logo={logo} 
