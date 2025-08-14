@@ -44,10 +44,10 @@ export function FiltersSelected({startDate, endDate, startCategory, endCategory,
 export function FiltersSubmitted({filterQuery}){
   console.log(filterQuery);
   const isEmpty =
-  (!filterQuery.endCategory || filterQuery.endCategory.trim() === "") &&
+  (filterQuery.endCategory === "" || filterQuery.endCategory === null || filterQuery.endCategory === undefined) &&
   !filterQuery.endDate &&
-  (!filterQuery.polyCoords || filterQuery.polyCoords.trim() === "") &&
-  (!filterQuery.startCategory || filterQuery.startCategory.trim() === "") &&
+  (filterQuery.polyCoords === "" || filterQuery.polyCoords === null || filterQuery.polyCoords === undefined) &&
+  (filterQuery.startCategory === "" || filterQuery.startCategory === null || filterQuery.startCategory === undefined) &&
   !filterQuery.startDate &&
   Array.isArray(filterQuery.stormName) &&
   filterQuery.stormName.length === 0;

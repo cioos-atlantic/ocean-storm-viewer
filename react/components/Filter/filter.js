@@ -562,8 +562,9 @@ export function formatStormCategory(category_list = []) {
 
 export function formatStormName(storm_list = []) {
   //storm_names = storm_names.replace(/\s+/g, ''); // Remove all spaces
-  //console.log(storm_names);
+  console.log(storm_list);
   //const storm_list = storm_names.split(",");
+
   const formattedStormList = storm_list.join("_");
   return formattedStormList;
 }
