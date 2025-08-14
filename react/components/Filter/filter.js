@@ -130,7 +130,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
           <SpeedDial
             ariaLabel="Filter Options"
             sx={{
-              position: 'absolute', bottom: 25, right: 7,
+              position: 'absolute', bottom: 65, right: 7,
               display: { xs: "block", md: "none" }, '& .MuiSpeedDial-fab': {
                 backgroundColor: '#e55162',  // Change SpeedDial button background color
                 '&:hover': {
@@ -165,21 +165,22 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
             />
 
             
-            {openSpeedDial && (<div className="filter-group">
-              <RenderDateFilter
-                state={state}
-                dispatch={dispatch}
-              />
-
-            </div>
-            )
-
-            }
+           
             {openSpeedDial && (<div className="filter-group">
               <RenderCategoryFilter
                   state={state}
                   dispatch={dispatch}
                 />
+
+            </div>
+            )
+
+            }
+             {openSpeedDial && (<div className="filter-group">
+              <RenderDateFilter
+                state={state}
+                dispatch={dispatch}
+              />
 
             </div>
             )
