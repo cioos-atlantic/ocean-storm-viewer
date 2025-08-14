@@ -860,7 +860,7 @@ button.filter-badge{
   cursor: pointer;
   position: relative;
   max-width: 60%;
-  font-size: 0.8125rem !important;
+  font-size: 12px !important;
   height: 32px !important;
   border-radius: 16px !important;
   transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
