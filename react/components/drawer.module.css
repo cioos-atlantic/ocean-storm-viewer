@@ -28,9 +28,9 @@
 .closeButton {
     position: absolute;
     top: 61px; /* Adjust vertical position */
-    right: 0px; /* Adjust horizontal position */
-    width: 1.5rem; /* Button width */
-    height: 1.5rem; /* Button height */
+    right: 4px; /* Adjust horizontal position */
+    width: 25px; /* Button width */
+    height:  25px; /* Button height */
     background-color: transparent; /* Transparent background */
     border: 2px solid #e55162; /* Border color */
     border-radius: 50%; /* Circular shape */
