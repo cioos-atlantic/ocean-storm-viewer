@@ -198,7 +198,8 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
             <Checkbox
               icon={icon}
               checkedIcon={checkedIcon}
-              sx={{ marginRight: 1.5, color: '#e55162' }}
+              sx={{ marginRight: 1.5, color: '#e55162', padding: {sm:'0px', md:'6px'}, // remove extra checkbox padding
+          alignSelf: 'center' }}
               checked={selected}
             />
             {option}
@@ -234,8 +235,9 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
             },
           },
           listbox: {
-            sx:{maxHeight: "250px",
-            overflowY: "auto",}
+            sx:{maxHeight:  {xs: '180px', md: '250px',},
+            overflowY: "auto", padding:  0, // remove UL padding
+            }
           },
           
         }}

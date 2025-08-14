@@ -164,24 +164,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
               }}
             />
 
-            {openSpeedDial && (input_filters.map((input_filter, index) => {
-              return (
-                <div className="filter-group" key={index}>
-                  <InputFilter
-                    input_filter={input_filter}
-                    setSelectedOptions={setSelectedOptions}
-                    selectedOptions={selectedOptions}
-                    showFilterOptions={showFilterOptions}
-                    setShowFilterOptions={setShowFilterOptions}
-                    dispatch={dispatch}
-                    filterStormName={state.filterStormName}
-                    setFilterStormName= {setFilterStormName}
-                  />
-                </div>
-              )
-            }))
-
-            }
+            
             {openSpeedDial && (<div className="filter-group">
               <RenderDateFilter
                 state={state}
@@ -200,6 +183,24 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
 
             </div>
             )
+
+            }
+            {openSpeedDial && (input_filters.map((input_filter, index) => {
+              return (
+                <div className="filter-group" key={index}>
+                  <InputFilter
+                    input_filter={input_filter}
+                    setSelectedOptions={setSelectedOptions}
+                    selectedOptions={selectedOptions}
+                    showFilterOptions={showFilterOptions}
+                    setShowFilterOptions={setShowFilterOptions}
+                    dispatch={dispatch}
+                    filterStormName={state.filterStormName}
+                    setFilterStormName= {setFilterStormName}
+                  />
+                </div>
+              )
+            }))
 
             }
             {/*openSpeedDial && (filters.map((filter, index) => {
