@@ -32,7 +32,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
     <div className="map_container">
       <div className='inner_container'>
         
-        {
+        { source_type === "historical" &&
           <RenderFilter
           clearShapesRef={clearShapesRef} // Pass the ref to 
           state={state}
