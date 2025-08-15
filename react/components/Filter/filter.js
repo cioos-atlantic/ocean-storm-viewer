@@ -48,8 +48,10 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [filterParameters, setFilterParameters] = useState([]);
   
+  
 
   const [openSpeedDial, setOpenSpeedDial] = useState(false);
+  const setFilterStormName = (state) => dispatch({ type: "SET_FILTER_STORM_NAME", payload: state });
 
   
   const handleOpen = () => setOpenSpeedDial(true);
@@ -65,6 +67,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
   const [info, setInfo] = useState(true)
 
   const router = useRouter(); // Next.js useRouter
+  const drawerWidth = 258;
+  const drawerOpen = state.isDrawerOpen;
 
 
   function handleClearAllFilters() {
@@ -88,18 +92,22 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
     dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: '' });
     
     
+    
     const updatedParams = {
-      ...selectedOptions, // Spread selected options correctly
+      //...selectedOptions, // Spread selected options correctly
       startDate: state.startDate, // Ensure start and end dates are included
       endDate: state.endDate,
       polyCoords: state.polyFilterCoords,
       startCategory: state.startCategory,
       endCategory:state.endCategory,
+      stormName:state.filterStormName
 
     };
 
     console.log(updatedParams); // 
     dispatch({ type: "SET_FILTER_QUERY", payload: updatedParams});
+
+   
 
 
 
@@ -127,7 +135,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
             ariaLabel="Filter Options"
             sx={{
               position: 'absolute', bottom: 25, right: 7,
-              display: { xs: "block", md: "none" }, '& .MuiSpeedDial-fab': {
+              display: { sm: "block", md: "none" }, '& .MuiSpeedDial-fab': {
                 backgroundColor: '#e55162',  // Change SpeedDial button background color
                 '&:hover': {
                   backgroundColor: '#b9acac', // Change SpeedDial button hover color
@@ -170,6 +178,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                     showFilterOptions={showFilterOptions}
                     setShowFilterOptions={setShowFilterOptions}
                     dispatch={dispatch}
+                    filterStormName={state.filterStormName}
+                    setFilterStormName= {setFilterStormName}
                   />
                 </div>
               )
@@ -223,7 +233,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
           <Stack
             direction="row"
             spacing={0.1}
-            sx={{ display: { xs: "none", md: "flex" }, }}
+            sx={{ display: { sm: "none", md: "flex" },  left: drawerOpen ? `${drawerWidth}px` : 0,
+            width: drawerOpen ? `calc(100% - ${drawerWidth}px)` : '100%',   }}
             className='filter-icons-list'>
             {
               input_filters.map((input_filter, index) => {
@@ -238,6 +249,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                       setShowFilterOptions={setShowFilterOptions}
                       dispatch={dispatch}
                       filterStormName={state.filterStormName}
+                      setFilterStormName= {setFilterStormName}
+                    
                     />
 
                   </div>
@@ -550,13 +563,14 @@ export function formatStormCategory(category_list = []) {
   return formattedCategoryList;
 }
 
-export function formatStormName(storm_names = "") {
-  storm_names = storm_names.replace(/\s+/g, ''); // Remove all spaces
-  console.log(storm_names);
-  const storm_list = storm_names.split(",");
+export function formatStormName(storm_list = []) {
+  //storm_names = storm_names.replace(/\s+/g, ''); // Remove all spaces
+  //console.log(storm_names);
+  //const storm_list = storm_names.split(",");
   const formattedStormList = storm_list.join("_");
   return formattedStormList;
 }
+
 
 
 
