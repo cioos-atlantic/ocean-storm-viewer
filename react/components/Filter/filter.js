@@ -134,8 +134,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
           <SpeedDial
             ariaLabel="Filter Options"
             sx={{
-              position: 'absolute', bottom: 25, right: 7,
-              display: { sm: "block", md: "none" }, '& .MuiSpeedDial-fab': {
+              position: 'absolute', bottom: 65, right: 7,
+              display: { xs: "block", md: "none" }, '& .MuiSpeedDial-fab': {
                 backgroundColor: '#e55162',  // Change SpeedDial button background color
                 '&:hover': {
                   backgroundColor: '#b9acac', // Change SpeedDial button hover color
@@ -168,6 +168,28 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
               }}
             />
 
+            
+           
+            {openSpeedDial && (<div className="filter-group">
+              <RenderCategoryFilter
+                  state={state}
+                  dispatch={dispatch}
+                />
+
+            </div>
+            )
+
+            }
+             {openSpeedDial && (<div className="filter-group">
+              <RenderDateFilter
+                state={state}
+                dispatch={dispatch}
+              />
+
+            </div>
+            )
+
+            }
             {openSpeedDial && (input_filters.map((input_filter, index) => {
               return (
                 <div className="filter-group" key={index}>
@@ -184,26 +206,6 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                 </div>
               )
             }))
-
-            }
-            {openSpeedDial && (<div className="filter-group">
-              <RenderDateFilter
-                state={state}
-                dispatch={dispatch}
-              />
-
-            </div>
-            )
-
-            }
-            {openSpeedDial && (<div className="filter-group">
-              <RenderCategoryFilter
-                  state={state}
-                  dispatch={dispatch}
-                />
-
-            </div>
-            )
 
             }
             {/*openSpeedDial && (filters.map((filter, index) => {
@@ -565,8 +567,9 @@ export function formatStormCategory(category_list = []) {
 
 export function formatStormName(storm_list = []) {
   //storm_names = storm_names.replace(/\s+/g, ''); // Remove all spaces
-  //console.log(storm_names);
+  console.log(storm_list);
   //const storm_list = storm_names.split(",");
+
   const formattedStormList = storm_list.join("_");
   return formattedStormList;
 }
