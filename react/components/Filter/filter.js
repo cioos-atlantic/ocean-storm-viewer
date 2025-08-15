@@ -47,6 +47,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
   const [showFilterOptions, setShowFilterOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [filterParameters, setFilterParameters] = useState([]);
+  const [loading, setLoading] = useState(false);
+  //const [info, setInfo] = useState(true)
   
   
 
@@ -63,8 +65,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
 
 
 
-  const [loading, setLoading] = useState(false);
-  const [info, setInfo] = useState(true)
+
 
   const router = useRouter(); // Next.js useRouter
   const drawerWidth = 258;
@@ -337,21 +338,15 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
               onClick={handleClearAllFilters}>
               X
             </Button>
-           { <Button
-              id="info-icon"
-              className="info-icons"
-              startIcon={<InfoIcon />}
-              onClick={() => {
-                setInfo(true)
-              }}
-              >
-            </Button>}
+           { <IconButton
+                sx={{ color:  ' #1E90FF'}}
+                onClick={() => {
+                  dispatch({ type: "SET_INFO_GUIDE", payload: true});
+                }}
+                ><InfoIcon />
+              </IconButton>}
           </Stack>
-        {<InfoScreen
-          setInfo = {setInfo}
-          open={info}
-          onClose = {info}
-        />}
+        
         </>
       )
       };

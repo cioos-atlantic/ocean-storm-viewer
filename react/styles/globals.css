@@ -985,3 +985,17 @@ button.filter-badge{
   position: relative;
 
 }
+
+.info-guide{
+  z-index: 3000;
+  position: fixed;
+  top: 68px;
+  right: 9px;
+  text-align: center;
+  height: 35px;
+  width: 35px;
+  padding: 0px;
+  font-size: 0px;
+  color:  #1E90FF;
+
+}
