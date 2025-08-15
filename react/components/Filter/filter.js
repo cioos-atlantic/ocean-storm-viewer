@@ -90,7 +90,13 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
   async function handleFilterSubmit() {
     //setDrawerButtonClicked('');
     dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: '' });
-    
+    dispatch({ type: "SET_CAT_SELECTION", payload: false});
+    dispatch({ type: "SET_DATE_SELECTION", payload: false});
+    setShowFilterOptions(prev => ({
+      ...prev,
+      stormName: false, // stormName must be defined here
+    }));
+
     
     
     const updatedParams = {
@@ -210,6 +216,29 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
             }))
 
             }
+            {openSpeedDial && (<div className="filter-group">
+              <RenderDateFilter
+                state={state}
+                dispatch={dispatch}
+                setShowFilterOptions={setShowFilterOptions}
+
+              />
+
+            </div>
+            )
+
+            }
+            {openSpeedDial && (<div className="filter-group">
+              <RenderCategoryFilter
+                  state={state}
+                  dispatch={dispatch}
+                  setShowFilterOptions={setShowFilterOptions}
+                />
+
+            </div>
+            )
+
+            }
             {/*openSpeedDial && (filters.map((filter, index) => {
               return (
 
@@ -267,12 +296,14 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
               <RenderDateFilter
                 state={state}
                 dispatch={dispatch}
+                setShowFilterOptions={setShowFilterOptions}
               />
             </div>
             <div className="filter-group">
               <RenderCategoryFilter
                   state={state}
                   dispatch={dispatch}
+                  setShowFilterOptions={setShowFilterOptions}
                 />
             </div>
             
