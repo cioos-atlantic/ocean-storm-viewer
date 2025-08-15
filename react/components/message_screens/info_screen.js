@@ -11,10 +11,12 @@ export default function InfoScreen({setInfo, open, onClose }){
       <Dialog 
       onClose = {handleClose} 
       open={open} 
-      slotProps ={{paper:{sx:{alignItems: 'center', display:'flex', justifyContent: 'center'}}, }} 
+      disablePortal={false}
+      slotProps ={{paper:{sx:{alignItems: 'center', display:'flex', justifyContent: 'center'}}, root:{sx:{zIndex:'9999', position: 'fixed',
+         }} }} 
       >
         <DialogTitle>Ocean Storm Viewer - User Guide</DialogTitle>
-        <DialogContent dividers={scroll === 'paper'} style={{height:'60vh'}}>
+        <DialogContent  style={{height:'60vh'}}>
         <p>
             Welcome to the <b>Ocean Storm Viewer (OSV)</b>!<br/>
             This website helps you explore and learn about ocean storms—both current and historical<br/>

@@ -16,6 +16,7 @@ import queryString from 'query-string';
 import Layout from '../components/layout'
 import { basePath } from '@/next.config';
 
+
 const top_nav = [
   { name: "Home", href: basePath },
   { name: "Active Storms", href: basePath + "?storms=active" },
@@ -32,12 +33,20 @@ const logo = {
 export default function StormDashboard() {
   const router = useRouter()
   const qs = queryString.parseUrl(process.env.BASE_URL + router.asPath)
+
+
   
   return (
+    
+    
+
+    
     <Layout 
       topNav={top_nav} 
       logo={logo} 
       querystring={qs}
     ></Layout>
+    
+     
   )
 }

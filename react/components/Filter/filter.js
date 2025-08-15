@@ -304,7 +304,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
               onClick={handleClearAllFilters}>
               X
             </Button>
-            <Button
+           { <Button
               id="info-icon"
               className="info-icons"
               startIcon={<InfoIcon />}
@@ -312,13 +312,13 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
                 setInfo(true)
               }}
               >
-            </Button>
+            </Button>}
           </Stack>
-        <InfoScreen
+        {<InfoScreen
           setInfo = {setInfo}
           open={info}
           onClose = {info}
-        />
+        />}
         </>
       )
       };
