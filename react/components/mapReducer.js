@@ -119,6 +119,8 @@ export function mapReducer(state, action) {
           isStormDashOpen: false,
           isStationDashOpen: false,
           isDashOpen: false,
+          drawerButtonClicked: ''
+          
 
         };
       
