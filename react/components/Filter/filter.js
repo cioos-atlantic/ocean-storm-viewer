@@ -23,7 +23,7 @@ import { smallScreenIconButton } from "./filter_utils";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { RenderCategoryFilter } from "./categorySlider";
 import InfoScreen from "../message_screens/info_screen";
-
+import { empty_station_obj } from "../point_defaults";
 
 const ITEM_HEIGHT = 35;
 const ITEM_PADDING_TOP = 8;
@@ -42,7 +42,7 @@ export const ShowOptions = KeyboardDoubleArrowDownIcon;
 export const CloseOptions = KeyboardDoubleArrowUpIcon;
 
 
-export function RenderFilter({  clearShapesRef, state, dispatch }) {
+export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoints }) {
   const [showFilterIcons, setShowFilterIcons] = useState(false);
   const [showFilterOptions, setShowFilterOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -120,6 +120,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
     //setReturnFilterResult(true);
     dispatch({ type: "TOGGLE_DRAWER", payload: true});
     dispatch({ type: "TOGGLE_FILTER_RESULT", payload: true});
+    dispatch({ type: "CLOSE_STORM_TRACKS" })
+    setStationPoints(empty_station_obj)
 
   }
 
