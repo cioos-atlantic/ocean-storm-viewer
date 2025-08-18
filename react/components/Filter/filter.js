@@ -267,7 +267,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
           <Stack
             direction="row"
             spacing={0.1}
-            sx={{ display: { sm: "none", md: "flex" },  left: drawerOpen ? `${drawerWidth}px` : 0,
+            sx={{ display: { xs: "none", md: "flex" },  left: drawerOpen ? `${drawerWidth}px` : 0,
             width: drawerOpen ? `calc(100% - ${drawerWidth}px)` : '100%',   }}
             className='filter-icons-list'>
             {
