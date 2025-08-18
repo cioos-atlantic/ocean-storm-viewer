@@ -176,30 +176,33 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
                 handleFilterSubmit()
               }}
             />
-
-            
-           
-            {openSpeedDial && (<div className="filter-group">
+              {openSpeedDial && (<div className="filter-group">
               <RenderCategoryFilter
                   state={state}
                   dispatch={dispatch}
+                  setShowFilterOptions={setShowFilterOptions}
                 />
 
             </div>
             )
 
             }
-             {openSpeedDial && (<div className="filter-group">
+
+           
+            {openSpeedDial && (<div className="filter-group">
               <RenderDateFilter
                 state={state}
                 dispatch={dispatch}
+                setShowFilterOptions={setShowFilterOptions}
+
               />
 
             </div>
             )
 
             }
-            {openSpeedDial && (input_filters.map((input_filter, index) => {
+          
+             {openSpeedDial && (input_filters.map((input_filter, index) => {
               return (
                 <div className="filter-group" key={index}>
                   <InputFilter
@@ -215,29 +218,6 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
                 </div>
               )
             }))
-
-            }
-            {openSpeedDial && (<div className="filter-group">
-              <RenderDateFilter
-                state={state}
-                dispatch={dispatch}
-                setShowFilterOptions={setShowFilterOptions}
-
-              />
-
-            </div>
-            )
-
-            }
-            {openSpeedDial && (<div className="filter-group">
-              <RenderCategoryFilter
-                  state={state}
-                  dispatch={dispatch}
-                  setShowFilterOptions={setShowFilterOptions}
-                />
-
-            </div>
-            )
 
             }
             {/*openSpeedDial && (filters.map((filter, index) => {
