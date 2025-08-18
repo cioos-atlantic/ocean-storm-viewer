@@ -981,3 +981,13 @@ button.filter-badge{
   color:  #1E90FF;
 
 }
+
+.map-touch-blocker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 260px;   /* Same as drawer width */
+  height: 100%;
+  z-index: 9999;  /* Higher than the map */
+  background: transparent; /* invisible but still intercepts touches */
+}
