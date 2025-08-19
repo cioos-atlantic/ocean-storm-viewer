@@ -19,18 +19,23 @@ import { mapReducer, initialMapState } from "./mapReducer";
 import InfoScreen from "./message_screens/info_screen";
 import { IconButton } from "@mui/material";
 import InfoIcon from '@mui/icons-material/Info';
-import {Box} from "@mui/material";
+import { useMediaQuery, Box, useTheme } from "@mui/material";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
+
 
 export default function Map({ children, station_data, source_type,  setStationPoints}) {
 
   const clearShapesRef = useRef(null);
 
   const [state, dispatch] = useReducer(mapReducer, initialMapState);
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down('md'));
   
   console.debug("Storm Points in map.js: ", state.storm_points);
+
+
 
   return (
     <div className="map_container">
@@ -70,13 +75,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
         }
         {//state.isDrawerOpen && <div className="drawer-touch-blocker"/>
          }
-                  {state.isDrawerOpen && (
-            <Box className="map-touch-blocker"
-              sx={{
-              
-              }}
-            />
-          )}
+          
 
         <MapContainer
           center={defaultPosition}
@@ -86,14 +85,14 @@ export default function Map({ children, station_data, source_type,  setStationPo
           zoomControl={false}
           
         > <CustomZoomControl /> 
-          <Drawer
+          {!isSmall && (<Drawer
             element_id="left-side"
             classes="left"
             source_type={source_type}
             setStationPoints={setStationPoints}
             state={state}
             dispatch={dispatch}
-          />
+          />)}
           
 
           <TileLayer
