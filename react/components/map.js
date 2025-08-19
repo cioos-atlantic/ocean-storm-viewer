@@ -68,15 +68,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
             
             />
         }
-        {//state.isDrawerOpen && <div className="drawer-touch-blocker"/>
-         }
-                  {state.isDrawerOpen && (
-            <Box className="map-touch-blocker"
-              sx={{
-              
-              }}
-            />
-          )}
+       
 
         <MapContainer
           center={defaultPosition}
