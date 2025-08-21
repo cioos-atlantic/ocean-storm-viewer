@@ -51,29 +51,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
 
 
 
-  // Handle form submission
-  function handleSubmit (event) {
-    event.preventDefault(); // Prevent default form submission
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [input_filter.name]: inputValue // Clear the options for the specific filter name
-    }));
-    console.log(selectedOptions)
-    
-
-    console.log({ [input_filter.name]: [] }); // Log the cleared options
-  };
-
-  // Handle clearing input
-  function handleClear()  {
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [input_filter.name]: "", // Clear the options for the specific filter name
-    }));
-    //setInputValue(""); // Reset input field
-    dispatch({ type: "SET_FILTER_STORM_NAME", payload: ""})
-    setInputValue("");
-  };
+  
   const handleSelectAll = () => {
     if (filterStormName.length === stormNameList.length) {
       setFilterStormName([]); // Unselect all
@@ -90,11 +68,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       prev.includes(name) ? prev.filter(s => s !== name) : [...prev, name]
     );
     };
-    const getDisplayValue = () => {
-    if (filterStormName.length === 0) return '';
-    if (filterStormName.length <= 2) return filterStormName.join(', ');
-    return `${filterStormName.length} selected`;
-  };
+    
 
   function handleIconClick(){
     setShowFilterOptions((prev) => ({
@@ -172,7 +146,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
         onChange={(event, newValue) => setFilterStormName(newValue)}
         open={open}
         onOpen={handleOpen}
-        onClose={handleClose}
+        //onClose={handleClose}
         loading={loading}
         
         //getLimitTagsText={(more) => `+${more} names`}
