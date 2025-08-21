@@ -90,12 +90,17 @@ export async function queryStormName() {
       alert("No result found for this search, please try again...")
     }
 
+    
+
 
   } catch (error) {
     
     console.error('Error fetching storm or station data:', error);
+    
   }
+
   console.log(uniqueList) 
   return uniqueList
+  
 
 }

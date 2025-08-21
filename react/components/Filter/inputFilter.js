@@ -84,6 +84,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     (async () => {
       setLoading(true);
       const stormNames = await input_filter.query(); 
+      console.log(stormNames);
       
       setLoading(false);
       setStormNameList([...stormNames]);
