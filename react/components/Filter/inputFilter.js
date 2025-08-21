@@ -70,7 +70,10 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     };
     
 
-  function handleIconClick(){
+ function handleIconClick(){
+    console.log(showFilterOptions);
+    dispatch({ type: "SET_CAT_SELECTION", payload: false});
+    dispatch({ type: "SET_DATE_SELECTION", payload: false});
     setShowFilterOptions((prev) => ({
       ...prev,
       [input_filter.name]: !prev[input_filter.name],
