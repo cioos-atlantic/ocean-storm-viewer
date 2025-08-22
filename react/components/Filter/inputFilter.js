@@ -85,9 +85,16 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
       setLoading(true);
       const stormNames = await input_filter.query(); 
       console.log(stormNames);
+      if (!stormNames || !Array.isArray(stormNames))
+        { alert("No storm name data available...")
+          setLoading(false);
+          setStormNameList(["No storm name data available... "]);
+        }
+      else{
+        setLoading(false);
+        setStormNameList([...stormNames]);
+      }
       
-      setLoading(false);
-      setStormNameList([...stormNames]);
     })();
   };
 
