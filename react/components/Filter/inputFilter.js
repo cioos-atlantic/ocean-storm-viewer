@@ -42,6 +42,9 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
   };
 
   function handleIconClick(){
+    console.log(showFilterOptions);
+    dispatch({ type: "SET_CAT_SELECTION", payload: false});
+    dispatch({ type: "SET_DATE_SELECTION", payload: false});
     setShowFilterOptions((prev) => ({
       ...prev,
       [input_filter.name]: !prev[input_filter.name],
@@ -51,12 +54,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     <>
     <Button
       className="filter-badge"
-      onClick= {() => {
-        setShowFilterOptions((prev) => ({
-          ...prev,
-          [input_filter.name]: !prev[input_filter.name],
-        }));
-      }}
+      onClick= {handleIconClick}
       startIcon={input_filter.Icon ? <input_filter.Icon /> : null}
       endIcon={ !showFilterOptions[input_filter.name] ? (<ShowOptions/>):(<CloseOptions/>)}
       sx={{...buttonStyle,
