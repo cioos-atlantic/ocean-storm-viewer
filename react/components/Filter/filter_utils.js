@@ -78,7 +78,7 @@ export async function queryStormName() {
   
   let uniqueList;
   try {
-    const resource = await fetch(`${basePath}/api/storm_names?`);
+    const resource = await fetch_retry(`${basePath}/api/storm_names?`, 3)
     const storm_data = await resource.json();
     //console.log(storm_data)
     
@@ -104,3 +104,35 @@ export async function queryStormName() {
   
 
 }
+
+
+const fetch_retry = async (url, n, baseDelay = 100) => {
+  let error;
+  for (let i = 0; i < n; i++) {
+    try {
+      const res = await fetch(url);
+
+      if (res.status === 404) {
+        throw new Error(`Non-retryable error: ${res.status} Not Found`);
+      }
+
+      if (!res.ok) {
+        error = new Error(`HTTP error: ${res.status}`);
+      } else {
+        return res; // ✅ success
+      }
+    } catch (err) {
+      error = err;
+    }
+
+    if (i < n - 1) {
+      const delay = baseDelay * (2 ** i); // exponential backoff
+      console.warn(
+        `Attempt ${i + 1} failed (${error.message}). Retrying in ${delay}ms...`
+      );
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+
+  throw error; // after all retries fail
+};
