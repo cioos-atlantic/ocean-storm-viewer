@@ -30,8 +30,9 @@ export default function Map({ children, station_data, source_type,  setStationPo
   const clearShapesRef = useRef(null);
 
   const [state, dispatch] = useReducer(mapReducer, initialMapState);
+  const [map, setMap] = useState()
   const theme = useTheme();
-  const isSmall = useMediaQuery(theme.breakpoints.down('md'));
+  
   
   console.debug("Storm Points in map.js: ", state.storm_points);
 
@@ -75,6 +76,8 @@ export default function Map({ children, station_data, source_type,  setStationPo
         }
         {//state.isDrawerOpen && <div className="drawer-touch-blocker"/>
          }
+
+       
           
 
         <MapContainer
@@ -83,16 +86,16 @@ export default function Map({ children, station_data, source_type,  setStationPo
           style={{ height: "100%", width: "100%" }}
           worldCopyJump={true}
           zoomControl={false}
+          ref={setMap}
+          whenReady={() => {
+            console.log("Map is fully ready!");
+            
+          }}
+
+          
           
         > <CustomZoomControl /> 
-          {!isSmall && (<Drawer
-            element_id="left-side"
-            classes="left"
-            source_type={source_type}
-            setStationPoints={setStationPoints}
-            state={state}
-            dispatch={dispatch}
-          />)}
+          
           
 
           <TileLayer
@@ -223,6 +226,16 @@ export default function Map({ children, station_data, source_type,  setStationPo
           setPolyFilterCoords={(coords) => dispatch({ type: "SET_POLY_FILTER_COORDS", payload: coords })}
           />} {/* Calling the EditControl function here */}
         </MapContainer>
+
+        { map && (<Drawer
+            element_id="left-side"
+            classes="left"
+            source_type={source_type}
+            setStationPoints={setStationPoints}
+            state={state}
+            dispatch={dispatch}
+            map={map}
+          />)}
       </div>
     </div>
   )
