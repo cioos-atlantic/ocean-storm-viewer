@@ -100,7 +100,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
 
   const handleClose = () => {
     setOpen(false);
-    setStormNameList([]);
+    //setStormNameList([]);
   };
 
   console.log(stormNameList);
@@ -157,7 +157,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
         onChange={(event, newValue) => setFilterStormName(newValue)}
         open={open}
         onOpen={handleOpen}
-        //onClose={handleClose}
+        onClose={handleClose}
         loading={loading}
         
         //getLimitTagsText={(more) => `+${more} names`}
