@@ -24,6 +24,8 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { RenderCategoryFilter } from "./categorySlider";
 import InfoScreen from "../message_screens/info_screen";
 import { empty_station_obj } from "../point_defaults";
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+
 
 const ITEM_HEIGHT = 35;
 const ITEM_PADDING_TOP = 8;
@@ -151,7 +153,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
                 }
               }
             }}
-            icon={<FilterAltIcon openIcon={<KeyboardDoubleArrowDownIcon />} />}
+            icon={<FilterAltIcon />}
+            
 
             //onClick={handleSpeedDialToggle}
             open={openSpeedDial}
@@ -160,7 +163,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
           >
 
             <SpeedDialAction
-              icon={<IconButton className="filters-speed-dial">X</IconButton>}
+            className="filters-speed-dial"
+              icon={<CloseRoundedIcon/>}
               tooltipTitle="Clear Filters"
               onClick={(e) => {
                 e.stopPropagation();
