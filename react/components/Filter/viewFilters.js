@@ -3,7 +3,8 @@ import dayjs from "dayjs";
 
 export function FiltersSelected({startDate, endDate, startCategory, endCategory, polyFilterCoords, filterStormName}){
   console.log(filterStormName);
-  const isFiltered = startDate || endDate || startCategory || endCategory || polyFilterCoords || filterStormName;
+  const isFiltered = startDate || endDate || startCategory || endCategory || polyFilterCoords || filterStormName.length;
+  console.log(filterStormName)
   return(
     <Box className='view-filter-space'>
       <Stack>
@@ -17,8 +18,8 @@ export function FiltersSelected({startDate, endDate, startCategory, endCategory,
        { !isFiltered &&(<Box>
             No Filters Applied!
           </Box>)}
-          {filterStormName && (<Box>
-            Storm Name(s): {filterStormName}
+          {filterStormName.length > 0 && (<Box>
+            Storm Name(s): {filterStormName.join(", ")}
           </Box>)}
           {startDate && endDate && (<Box>
             Date Range: {dayjs(startDate).format('DD/MM/YYYY') } - {dayjs(endDate).format('DD/MM/YYYY') }
@@ -54,7 +55,7 @@ export function FiltersSubmitted({filterQuery}){
           >Filter Query: </Box>
         <Box className='view-filters-content'>
           {filterQuery?.stormName && (<Box>
-            Storm Name(s): {filterQuery.stormName}
+            Storm Name(s): {filterQuery.stormName.join(", ")}
           </Box>)}
           {filterQuery?.startDate && filterQuery?.endDate && (<Box>
             Date Range: {dayjs(filterQuery.startDate).format('DD/MM/YYYY') } - {dayjs(filterQuery.endDate).format('DD/MM/YYYY') }
