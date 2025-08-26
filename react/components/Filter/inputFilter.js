@@ -165,29 +165,35 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
         renderTags={(value, getTagProps) => {
     if (value.length === 0) return null;
 
-    return [
-      <span key="first" {...getTagProps({ index: 0 })}>
-        {value[0]}
-      </span>,
-      value.length > 1 && (
-        <span key="more" style={{ marginLeft: 4 }}>
-          +{value.length - 1}
-        </span>
-      )
-    ];
+      return [
+        <span key={`tag-${value[0]}`} {...getTagProps({ index: 0 })}>
+          {value[0]}
+        </span>,
+        value.length > 1 ? (
+          <span key="tag-more" style={{ marginLeft: 4 }}>
+            +{value.length - 1}
+          </span>
+        ) : null
+      ];
   }}
-        renderOption={(props, option, { selected }) => (
-          <li {...props} key={`option-${option}`}>
+        renderOption={(props, option, { selected }) => {
+          const { key, ...rest } = props; // extract key
+
+          return(
+          <li key={key} {...rest}>
             <Checkbox
               icon={icon}
               checkedIcon={checkedIcon}
-              sx={{ marginRight: 1.5, color: '#e55162', padding: {sm:'0px', md:'6px'}, // remove extra checkbox padding
-          alignSelf: 'center' }}
+              sx={{ 
+                  marginRight: 1.5,
+                  color: '#e55162', 
+                  padding: {sm:'0px', md:'6px'}, 
+                  alignSelf: 'center' }}
               checked={selected}
             />
             {option}
-          </li>
-        )}
+          </li>)
+        }}
         renderInput={(params) => (
           <TextField
             {...params}
