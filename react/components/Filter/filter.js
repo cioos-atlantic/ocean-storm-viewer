@@ -177,31 +177,6 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
                 handleFilterSubmit()
               }}
             />
-              {openSpeedDial && (<div className="filter-group">
-              <RenderCategoryFilter
-                  state={state}
-                  dispatch={dispatch}
-                  setShowFilterOptions={setShowFilterOptions}
-                />
-
-            </div>
-            )
-
-            }
-
-           
-            {openSpeedDial && (<div className="filter-group">
-              <RenderDateFilter
-                state={state}
-                dispatch={dispatch}
-                setShowFilterOptions={setShowFilterOptions}
-
-              />
-
-            </div>
-            )
-
-            }
           
              {openSpeedDial && (input_filters.map((input_filter, index) => {
               return (
