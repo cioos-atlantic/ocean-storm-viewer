@@ -67,6 +67,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
   const [info, setInfo] = useState(true)
 
   const router = useRouter(); // Next.js useRouter
+  const drawerWidth = 258;
+  const drawerOpen = state.isDrawerOpen;
 
 
   function handleClearAllFilters() {
@@ -88,6 +90,13 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
   async function handleFilterSubmit() {
     //setDrawerButtonClicked('');
     dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: '' });
+    dispatch({ type: "SET_CAT_SELECTION", payload: false});
+    dispatch({ type: "SET_DATE_SELECTION", payload: false});
+    setShowFilterOptions(prev => ({
+      ...prev,
+      stormName: false, // stormName must be defined here
+    }));
+
     
     
     
@@ -104,6 +113,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
 
     console.log(updatedParams); // 
     dispatch({ type: "SET_FILTER_QUERY", payload: updatedParams});
+
+   
 
 
 
@@ -131,7 +142,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
             ariaLabel="Filter Options"
             sx={{
               position: 'absolute', bottom: 25, right: 7,
-              display: { xs: "block", md: "none" }, '& .MuiSpeedDial-fab': {
+              display: { sm: "block", md: "none" }, '& .MuiSpeedDial-fab': {
                 backgroundColor: '#e55162',  // Change SpeedDial button background color
                 '&:hover': {
                   backgroundColor: '#b9acac', // Change SpeedDial button hover color
@@ -186,6 +197,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
               <RenderDateFilter
                 state={state}
                 dispatch={dispatch}
+                setShowFilterOptions={setShowFilterOptions}
+
               />
 
             </div>
@@ -196,6 +209,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
               <RenderCategoryFilter
                   state={state}
                   dispatch={dispatch}
+                  setShowFilterOptions={setShowFilterOptions}
                 />
 
             </div>
@@ -229,7 +243,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
           <Stack
             direction="row"
             spacing={0.1}
-            sx={{ display: { xs: "none", md: "flex" }, }}
+            sx={{ display: { sm: "none", md: "flex" },  left: drawerOpen ? `${drawerWidth}px` : 0,
+            width: drawerOpen ? `calc(100% - ${drawerWidth}px)` : '100%',   }}
             className='filter-icons-list'>
             {
               input_filters.map((input_filter, index) => {
@@ -258,12 +273,14 @@ export function RenderFilter({  clearShapesRef, state, dispatch }) {
               <RenderDateFilter
                 state={state}
                 dispatch={dispatch}
+                setShowFilterOptions={setShowFilterOptions}
               />
             </div>
             <div className="filter-group">
               <RenderCategoryFilter
                   state={state}
                   dispatch={dispatch}
+                  setShowFilterOptions={setShowFilterOptions}
                 />
             </div>
             

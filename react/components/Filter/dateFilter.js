@@ -66,7 +66,7 @@ const reset= { label: 'Reset', getValue: () => [null, null] };
 
 
 
-export function RenderDateFilter({state, dispatch}){
+export function RenderDateFilter({state, dispatch, setShowFilterOptions}){
   //const [showDateSelection, setShowDateSelection] = useState(false); 
   const hasValidDates = state.startDate?.isValid?.() && state.endDate?.isValid?.();
   const buttonStyle = {
@@ -80,6 +80,11 @@ export function RenderDateFilter({state, dispatch}){
 
   function handleIconClick(){
     dispatch({ type: "TOGGLE_DATE_SELECTION"});
+    dispatch({ type: "SET_CAT_SELECTION", payload: false});
+    setShowFilterOptions(prev => ({
+      ...prev,
+      stormName: false, // stormName must be defined here
+    }));
   }
   
 

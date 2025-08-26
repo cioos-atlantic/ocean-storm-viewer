@@ -159,13 +159,14 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
   );
 }
 
-export function RenderCategoryFilter({ state, dispatch}){
+export function RenderCategoryFilter({ state, dispatch, setShowFilterOptions }){
   
   //const [showCatSelection, setShowCatSelection] = useState(false); 
   const hasValidCategory = state.startCategory && state.endCategory;
   const buttonStyle = {
     backgroundColor: hasValidCategory  ? '#e55162' : 'white',
     color: hasValidCategory ? 'white' : '#e55162',
+    
     '&:hover': {
       backgroundColor: hasValidCategory ? '#ffd1dc' : '#82ccdd',
       color: hasValidCategory ? 'black' : 'black',
@@ -175,6 +176,11 @@ export function RenderCategoryFilter({ state, dispatch}){
   function handleIconClick(){
     //setShowCatSelection(prev => !prev);
     dispatch({ type: "TOGGLE_CAT_SELECTION"});
+    dispatch({ type: "SET_DATE_SELECTION", payload: false});
+    setShowFilterOptions(prev => ({
+      ...prev,
+      stormName: false, // stormName must be defined here
+    }));
   }
   
 
@@ -188,7 +194,8 @@ export function RenderCategoryFilter({ state, dispatch}){
     startIcon={<CategoryOutlinedIcon />}
     endIcon={ !state.showCatSelection ? (<ShowOptions/>):(<CloseOptions/>)}
     sx={{...buttonStyle,
-      display: { xs: "none", md: "inline-flex" }, }
+      display: { xs: "none", md: "inline-flex" },
+       }
     }>
       
       Storm Category

@@ -125,14 +125,13 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     dispatch({ type: "SET_FILTER_STORM_NAME", payload: ""})
     setInputValue("");
   };
-
   const handleSelectAll = () => {
   if (filterStormName.length === stormNameList.length) {
     setFilterStormName([]); // Unselect all
   } else {
     setFilterStormName(stormNameList); // Select all
   }
-};
+  };
 
   const handleClearAll = () => {
     setFilterStormName([]);
@@ -146,11 +145,12 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
   if (filterStormName.length === 0) return '';
   if (filterStormName.length <= 2) return filterStormName.join(', ');
   return `${filterStormName.length} selected`;
-};
+  };
 
-  async function handleIconClick(){
-    const stormNames = await input_filter.query(); 
-    setStormNameList(stormNames);
+  function handleIconClick(){
+    console.log(showFilterOptions);
+    dispatch({ type: "SET_CAT_SELECTION", payload: false});
+    dispatch({ type: "SET_DATE_SELECTION", payload: false});
     setShowFilterOptions((prev) => ({
       ...prev,
       [input_filter.name]: !prev[input_filter.name],
