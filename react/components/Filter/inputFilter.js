@@ -74,7 +74,6 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     dispatch({ type: "SET_FILTER_STORM_NAME", payload: ""})
     setInputValue("");
   };
-
   const handleSelectAll = () => {
   if (filterStormName.length === stormNameList.length) {
     setFilterStormName([]); // Unselect all
