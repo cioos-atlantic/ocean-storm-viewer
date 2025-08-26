@@ -146,7 +146,6 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
             sx={{
               position: 'absolute', bottom: 65, right: 7,
               display: { xs: "block", md: "none" }, '& .MuiSpeedDial-fab': {
->>>>>>>>> Temporary merge branch 2
                 backgroundColor: '#e55162',  // Change SpeedDial button background color
                 '&:hover': {
                   backgroundColor: '#b9acac', // Change SpeedDial button hover color
