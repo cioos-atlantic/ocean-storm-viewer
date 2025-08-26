@@ -12,6 +12,7 @@ import HeaderNav from "./header_nav";
 import { loadSpace } from "@usersnap/browser";
 
 
+
 import { basePath } from "@/next.config";
 
 export const siteTitle = 'Atlantic Hurricane Dashboard'

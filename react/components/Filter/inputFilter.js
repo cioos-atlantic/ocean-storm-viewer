@@ -1,20 +1,54 @@
-import { Button, Box,  Paper,  OutlinedInput,  FormControl, InputLabel, } from "@mui/material"
+import { Button, Box,  Paper,  OutlinedInput,  FormControl, InputLabel, Autocomplete, TextField, Checkbox, Stack, Select, MenuItem, ListItemText, Popper  } from "@mui/material"
 import {  useState } from 'react';
 import { smallScreenIconButton } from "./filter_utils";
 import { CloseOptions, ShowOptions } from "./filter";
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import React, { forwardRef } from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
+
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
+function sleep(duration) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, duration);
+  });
+}
 
 
-
-export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions, dispatch, filterStormName}){
+export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions, dispatch, filterStormName, setFilterStormName}){
   const [inputValue, setInputValue] = useState(""); // Controlled input field
+  const [stormNameList, setStormNameList] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const validStormList = filterStormName;
+  
   const buttonStyle = {
-    backgroundColor: selectedOptions[input_filter.name]?.length > 0 ? '#e55162' : 'white',
-    color: selectedOptions[input_filter.name]?.length > 0 ? 'white' : '#e55162',
+    backgroundColor: validStormList?.length > 0 ? '#e55162' : 'white',
+    color: validStormList?.length > 0 ? 'white' : '#e55162',
     '&:hover': {
-      backgroundColor: selectedOptions[input_filter.name]?.length > 0 ? '#ffd1dc' : '#82ccdd', 
-      color: selectedOptions[input_filter.name]?.length > 0 ? 'black' : 'black',
+      backgroundColor: validStormList?.length > 0 ? '#ffd1dc' : '#82ccdd', 
+      color: validStormList?.length > 0 ? 'black' : 'black',
     },
   };
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      sx: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        //overflow: 'hidden',
+        
+        
+      },
+    },
+  };
+  
+
 
 
   // Handle form submission
@@ -40,23 +74,60 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     dispatch({ type: "SET_FILTER_STORM_NAME", payload: ""})
     setInputValue("");
   };
+  const handleSelectAll = () => {
+  if (filterStormName.length === stormNameList.length) {
+    setFilterStormName([]); // Unselect all
+  } else {
+    setFilterStormName(stormNameList); // Select all
+  }
+  };
+
+  const handleClearAll = () => {
+    setFilterStormName([]);
+  };
+  const toggleStorm = (name) => {
+  setFilterStormName(prev =>
+    prev.includes(name) ? prev.filter(s => s !== name) : [...prev, name]
+  );
+  };
+  const getDisplayValue = () => {
+  if (filterStormName.length === 0) return '';
+  if (filterStormName.length <= 2) return filterStormName.join(', ');
+  return `${filterStormName.length} selected`;
+  };
+
 
   function handleIconClick(){
+    console.log(showFilterOptions);
+    dispatch({ type: "SET_CAT_SELECTION", payload: false});
+    dispatch({ type: "SET_DATE_SELECTION", payload: false});
     setShowFilterOptions((prev) => ({
       ...prev,
       [input_filter.name]: !prev[input_filter.name],
     }));
   }
+  const handleOpen = () => {
+    setOpen(true);
+    (async () => {
+      setLoading(true);
+      const stormNames = await input_filter.query(); 
+      
+      setLoading(false);
+      setStormNameList([...stormNames]);
+    })();
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setStormNameList([]);
+  };
+
+  console.log(stormNameList);
   return(
     <>
     <Button
       className="filter-badge"
-      onClick= {() => {
-        setShowFilterOptions((prev) => ({
-          ...prev,
-          [input_filter.name]: !prev[input_filter.name],
-        }));
-      }}
+      onClick= {handleIconClick}
       startIcon={input_filter.Icon ? <input_filter.Icon /> : null}
       endIcon={ !showFilterOptions[input_filter.name] ? (<ShowOptions/>):(<CloseOptions/>)}
       sx={{...buttonStyle,
@@ -72,88 +143,122 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     
     {/* Filter Input Popup */}
     {showFilterOptions[input_filter.name] && (
-  <Paper
-    elevation={3}
-    className="input-filter"
-    sx={{top:{xs: '6px', md: '100%',},
-    right:{xs: '100%', md: '0px',},
-    width:{xs: '210px', md: '210px' } }}      
-  >
-    <Box
-      component="form"
-      noValidate
-      autoComplete="off"
-      onSubmit={handleSubmit}
-      className="input-filter-box"
-    >
-      {/* Native Input Field */}
-      <FormControl variant="outlined" sx={{ width:{xs: '130px', md: '160px' } }}>
-        <InputLabel
-          htmlFor="custom-outlined-input"
-          //shrink
-          sx={{
-            color: "#e55162", // Default label color
-            fontSize: '14px',
-            padding:'0px',
-            display: inputValue ? "block" : "none", // Show if input has value
-            "&.Mui-focused": {
-              display: "block",
-              color: "red", // Label color when focused
-              transform: "translate(11px, -6px) scale(1)",
-              fontSize:'12px'
-            },
-            //transform: "translate(8px, 12px) scale(1)", // Adjust label position when not focused
-            
-          }}
-        >
-          {input_filter.display_name}
-        </InputLabel>
-        <OutlinedInput
-          id="custom-outlined-input"
-          type="text"
-          placeholder={input_filter.placeholder}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          label={input_filter.display_name}
-          sx={{
-            width:'100%',
-            height: "35px",
-            padding: "6px",
-            fontSize: "14px",
-            "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#e55162", // Default outline color
-            },
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#ffd1dc", // Outline color on hover
-            },
-            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "red", // Outline color when focused
-            },
-            "& .MuiInputBase-input": {
-              padding: "9px 14px", // Adjust text input padding
-            },
-          }}
-        />
-      </FormControl>
+      <Paper elevation={3} 
+        key={input_filter.name}
+        className="input-filter"
+        sx={{top:{xs: '6px', md: '100%',},
+        right:{xs: '100%', md: '0px',},
+        width:{xs: '230px', md: '240px' },
+        
+        }}>
+          <Stack direction="row" spacing={{xs: 0.5, md: 1 }} sx={{ mt: {xs: 0.2, md: 0.5 }, mb:{xs: 0.8, md: 1 } }}>
+        
+            <Button size="small"className="filter-submit-button" onClick={handleSelectAll}>Select All</Button>
+            <Button size="small" className="filter-submit-button" onClick={handleClearAll}>Clear</Button>
+            <Button size="small" className="filter-submit-button" onClick={() => setShowFilterOptions({ ...showFilterOptions, [input_filter.name]: false })}>
+              Close
+            </Button>
+    
+      </Stack>
 
-      {/* Action Buttons */}
-      <Box sx={{ display: "flex", gap: "1px" }}>
-        <Button className="filter-submit-button" type="submit" onClick={()=> {if (filterStormName !== inputValue) {
-            dispatch({ type: "SET_FILTER_STORM_NAME", payload: inputValue });
-          }}}>
-          Enter
-        </Button>
-        <Button className="filter-submit-button" onClick={handleClear}>
-          Clear
-        </Button>
-        <Button className="filter-submit-button" onClick= {() => {
-        setShowFilterOptions(false)}}>
-          Close
-        </Button>
-      </Box>
-    </Box>
-  </Paper>
+
+      <Autocomplete
+        multiple
+        limitTags={1}
+        fullWidth
+        disableCloseOnSelect
+        autoComplete
+        //disablePortal
+        options={stormNameList}
+        value={filterStormName}
+        disabled={false}
+        size='small'
+        onChange={(event, newValue) => setFilterStormName(newValue)}
+        open={open}
+        onOpen={handleOpen}
+        onClose={handleClose}
+        loading={loading}
+        
+        //getLimitTagsText={(more) => `+${more} names`}
+        getOptionLabel={(option) => option}
+        renderTags={(value, getTagProps) => {
+    if (value.length === 0) return null;
+
+    return [
+      <span key="first" {...getTagProps({ index: 0 })}>
+        {value[0]}
+      </span>,
+      value.length > 1 && (
+        <span key="more" style={{ marginLeft: 4 }}>
+          +{value.length - 1}
+        </span>
+      )
+    ];
+  }}
+        renderOption={(props, option, { selected }) => (
+          <li {...props} key={`option-${option}`}>
+            <Checkbox
+              icon={icon}
+              checkedIcon={checkedIcon}
+              sx={{ marginRight: 1.5, color: '#e55162', padding: {sm:'0px', md:'6px'}, // remove extra checkbox padding
+          alignSelf: 'center' }}
+              checked={selected}
+            />
+            {option}
+          </li>
+        )}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            //label={input_filter.display_name}
+            placeholder="Search storms"
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                endAdornment: (
+                  <React.Fragment>
+                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                    {params.InputProps.endAdornment}
+                  </React.Fragment>
+                ),
+              },
+            }}
+            
+            
+          />
+        )}
+        
+        
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: "0px",
+              boxShadow: "0px 6px 16px #00000026",
+            },
+          },
+          listbox: {
+            sx:{maxHeight:  {xs: '180px', md: '250px',},
+            overflowY: "auto", padding:  0, // remove UL padding
+            }
+          },
+          
+        }}
+         
+    
+        
+      />
+      {/* Action buttons OUTSIDE popper */}
+      
+    </Paper>
+
+    
 )}
     </>
   )
 }
+
+
+ 
+
+
+

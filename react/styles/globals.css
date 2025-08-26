@@ -498,9 +498,12 @@ footer {
 
 
 .view-filters-content{
+  
   background-color: white;
   padding: 8px;
   margin-top: 3px;
+  overflow-y: auto;
+  max-height: 130px;
   
 }
 
@@ -614,9 +617,9 @@ footer {
   border-radius: 4px;
   border: 1px solid white;
   overflow: auto;
-  max-height: 500;
   width: 100%;
   position: relative;
+  max-height: 200px;
 
 }
 
@@ -743,7 +746,6 @@ footer {
 .filter-icons-list{
   z-index: 6999;
   top: 65px;
-  right: 25%;
   position: absolute;
   justify-content: center;
   align-items: center;
@@ -779,8 +781,8 @@ button.filter-badge{
   justify-content: center !important;
   position: relative;
   max-width: 100%;
-  font-size: 0.8125rem !important;
-  height: 32px !important;
+  font-size: 12px !important;
+  /*height: 32px !important; */
   border-radius: 16px !important;
   transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   text-transform: none !important;
@@ -849,15 +851,15 @@ button.filter-badge{
 
 .filter-submit-button{
   background-color: white !important;
-  border: 1px solid #e55162 !important;
+  border: 2px solid #e55162 !important;
   color: #e55162 !important;
-  margin: 0.8px;
-  padding: 10px !important;
+  margin: 0.5px;
+  padding: 9px !important;
   text-align: center !important;
   cursor: pointer;
   position: relative;
   max-width: 60%;
-  font-size: 0.8125rem !important;
+  font-size: 12px !important;
   height: 32px !important;
   border-radius: 16px !important;
   transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
@@ -897,15 +899,13 @@ button.filter-badge{
   position: absolute;
   padding: 6px;
   height: auto;
-  min-height: 100px;
   border: 2px solid #e55162;
   background-color: #f4f4f4;
   border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  /*display: flex;
+  flex-direction: column;*/
+  
+  
 }
 
 
