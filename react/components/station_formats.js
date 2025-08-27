@@ -1,4 +1,4 @@
-import {convert_unit_data, windSpeedToKmh, pressureToKPa} from './utils/unit_conversion.js'
+import {convert_unit_data, toKmh, toKPa} from './utils/unit_conversion.js'
 import Image from "next/image";
 import attributes from '../data/station/attributes.json'
 import { basePath } from '@/next.config.js';
@@ -214,14 +214,14 @@ function dataConversion(stationDataTable){
       if (key === 'air_pressure'){
         variable.units = 'kPa';
         variable.value = variable.value.map(v => {
-          const resultKPa = pressureToKPa(v);
+          const resultKPa = toKPa(v);
           //console.log(`Value: ${v}, Converted: ${resultKPa.value}`);
           return resultKPa.value}); 
       }
       if (key === 'wind_speed'){
         variable.units = 'Kmh';
         variable.value = variable.value.map(v => {
-          const resultKmh = windSpeedToKmh(v);
+          const resultKmh = toKmh(v);
           //console.log(`Value: ${v}, Converted: ${resultKmh.value}`);
           return resultKmh.value}); 
       }
@@ -229,7 +229,7 @@ function dataConversion(stationDataTable){
       if (key === 'wind_speed_of_gust'){
         variable.units = 'Kmh';
         variable.value = variable.value.map(v => {
-          const resultKmh = windSpeedToKmh(v);
+          const resultKmh = toKmh(v);
           //console.log(`Value: ${v}, Converted: ${resultKmh.value}`);
           return resultKmh.value}); 
       }
@@ -252,4 +252,3 @@ export function getStormBbox (storm_data){
   console.log(bbox);
   return bbox;
 }
-    
