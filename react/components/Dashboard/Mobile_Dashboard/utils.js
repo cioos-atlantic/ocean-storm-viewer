@@ -144,7 +144,7 @@ export function parseStormData(storm_points){
 		Direction: [{stormDir: { data: [], name: "Storm Direction (degree)" }}],
 		Pressure: [{stormPressure: { data: [], name: "Storm Pressure (kPa)" }}],
 		'Storm Speed': [{stormSpeed: { data: [], name: "Storm Speed (km/h)" }}],
-		'Wave Height': [{stormSeaHgt: { data: [], name: "Storm Sea Height (m)" }}],
+		//'Wave Height': [{stormSeaHgt: { data: [], name: "Storm Sea Height (m)" }}],
 		'Wind Speed': [{stormWindSpeed: { data: [], name: "Storm Wind Speed (km/h)" }},
 		{stormGust: { data: [], name: "Storm Gust (km/h)" }}],
 		Temperature:[],
@@ -181,8 +181,8 @@ export function parseStormData(storm_points){
 	
 	stormType.data.push(fetch_value(storm_point, ["STORMTYPE", "NATURE"]));
 
-	const seaHeight_in_m = convert_unit_data(storm_point.properties.USA_SEAHGT, 'ft', 'm');
-	storm_data_dict['Wave Height'][0].stormSeaHgt.data.push(seaHeight_in_m.value);
+	//const seaHeight_in_m = convert_unit_data(storm_point.properties.USA_SEAHGT, 'ft', 'm');
+	//storm_data_dict['Wave Height'][0].stormSeaHgt.data.push(seaHeight_in_m.value);
 	
 	})
 	const stormNameUniqueValues= [...new Set(stormNameList)];

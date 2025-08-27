@@ -42,7 +42,7 @@ const StormDashboard = React.memo(function StormDashboard({  dispatch, hover_mar
     direction: [{stormDir: { data: [], name: "Storm Direction (degree)" }}],
     Pressure: [{stormPressure: { data: [], name: "Storm Pressure (kPa)" }}],
     speed: [{stormSpeed: { data: [], name: "Storm Speed (km/h)" }}],
-    seaHeight: [{stormSeaHgt: { data: [], name: "Storm Sea Height (m)" }}],
+    //seaHeight: [{stormSeaHgt: { data: [], name: "Storm Sea Height (m)" }}],
     'Wind Speed': [{stormWindSpeed: { data: [], name: "Storm Wind Speed (km/h)" }},
     {stormGust: { data: [], name: "Storm Gust (km/h)" }}],
 
@@ -78,8 +78,8 @@ const StormDashboard = React.memo(function StormDashboard({  dispatch, hover_mar
     
     stormType.data.push(fetch_value(storm_point, ["STORMTYPE", "NATURE"]));
 
-    const seaHeight_in_m = convert_unit_data(storm_point.properties.USA_SEAHGT, 'ft', 'm');
-    storm_data_dict.seaHeight[0].stormSeaHgt.data.push(seaHeight_in_m.value);
+    //const seaHeight_in_m = convert_unit_data(storm_point.properties.USA_SEAHGT, 'ft', 'm');
+    //storm_data_dict.seaHeight[0].stormSeaHgt.data.push(seaHeight_in_m.value);
   
   })
   const stormNameUniqueValues= [...new Set(stormNameList)];
