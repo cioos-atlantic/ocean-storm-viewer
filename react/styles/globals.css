@@ -137,6 +137,7 @@ footer {
 .inner_container {
   height: 100%; /* Fill height of the parent container */
   width: 100%; /* Fill width of the parent container */
+  position: fixed;
   
 }
 
