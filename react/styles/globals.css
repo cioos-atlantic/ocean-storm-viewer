@@ -265,14 +265,14 @@ footer {
   position: relative; 
   flex-direction: column; /* Stack the header and body vertically*/
   position: fixed; /* Positioned at the bottom */
-  z-index: 5000; /* High z-index to overlay the map */
+  z-index: 1799; /* High z-index to overlay the map */
 
 
 }
 .dashboards {
   position: fixed; /* Positioned at the bottom */
   /*bottom: 50px;  Above the footer */
-  z-index: 5000; /* High z-index to overlay the map */
+  z-index: 1799; /* High z-index to overlay the map */
   /*width: 80%;  80% width for balance */
   
   
