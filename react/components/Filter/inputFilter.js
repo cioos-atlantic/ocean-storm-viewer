@@ -51,29 +51,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
 
 
 
-  // Handle form submission
-  function handleSubmit (event) {
-    event.preventDefault(); // Prevent default form submission
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [input_filter.name]: inputValue // Clear the options for the specific filter name
-    }));
-    console.log(selectedOptions)
-    
-
-    console.log({ [input_filter.name]: [] }); // Log the cleared options
-  };
-
-  // Handle clearing input
-  function handleClear()  {
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [input_filter.name]: "", // Clear the options for the specific filter name
-    }));
-    //setInputValue(""); // Reset input field
-    dispatch({ type: "SET_FILTER_STORM_NAME", payload: ""})
-    setInputValue("");
-  };
+  
   const handleSelectAll = () => {
     if (filterStormName.length === stormNameList.length) {
       setFilterStormName([]); // Unselect all
@@ -97,7 +75,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
   };
 
 
-  function handleIconClick(){
+ function handleIconClick(){
     console.log(showFilterOptions);
     dispatch({ type: "SET_CAT_SELECTION", payload: false});
     dispatch({ type: "SET_DATE_SELECTION", payload: false});
@@ -111,15 +89,23 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     (async () => {
       setLoading(true);
       const stormNames = await input_filter.query(); 
+      console.log(stormNames);
+      if (!stormNames || !Array.isArray(stormNames))
+        { alert("No storm name data available...")
+          setLoading(false);
+          setStormNameList(["No storm name data available... "]);
+        }
+      else{
+        setLoading(false);
+        setStormNameList([...stormNames]);
+      }
       
-      setLoading(false);
-      setStormNameList([...stormNames]);
     })();
   };
 
   const handleClose = () => {
     setOpen(false);
-    setStormNameList([]);
+    //setStormNameList([]);
   };
 
   console.log(stormNameList);
@@ -184,29 +170,35 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
         renderTags={(value, getTagProps) => {
     if (value.length === 0) return null;
 
-    return [
-      <span key="first" {...getTagProps({ index: 0 })}>
-        {value[0]}
-      </span>,
-      value.length > 1 && (
-        <span key="more" style={{ marginLeft: 4 }}>
-          +{value.length - 1}
-        </span>
-      )
-    ];
+      return [
+        <span key={`tag-${value[0]}`} {...getTagProps({ index: 0 })}>
+          {value[0]}
+        </span>,
+        value.length > 1 ? (
+          <span key="tag-more" style={{ marginLeft: 4 }}>
+            +{value.length - 1}
+          </span>
+        ) : null
+      ];
   }}
-        renderOption={(props, option, { selected }) => (
-          <li {...props} key={`option-${option}`}>
+        renderOption={(props, option, { selected }) => {
+          const { key, ...rest } = props; // extract key
+
+          return(
+          <li key={key} {...rest}>
             <Checkbox
               icon={icon}
               checkedIcon={checkedIcon}
-              sx={{ marginRight: 1.5, color: '#e55162', padding: {sm:'0px', md:'6px'}, // remove extra checkbox padding
-          alignSelf: 'center' }}
+              sx={{ 
+                  marginRight: 1.5,
+                  color: '#e55162', 
+                  padding: {sm:'0px', md:'6px'}, 
+                  alignSelf: 'center' }}
               checked={selected}
             />
             {option}
-          </li>
-        )}
+          </li>)
+        }}
         renderInput={(params) => (
           <TextField
             {...params}

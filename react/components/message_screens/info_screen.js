@@ -17,7 +17,7 @@ export default function InfoScreen({setInfo, open, onClose }){
       >
         <DialogTitle>Ocean Storm Viewer - User Guide</DialogTitle>
         <DialogContent  style={{height:'60vh'}}>
-        <p>
+        <div>
             Welcome to the <b>Ocean Storm Viewer (OSV)</b>!<br/>
             This website helps you explore and learn about ocean storms—both current and historical<br/>
 
@@ -74,7 +74,7 @@ export default function InfoScreen({setInfo, open, onClose }){
             <li> Shapes can be <b>edited</b> or <b>cleared</b>.</li>
             <li> Uses same <b>Submit</b> and <b>Clear</b> buttons as storm filters.</li>
             </ul>
-        </p>
+        </div>
         </DialogContent>
       </Dialog>
     )
