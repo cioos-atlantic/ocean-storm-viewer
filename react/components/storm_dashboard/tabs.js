@@ -145,7 +145,7 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
   
             {
             Object.entries(stormData)
-            .filter(([key]) => key !== "direction") // Exclude "Direction"
+            .filter(([key]) => (key !== "direction" && key !== "seaHeight")) // Exclude "Direction" (also storm height until it gets fixed)
             .map(([key, value], index) => {
               
               return(
@@ -181,7 +181,7 @@ export default function BasicTabs({stormName, stormData, stormSummaryText, varia
       </CustomTabPanel>
       {
             Object.entries(stormData)
-            .filter(([key]) => key !== "direction") // Exclude "Direction"
+            .filter(([key]) => (key !== "direction"&& key !== "seaHeight")) // Exclude "Direction"
             .map(([key, value], index) => {
               
               return(
