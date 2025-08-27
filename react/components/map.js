@@ -19,18 +19,24 @@ import { mapReducer, initialMapState } from "./mapReducer";
 import InfoScreen from "./message_screens/info_screen";
 import { IconButton } from "@mui/material";
 import InfoIcon from '@mui/icons-material/Info';
-import {Box} from "@mui/material";
+import { useMediaQuery, Box, useTheme } from "@mui/material";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
+
 
 export default function Map({ children, station_data, source_type,  setStationPoints}) {
 
   const clearShapesRef = useRef(null);
 
   const [state, dispatch] = useReducer(mapReducer, initialMapState);
+  const [map, setMap] = useState()
+  const theme = useTheme();
+  
   
   console.debug("Storm Points in map.js: ", state.storm_points);
+
+
 
   return (
     <div className="map_container">
@@ -68,7 +74,11 @@ export default function Map({ children, station_data, source_type,  setStationPo
             
             />
         }
+        {//state.isDrawerOpen && <div className="drawer-touch-blocker"/>
+         }
+
        
+          
 
         <MapContainer
           center={defaultPosition}
@@ -76,16 +86,16 @@ export default function Map({ children, station_data, source_type,  setStationPo
           style={{ height: "100%", width: "100%" }}
           worldCopyJump={true}
           zoomControl={false}
+          ref={setMap}
+          whenReady={() => {
+            console.log("Map is fully ready!");
+            
+          }}
+
+          
           
         > <CustomZoomControl /> 
-          <Drawer
-            element_id="left-side"
-            classes="left"
-            source_type={source_type}
-            setStationPoints={setStationPoints}
-            state={state}
-            dispatch={dispatch}
-          />
+          
           
 
           <TileLayer
@@ -216,6 +226,16 @@ export default function Map({ children, station_data, source_type,  setStationPo
           setPolyFilterCoords={(coords) => dispatch({ type: "SET_POLY_FILTER_COORDS", payload: coords })}
           />} {/* Calling the EditControl function here */}
         </MapContainer>
+
+        { map && (<Drawer
+            element_id="left-side"
+            classes="left"
+            source_type={source_type}
+            setStationPoints={setStationPoints}
+            state={state}
+            dispatch={dispatch}
+            map={map}
+          />)}
       </div>
     </div>
   )
