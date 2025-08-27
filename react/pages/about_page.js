@@ -23,15 +23,7 @@ export default function About(){
 
   return(
     <div className={aboutStyles.container}>
-      <Head>
-        <link rel="icon" href="/favicon.ico" />
-        <meta
-          name="description"
-          content="Learn more about the Ocean Storm Viewer, its purpose, and the team behind it."
-        />
-        <meta name="og:title" content={siteTitle} />
-        <title>About - {siteTitle}</title>
-      </Head>
+     
       <main className={aboutStyles.mainContent}>
         <section className={aboutStyles.aboutSection}>
           <h1>Table of Content</h1>

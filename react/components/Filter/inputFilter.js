@@ -75,25 +75,25 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     setInputValue("");
   };
   const handleSelectAll = () => {
-  if (filterStormName.length === stormNameList.length) {
-    setFilterStormName([]); // Unselect all
-  } else {
-    setFilterStormName(stormNameList); // Select all
-  }
+    if (filterStormName.length === stormNameList.length) {
+      setFilterStormName([]); // Unselect all
+    } else {
+      setFilterStormName(stormNameList); // Select all
+    }
   };
-
-  const handleClearAll = () => {
-    setFilterStormName([]);
-  };
-  const toggleStorm = (name) => {
-  setFilterStormName(prev =>
-    prev.includes(name) ? prev.filter(s => s !== name) : [...prev, name]
-  );
-  };
-  const getDisplayValue = () => {
-  if (filterStormName.length === 0) return '';
-  if (filterStormName.length <= 2) return filterStormName.join(', ');
-  return `${filterStormName.length} selected`;
+  
+    const handleClearAll = () => {
+      setFilterStormName([]);
+    };
+    const toggleStorm = (name) => {
+    setFilterStormName(prev =>
+      prev.includes(name) ? prev.filter(s => s !== name) : [...prev, name]
+    );
+    };
+    const getDisplayValue = () => {
+    if (filterStormName.length === 0) return '';
+    if (filterStormName.length <= 2) return filterStormName.join(', ');
+    return `${filterStormName.length} selected`;
   };
 
 

@@ -23,7 +23,8 @@ export const initialMapState = {
   storm_points: empty_storm_obj,
   filterQuery:{},
   filterStormName:[],
-  selectedStormNames:[]
+  selectedStormNames:[],
+  info:true
 };
 
 export function mapReducer(state, action) {
@@ -74,6 +75,8 @@ export function mapReducer(state, action) {
       return {...state, showDateSelection: !state.showDateSelection};
     case 'TOGGLE_DRAWER':
       return { ...state, isDrawerOpen: action.payload };
+    case 'SET_INFO_GUIDE':
+      return { ...state, info: action.payload };
     case 'CANCEL_FILTERS':
       return {
         ...state,
@@ -119,6 +122,8 @@ export function mapReducer(state, action) {
           isStormDashOpen: false,
           isStationDashOpen: false,
           isDashOpen: false,
+          drawerButtonClicked: ''
+          
 
         };
       

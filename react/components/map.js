@@ -16,6 +16,10 @@ import CustomZoomControl from "./custom_zoom_control";
 import { RenderDashboards } from "./Dashboard/dashboard";
 import StormMarker from "./stormPoint";
 import { mapReducer, initialMapState } from "./mapReducer";
+import InfoScreen from "./message_screens/info_screen";
+import { IconButton } from "@mui/material";
+import InfoIcon from '@mui/icons-material/Info';
+import {Box} from "@mui/material";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
@@ -31,6 +35,21 @@ export default function Map({ children, station_data, source_type,  setStationPo
   return (
     <div className="map_container">
       <div className='inner_container'>
+      {<InfoScreen
+          setInfo = {(state) =>dispatch({ type: "SET_INFO_GUIDE", payload: state})}
+          open={state.info}
+          onClose = {state.info}
+        />}
+
+
+          { <IconButton
+              className="info-guide"
+              sx={{ display: {xs: "block", md: "none" } }}
+              onClick={() => {
+                dispatch({ type: "SET_INFO_GUIDE", payload: true});
+              }}
+              ><InfoIcon />
+            </IconButton>}
         
         { source_type === "historical" &&
           <RenderFilter
@@ -49,6 +68,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
             
             />
         }
+       
 
         <MapContainer
           center={defaultPosition}
@@ -66,6 +86,7 @@ export default function Map({ children, station_data, source_type,  setStationPo
             state={state}
             dispatch={dispatch}
           />
+          
 
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

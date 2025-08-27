@@ -12,7 +12,6 @@ body {
 header {
   width: 100%;
   position: absolute;
-  position: absolute;
   top: 0;
   background-color: #e55162; /* Light red background for header */
   z-index: 9000; /* High z-index to ensure header stays on top */
@@ -131,7 +130,6 @@ footer {
 }
 
 /* Map Container Styling */
-/* Map Container Styling */
 .map_container {
   height: 100vh; /* Full viewport height for map */
   width: 100%; /* Full width for map container */
@@ -194,11 +192,8 @@ footer {
 }
 
 /* Info Pane Styling */
-/* Info Pane Styling */
 .info_pane {
   position: absolute;
-   /*top: 0;*/
-   /* margin-top: 10%; Add space from the top */
    /*top: 0;*/
    /* margin-top: 10%; Add space from the top */
   right: 0;
@@ -258,7 +253,6 @@ footer {
 }
 
 /* Station Dashboard Styling */
-/* Station Dashboard Styling */
 .station_dashboard {
   background: white; /* White background for clarity */
   color: black; /* Black text for readability */
@@ -281,8 +275,6 @@ footer {
 
 }
 .dashboards {
-  /*border-top: 3px solid #e55162;   */
-
   position: fixed; /* Positioned at the bottom */
   /*bottom: 50px;  Above the footer */
   z-index: 5000; /* High z-index to overlay the map */
@@ -325,13 +317,10 @@ footer {
 
 .station_dashboard .dash-header {
   /*border: 1px solid darkgoldenrod;   */
-  /*border: 1px solid darkgoldenrod;   */
   background-color: #eee;
   padding:0.5rem;
 }
 .combined_dashboard_small .dash-header {
-  /*border: 1px solid darkgoldenrod;   */
-  /*border: 1px solid darkgoldenrod;   */
   background-color: #eee;
   padding:0.5rem;
 }
@@ -375,14 +364,8 @@ footer {
   overflow-y: auto; /* Enable scrolling within the body*/
   padding: 1rem;
   flex: 1; /* Allow the body to take up available space*/
-  overflow-y: auto; /* Enable scrolling within the body*/
-  padding: 1rem;
-  flex: 1; /* Allow the body to take up available space*/
 }
 .combined_dashboard_small .dash-body {
-  overflow-y: auto; /* Enable scrolling within the body*/
-  padding: 1rem;
-  flex: 1; /* Allow the body to take up available space*/
   overflow-y: auto; /* Enable scrolling within the body*/
   padding: 1rem;
   flex: 1; /* Allow the body to take up available space*/
@@ -806,7 +789,6 @@ button.filter-badge{
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 9024;
-  border-radius: 8px;
   padding: 0px;
   
 }
@@ -935,7 +917,7 @@ button.filter-badge{
 }
 
 .leaflet-control-container .leaflet-draw-section {
-  z-index: 9999;
+  z-index: 1000;
 }
 
 /* Adjust the width of the Draw Control toolbar */
@@ -984,4 +966,28 @@ button.filter-badge{
   width: 100%;
   position: relative;
 
+}
+
+.info-guide{
+  z-index: 3000;
+  position: fixed;
+  top: 68px;
+  right: 9px;
+  text-align: center;
+  height: 35px;
+  width: 35px;
+  padding: 0px;
+  font-size: 0px;
+  color:  #1E90FF;
+
+}
+
+.map-touch-blocker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 260px;   /* Same as drawer width */
+  height: 100%;
+  z-index: 9999;  /* Higher than the map */
+  background: transparent; /* invisible but still intercepts touches */
 }

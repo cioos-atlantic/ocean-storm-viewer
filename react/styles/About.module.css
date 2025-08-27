@@ -1,12 +1,13 @@
 
 .mainContent {
-  max-width: 1200px;
+ 
   margin: 0 auto;
-  padding: 20px;
+  overflow: auto;
+  
   /* background-color: #f9f9f9; Light background for main content */
+  padding-bottom: 20px; 
   border-radius: 8px;
-  flex: 1;
-  padding-bottom: 60px; 
+  max-width: 1200px;
   font-family: 'Times New Roman', Times, serif;
 }
 
@@ -53,14 +54,16 @@
 }
 
 .container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Ensure full viewport height */
-  padding-top: 75px;
+  position: relative;
+  width: 100%;
+  height: 100%; /* Ensure full viewport height */
+  padding-top: 20px;
+  
 }
 
 .aboutPageImg {
-  width: 450px;
+  width: 100%;
+  max-width: 450px;
   height: auto;
   border-radius: 2px; /* Optional: Add rounded corners */
   object-fit: cover;

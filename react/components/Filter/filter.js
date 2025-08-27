@@ -47,6 +47,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
   const [showFilterOptions, setShowFilterOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [filterParameters, setFilterParameters] = useState([]);
+  const [loading, setLoading] = useState(false);
+  //const [info, setInfo] = useState(true)
   
   
 
@@ -63,8 +65,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
 
 
 
-  const [loading, setLoading] = useState(false);
-  const [info, setInfo] = useState(true)
+
 
   const router = useRouter(); // Next.js useRouter
   const drawerWidth = 258;
@@ -97,6 +98,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
       stormName: false, // stormName must be defined here
     }));
 
+    
+    
     
     const updatedParams = {
       //...selectedOptions, // Spread selected options correctly
@@ -143,7 +146,6 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
             sx={{
               position: 'absolute', bottom: 65, right: 7,
               display: { xs: "block", md: "none" }, '& .MuiSpeedDial-fab': {
-
                 backgroundColor: '#e55162',  // Change SpeedDial button background color
                 '&:hover': {
                   backgroundColor: '#b9acac', // Change SpeedDial button hover color
@@ -175,30 +177,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
                 handleFilterSubmit()
               }}
             />
-
-            
-           
-            {openSpeedDial && (<div className="filter-group">
-              <RenderCategoryFilter
-                  state={state}
-                  dispatch={dispatch}
-                />
-
-            </div>
-            )
-
-            }
-             {openSpeedDial && (<div className="filter-group">
-              <RenderDateFilter
-                state={state}
-                dispatch={dispatch}
-              />
-
-            </div>
-            )
-
-            }
-            {openSpeedDial && (input_filters.map((input_filter, index) => {
+          
+             {openSpeedDial && (input_filters.map((input_filter, index) => {
               return (
                 <div className="filter-group" key={index}>
                   <InputFilter
@@ -266,7 +246,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
           <Stack
             direction="row"
             spacing={0.1}
-            sx={{ display: { sm: "none", md: "flex" },  left: drawerOpen ? `${drawerWidth}px` : 0,
+            sx={{ display: { xs: "none", md: "flex" },  left: drawerOpen ? `${drawerWidth}px` : 0,
             width: drawerOpen ? `calc(100% - ${drawerWidth}px)` : '100%',   }}
             className='filter-icons-list'>
             {
@@ -337,21 +317,15 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
               onClick={handleClearAllFilters}>
               X
             </Button>
-           { <Button
-              id="info-icon"
-              className="info-icons"
-              startIcon={<InfoIcon />}
-              onClick={() => {
-                setInfo(true)
-              }}
-              >
-            </Button>}
+           { <IconButton
+                sx={{ color:  ' #1E90FF'}}
+                onClick={() => {
+                  dispatch({ type: "SET_INFO_GUIDE", payload: true});
+                }}
+                ><InfoIcon />
+              </IconButton>}
           </Stack>
-        {<InfoScreen
-          setInfo = {setInfo}
-          open={info}
-          onClose = {info}
-        />}
+        
         </>
       )
       };
