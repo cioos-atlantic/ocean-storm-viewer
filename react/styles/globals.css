@@ -426,6 +426,23 @@ footer {
   padding-bottom : 5px;
   font-weight: bold !important;
 }
+.storm_search_result{
+  flex: 1;                /* take remaining space */
+  overflow-y: auto;       /* make this scroll */
+  background-color: white;
+  border-radius: 4px;
+  padding: 8px;
+  max-height: 81vh;
+  
+}
+
+.active-drawer{
+  width: 100%;
+  padding: 3px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 
 .historical_storm_search_result{
   text-align: left;
