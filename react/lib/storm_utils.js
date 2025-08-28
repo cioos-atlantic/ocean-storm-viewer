@@ -1,7 +1,7 @@
 
 import * as geolib from 'geolib';
 import { show_all_storms } from '../components/active_storm_list';
-import { empty_station_obj } from '@/pages/layout';
+import { empty_station_obj } from '@/components/point_defaults';
 import { basePath } from '@/next.config.js';
 import { empty_storm_obj } from '@/components/point_defaults';
 

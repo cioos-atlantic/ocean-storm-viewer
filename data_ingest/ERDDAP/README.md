@@ -60,7 +60,11 @@ Running the ERDDAP cache for active data will clear existing data in the cache
 
 Historical storm data
 
-> python cache_ERDDAP.py historical 2022_fiona
+> python cache_ERDDAP.py historical --storm 2022_FIONA
+
+You can also specify to run on any storms within a period of time
+
+> python cache_ERDDAP.py historical --min 2022 --max 2024
 
 
 ## Logging

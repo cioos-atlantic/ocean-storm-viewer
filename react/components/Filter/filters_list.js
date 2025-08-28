@@ -1,6 +1,7 @@
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import TodayOutlinedIcon from '@mui/icons-material/TodayOutlined';
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
+import { queryStormName } from './filter_utils';
 
 
 export const storm_category_filter_list = [
@@ -30,10 +31,12 @@ export const input_filters = [
   {
     "name": 'stormName',
     "display_name": 'Storm Name',
-    'Icon': BadgeOutlinedIcon,
-    "placeholder": 'Storm1, Storm2',
+    'Icon':BadgeOutlinedIcon,
+    "placeholder": 'Abba',
+    'query': queryStormName
 
-
+    
+    
   },
   /*{ 
     "name":'stormYear',
@@ -44,5 +47,6 @@ export const input_filters = [
     
   }*/
 ]
+
 
 

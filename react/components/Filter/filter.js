@@ -23,7 +23,7 @@ import { smallScreenIconButton } from "./filter_utils";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { RenderCategoryFilter } from "./categorySlider";
 import InfoScreen from "../message_screens/info_screen";
-
+import { empty_station_obj } from "../point_defaults";
 
 const ITEM_HEIGHT = 35;
 const ITEM_PADDING_TOP = 8;
@@ -42,14 +42,18 @@ export const ShowOptions = KeyboardDoubleArrowDownIcon;
 export const CloseOptions = KeyboardDoubleArrowUpIcon;
 
 
-export function RenderFilter({ clearShapesRef, state, dispatch }) {
+export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoints }) {
   const [showFilterIcons, setShowFilterIcons] = useState(false);
   const [showFilterOptions, setShowFilterOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [filterParameters, setFilterParameters] = useState([]);
-
+  const [loading, setLoading] = useState(false);
+  //const [info, setInfo] = useState(true)
+  
+  
 
   const [openSpeedDial, setOpenSpeedDial] = useState(false);
+  const setFilterStormName = (state) => dispatch({ type: "SET_FILTER_STORM_NAME", payload: state });
 
 
   const handleOpen = () => setOpenSpeedDial(true);
@@ -61,10 +65,11 @@ export function RenderFilter({ clearShapesRef, state, dispatch }) {
 
 
 
-  const [loading, setLoading] = useState(false);
-  const [info, setInfo] = useState(true)
+
 
   const router = useRouter(); // Next.js useRouter
+  const drawerWidth = 258;
+  const drawerOpen = state.isDrawerOpen;
 
 
   function handleClearAllFilters() {
@@ -86,15 +91,24 @@ export function RenderFilter({ clearShapesRef, state, dispatch }) {
   async function handleFilterSubmit() {
     //setDrawerButtonClicked('');
     dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: '' });
+    dispatch({ type: "SET_CAT_SELECTION", payload: false});
+    dispatch({ type: "SET_DATE_SELECTION", payload: false});
+    setShowFilterOptions(prev => ({
+      ...prev,
+      stormName: false, // stormName must be defined here
+    }));
 
-
+    
+    
+    
     const updatedParams = {
-      ...selectedOptions, // Spread selected options correctly
+      //...selectedOptions, // Spread selected options correctly
       startDate: state.startDate, // Ensure start and end dates are included
       endDate: state.endDate,
       polyCoords: state.polyFilterCoords,
       startCategory: state.startCategory,
-      endCategory: state.endCategory,
+      endCategory:state.endCategory,
+      stormName:state.filterStormName
 
     };
 
@@ -116,8 +130,10 @@ export function RenderFilter({ clearShapesRef, state, dispatch }) {
 
     //setIsDrawerOpen(true);
     //setReturnFilterResult(true);
-    dispatch({ type: "TOGGLE_DRAWER", payload: true });
-    dispatch({ type: "TOGGLE_FILTER_RESULT", payload: true });
+    dispatch({ type: "TOGGLE_DRAWER", payload: true});
+    dispatch({ type: "TOGGLE_FILTER_RESULT", payload: true});
+    dispatch({ type: "CLOSE_STORM_TRACKS" })
+    setStationPoints(empty_station_obj)
 
     console.debug("Drawer and Filter results toggled to 'True'.");
   }
@@ -133,7 +149,7 @@ export function RenderFilter({ clearShapesRef, state, dispatch }) {
           <SpeedDial
             ariaLabel="Filter Options"
             sx={{
-              position: 'absolute', bottom: 25, right: 7,
+              position: 'absolute', bottom: 65, right: 7,
               display: { xs: "block", md: "none" }, '& .MuiSpeedDial-fab': {
                 backgroundColor: '#e55162',  // Change SpeedDial button background color
                 '&:hover': {
@@ -166,8 +182,8 @@ export function RenderFilter({ clearShapesRef, state, dispatch }) {
                 handleFilterSubmit()
               }}
             />
-
-            {openSpeedDial && (input_filters.map((input_filter, index) => {
+          
+             {openSpeedDial && (input_filters.map((input_filter, index) => {
               return (
                 <div className="filter-group" key={index}>
                   <InputFilter
@@ -177,6 +193,8 @@ export function RenderFilter({ clearShapesRef, state, dispatch }) {
                     showFilterOptions={showFilterOptions}
                     setShowFilterOptions={setShowFilterOptions}
                     dispatch={dispatch}
+                    filterStormName={state.filterStormName}
+                    setFilterStormName= {setFilterStormName}
                   />
                 </div>
               )
@@ -187,6 +205,8 @@ export function RenderFilter({ clearShapesRef, state, dispatch }) {
               <RenderDateFilter
                 state={state}
                 dispatch={dispatch}
+                setShowFilterOptions={setShowFilterOptions}
+
               />
 
             </div>
@@ -195,9 +215,10 @@ export function RenderFilter({ clearShapesRef, state, dispatch }) {
             }
             {openSpeedDial && (<div className="filter-group">
               <RenderCategoryFilter
-                state={state}
-                dispatch={dispatch}
-              />
+                  state={state}
+                  dispatch={dispatch}
+                  setShowFilterOptions={setShowFilterOptions}
+                />
 
             </div>
             )
@@ -208,7 +229,8 @@ export function RenderFilter({ clearShapesRef, state, dispatch }) {
           <Stack
             direction="row"
             spacing={0.1}
-            sx={{ display: { xs: "none", md: "flex" }, }}
+            sx={{ display: { xs: "none", md: "flex" },  left: drawerOpen ? `${drawerWidth}px` : 0,
+            width: drawerOpen ? `calc(100% - ${drawerWidth}px)` : '100%',   }}
             className='filter-icons-list'>
             {
               input_filters.map((input_filter, index) => {
@@ -223,6 +245,8 @@ export function RenderFilter({ clearShapesRef, state, dispatch }) {
                       setShowFilterOptions={setShowFilterOptions}
                       dispatch={dispatch}
                       filterStormName={state.filterStormName}
+                      setFilterStormName= {setFilterStormName}
+                    
                     />
                   </div>
                 )
@@ -234,13 +258,15 @@ export function RenderFilter({ clearShapesRef, state, dispatch }) {
               <RenderDateFilter
                 state={state}
                 dispatch={dispatch}
+                setShowFilterOptions={setShowFilterOptions}
               />
             </div>
             <div className="filter-group">
               <RenderCategoryFilter
-                state={state}
-                dispatch={dispatch}
-              />
+                  state={state}
+                  dispatch={dispatch}
+                  setShowFilterOptions={setShowFilterOptions}
+                />
             </div>
 
             <Button
@@ -256,21 +282,15 @@ export function RenderFilter({ clearShapesRef, state, dispatch }) {
               onClick={handleClearAllFilters}>
               X
             </Button>
-            <Button
-              id="info-icon"
-              className="info-icons"
-              startIcon={<InfoIcon />}
-              onClick={() => {
-                setInfo(true)
-              }}
-            >
-            </Button>
+           { <IconButton
+                sx={{ color:  ' #1E90FF'}}
+                onClick={() => {
+                  dispatch({ type: "SET_INFO_GUIDE", payload: true});
+                }}
+                ><InfoIcon />
+              </IconButton>}
           </Stack>
-          <InfoScreen
-            setInfo={setInfo}
-            open={info}
-            onClose={info}
-          />
+        
         </>
       )
       };
@@ -353,10 +373,11 @@ export function formatStormCategory(category_list = []) {
   return formattedCategoryList;
 }
 
-export function formatStormName(storm_names = "") {
-  storm_names = storm_names.replace(/\s+/g, ''); // Remove all spaces
-  console.log(storm_names);
-  const storm_list = storm_names.split(",");
+export function formatStormName(storm_list = []) {
+  //storm_names = storm_names.replace(/\s+/g, ''); // Remove all spaces
+  console.log(storm_list);
+  //const storm_list = storm_names.split(",");
+
   const formattedStormList = storm_list.join("_");
   return formattedStormList;
 }

@@ -106,8 +106,8 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
         position: 'absolute',
         top: { xs: '6px', md: '100%', },
         right: { xs: '100%', md: '0px', },
-        width: { xs: '220px', md: '320px', },
-        height: { xs: '200px', md: 'inherit', },
+        width: { xs: '280px', md: '320px', },
+        height: { xs: '330px', md: 'inherit', },
         overflow: { xs: 'scroll', md: 'hidden', },
         padding: '6px',
         backgroundColor: "#f4f4f4",
@@ -176,13 +176,14 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
   );
 }
 
-export function RenderCategoryFilter({ state, dispatch }) {
-
+export function RenderCategoryFilter({ state, dispatch, setShowFilterOptions }){
+  
   //const [showCatSelection, setShowCatSelection] = useState(false); 
   const hasValidCategory = state.startCategory && state.endCategory;
   const buttonStyle = {
     backgroundColor: hasValidCategory ? '#e55162' : 'white',
     color: hasValidCategory ? 'white' : '#e55162',
+    
     '&:hover': {
       backgroundColor: hasValidCategory ? '#ffd1dc' : '#82ccdd',
       color: hasValidCategory ? 'black' : 'black',
@@ -191,7 +192,12 @@ export function RenderCategoryFilter({ state, dispatch }) {
 
   function handleIconClick() {
     //setShowCatSelection(prev => !prev);
-    dispatch({ type: "TOGGLE_CAT_SELECTION" });
+    dispatch({ type: "TOGGLE_CAT_SELECTION"});
+    dispatch({ type: "SET_DATE_SELECTION", payload: false});
+    setShowFilterOptions(prev => ({
+      ...prev,
+      stormName: false, // stormName must be defined here
+    }));
   }
 
 

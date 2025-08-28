@@ -14,24 +14,29 @@ import { basePath } from "@/next.config";
  */
 export async function getHistoricalStormList() {
   // Construct query parameters
+  
   const oneYearAgo = subYears(new Date(), 1);
-  const min_storm_time = new Date(oneYearAgo).toISOString().split('T')[0] + "T00:00:00Z"; // get the current year
-  console.log(min_storm_time)
+  const start_date = new Date(oneYearAgo).toISOString().split('T')[0] + "T00:00:00Z"; // get the current year
+  const end_date = new Date().toISOString().split('T')[0] + "T00:00:00Z";
+  console.log(start_date, end_date)
+  
+
 
   const query = new URLSearchParams({
-    minTime: min_storm_time,      // Using season for storm year
+    start_date: start_date,
+    end_date: end_date
   }).toString();
 
   try {
-    const resource = await fetch(`${basePath}/api/historical_storms?${query}`);
+    const resource = await fetch(`${basePath}/api/filter_storms?${query}`);
     const storm_data = await resource.json();
     //console.log(storm_data);
 
     //const historical_storm_data = parseStormData(storm_data, storm.name);
     // console.log(historical_station_data);
 
-    console.debug(`historical Storm Data for ${min_storm_time}: `, storm_data);
-    const uniqueList = makeStormList(storm_data)
+    console.debug(`historical Storm Data for ${start_date} - ${end_date} : `, storm_data);
+    const uniqueList= makeStormList(storm_data)
     // Create a set to track unique IDs and add objects to the result list
 
     console.log(uniqueList);

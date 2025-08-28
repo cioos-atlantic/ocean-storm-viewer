@@ -1,17 +1,25 @@
 import { Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, } from "@mui/material";
 
-export default function InfoScreen({ setInfo, open, onClose }) {
-  const handleClose = () => {
-    setInfo(false)
-  };
 
-  return (
-    <Dialog onClose={handleClose} open={open} PaperPropssx={{ align: 'center', display: 'flex', justifyContent: 'center' }}>
-      <DialogTitle>Ocean Storm Viewer - User Guide</DialogTitle>
-      <DialogContent dividers={scroll === 'paper'} style={{ height: '60vh' }}>
-        <p>
-          Welcome to the <b>Ocean Storm Viewer (OSV)</b>!<br />
-          This website helps you explore and learn about ocean storms—both current and historical<br />
+export default function InfoScreen({setInfo, open, onClose }){
+  
+    const handleClose = () => {
+      setInfo(false)
+    };
+
+    return(
+      <Dialog 
+      onClose = {handleClose} 
+      open={open} 
+      disablePortal={false}
+      slotProps ={{paper:{sx:{alignItems: 'center', display:'flex', justifyContent: 'center'}}, root:{sx:{zIndex:'9999', position: 'fixed',
+         }} }} 
+      >
+        <DialogTitle>Ocean Storm Viewer - User Guide</DialogTitle>
+        <DialogContent  style={{height:'60vh'}}>
+        <div>
+            Welcome to the <b>Ocean Storm Viewer (OSV)</b>!<br/>
+            This website helps you explore and learn about ocean storms—both current and historical<br/>
 
           <h5>Map Controls:</h5>
 
@@ -65,10 +73,10 @@ export default function InfoScreen({ setInfo, open, onClose }) {
             <li> Only one shape can be drawn at a time.</li>
             <li> Shapes can be <b>edited</b> or <b>cleared</b>.</li>
             <li> Uses same <b>Submit</b> and <b>Clear</b> buttons as storm filters.</li>
-          </ul>
-        </p>
-      </DialogContent>
-    </Dialog>
-  )
-
-}
+            </ul>
+        </div>
+        </DialogContent>
+      </Dialog>
+    )
+  
+  }

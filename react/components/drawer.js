@@ -1,5 +1,5 @@
 import styles from './drawer.module.css'
-import { useMap } from "react-leaflet";
+//import { useMap } from "react-leaflet";
 import ActiveStormList from "@/components/active_storm_list";
 import HistoricalStormList from "@/components/historical_storm/historical_storm_list";
 import Leaflet from 'leaflet';

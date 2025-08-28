@@ -10,24 +10,32 @@ import WindSpeedRadius from "@/components/wind_radii";
 import SeaHeightRadius from "@/components/sea_height_radii";
 import StationMarker from "./station_marker";
 import ErrorCone from "@/components/error_cone";
-import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
 import { RenderFilter } from "./Filter/filter";
 import { RenderSpatialFilter } from "./Filter/Edit_spatial_filter";
 import CustomZoomControl from "./custom_zoom_control";
 import { RenderDashboards } from "./Dashboard/dashboard";
 import StormMarker from "./stormPoint";
 import { mapReducer, initialMapState } from "./mapReducer";
+import InfoScreen from "./message_screens/info_screen";
+import { IconButton } from "@mui/material";
+import InfoIcon from '@mui/icons-material/Info';
+import { useMediaQuery, Box, useTheme } from "@mui/material";
+import { useDatasetDescriptions } from "@/pages/api/all_erddap_dataset";
 
 const defaultPosition = [46.9736, -54.69528]; // Mouth of Placentia Bay
 const defaultZoom = 4
 
-/* 
-TODO: Rebuild with a focus on passing data down from parent pages, this can include filters and the like.
- */
 
 export default function Map({ children, station_data, storm_data, source_type, setStationPoints }) {
   const clearShapesRef = useRef(null);
   const [state, dispatch] = useReducer(mapReducer, initialMapState);
+  const [map, setMap] = useState()
+  const theme = useTheme();
+  
+  
+  console.debug("Storm Points in map.js: ", state.storm_points);
+
+
   const allDatasetDescriptions = useDatasetDescriptions();
 
   // console.log(allDatasetDescriptions)
@@ -35,54 +43,64 @@ export default function Map({ children, station_data, storm_data, source_type, s
   console.debug("Storm Data in map.js: ", storm_data);
 
   return (
-    <>
-      <MapContainer
-        center={defaultPosition}
-        zoom={defaultZoom}
-        style={{ height: "100%", width: "100%" }}
-        worldCopyJump={true}
-        zoomControl={false}
-      >
+    <div className="map_container">
+      <div className='inner_container'>
+      {<InfoScreen
+          setInfo = {(state) =>dispatch({ type: "SET_INFO_GUIDE", payload: state})}
+          open={state.info}
+          onClose = {state.info}
+        />}
 
-        {children}
+
+          { <IconButton
+              className="info-guide"
+              sx={{ display: {xs: "block", md: "none" } }}
+              onClick={() => {
+                dispatch({ type: "SET_INFO_GUIDE", payload: true});
+              }}
+              ><InfoIcon />
+            </IconButton>}
         
-        {
-          // Only show filters for historical storms
-          source_type == "historical" ? (
-            <>
-              <RenderFilter
-                clearShapesRef={clearShapesRef} // Pass the ref to 
-                state={state}
-                dispatch={dispatch}
-              />
-
-              <RenderDashboards
-                source_type={source_type}
-                station_descriptions={allDatasetDescriptions}
-                time={new Date()}
-                state={state}
-                dispatch={dispatch}
-              />
-
-              <RenderSpatialFilter
-                ref={clearShapesRef}
-                setPolyFilterCoords={(coords) => dispatch({ type: "SET_POLY_FILTER_COORDS", payload: coords })}
-              />
-            </>
-          ) : (
-            <></>
-          )}
-
-        <CustomZoomControl />
-        <Drawer
-          element_id="left-side"
-          classes="left"
-          storm_data={storm_data}
-          source_type={source_type}
-          setStationPoints={setStationPoints}
+        { source_type === "historical" &&
+          <RenderFilter
+          clearShapesRef={clearShapesRef} // Pass the ref to 
           state={state}
           dispatch={dispatch}
-        />
+          setStationPoints={setStationPoints}
+          />
+        }
+        {
+          <RenderDashboards
+            source_type={source_type}
+            time = {new Date()}
+            state={state}
+            dispatch={dispatch}
+            
+            />
+        }
+        {//state.isDrawerOpen && <div className="drawer-touch-blocker"/>
+         }
+
+       
+          
+
+        <MapContainer
+          center={defaultPosition}
+          zoom={defaultZoom}
+          style={{ height: "100%", width: "100%" }}
+          worldCopyJump={true}
+          zoomControl={false}
+          ref={setMap}
+          whenReady={() => {
+            console.log("Map is fully ready!");
+            
+          }}
+
+          
+          
+        > <CustomZoomControl /> 
+          
+          
 
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -226,11 +244,26 @@ export default function Map({ children, station_data, storm_data, source_type, s
                   <></>
                 )
               }
-            </LayerGroup>
-          </LayersControl.Overlay>
-        </LayersControl>
-        {/* Calling the EditControl function here */}
-      </MapContainer>
-    </>
+              </LayerGroup>
+            </LayersControl.Overlay>
+          </LayersControl>
+
+          {<RenderSpatialFilter
+          ref={clearShapesRef} 
+          setPolyFilterCoords={(coords) => dispatch({ type: "SET_POLY_FILTER_COORDS", payload: coords })}
+          />} {/* Calling the EditControl function here */}
+        </MapContainer>
+
+        { map && (<Drawer
+            element_id="left-side"
+            classes="left"
+            source_type={source_type}
+            setStationPoints={setStationPoints}
+            state={state}
+            dispatch={dispatch}
+            map={map}
+          />)}
+      </div>
+    </div>
   )
 }

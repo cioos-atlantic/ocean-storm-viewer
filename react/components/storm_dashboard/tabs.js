@@ -145,22 +145,22 @@ export default function BasicTabs({ stormName, stormData, stormSummaryText, vari
 
 
             {
-              Object.entries(stormData)
-                .filter(([key]) => key !== "direction") // Exclude "Direction"
-                .map(([key, value], index) => {
-
-                  return (
-                    <Tab
-                      key={key}
-                      label={key}
-                      sx={{
-                        fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
-                      }}
-                      {...a11yProps(index + 4)}
-                      disabled={!variablePresence?.[key]} />
-                  )
-
-                })
+            Object.entries(stormData)
+            .filter(([key]) => (key !== "direction" && key !== "seaHeight")) // Exclude "Direction" (also storm height until it gets fixed)
+            .map(([key, value], index) => {
+              
+              return(
+                <Tab 
+                key={key}
+                label={key}
+                sx={{
+                    fontSize: { xs: '12px', sm: '14px', md: '14px', lg: '14px' }
+                  }}
+               {...a11yProps(index + 4)}
+                disabled={!variablePresence?.[key]}/>
+              )
+              
+            })
             }
           </TabList>
         </Box>
@@ -179,10 +179,10 @@ export default function BasicTabs({ stormName, stormData, stormSummaryText, vari
             directionData={directionData}
             timeData={stormTime}
           />}
-        </CustomTabPanel>
-        {
-          Object.entries(stormData)
-            .filter(([key]) => key !== "direction") // Exclude "Direction"
+      </CustomTabPanel>
+      {
+            Object.entries(stormData)
+            .filter(([key]) => (key !== "direction"&& key !== "seaHeight")) // Exclude "Direction"
             .map(([key, value], index) => {
 
               return (

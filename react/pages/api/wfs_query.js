@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     console.log("handler", storm_name, season, source, source_type);
 
     try {
-        const result = await wfs_query(storm_name, season, source, source_type, storm_id, filters, selected_features = "")
+        const result = await wfs_query(storm_name, season, source, source_type, storm_id, filters, selected_features = "", storm_line_filter= false)
         res.status(200).json({ "storm_name": storm_name, "season": season, "source": source, "source_type": source_type, ...result })
     } catch (err) {
         res.status(500).json({ error: 'failed to load data: ' + err })
@@ -91,7 +91,7 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
             ib_filters.push("SID='" + storm_id + "'");
         }
 
-        if (Object.keys(filters).length > 0) {
+        if (storm_line_filter) {
             ib_source = "ibtracs_historical_storm_lines&sortby=SID ASC, ISO_TIME_START ASC"
             const filter_string = Object.entries(filters)
                 .map(([key, value]) => {
@@ -175,9 +175,9 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
 
         console.debug("Getting ERDDAP data");
         // cioos-atlantic:erddap_cache
-        wfs_sources.push("erddap_cache_active");
+        wfs_sources.push("erddap_active_cache");
 
-        let erddap_source = "erddap_cache_active&sortby=station,max_time"
+        let erddap_source = "erddap_active_cache&sortby=station_id,max_time"
         const erddap_features_url = build_wfs_query(workspace + erddap_source, [], source_type)
 
         console.debug("ERDDAP URL: ", erddap_features_url)
@@ -196,9 +196,9 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
 
         console.debug("Getting ERDDAP data");
         // cioos-atlantic:erddap_cache
-        wfs_sources.push("erddap_cache");
+        wfs_sources.push("erddap_historical_cache");
 
-        let erddap_source = "erddap_cache&sortby=station,max_time"
+        let erddap_source = "erddap_historical_cache&sortby=station_id,max_time"
         const erddap_features_url = build_wfs_query(workspace + erddap_source, erddap_filters, source_type)
 
         console.debug("ERDDAP URL: ", erddap_features_url)

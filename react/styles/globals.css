@@ -12,7 +12,6 @@ body {
 header {
   width: 100%;
   position: absolute;
-  position: absolute;
   top: 0;
   background-color: #e55162; /* Light red background for header */
   z-index: 9000; /* High z-index to ensure header stays on top */
@@ -104,10 +103,7 @@ header nav ul li a {
   
 }
 
-header nav ul li a:hover {
-  text-decoration: underline; /* Underline on hover for clarity */
-  
-}
+
 
 header nav ul li a::after {
   content: " /"; /* Add slash separator between links */
@@ -130,7 +126,6 @@ footer {
   
 }
 
-/* Map Container Styling */
 /* Map Container Styling */
 .map_container {
   height: 100vh; /* Full viewport height for map */
@@ -194,11 +189,8 @@ footer {
 }
 
 /* Info Pane Styling */
-/* Info Pane Styling */
 .info_pane {
   position: absolute;
-   /*top: 0;*/
-   /* margin-top: 10%; Add space from the top */
    /*top: 0;*/
    /* margin-top: 10%; Add space from the top */
   right: 0;
@@ -222,10 +214,7 @@ footer {
   border-radius: 4px; /* Rounded corners */
 }
 
-#storm_timeline ul li ul li:hover {
-  background-color: #DDD; /* Highlight background on hover */
-  
-}
+
 
 #storm_timeline ul li.selected {
   font-weight: bold; /* Bold text for selected item */
@@ -258,7 +247,6 @@ footer {
 }
 
 /* Station Dashboard Styling */
-/* Station Dashboard Styling */
 .station_dashboard {
   background: white; /* White background for clarity */
   color: black; /* Black text for readability */
@@ -281,8 +269,6 @@ footer {
 
 }
 .dashboards {
-  /*border-top: 3px solid #e55162;   */
-
   position: fixed; /* Positioned at the bottom */
   /*bottom: 50px;  Above the footer */
   z-index: 5000; /* High z-index to overlay the map */
@@ -325,13 +311,10 @@ footer {
 
 .station_dashboard .dash-header {
   /*border: 1px solid darkgoldenrod;   */
-  /*border: 1px solid darkgoldenrod;   */
   background-color: #eee;
   padding:0.5rem;
 }
 .combined_dashboard_small .dash-header {
-  /*border: 1px solid darkgoldenrod;   */
-  /*border: 1px solid darkgoldenrod;   */
   background-color: #eee;
   padding:0.5rem;
 }
@@ -375,14 +358,8 @@ footer {
   overflow-y: auto; /* Enable scrolling within the body*/
   padding: 1rem;
   flex: 1; /* Allow the body to take up available space*/
-  overflow-y: auto; /* Enable scrolling within the body*/
-  padding: 1rem;
-  flex: 1; /* Allow the body to take up available space*/
 }
 .combined_dashboard_small .dash-body {
-  overflow-y: auto; /* Enable scrolling within the body*/
-  padding: 1rem;
-  flex: 1; /* Allow the body to take up available space*/
   overflow-y: auto; /* Enable scrolling within the body*/
   padding: 1rem;
   flex: 1; /* Allow the body to take up available space*/
@@ -407,16 +384,7 @@ footer {
   width: 100%;
   padding-bottom : 5px;
 }
-.header-drawer-small-screens:hover {
-  background-color: #e55162; /* Light grey background on hover */
-  border-bottom: 2px solid #b9acac; /* Dark grey bottom border on hover */
-  border-radius: 4px;       /* Optional: adds rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  font-weight: bold;
-  padding-bottom : 3px;
-  color:#f5f5f5;
 
-}
 
 .station_dashboard_small_screen_section{
   margin-bottom : "1.5rem";
@@ -446,33 +414,25 @@ footer {
   padding: 10px;
 }
 .historical_storm_button{
-  text-decoration: none;
+  text-decoration: none !important;
   display: block;        /* Ensures it takes full width for easier clicks */
   transition: color 0.3s ease; /* Smooth transition for hover effects */
-  border-bottom: 1px solid #e55162; /* Light grey border to outline the block */
-  border-radius: 4px;       /* Optional: adds rounded corners */
+  border-bottom: 1px solid #e55162 !important; /* Light grey border to outline the block */
+  border-radius: 4px !important;       /* Optional: adds rounded corners */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  text-align: center;
+  text-align: center !important;
   width: 100%;
   padding-bottom : 5px;
+  font-weight: bold !important;
 }
-.historical_storm_button:hover {
-  background-color: #e55162; /* Light grey background on hover */
-  border-bottom: 2px solid #b9acac; /* Dark grey bottom border on hover */
-  border-radius: 4px;       /* Optional: adds rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  font-weight: bold;
-  padding-bottom : 3px;
-  color:#f5f5f5;
 
-}
 .historical_storm_search_result{
   text-align: left;
   padding: 12px;
   background-color: white;
   height: 300px;
   border-radius: 4px;
-  max-height: 480;
+  max-height: 480PX;
   width: 100%;
   overflow-y: auto;
   position: relative;
@@ -497,9 +457,12 @@ footer {
 
 
 .view-filters-content{
+  
   background-color: white;
   padding: 8px;
   margin-top: 3px;
+  overflow-y: auto;
+  max-height: 130px;
   
 }
 
@@ -578,18 +541,13 @@ footer {
   padding : 5px;
 }
 .search-output{
-  font-size: 12px;
+  font-size: 12px !important;
   cursor: pointer;
   text-align: center;
   padding: 1.5px;
 
 }
-.search-output:hover{
-  padding: 1.8px;
-  font-size: 13px;
-  font-weight: 550;
 
-}
 
 
 .search-output-space{
@@ -600,7 +558,7 @@ footer {
   border-radius: 4px;
   border: 1px solid white;
   overflow: auto;
-  max-height: 500;
+  max-height: 500px;
   width: 100%;
   position: relative;
 
@@ -613,9 +571,10 @@ footer {
   border-radius: 4px;
   border: 1px solid white;
   overflow: auto;
-  max-height: 500;
   width: 100%;
   position: relative;
+  max-height: 200px;
+  font-size: 12px;
 
 }
 
@@ -631,10 +590,7 @@ footer {
 
 }
 
-.search-icon-small-screen:hover{
-  background-color: #e55162;
-  color: white;
-}
+
 
 .search-render{
   top: 175px;
@@ -676,10 +632,7 @@ footer {
 
 }
 
-.close-search-icon-small-screen:hover{
-  background-color: transparent;
-  color: #e55162;
-}
+
 
 .small-screen-form-search-button{
   outline: solid 2px #e55162;
@@ -699,18 +652,15 @@ footer {
 }
 
 .cancel-search{
-  text-align : center;
-  align-content : center;
+  text-align : center !important;
+  align-content : center !important;
   width: 100%;
-  background-color: #e55162;
-  color: white;
-  font-weight: bold;
+  background-color: #e55162 !important;
+  color: white !important;
+  font-weight: bold !important;
 
 }
-.cancel-search:hover{
-  background-color: white;
-  color: #e55162;
-}
+
 
 #filter-icon{
   z-index: 6999;
@@ -723,16 +673,13 @@ footer {
 
 }
 
-#filter-icon:hover{
-  background-color: #e55162;
-  color: white;
-}
+
 #cancel-filter-icon{
-  background-color: white;
+  background-color: white ;
   color: #e55162;
-  font-size: 20px;
+  font-size: 20px !important;
   min-width: 0px;
-  font-weight: bold;
+  font-weight: bold !important;
   width: 35px;
 
 }
@@ -742,7 +689,6 @@ footer {
 .filter-icons-list{
   z-index: 6999;
   top: 65px;
-  right: 25%;
   position: absolute;
   justify-content: center;
   align-items: center;
@@ -752,37 +698,34 @@ footer {
 
 
 .filter-icons{
-  background-color: white;
-  border-radius: 15px;
-  color: #e55162;
+  background-color: white !important;
+  border-radius: 15px !important;
+  color: #e55162 !important;
   height: 35px;
-  font-size: 12px;
+  font-size: 12px !important;
   min-width: 0px;
-  padding: 6px;
-  border: 1px solid #e55162;
-  text-transform: none;
+  padding: 6px !important;
+  border: 1px solid #e55162 !important;
+  text-transform: none !important;
 }
 
-.filter-icons:hover{
-  background-color: #e55162;
-  color: white;
-}
 
-.filter-badge{
+
+button.filter-badge{
   
-  border: 1px solid #e55162;
+  border: 1px solid #e55162 !important;
   
   margin: 0.8px;
   cursor: pointer;
-  align-items: center;
-  justify-content: center;
+  align-items: center !important;
+  justify-content: center !important;
   position: relative;
   max-width: 100%;
-  font-size: 0.8125rem;
-  height: 32px;
-  border-radius: 16px;
+  font-size: 12px !important;
+  /*height: 32px !important; */
+  border-radius: 16px !important;
   transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  text-transform: none;
+  text-transform: none !important;
 }
 
 
@@ -803,7 +746,6 @@ footer {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 9024;
-  border-radius: 8px;
   padding: 0px;
   
 }
@@ -819,54 +761,46 @@ footer {
   cursor: pointer;
 }
 
-.filter-dropdown-menu li:hover {
-  background-color: #f2f2f2;
-}
+
 
 .shortcut-button{
-  background-color: white;
-  border: 1px solid #e55162;
-  color: #e55162;
+  background-color: white !important;
+  border: 1px solid #e55162 !important;
+  color: #e55162 !important;
   margin: 0.8px;
   cursor: pointer;
-  align-items: center;
-  justify-content: center;
+  align-items: center !important;
+  justify-content: center !important;
   position: relative;
   display: inline-flex;
   max-width: 100%;
-  font-size: 0.8125rem;
+  font-size: 0.8125rem !important;
   height: 32px;
-  border-radius: 16px;
+  border-radius: 16px !important;
   transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  text-transform: none;
+  text-transform: none !important;
 }
 
-.shortcut-button:hover{
-  background-color: #e55162;
-  color: white;
-}
+
 
 .filter-submit-button{
-  background-color: white;
-  border: 1px solid #e55162;
-  color: #e55162;
-  margin: 0.8px;
-  padding: 10px;
-  text-align: center;
+  background-color: white !important;
+  border: 2px solid #e55162 !important;
+  color: #e55162 !important;
+  margin: 0.5px;
+  padding: 9px !important;
+  text-align: center !important;
   cursor: pointer;
   position: relative;
   max-width: 60%;
-  font-size: 0.8125rem;
-  height: 32px;
-  border-radius: 16px;
+  font-size: 12px !important;
+  height: 32px !important;
+  border-radius: 16px !important;
   transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  text-transform: none;
+  text-transform: none !important;
 }
 
-.filter-submit-button:hover{
-  background-color: #e55162;
-  color: white;
-}
+
 
 
 .filter-time-input {
@@ -886,8 +820,8 @@ footer {
 
 
 .date-card-content{
-  padding: 9px;
-  text-align: center;
+  padding: 9px !important;
+  text-align: center !important;
   overflow: hidden;
 }
 
@@ -896,15 +830,13 @@ footer {
   position: absolute;
   padding: 6px;
   height: auto;
-  min-height: 100px;
   border: 2px solid #e55162;
   background-color: #f4f4f4;
   border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  /*display: flex;
+  flex-direction: column;*/
+  
+  
 }
 
 
@@ -928,22 +860,18 @@ footer {
 }
 
 
-.spatial-filter-icon:hover{
-  background-color: #e55162;
-  color: white;
-}
 
 .leaflet-control-container .leaflet-draw-section {
-  z-index: 9999;
+  z-index: 1000;
 }
 
 /* Adjust the width of the Draw Control toolbar */
 
 .filters-speed-dial{
-  color: #e55162;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
+  color: #e55162 !important;
+  text-decoration: none !important;
+  display: flex !important;
+  align-items: center !important;
   width: 40px;
   height: 40px;
   margin: 8px;
@@ -955,9 +883,7 @@ footer {
               0px 6px 10px 0px rgba(0, 0, 0, 0.14), 
               0px 1px 18px 0px rgba(0, 0, 0, 0.12);}
 
-.filters-speed-dial:hover{
-    color: white;
-    background-color: #e55162;}
+
 .chart-render{
   width: 100%;
   max-height: 300px;
@@ -982,5 +908,129 @@ footer {
   max-height: 280px;
   width: 100%;
   position: relative;
+
+}
+
+.info-guide{
+  z-index: 3000;
+  position: fixed !important;
+  top: 68px !important;
+  right: 9px !important;
+  text-align: center !important;
+  height: 35px !important;
+  width: 35px !important;
+  padding: 0px !important;
+  font-size: 0px !important;
+  color:  #1E90FF !important;
+
+}
+
+.map-touch-blocker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 260px;   /* Same as drawer width */
+  height: 100%;
+  z-index: 9999;  /* Higher than the map */
+  background: transparent; /* invisible but still intercepts touches */
+}
+
+@media (hover: hover) and (pointer: fine) {
+  header nav ul li a:hover {
+  text-decoration: underline; /* Underline on hover for clarity */
+  
+  }
+  .filters-speed-dial:hover{
+    color: white !important;
+    background-color: #e55162 !important; }
+  
+  #storm_timeline ul li ul li:hover {
+  background-color: #DDD; /* Highlight background on hover */
+  
+}
+
+  .header-drawer-small-screens:hover {
+    background-color: #e55162; /* Light grey background on hover */
+    border-bottom: 2px solid #b9acac; /* Dark grey bottom border on hover */
+    border-radius: 4px;       /* Optional: adds rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    font-weight: bold;
+    padding-bottom : 3px;
+    color:#f5f5f5;
+
+  }
+
+  .historical_storm_button:hover {
+    background-color: #e55162; /* Light grey background on hover */
+    border-bottom: 2px solid #b9acac; /* Dark grey bottom border on hover */
+    border-radius: 4px;       /* Optional: adds rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    font-weight: bold;
+    padding-bottom : 3px;
+    color:#f5f5f5;
+
+  }
+  .search-output:hover{
+    padding: 1.8px;
+    font-size: 13px;
+    font-weight: 550;
+
+  }
+  .search-icon-small-screen:hover{
+  background-color: #e55162;
+  color: white;
+  }
+  .close-search-icon-small-screen:hover{
+  background-color: transparent;
+  color: #e55162;
+  }
+  #filter-icon:hover{
+  background-color: #e55162;
+  color: white;
+  }
+  .cancel-search:hover{
+  background-color: white !important;
+  color: #e55162 !important;
+  }
+
+  .filter-icons:hover{
+  background-color: #e55162 !important;
+  color: white !important;
+  }
+
+  .filter-dropdown-menu li:hover {
+  background-color: #f2f2f2;
+  }
+
+
+  .shortcut-button:hover{
+  background-color: #e55162 !important;
+  color: white !important;
+  }
+
+  .filter-submit-button:hover{
+  background-color: #e55162 !important;
+  color: white !important;
+  }
+  .spatial-filter-icon:hover{
+  background-color: #e55162;
+  color: white;
+  }
+  /* 🔎 Focus styles for keyboard users */
+  .filters-speed-dial:focus-visible,
+  .header-drawer-small-screens:focus-visible,
+  .historical_storm_button:focus-visible,
+  .search-icon-small-screen:focus-visible,
+  .close-search-icon-small-screen:focus-visible,
+  #filter-icon:focus-visible,
+  .cancel-search:focus-visible,
+  .filter-icons:focus-visible,
+  .shortcut-button:focus-visible,
+  .filter-submit-button:focus-visible,
+  .spatial-filter-icon:focus-visible {
+    outline: 2px solid #e55162;
+    outline-offset: 2px;
+  }
+
 
 }

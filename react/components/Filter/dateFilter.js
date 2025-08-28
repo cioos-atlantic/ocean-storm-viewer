@@ -68,7 +68,7 @@ const reset = { label: 'Reset', getValue: () => [null, null] };
 
 
 
-export function RenderDateFilter({ state, dispatch }) {
+export function RenderDateFilter({state, dispatch, setShowFilterOptions}){
   //const [showDateSelection, setShowDateSelection] = useState(false); 
   let hasValidDates = false;
 
@@ -88,8 +88,13 @@ export function RenderDateFilter({ state, dispatch }) {
     },
   };
 
-  function handleIconClick() {
-    dispatch({ type: "TOGGLE_DATE_SELECTION" });
+  function handleIconClick(){
+    dispatch({ type: "TOGGLE_DATE_SELECTION"});
+    dispatch({ type: "SET_CAT_SELECTION", payload: false});
+    setShowFilterOptions(prev => ({
+      ...prev,
+      stormName: false, // stormName must be defined here
+    }));
   }
 
 
@@ -183,8 +188,8 @@ export function DateDisplay({ setStartDate, setEndDate, setShowDateSelection, st
         position: 'absolute',
         top: { xs: '6px', md: '100%', },
         right: { xs: '100%', md: '0px', },
-        width: { xs: '220px', md: '320px', },
-        height: { xs: '200px', md: 'inherit', },
+        width: { xs: '270px', md: '320px', },
+        height: { xs: '250px', md: 'inherit', },
         overflow: { xs: 'scroll', md: 'hidden', },
         padding: '6px',
         backgroundColor: "#f4f4f4",

@@ -26,7 +26,6 @@ export default function StationDashboard({ state, dispatch, station_descriptions
   const isExtraSmall = useMediaQuery(theme.breakpoints.down('sm'));
   if (!stationData) return null;
 
-  const stationName = stationData[0];
   const stationValues = stationData[1];
   // Determine if active or historic
   const isHistorical = source_type == "historical" ? true : false
@@ -34,10 +33,17 @@ export default function StationDashboard({ state, dispatch, station_descriptions
 
   if (!dataText) return null;
 
-  const stationDescription = getMatchedStation(station_descriptions, stationName);
-  const displayName = stationDescription.title || "Unknown Station";
-  const institution = stationDescription.institution || "Unknown Institution";
-  const institutionLink = stationDescription.institution_link || "#";
+  // const stationDescription = getMatchedStation(station_descriptions, stationName);
+  // const displayName = stationDescription.title || "Unknown Station";
+  //const institution = stationDescription.institution || "Unknown Institution";
+   //const institutionLink = stationDescription.institution_link || "#";\
+
+   console.log(stationValues.properties)
+
+  const displayName = stationValues?.properties?.dataset_title || "Unknown Station";
+  const stationName = stationValues?.properties?.station
+  const institution = stationValues?.properties?.institution || "Unknown Institution";
+  const institutionLink = stationValues?.properties?.institutionLink || "#";  
 
   const excludeVars = [
     "time",
@@ -93,48 +99,49 @@ export default function StationDashboard({ state, dispatch, station_descriptions
   return (
     isExtraSmall ? (
       <Box
-        key="01-station-dashboard"
-        className={`station_dashboard`}
+      key="01-station-dashboard"
+      className={`station_dashboard`}
+      sx={{
+        display: 'flex',
+      }}
+    >
+      <Box
+        className="dash-header"
         sx={{
-          display: 'flex',
+          fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
+          padding: "10px",
+          
         }}
       >
-        <Box
-          className="dash-header"
-          sx={{
-            fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
-            padding: "10px",
-
+        <button
+          className="close"
+          onClick={() => {
+            dispatch({ type: "CLOSE_STATION_DASHBOARD"});
+            dispatch({ type: "TOGGLE_STATION_DASH", payload: false});
           }}
+          title="Close"
+          aria-label="Close"
         >
-          <button
-            className="close"
-            onClick={() => {
-              dispatch({ type: "CLOSE_STATION_DASHBOARD" });
-              dispatch({ type: "TOGGLE_STATION_DASH", payload: false });
-            }}
-            title="Close"
-            aria-label="Close"
-          >
-            <FaWindowClose />
-          </button>
-          <div>
-            <strong key={displayName}>{displayName}</strong>
-          </div>
-          <div>
-            <a href={institutionLink} target="_blank" rel="noopener noreferrer">
-              {institution}
-            </a>
-          </div>
-        </Box>
-        <Box
-          className="dash-body"
-          sx={{
-            fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
-
-          }}
-        >
-
+          <FaWindowClose />
+        </button>
+        <div>
+          <strong key={displayName}>{displayName}</strong>
+        </div>
+        <div>
+          <p key={stationName}>{stationName}</p>
+          <a href={institutionLink} target="_blank" rel="noopener noreferrer">
+            {institution}
+          </a>
+        </div>
+      </Box>
+      <Box
+        className="dash-body"
+        sx={{
+          fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
+          
+        }}
+      >
+        
           <StationDataLayout
             stationName={stationName}
             stationData={stationValues?.properties?.station_data}
@@ -148,50 +155,50 @@ export default function StationDashboard({ state, dispatch, station_descriptions
       </Box>
     ) : (
       <Box
-        key="01-station-dashboard"
-        className={`station_dashboard`}
+      key="01-station-dashboard"
+      className={`station_dashboard`}
+      sx={{display:  'flex',
+        //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
+        
+        
+      }}
+    >
+      <Box
+        className="dash-header"
         sx={{
-          display: 'flex',
-          //bottom: { xs: "20px", sm: "30px", md: "35px", lg: "50px", xl: "50px" },
-
-
+          fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
+          padding: "10px",
         }}
       >
-        <Box
-          className="dash-header"
-          sx={{
-            fontSize: { xs: "14px", sm: "16px", md: "18px", lg: "18px" },
-            padding: "10px",
+        <button
+          className="close"
+          onClick={() => {
+            dispatch({ type: "CLOSE_STATION_DASHBOARD"});
+            dispatch({ type: "TOGGLE_STATION_DASH", payload: false});
+            //setIsStationDashOpen(false);
           }}
+          title="Close"
+          aria-label="Close"
         >
-          <button
-            className="close"
-            onClick={() => {
-              dispatch({ type: "CLOSE_STATION_DASHBOARD" });
-              dispatch({ type: "TOGGLE_STATION_DASH", payload: false });
-              //setIsStationDashOpen(false);
-            }}
-            title="Close"
-            aria-label="Close"
-          >
-            <FaWindowClose />
-          </button>
-          <div>
-            <strong key={displayName}>{displayName}</strong>
-          </div>
-          <div>
-            <a href={institutionLink} target="_blank" rel="noopener noreferrer">
-              {institution}
-            </a>
-          </div>
-        </Box>
-        <Box
-          className="dash-body"
-          sx={{
-            fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
-
-          }}
-        >
+          <FaWindowClose />
+        </button>
+        <div>
+          <strong key={displayName}>{displayName}</strong>
+        </div>
+        <div>
+          <p key={stationName}>{stationName}</p>
+          <a href={institutionLink} target="_blank" rel="noopener noreferrer">
+            {institution}
+          </a>
+        </div>
+      </Box>
+      <Box
+        className="dash-body"
+        sx={{
+          fontSize: { xs: "12px", sm: "14px", md: "16px", lg: "16px" },
+           
+        }}
+      >
           <BasicTabs
             stationName={stationName}
             stationData={stationValues?.properties?.station_data}
