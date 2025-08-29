@@ -317,18 +317,12 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
               onClick={handleClearAllFilters}>
               X
             </Button>
-           { <IconButton
-                sx={{ color:  ' #1E90FF'}}
-                onClick={() => {
-                  dispatch({ type: "SET_INFO_GUIDE", payload: true});
-                }}
-                ><InfoIcon />
-              </IconButton>}
+          
           </Stack>
         
         </>
       )
-      };
+      }
     </>
   )
 }

@@ -142,9 +142,15 @@ footer {
 }
 
 /* Leaflet Control Position Adjustments */
+.leaflet-container{
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  
+}
 
 .leaflet-control-container .leaflet-top {
-  top: 70px; /* Adjust top to avoid overlapping header */
+  top: 95px; /* Adjust top to avoid overlapping header */
 }
 
 .leaflet-control-container .leaflet-bottom {
@@ -705,7 +711,7 @@ footer {
 
 
 .filter-icons-list{
-  z-index: 6999;
+  z-index: 2999;
   top: 65px;
   position: absolute;
   justify-content: center;
