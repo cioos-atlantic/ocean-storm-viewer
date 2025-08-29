@@ -90,6 +90,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
 
   async function handleFilterSubmit() {
     //setDrawerButtonClicked('');
+    dispatch({ type: "SHOW_FILTER_SELECTED", payload: false });
     dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: '' });
     dispatch({ type: "SET_CAT_SELECTION", payload: false});
     dispatch({ type: "SET_DATE_SELECTION", payload: false});

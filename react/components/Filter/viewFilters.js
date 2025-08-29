@@ -5,7 +5,7 @@ export function FiltersSelected({startDate, endDate, startCategory, endCategory,
   console.log(filterStormName);
   const isFiltered = startDate || endDate || startCategory || endCategory || polyFilterCoords || filterStormName.length;
   console.log(filterStormName)
-  return(
+  return( 
     <Box className='view-filter-space'>
       <Stack>
         <Box className='historical_page_drawer_subheader'
