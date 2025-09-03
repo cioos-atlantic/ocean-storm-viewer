@@ -50,7 +50,7 @@ ERDDAP_CACHE_ACTIVE_SCHEMA = ../jupyter/postgis_schemas/erddap_cache_active_sche
 
 To run the ERDDAP cache make sure the conda environment is set
 
-> conda activate hurricane
+> conda activate storm-viewer
 
 Active storm data
 

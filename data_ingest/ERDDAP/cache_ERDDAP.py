@@ -33,14 +33,6 @@ stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(log_formatter)
 log.addHandler(stream_handler)
 
-config = ConfigParser()
-config.read("./config/config.ini")
-
-server = config.get("ERDDAP", "server")
-standard_names = config.get("ERDDAP", "standard_names").splitlines()
-ignore_stations = config.get("ERDDAP", "ignore_stations").splitlines()
-e = ERDDAP(server=server)
-
 # Find env file
 load_dotenv(find_dotenv())
 
@@ -56,9 +48,6 @@ erddap_cache_active_schema = os.getenv('ERDDAP_CACHE_ACTIVE_SCHEMA')
 pg_ibtracs_historical_table = os.getenv('PG_IBTRACS_HISTORICAL_TABLE')
 
 docker_user = {'docker'}
-
-active_data_period = config.getint('erddap_cache', 'active_data_period')
-post_storm_period = config.getint('erddap_cache', 'post_storm_period')
 
 engine = create_engine(f"postgresql+psycopg2://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}")
 
@@ -109,12 +98,14 @@ def cache_erddap_data(storm_id, df, destination_table, pg_engine, table_schema, 
         log.info("Cached " + storm_id)
     return
 
-def find_station_info(dataset, station, metadata, destination_table, pg_engine, add_if_not_exists=True):
+def find_station_info(server, dataset, station, metadata, destination_table, pg_engine, add_if_not_exists=True):
     # populate table
+    print(server)
     
     institution = erddap_meta(metadata=metadata, attribute_name="institution")["value"].replace("'", "''")
     institution_link = erddap_meta(metadata=metadata, attribute_name="infoUrl")["value"].replace("'", "''")
     dataset_title = erddap_meta(metadata=metadata, attribute_name="title")["value"].replace("'", "''")
+    print(dataset_title)
     station_id = None
 
     with pg_engine.begin() as pg_conn: 
@@ -160,7 +151,7 @@ def erddap_meta(metadata, attribute_name, row_type="attribute", var_name="NC_GLO
     return return_value
     
 # For a given dataset find out if it has any variables of interest (via standard name)
-def match_standard_names(dataset_id):
+def match_standard_names(e, dataset_id, standard_names):
     dataset= {}
     #final_dataset_list[dataset_id]
     dataset_vars = e.get_var_by_attr(dataset_id, standard_name=lambda std_name: std_name in standard_names)
@@ -215,7 +206,7 @@ def standardize_column_names(dataset, dataset_id):
     return replace_cols
 
 # For active storms set id to ACTIVE
-def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
+def cache_station_data(e, server, dataset, dataset_id, storm_id, min_time, max_time):
     # Once variable names have been 
     e.protocol = "tabledap"
     e.dataset_id = dataset_id
@@ -273,7 +264,7 @@ def cache_station_data(dataset, dataset_id, storm_id, min_time, max_time):
             # Only one substation, don't care about editing original
             station_df = df
             # Going to be dropping columns so want to deep copy for now
-            station_id= find_station_info(dataset_id, substation,metadata,'erddap_stations', engine, True)
+            station_id= find_station_info(server, dataset_id, substation,metadata,'erddap_stations', engine, True)
             
             if multiple_substations:
                 station_df = df[df[id_col_name]==substation].copy()
@@ -410,7 +401,7 @@ def filter_value_limits(station_data):
     
 # Returns ERDDAP datasets active within a range of time that match important variables 
 # min_time and max_time are datetime objects   
-def get_erddap_datasets(min_time, max_time):
+def get_erddap_datasets(e, min_time, max_time):
     min_time = datetime.strftime(min_time,'%Y-%m-%dT%H:%M:%SZ')
     max_time = datetime.strftime(max_time,'%Y-%m-%dT%H:%M:%SZ')
     search_url = e.get_search_url(response="csv", min_time=min_time, 
@@ -447,10 +438,24 @@ def main():
     parser_historical.add_argument("--min", help="The start time of data in the storm interval. Format: YYYY", nargs='?', type=int)
     parser_historical.add_argument("--max", help="The end time of data in the storm interval. Format: YYYY", nargs='?', type=int)
     parser_historical.add_argument("--dry", help="Dry run. Will grab from ERDDAP but not commit the data to the database", action="store_true")
+    parser_historical.add_argument("--config", help="Specify the config file to use. Default: CIOOS Atlantic ERDDAP", nargs='?')
 
     parser_active = subparsers.add_parser("active")
+    parser_active.add_argument("--config", help="Specify the config file to use. Default: CIOOS Atlantic ERDDAP", nargs='?')
     
     args = parser.parse_args()
+
+    config_name = "config.ini"
+    if args.config:
+        config_name = args.config
+
+    config = ConfigParser()
+    config.read("./config/" + config_name)
+    server = config.get("ERDDAP", "server")
+    e = ERDDAP(server=server)
+
+    ignore_stations = config.get("ERDDAP", "ignore_stations").splitlines()
+    standard_names = config.get("ERDDAP", "standard_names").splitlines()
 
     if(args.subcommand == 'historical'):
         arg_storm = args.storm
@@ -466,6 +471,7 @@ def main():
             raise argparse.ArgumentTypeError("End time is before start time")
         """
         #create_table_from_schema(pg_engine=engine, table_name=pg_erddap_cache_historical_table, schema_file=erddap_cache_historical_schema)
+        post_storm_period = config.getint('erddap_cache', 'post_storm_period')
         for i, storm in storms.iterrows():
             log.info(storm)
             storm_id = str(storm['SEASON'].values[0]) + "_" + storm['NAME'].values[0]
@@ -473,7 +479,7 @@ def main():
             max_time = storm['ISO_TIME']['max']
             if(post_storm_period>0):
                 max_time += timedelta(days=post_storm_period)
-            dataset_list = get_erddap_datasets(min_time, max_time)
+            dataset_list = get_erddap_datasets(e, min_time, max_time)
             cached_data = []
             # Store in shared list to reduce calls and avoid overwriting for active cache
             for dataset_id in dataset_list:
@@ -482,9 +488,9 @@ def main():
                 # will be skipped
                 
         
-                dataset = match_standard_names(dataset_id)
+                dataset = match_standard_names(e, dataset_id, standard_names)
                 if (dataset and dataset_id not in ignore_stations):
-                    cached_data.extend(cache_station_data(dataset, dataset_id, storm_id, 
+                    cached_data.extend(cache_station_data(e, server, dataset, dataset_id, storm_id, 
                                                         min_time=datetime.strftime(min_time,'%Y-%m-%dT%H:%M:%SZ'), 
                                                         max_time=datetime.strftime(max_time,'%Y-%m-%dT%H:%M:%SZ')))
             if(cached_data and not arg_dry):
@@ -497,13 +503,14 @@ def main():
     else:
         storm_id = "ACTIVE"
         max_time = datetime.now(timezone.utc)
+        active_data_period = config.getint('erddap_cache', 'active_data_period')
         # Round maxtime up to nearest 12 hour interval
         if(max_time.hour/12 >= 1):
             max_time = datetime.combine(max_time.date(), datetime.min.time()) + timedelta(days=1)
         else:
             max_time = datetime.combine(max_time.date(), datetime.min.time()) + timedelta(hours=12)
         min_time = max_time - timedelta(days=active_data_period)
-        dataset_list = get_erddap_datasets(min_time, max_time)
+        dataset_list = get_erddap_datasets(e, min_time, max_time)
         create_table_from_schema(pg_engine=engine, table_name=pg_erddap_cache_active_table, schema_file=erddap_cache_active_schema)
         # Store in shared list to reduce calls and avoid overwriting for active cache
         cached_data = []
@@ -511,9 +518,9 @@ def main():
             # Interrogate each dataset for the list of variable names using the list 
             # of standard names above. If a dataset does not have any of those variables it
             # will be skipped
-            dataset = match_standard_names(dataset_id)
+            dataset = match_standard_names(e, dataset_id, standard_names)
             if (dataset and dataset_id not in ignore_stations):
-                cached_data.extend(cache_station_data(dataset, dataset_id, storm_id, 
+                cached_data.extend(cache_station_data(e, server, dataset, dataset_id, storm_id, 
                                                     min_time=datetime.strftime(min_time,'%Y-%m-%dT%H:%M:%SZ'), 
                                                     max_time=datetime.strftime(max_time,'%Y-%m-%dT%H:%M:%SZ')))
         if(cached_data):
