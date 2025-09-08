@@ -211,7 +211,7 @@ def standardize_column_names(dataset, dataset_id):
     return replace_cols
 
 # For active storms set id to ACTIVE
-def cache_station_data(e, server, dataset, dataset_id, storm_id, min_time, max_time, time_buffer=0):
+def cache_station_data(e, server, dataset, dataset_id, storm_id, min_time, max_time, bbox, time_buffer=0):
     # Once variable names have been 
     e.protocol = "tabledap"
     e.dataset_id = dataset_id
@@ -224,7 +224,11 @@ def cache_station_data(e, server, dataset, dataset_id, storm_id, min_time, max_t
 
     e.constraints = {
         "time>=": min_time,
-        "time<": max_time
+        "time<": max_time,
+        "latitude<=": bbox['max_lat'],
+        "latitude>=": bbox['min_lat'],
+        "longitude<=": bbox['max_lon'],
+        "longitude>=": bbox['min_lon']
     }
     cached_entries = []
 
@@ -408,11 +412,12 @@ def filter_value_limits(station_data):
     
 # Returns ERDDAP datasets active within a range of time that match important variables 
 # min_time and max_time are datetime objects   
-def get_erddap_datasets(e, min_time, max_time):
+def get_erddap_datasets(e, min_time, max_time, bbox):
     min_time = datetime.strftime(min_time,'%Y-%m-%dT%H:%M:%SZ')
     max_time = datetime.strftime(max_time,'%Y-%m-%dT%H:%M:%SZ')
-    search_url = e.get_search_url(response="csv", min_time=min_time, 
-                            max_time=max_time)
+    search_url = e.get_search_url(response="csv", min_time=min_time, max_time=max_time, 
+                                    max_lat=bbox['max_lat'], min_lat=bbox['min_lat'],
+                                    max_lon=bbox['max_lon'], min_lon=bbox['min_lon'])
     search = pd.read_csv(search_url)
     dataset_list = search["Dataset ID"].values 
     return dataset_list
@@ -469,6 +474,13 @@ def main():
     standard_names = config.get("ERDDAP", "standard_names").splitlines()
     time_buffer = config.getint("ERDDAP", "time_buffer")
 
+    bbox = {
+        'max_lat':config.getint("ERDDAP", "max_lat"),
+        'min_lat':config.getint("ERDDAP", "min_lat"),
+        'max_lon':config.getint("ERDDAP", "max_lon"),
+        'min_lon':config.getint("ERDDAP", "min_lon")
+    }
+
     if(args.subcommand == 'historical'):
         arg_storm = args.storm
         arg_year_min = args.min
@@ -491,7 +503,7 @@ def main():
             max_time = storm['ISO_TIME']['max']
             if(post_storm_period>0):
                 max_time += timedelta(days=post_storm_period)
-            dataset_list = get_erddap_datasets(e, min_time, max_time)
+            dataset_list = get_erddap_datasets(e, min_time, max_time, bbox)
             cached_data = []
             # Store in shared list to reduce calls and avoid overwriting for active cache
             for dataset_id in dataset_list:
@@ -502,7 +514,8 @@ def main():
                 if (dataset and dataset_id not in ignore_stations):
                     cached_data.extend(cache_station_data(e, server, dataset, dataset_id, storm_id, 
                                                         min_time=datetime.strftime(min_time,'%Y-%m-%dT%H:%M:%SZ'), 
-                                                        max_time=datetime.strftime(max_time,'%Y-%m-%dT%H:%M:%SZ')))
+                                                        max_time=datetime.strftime(max_time,'%Y-%m-%dT%H:%M:%SZ'), 
+                                                        bbox=bbox, time_buffer=time_buffer))
             if(cached_data and not arg_dry):
                     log.info('Caching historical storm...')
                     cache_erddap_data(storm_id = storm_id, server=server, df=pd.DataFrame(cached_data),destination_table=pg_erddap_cache_historical_table,
@@ -520,7 +533,7 @@ def main():
         else:
             max_time = datetime.combine(max_time.date(), datetime.min.time()) + timedelta(hours=12)
         min_time = max_time - timedelta(days=active_data_period)
-        dataset_list = get_erddap_datasets(e, min_time, max_time)
+        dataset_list = get_erddap_datasets(e, min_time, max_time, bbox)
         create_table_from_schema(pg_engine=engine, table_name=pg_erddap_cache_active_table, schema_file=erddap_cache_active_schema)
         # Store in shared list to reduce calls and avoid overwriting for active cache
         cached_data = []
@@ -532,7 +545,8 @@ def main():
             if (dataset and dataset_id not in ignore_stations):
                 cached_data.extend(cache_station_data(e, server, dataset, dataset_id, storm_id, 
                                                     min_time=datetime.strftime(min_time,'%Y-%m-%dT%H:%M:%SZ'), 
-                                                    max_time=datetime.strftime(max_time,'%Y-%m-%dT%H:%M:%SZ')))
+                                                    max_time=datetime.strftime(max_time,'%Y-%m-%dT%H:%M:%SZ'), 
+                                                    bbox=bbox, time_buffer=time_buffer))
         if(cached_data):
                 log.info("Caching active storm...")
                 cache_erddap_data(storm_id=storm_id, server=server, df=pd.DataFrame(cached_data),destination_table=pg_erddap_cache_active_table,
