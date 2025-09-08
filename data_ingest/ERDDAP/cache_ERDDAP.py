@@ -18,6 +18,7 @@ import json
 import numpy as np
 from datetime import datetime, timedelta, timezone
 import re
+import time
 
 log = logging.getLogger('logs/caching.log')
 log.setLevel(logging.INFO)
@@ -65,18 +66,23 @@ unit_overrides = json.load(open("./config/unit_mapping.json"))
 variable_limits = json.load(open("./config/variable_limits.json"))
 
 #process_ibtracs(df = , destination_table=pg_ibtracs_active_table, pg_engine=engine, table_schema=erddap_cache_schema)
-def cache_erddap_data(storm_id, df, destination_table, pg_engine, table_schema, replace=False):
+def cache_erddap_data(storm_id, server, df, destination_table, pg_engine, table_schema, replace=False):
     # populate table
     log.info("Populating Table...")
 
+    station_table = "erddap_stations"
     with pg_engine.begin() as pg_conn: 
-        
         if(storm_id):
-            sql = f"DELETE FROM public.{destination_table} WHERE storm = '{storm_id}';"
+            sql = f"DELETE FROM public.{destination_table} WHERE storm = '{storm_id}' AND station_id IN (SELECT station_id FROM public.{station_table} WHERE source_url='{server}');"
         else:
             #Clear old storm data
-            sql = f"TRUNCATE public.{destination_table};"
+            sql = f"DELETE FROM public.{destination_table} WHERE station IN (SELECT station FROM public.{station_table} WHERE source='{server}');"
+        print(sql)
         pg_conn.execute(text(sql))
+
+    print(df[df.duplicated(subset=['station', 'min_time'], keep=False)])
+    df.drop_duplicates(subset=['station', 'min_time'], inplace=True)
+    print(df[df.duplicated(subset=['station', 'min_time'], keep=False)])
 
     result = df.to_sql(destination_table, pg_engine, chunksize=1000, method='multi', 
                        if_exists='append', index=False, schema='public')
@@ -100,24 +106,23 @@ def cache_erddap_data(storm_id, df, destination_table, pg_engine, table_schema, 
 
 def find_station_info(server, dataset, station, metadata, destination_table, pg_engine, add_if_not_exists=True):
     # populate table
-    print(server)
     
     institution = erddap_meta(metadata=metadata, attribute_name="institution")["value"].replace("'", "''")
     institution_link = erddap_meta(metadata=metadata, attribute_name="infoUrl")["value"].replace("'", "''")
     dataset_title = erddap_meta(metadata=metadata, attribute_name="title")["value"].replace("'", "''")
-    print(dataset_title)
     station_id = None
 
     with pg_engine.begin() as pg_conn: 
         sql = f"SELECT station_id FROM public.{destination_table} WHERE source_url = '{server}' AND dataset = '{dataset}' AND station = '{station}';"
-        station_id = pg_conn.execute(text(sql)).fetchone()[0]
+        station_id = pg_conn.execute(text(sql)).fetchone()
+        print(station_id)
         if not station_id and add_if_not_exists:
             log.info("Populating station table...")
             sql = f"INSERT INTO public.{destination_table} (source_url, dataset, station, institution, institution_link, dataset_title)"
             sql+= f" VALUES ('{server}', '{dataset}', '{station}', '{institution}', '{institution_link}', '{dataset_title}') RETURNING (station_id)"
-            station_id = pg_conn.execute(text(sql)).fetchone()[0]
+            station_id = pg_conn.execute(text(sql)).fetchone()
             
-    return station_id
+    return station_id[0]
 
 def create_table_from_schema(pg_engine, table_name, schema_file, pg_schema='public'):
     # Create ECCC Tables if not exist
@@ -206,7 +211,7 @@ def standardize_column_names(dataset, dataset_id):
     return replace_cols
 
 # For active storms set id to ACTIVE
-def cache_station_data(e, server, dataset, dataset_id, storm_id, min_time, max_time):
+def cache_station_data(e, server, dataset, dataset_id, storm_id, min_time, max_time, time_buffer=0):
     # Once variable names have been 
     e.protocol = "tabledap"
     e.dataset_id = dataset_id
@@ -264,6 +269,7 @@ def cache_station_data(e, server, dataset, dataset_id, storm_id, min_time, max_t
             # Only one substation, don't care about editing original
             station_df = df
             # Going to be dropping columns so want to deep copy for now
+
             station_id= find_station_info(server, dataset_id, substation,metadata,'erddap_stations', engine, True)
             
             if multiple_substations:
@@ -283,6 +289,7 @@ def cache_station_data(e, server, dataset, dataset_id, storm_id, min_time, max_t
 
             station_info = get_station_data(station_df, dataset_id, storm_id, min_time, max_time, station_id)
             cached_entries.extend(station_info)
+            time.sleep(time_buffer)
     except Exception as ex:
         log.error("HTTPStatusError", ex)
         log.error(f" - No data found for time range: {min_time} - {max_time}")
@@ -410,6 +417,10 @@ def get_erddap_datasets(e, min_time, max_time):
     dataset_list = search["Dataset ID"].values 
     return dataset_list
 
+# Checks the server the data originated from to only clear 
+def check_data_source(data):
+    return
+
 def main():
     def storm_format (arg_value, pattern=re.compile("[0-9]{4}_[A-Z].*")):
         if not pattern.match(arg_value):
@@ -456,6 +467,7 @@ def main():
 
     ignore_stations = config.get("ERDDAP", "ignore_stations").splitlines()
     standard_names = config.get("ERDDAP", "standard_names").splitlines()
+    time_buffer = config.getint("ERDDAP", "time_buffer")
 
     if(args.subcommand == 'historical'):
         arg_storm = args.storm
@@ -486,8 +498,6 @@ def main():
                 # Interrogate each dataset for the list of variable names using the list 
                 # of standard names above. If a dataset does not have any of those variables it
                 # will be skipped
-                
-        
                 dataset = match_standard_names(e, dataset_id, standard_names)
                 if (dataset and dataset_id not in ignore_stations):
                     cached_data.extend(cache_station_data(e, server, dataset, dataset_id, storm_id, 
@@ -495,7 +505,7 @@ def main():
                                                         max_time=datetime.strftime(max_time,'%Y-%m-%dT%H:%M:%SZ')))
             if(cached_data and not arg_dry):
                     log.info('Caching historical storm...')
-                    cache_erddap_data(storm_id = storm_id, df=pd.DataFrame(cached_data),destination_table=pg_erddap_cache_historical_table,
+                    cache_erddap_data(storm_id = storm_id, server=server, df=pd.DataFrame(cached_data),destination_table=pg_erddap_cache_historical_table,
                                         pg_engine=engine,table_schema=erddap_cache_historical_schema)
             elif(arg_dry):
                 log.info("Dry run")
@@ -525,7 +535,7 @@ def main():
                                                     max_time=datetime.strftime(max_time,'%Y-%m-%dT%H:%M:%SZ')))
         if(cached_data):
                 log.info("Caching active storm...")
-                cache_erddap_data(storm_id=storm_id, df=pd.DataFrame(cached_data),destination_table=pg_erddap_cache_active_table,
+                cache_erddap_data(storm_id=storm_id, server=server, df=pd.DataFrame(cached_data),destination_table=pg_erddap_cache_active_table,
                                     pg_engine=engine,table_schema=erddap_cache_active_schema,replace=True)
 
     
