@@ -1,0 +1,49 @@
+name: osv-sarracenia
+channels:
+  - conda-forge
+  - anaconda
+  - defaults
+dependencies:
+- python=3.9
+- pip
+- botocore
+- imagecodecs
+- imageio
+- imagesize
+- json5
+- jsonschema
+- matplotlib
+- matplotlib-inline
+- netifaces
+- numpy
+- pandas
+- paramiko
+- prometheus_client
+- regex 
+- scikit-learn
+- seaborn
+- SQLAlchemy
+- pytorch
+- tqdm
+- urllib3
+- watchdog
+- xarray
+
+- pip:
+    - amqp
+    - Fiona
+    - geopandas
+    - jsonpickle
+    - metpx-sr3
+    - paho-mqtt
+    - Pillow
+    - psycopg2-binary
+    - pylibmagic
+    - pyshp
+    - python-dotenv
+    - PyYAML
+    - scikit-learn-intelex
+    - scipy
+    - shapely
+
+

@@ -1,14 +1,13 @@
-data/
+
 
 react/node_modules/
 react/.next/**/*.*
 react/.next/trace
-react/package-lock.json
+react/.next/BUILD_ID
+node_modules/
 
 __pycache__/
 
-station-data/*
-!station-data/storm_list.csv
 
 venv/
 jupyter/postgis_schemas/.env
@@ -20,3 +19,6 @@ oryx-build-commands.txt
 
 **caching.log**
 .env
+.venv
+jupyter/postgis_schemas/integrate_ibtracs.log
+jupyter/postgis_schemas/sandbox.ipynb

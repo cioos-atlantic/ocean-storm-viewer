@@ -1,38 +1,57 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from './layout.module.css'
-import utilStyles from '../styles/utils.module.css'
-import Link from 'next/link'
-import HeaderNav from './header_nav'
 import FooterNav from './footer_nav'
-import Drawer from '../components/drawer'
-import StormSearch from "@/components/storm_search";
-import ActiveStormList from "@/components/active_storm_list";
-
+import { useRouter } from 'next/router';
 import dynamic from "next/dynamic";
-// import storm_list from '../data/forecasts/list.json'
+import About from "@/pages/about_page";
+import Grid from '@mui/material/Grid2';
+import { Box } from "@mui/material";
+import HeaderNav from "./header_nav";
+import { loadSpace } from "@usersnap/browser";
 
+
+
+import { basePath } from "@/next.config";
 
 export const siteTitle = 'Atlantic Hurricane Dashboard'
 
-export const empty_storm_obj = {
-  pts:{features:[]},
-  err:{features:[]},
-  lin:{features:[]},
-  rad:{features:[]},
-};
-
-export default function Layout({ children, home, topNav, logo, active_storm_data, querystring }) {
-
-  const [storms, setStorms] = useState([]);
-  const [selected_storm, setSelectedStorm] = useState("");
-  const [selected_forecast, setSelectedForecast] = useState({});
-  const [storm_timeline, setStormTimeline] = useState([]);
-  const [storm_points, setStormPoints] = useState(empty_storm_obj);
+/**
+ * The Layout function in JavaScript sets up a webpage layout with header, main content, and footer,
+ * displaying different content based on query parameters.
+ * @returns The `Layout` component is being returned. It includes the structure of the webpage with a
+ * header, main content area (which may include a map component based on the conditions), and a footer.
+ * The content and components rendered within the `Layout` component depend on the values of `home`,
+ * `topNav`, `logo`, `active_storm_data`, `station_data`, and `querystring`
+ */
+export default function Layout({ children, home, topNav, logo, querystring }) {
   
+  const [station_points, setStationPoints] = useState({});
+  const [sourceType, setSourceType] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
+
+  const router = useRouter();
+
+  const spaceKey = 'dbba29d9-e060-4d56-8a09-923ef07e516d'
+  // Will need to find some better way to store as secret
+
+  loadSpace(spaceKey).then((api) => {
+    api.init()
+  })
+  
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+
+  const active_storms = querystring.query.storms == "active";
+  const historical_storms = querystring.query.storms == "historical";
+  const about_page = router?.query?.storms === "hurricanes";
+
   // useMemo() tells React to "memorize" the map component.
-  // Wthout this, the map will get redrawn by many interactions 
+  // Without this, the map will get redrawn by many interactions 
   // and cause flashing - this lets us update map layers without
   // the map constant flashing with each change and click.
   const MapWithNoSSR = useMemo(
@@ -42,76 +61,28 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
     [],
   );
 
-  // console.log(querystring.storms)
-  // console.log(active_storm_data.season)
-
-  // const data = get_forecast_sources();
-
-  function updateStormList(event) {
-    const filtered_storms = event.target.value != "" ? storm_list.filter(storm => {
-      const storm_index = storm.name + storm.year;
-      return (
-        storm_index.toLowerCase().indexOf(event.target.value.toLowerCase()) > -1)
-    }) : [];
-
-    setStorms(filtered_storms);
-  }
-
-  function populateStormDetails(event, storm_data) {
-    console.log("Set Selected storm to: " + storm_data.data[0].properties.NAME);
-    setSelectedStorm(storm_data.data[0].properties.NAME);
-
-    // const filtered = forecasts.map(source => {
-    //    return source.storm.filter(storm_part => storm_part.storm == storm_obj.name && storm_part.file_type == "pts") 
-    // })[0];
-    setStormPoints(empty_storm_obj);
-    
-    // console.log(storm_obj);
-    let storm_features = {
-      pts:{features:[]},
-      err:{features:[]},
-      lin:{features:[]},
-      rad:{features:[]},
+  
+  useEffect(() => {
+    if (active_storms) {
+      setSourceType("active");
+      fetch(`${basePath}/api/query_stations`)
+        .then((res) => res.json())
+        .then((data) => {
+          setStationPoints(data);
+        })
     };
-    
-    for(var i in storm_data.data){
-      switch(storm_data.data[i].geometry.type){
-        case "Point":
-          storm_features.pts.features.push(storm_data.data[i])
-          break;
-        // case "LineString":
-        //   break;
-        // case "Polygon":
-        //   break;
-      }
-    }
-    
-    setStormPoints(storm_features);
-  }
+    if (historical_storms)
+      { setSourceType("historical")
+        
+      };
+  }, [active_storms, historical_storms]);
 
-  function populateTimeline(event, storm_obj) {
-    // console.log(event.target.style)
-    const url = `/api/forecast_info?path=${storm_obj.path}`
-    setSelectedForecast(storm_obj);
-    setStormPoints(empty_storm_obj);
-
-    fetch(url).then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      throw res;
-    }).then(data => {
-      console.log("Storm Data: ", data);
-      setStormPoints(data);
-    });
-  }
-
-  const active_storms = querystring.query.storms == "active"
+  
 
   return (
     <div className={styles.body}>
       <Head>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href={`${basePath}/favicon.ico`} />
         <meta
           name="description"
           content=""
@@ -119,42 +90,85 @@ export default function Layout({ children, home, topNav, logo, active_storm_data
         <meta name="og:title" content={siteTitle} />
       </Head>
       <header className={styles.header}>
-        <a href={logo.href}><Image src={logo.src} width={200} height={100} className='logo' alt="logo" /></a>
-        {home ? (
-          <>
-            {/* Home Page Header Content */}
-          </>
-        ) : (
-          <>
-            {/* Other Page Header Content */}
-          </>
-        )}
-        <HeaderNav navItems={topNav}></HeaderNav>
+        <Grid container alignItems="center" spacing={1}  
+        sx={{ justifyContent: 'space-between', flexWrap: 'nowrap',  maxHeight: { xs: '80px', sm: '100px', md: '120px', lg: '140px' }, // Responsive max height for the header 
+        //maxWidth: '50%'
+        }}
+        >
+          {/* Logo Section */}
+          <Grid size ='auto' 
+                sx={{maxWidth: '50%'}} >
+          
+              <a href={logo.href}>
+                <Image
+                  src={logo.src}
+                  width={200}
+                  height={100}
+                  className="logo" // Preserving your existing class for the logo
+                  alt="logo"
+                  
+                />
+              </a>
+            
+          </Grid>
+          
+
+          {/* Content Section */}
+          <Grid size ='auto' >
+          
+            {home ? (
+              <>
+                {/* Home Page Header Content */}
+              </>
+            ) : (
+              <>
+                {/* Other Page Header Content */}
+              </>
+            )}
+
+          </Grid>
+          
+
+          {/* Navigation Section */}
+          <Grid size ='auto'
+            sx={{
+              maxWidth: '100%', // Ensures responsiveness
+              overflow: 'visible', // 
+              //display: 'flex',
+              //justifyContent: 'flex-end',
+              //gap: 1, // Adds spacing between navigation items
+              fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '18px', xl: '20px', xxl: '22px' }, // Font size changes based on breakpoints
+            }} ><HeaderNav navItems={topNav} />
+          </Grid>
+
+          
+          
+        </Grid>
       </header>
+      {!isMounted ? null : about_page ?  (
+        <About
+            
+            />):(<>
       <main className="body">
-        <Drawer element_id="left-side" classes="left">
-          {active_storms ? (
-            <ActiveStormList 
-              active_storm_data={active_storm_data}
-              onPopulateStormDetails={populateStormDetails}
-            />
-          ) : (
-            <StormSearch
-              onSearch={updateStormList}
-              onPopulateStormDetails={populateStormDetails}
-              onPopulateTimeline={populateTimeline}
-              active_storm_data={active_storm_data}
-              storms={storms}
-              selected_storm={selected_storm}
-              selected_forecast={selected_forecast}
-              storm_timeline={storm_timeline}
-            />
-          )}
-        </Drawer>
-        <MapWithNoSSR storm_data={storm_points}></MapWithNoSSR>
+        
+
+
+        <MapWithNoSSR
+          station_data={station_points}
+          source_type={sourceType}
+          setStationPoints={setStationPoints}
+          
+
+        />
       </main>
+      </>)}
       <footer>
+        <Box sx={{
+          height:{ xs: '20px', sm: '30px', md: '35px', lg: '50px', xl: '50px', xxl: '50px' }, // if changed, remember to change the station dashboard bottom in the station_dashboard.js
+        }}>
         <FooterNav></FooterNav>
+        </Box>
+        
       </footer>
     </div>
   )
