@@ -175,6 +175,7 @@ export function RenderCategoryFilter({ state, dispatch, setShowFilterOptions }){
 
   function handleIconClick(){
     //setShowCatSelection(prev => !prev);
+    dispatch({ type: "SHOW_FILTER_SELECTED", payload: true })
     dispatch({ type: "TOGGLE_CAT_SELECTION"});
     dispatch({ type: "SET_DATE_SELECTION", payload: false});
     setShowFilterOptions(prev => ({

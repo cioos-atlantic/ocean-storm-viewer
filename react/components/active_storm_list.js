@@ -102,13 +102,14 @@ export default function ActiveStormList({ setStormPoints, map, Leaflet, setSelec
   }
 
   return (
-     <>
+     <div className="active-drawer">
         {pageLoading ? (
             <LoadingScreen/>
             ) : (
               <>
                 <h2>Active Storms: </h2>
-                <div id="storm_search_result">
+                <div id="storm_search_result" className="storm_search_result"
+                >
                   <ul className="results">
                     {active_storms ? (
                       <li key={"show_all_storms"} >
@@ -140,6 +141,6 @@ export default function ActiveStormList({ setStormPoints, map, Leaflet, setSelec
                 </div>
               </>
           )}
-    </>
+    </div>
   )
 }

@@ -17,7 +17,7 @@ import {  FiltersSelected, FiltersSubmitted } from '../Filter/viewFilters.js';
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, map, Leaflet, dispatch, returnFilterResult, filterResult, drawerButtonClicked, startDate, endDate, startCategory, endCategory, polyFilterCoords, filterQuery, filterStormName}) {
+export default function HistoricalStormList({ setStationPoints, map, Leaflet, dispatch, returnFilterResult, filterResult, drawerButtonClicked, startDate, endDate, startCategory, endCategory, polyFilterCoords, filterQuery, filterStormName, showFilterSelected}) {
 
   const [loading, setLoading] = useState(false);
 
@@ -129,7 +129,7 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, di
           <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>  {/* Bold line */}
 
           
-      {(!returnFilterResult )  && (
+      {(showFilterSelected )  ? (
         <>
           <FiltersSelected
           startDate={startDate}
@@ -140,16 +140,20 @@ export default function HistoricalStormList({ setStationPoints, map, Leaflet, di
           filterStormName={filterStormName}/>
           <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>
         </>
+        ): (
+          <>
+          <FiltersSubmitted 
+        filterQuery={filterQuery}/>
+
+        <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>
+          </>
         )}
       
        
 
       {returnFilterResult ?
         (<>
-        <FiltersSubmitted 
-        filterQuery={filterQuery}/>
-
-        <hr style={{ height: '4px', backgroundColor: 'black', border: 'none' }}/>
+        
         
         
         <RenderFilterResult 

@@ -137,13 +137,20 @@ footer {
 .inner_container {
   height: 100%; /* Fill height of the parent container */
   width: 100%; /* Fill width of the parent container */
+  position: fixed;
   
 }
 
 /* Leaflet Control Position Adjustments */
+.leaflet-container{
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  
+}
 
 .leaflet-control-container .leaflet-top {
-  top: 70px; /* Adjust top to avoid overlapping header */
+  top: 95px; /* Adjust top to avoid overlapping header */
 }
 
 .leaflet-control-container .leaflet-bottom {
@@ -264,14 +271,14 @@ footer {
   position: relative; 
   flex-direction: column; /* Stack the header and body vertically*/
   position: fixed; /* Positioned at the bottom */
-  z-index: 5000; /* High z-index to overlay the map */
+  z-index: 1799; /* High z-index to overlay the map */
 
 
 }
 .dashboards {
   position: fixed; /* Positioned at the bottom */
   /*bottom: 50px;  Above the footer */
-  z-index: 5000; /* High z-index to overlay the map */
+  z-index: 1799; /* High z-index to overlay the map */
   /*width: 80%;  80% width for balance */
   
   
@@ -424,6 +431,23 @@ footer {
   width: 100%;
   padding-bottom : 5px;
   font-weight: bold !important;
+}
+.storm_search_result{
+  flex: 1;                /* take remaining space */
+  overflow-y: auto;       /* make this scroll */
+  background-color: white;
+  border-radius: 4px;
+  padding: 8px;
+  max-height: 81vh;
+  
+}
+
+.active-drawer{
+  width: 100%;
+  padding: 3px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .historical_storm_search_result{
@@ -687,7 +711,7 @@ footer {
 
 
 .filter-icons-list{
-  z-index: 6999;
+  z-index: 2999;
   top: 65px;
   position: absolute;
   justify-content: center;
