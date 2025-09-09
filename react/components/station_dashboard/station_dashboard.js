@@ -38,12 +38,12 @@ export default function StationDashboard({state, dispatch, station_descriptions,
   //const institution = stationDescription.institution || "Unknown Institution";
    //const institutionLink = stationDescription.institution_link || "#";\
 
-   console.log(stationValues.properties)
+   //console.log(stationValues.properties)
 
   const displayName = stationValues?.properties?.dataset_title || "Unknown Station";
   const stationName = stationValues?.properties?.station
   const institution = stationValues?.properties?.institution || "Unknown Institution";
-  const institutionLink = stationValues?.properties?.institutionLink || "#";  
+  const institutionLink = stationValues?.properties?.institution_link || "#";  
 
   const excludeVars = [
     "time",
