@@ -10,6 +10,7 @@ from sqlalchemy import create_engine, text, Engine, exc
 from pathlib import Path
 from hashlib import md5
 import argparse
+from datetime import datetime, timedelta
 
 # import logging
 # logging.basicConfig(
@@ -417,7 +418,10 @@ def process_files(ibtracs_files:dict, pg_engine:Engine):
     return (ibtracs_files, files_processed)
 
 def process_ibtracs(source_csv_file:str, destination_table:str, pg_engine:Engine):
-    df = pd.read_csv(filepath_or_buffer=source_csv_file, header=0, skiprows=skip_rows, parse_dates=True, dtype=table_dtypes, na_values=na_values, keep_default_na=False)
+    df_raw = pd.read_csv(filepath_or_buffer=source_csv_file, header=0, skiprows=skip_rows, parse_dates=True, dtype=table_dtypes, na_values=na_values, keep_default_na=False)
+    
+    df= filter_ibtracs(df_raw)
+    
     
     table_columns = []
     with pg_engine.begin() as pg_conn:
@@ -547,3 +551,29 @@ if __name__ == '__main__':
                 results_file.write(f"{output_checksum}  {ibtracs_files[file]['path']}\n")
 
     print("End.")
+    
+    
+    def filter_ibtracs(dataframe):
+        # keep only data from the North Atlantic Basin
+        df_filtered =  dataframe[dataframe['BASIN'] .isin(["NA"])] 
+        
+        # add a new column to insert the last report time for each storm
+        df_filtered["Last_Time"] = df_filtered.groupby('NAME')['ISO_TIME'].transform("last")
+        
+        # remove storms that have last report date later than 7 days
+        df_filtered = df_filtered[df_filtered["Last_Time"].apply(is_storm_older_than_cutoff)]
+        
+        
+        df = df_filtered.drop(columns=["Last_Time"])
+        
+        return df
+        
+    
+    
+    
+    def is_storm_older_than_cutoff(last_time_str):
+        format_string = "%Y-%m-%d %H:%M:%S"
+        today = datetime.now()
+        last_time = datetime.strptime(last_time_str, format_string)
+        time_difference = today - last_time
+        return time_difference.days <= 7
