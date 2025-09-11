@@ -489,6 +489,30 @@ def process_ibtracs(source_csv_file:str, destination_table:str, pg_engine:Engine
                 pg_conn.rollback()
 
     return ins_result
+
+
+def filter_ibtracs(dataframe):
+    # keep only data from the North Atlantic Basin
+    df_filtered =  dataframe[dataframe['BASIN'] .isin(["NA"])].copy()
+    
+    # add a new column to insert the last report time for each storm
+    df_filtered["Last_Time"] = df_filtered.groupby('NAME')['ISO_TIME'].transform("last")
+    
+    # remove storms that have last report date later than 7 days
+    df_filtered = df_filtered[df_filtered["Last_Time"].apply(is_storm_older_than_cutoff)].copy()
+    
+    
+    df = df_filtered.drop(columns=["Last_Time"])
+    
+    return df
+    
+    
+def is_storm_older_than_cutoff(last_time_str):
+    format_string = "%Y-%m-%d %H:%M:%S"
+    today = datetime.now()
+    last_time = datetime.strptime(last_time_str, format_string)
+    time_difference = today - last_time
+    return time_difference.days <= 7
         
 
 if __name__ == '__main__':
@@ -553,27 +577,4 @@ if __name__ == '__main__':
     print("End.")
     
     
-def filter_ibtracs(dataframe):
-    # keep only data from the North Atlantic Basin
-    df_filtered =  dataframe[dataframe['BASIN'] .isin(["NA"])].copy()
-    
-    # add a new column to insert the last report time for each storm
-    df_filtered["Last_Time"] = df_filtered.groupby('NAME')['ISO_TIME'].transform("last")
-    
-    # remove storms that have last report date later than 7 days
-    df_filtered = df_filtered[df_filtered["Last_Time"].apply(is_storm_older_than_cutoff)].copy()
-    
-    
-    df = df_filtered.drop(columns=["Last_Time"])
-    
-    return df
-        
-    
-    
-    
-def is_storm_older_than_cutoff(last_time_str):
-    format_string = "%Y-%m-%d %H:%M:%S"
-    today = datetime.now()
-    last_time = datetime.strptime(last_time_str, format_string)
-    time_difference = today - last_time
-    return time_difference.days <= 7
+
