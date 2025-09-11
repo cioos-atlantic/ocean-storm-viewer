@@ -418,9 +418,10 @@ def process_files(ibtracs_files:dict, pg_engine:Engine):
     return (ibtracs_files, files_processed)
 
 def process_ibtracs(source_csv_file:str, destination_table:str, pg_engine:Engine):
-    df_raw = pd.read_csv(filepath_or_buffer=source_csv_file, header=0, skiprows=skip_rows, parse_dates=True, dtype=table_dtypes, na_values=na_values, keep_default_na=False)
+    df = pd.read_csv(filepath_or_buffer=source_csv_file, header=0, skiprows=skip_rows, parse_dates=True, dtype=table_dtypes, na_values=na_values, keep_default_na=False)
     
-    df= filter_ibtracs(df_raw)
+    if destination_table == "ibtracs_active_storms":
+        df = filter_ibtracs(df)
     
     
     table_columns = []
