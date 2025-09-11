@@ -555,13 +555,13 @@ if __name__ == '__main__':
     
 def filter_ibtracs(dataframe):
     # keep only data from the North Atlantic Basin
-    df_filtered =  dataframe[dataframe['BASIN'] .isin(["NA"])] 
+    df_filtered =  dataframe[dataframe['BASIN'] .isin(["NA"])].copy()
     
     # add a new column to insert the last report time for each storm
     df_filtered["Last_Time"] = df_filtered.groupby('NAME')['ISO_TIME'].transform("last")
     
     # remove storms that have last report date later than 7 days
-    df_filtered = df_filtered[df_filtered["Last_Time"].apply(is_storm_older_than_cutoff)]
+    df_filtered = df_filtered[df_filtered["Last_Time"].apply(is_storm_older_than_cutoff)].copy()
     
     
     df = df_filtered.drop(columns=["Last_Time"])
