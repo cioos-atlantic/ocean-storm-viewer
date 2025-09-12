@@ -155,7 +155,7 @@ export function InputFilter({input_filter, showFilterOptions, setShowFilterOptio
 
       <Autocomplete
         multiple
-        limitTags={1}
+        //limitTags={1}
         fullWidth
         disableCloseOnSelect
         autoComplete
@@ -174,6 +174,14 @@ export function InputFilter({input_filter, showFilterOptions, setShowFilterOptio
         getOptionLabel={(option) => option}
         renderTags={(value, getTagProps) => {
     if (value.length === 0) return null;
+
+    if (value.length === stormNameList.length) {
+      return (
+        <span key="all-selected" {...getTagProps({ index: 0 })}>
+           {value.length} selected
+        </span>
+      );
+    }
 
       return [
         <span key={`tag-${value[0]}`} {...getTagProps({ index: 0 })}>
