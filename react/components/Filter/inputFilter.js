@@ -19,11 +19,14 @@ function sleep(duration) {
 }
 
 
-export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions, dispatch, filterStormName, setFilterStormName}){
+export function InputFilter({input_filter, showFilterOptions, setShowFilterOptions, dispatch, filterStormName, setFilterStormName, startDate, endDate, polyCoords, startCategory, endCategory}){
+  //console.log(startDate, endDate, polyCoords, startCategory, endCategory)
   const [inputValue, setInputValue] = useState(""); // Controlled input field
   const [stormNameList, setStormNameList] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  
 
   const validStormList = filterStormName;
   
@@ -89,7 +92,8 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     setOpen(true);
     (async () => {
       setLoading(true);
-      const stormNames = await input_filter.query(); 
+      //console.log(startDate, endDate, polyCoords, startCategory, endCategory)
+      const stormNames = await input_filter.query(startDate, endDate, polyCoords, startCategory, endCategory); 
       console.log(stormNames);
       if (!stormNames || !Array.isArray(stormNames))
         { alert("No storm name data available...")

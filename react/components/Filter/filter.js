@@ -25,6 +25,7 @@ import { RenderCategoryFilter } from "./categorySlider";
 import InfoScreen from "../message_screens/info_screen";
 import { empty_station_obj } from "../point_defaults";
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { formatFilterDate, formatStormCategory, formatStormName } from "./filter_utils";
 
 
 const ITEM_HEIGHT = 35;
@@ -195,13 +196,16 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
                 <div className="filter-group" key={index}>
                   <InputFilter
                     input_filter={input_filter}
-                    setSelectedOptions={setSelectedOptions}
-                    selectedOptions={selectedOptions}
                     showFilterOptions={showFilterOptions}
                     setShowFilterOptions={setShowFilterOptions}
                     dispatch={dispatch}
                     filterStormName={state.filterStormName}
                     setFilterStormName= {setFilterStormName}
+                    startDate= {state.startDate} 
+                    endDate= {state.endDate}
+                    polyCoords= {state.polyFilterCoords}
+                    startCategory= {state.startCategory}
+                    endCategory={state.endCategory}
                   />
                 </div>
               )
@@ -267,16 +271,18 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
 
                   <div className="filter-group" key={index}>
                     <InputFilter
-                      input_filter={input_filter}
-                      setSelectedOptions={setSelectedOptions}
-                      selectedOptions={selectedOptions}
-                      showFilterOptions={showFilterOptions}
-                      setShowFilterOptions={setShowFilterOptions}
-                      dispatch={dispatch}
-                      filterStormName={state.filterStormName}
-                      setFilterStormName= {setFilterStormName}
-                    
-                    />
+                    input_filter={input_filter}
+                    showFilterOptions={showFilterOptions}
+                    setShowFilterOptions={setShowFilterOptions}
+                    dispatch={dispatch}
+                    filterStormName={state.filterStormName}
+                    setFilterStormName= {setFilterStormName}
+                    startDate= {state.startDate} 
+                    endDate= {state.endDate}
+                    polyCoords= {state.polyFilterCoords}
+                    startCategory= {state.startCategory}
+                    endCategory={state.endCategory}
+                  />
 
                   </div>
                 )
@@ -564,28 +570,7 @@ export async function processFilterRequest(filterParameters, setLoading) {
 
 }
 
-export function formatFilterDate(date) {
-  if (!date) {
-    return ""; // Return an empty string if no date is provided
-  }
-  const formattedDate = date.format("YYYY-MM-DD").trim();
-  return formattedDate;
-}
 
-export function formatStormCategory(category_list = []) {
-  console.log(category_list);
-  const formattedCategoryList = category_list.join("_");
-  return formattedCategoryList;
-}
-
-export function formatStormName(storm_list = []) {
-  //storm_names = storm_names.replace(/\s+/g, ''); // Remove all spaces
-  console.log(storm_list);
-  //const storm_list = storm_names.split(",");
-
-  const formattedStormList = storm_list.join("_");
-  return formattedStormList;
-}
 
 
 
