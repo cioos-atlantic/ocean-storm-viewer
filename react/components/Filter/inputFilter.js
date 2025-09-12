@@ -139,7 +139,7 @@ export function InputFilter({input_filter, showFilterOptions, setShowFilterOptio
         className="input-filter"
         sx={{top:{xs: '6px', md: '100%',},
         right:{xs: '100%', md: '0px',},
-        width:{xs: '210px', md: '210px' },
+        width:'210px',
         
         }}>
           <Stack direction="row"  spacing={4} sx={{ mt: {xs: 0.2, md: 0.5 }, mb:{xs: 0.8, md: 1 }, justifyContent: 'center' }}>
