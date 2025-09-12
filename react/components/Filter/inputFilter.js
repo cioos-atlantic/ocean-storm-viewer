@@ -139,12 +139,13 @@ export function InputFilter({input_filter, showFilterOptions, setShowFilterOptio
         className="input-filter"
         sx={{top:{xs: '6px', md: '100%',},
         right:{xs: '100%', md: '0px',},
-        width:{xs: '230px', md: '240px' },
+        width:{xs: '210px', md: '210px' },
         
         }}>
-          <Stack direction="row" spacing={{xs: 0.5, md: 1 }} sx={{ mt: {xs: 0.2, md: 0.5 }, mb:{xs: 0.8, md: 1 } }}>
+          <Stack direction="row"  spacing={4} sx={{ mt: {xs: 0.2, md: 0.5 }, mb:{xs: 0.8, md: 1 }, justifyContent: 'center' }}>
+                      
         
-            <Button size="small"className="filter-submit-button" onClick={handleSelectAll}>Select All</Button>
+           
             <Button size="small" className="filter-submit-button" onClick={handleClearAll}>Clear</Button>
             <Button size="small" className="filter-submit-button" onClick={() => setShowFilterOptions({ ...showFilterOptions, [input_filter.name]: false })}>
               Close
@@ -175,13 +176,7 @@ export function InputFilter({input_filter, showFilterOptions, setShowFilterOptio
         renderTags={(value, getTagProps) => {
     if (value.length === 0) return null;
 
-    if (value.length === stormNameList.length) {
-      return (
-        <span key="all-selected" {...getTagProps({ index: 0 })}>
-           {value.length} selected
-        </span>
-      );
-    }
+    
 
       return [
         <span key={`tag-${value[0]}`} {...getTagProps({ index: 0 })}>
