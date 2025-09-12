@@ -42,6 +42,13 @@ historical_table = os.getenv('HISTORICAL_TABLE')
 active_table_lines = os.getenv('ACTIVE_TABLE_LINES')
 historical_table_lines = os.getenv('HISTORICAL_TABLE_LINES')
 
+# How many days old does the last reported point in a storm have to be until it
+# is excluded and no longer considered "ACTIVE"
+active_storm_cutoff = 7
+
+# An array of basins that active storms should be limited to
+active_storm_basins = ["NA"]
+
 # Tells pandas to skip the 2nd line in the CSV file that specifies unit types 
 # for the columns - this row doesn't need to be inserted into the postgis table
 skip_rows = [1]
@@ -420,7 +427,8 @@ def process_files(ibtracs_files:dict, pg_engine:Engine):
 def process_ibtracs(source_csv_file:str, destination_table:str, pg_engine:Engine):
     df = pd.read_csv(filepath_or_buffer=source_csv_file, header=0, skiprows=skip_rows, parse_dates=True, dtype=table_dtypes, na_values=na_values, keep_default_na=False)
     
-    if destination_table == "ibtracs_active_storms": df = filter_ibtracs(df)
+    if destination_table == active_table: 
+        df = filter_ibtracs(df)
     
     
     table_columns = []
@@ -491,28 +499,31 @@ def process_ibtracs(source_csv_file:str, destination_table:str, pg_engine:Engine
     return ins_result
 
 
-def filter_ibtracs(dataframe):
+def filter_ibtracs(df:pd.DataFrame):
     # keep only data from the North Atlantic Basin
-    df_filtered =  dataframe[dataframe['BASIN'] .isin(["NA"])].copy()
-    
+    df_filtered = df[df['BASIN'].isin(active_storm_basins)].copy()
+
     # add a new column to insert the last report time for each storm
     df_filtered["Last_Time"] = df_filtered.groupby('NAME')['ISO_TIME'].transform("last")
-    
+
     # remove storms that have last report date later than 7 days
     df_filtered = df_filtered[df_filtered["Last_Time"].apply(is_storm_older_than_cutoff)].copy()
-    
-    
-    df = df_filtered.drop(columns=["Last_Time"])
-    
+
+    try:
+        df = df_filtered.drop(columns=["Last_Time"])
+    except KeyError as ex:
+        print(f" - KeyError: {ex}")
+        print("No active storms left after basin and timeline filtering")
+
     return df
     
     
-def is_storm_older_than_cutoff(last_time_str):
+def is_storm_older_than_cutoff(last_time_str:str):
     format_string = "%Y-%m-%d %H:%M:%S"
     today = datetime.now()
     last_time = datetime.strptime(last_time_str, format_string)
     time_difference = today - last_time
-    return time_difference.days <= 7
+    return time_difference.days <= active_storm_cutoff
         
 
 if __name__ == '__main__':
