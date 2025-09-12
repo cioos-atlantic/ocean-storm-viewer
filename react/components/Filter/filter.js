@@ -133,6 +133,13 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
     dispatch({ type: "TOGGLE_FILTER_RESULT", payload: true});
     dispatch({ type: "CLOSE_STORM_TRACKS" })
     setStationPoints(empty_station_obj)
+    dispatch({ type: "SET_START_DATE", payload: null});
+    dispatch({ type: "SET_END_DATE", payload: null});
+    dispatch({ type: "SET_POLY_FILTER_COORDS", payload: ''});
+    dispatch({ type: "SET_START_CATEGORY", payload: ''});
+    dispatch({ type: "SET_END_CATEGORY", payload: ''});
+    dispatch({ type: "SET_FILTER_STORM_NAME", payload: []});
+    
 
   }
 
