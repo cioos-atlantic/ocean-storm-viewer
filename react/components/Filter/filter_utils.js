@@ -74,11 +74,41 @@ export function makeStormNameList(storm_data){
   return editedStormList;
 }
 
-export async function queryStormName() {
+export async function queryStormName(startDate = null, endDate = null, polyCoords= '', startCategory = '', endCategory= '') {
+
+  const updatedParams = {
+      //...selectedOptions, // Spread selected options correctly
+      startDate: startDate, // Ensure start and end dates are included
+      endDate: endDate,
+      polyCoords: polyCoords,
+      startCategory: startCategory,
+      endCategory:endCategory,
+      
+
+    };
+  console.log(updatedParams);
+
   
+  const start_date = formatFilterDate(updatedParams['startDate']);
+  const end_date = formatFilterDate(updatedParams['endDate']);
+  
+  const storm_poly = updatedParams['polyCoords'];                       
+  const start_category= updatedParams['startCategory'];
+  const end_category = updatedParams['endCategory'];
+
+  const query = new URLSearchParams({
+    start_date: start_date,
+    end_date: end_date,
+    polygon: storm_poly,
+    start_category: start_category,
+    end_category: end_category,
+
+  }).toString();
+  console.log(query);
   let uniqueList;
   try {
-    const resource = await fetch_retry(`${basePath}/api/storm_names?`, 3)
+    //const resource = await fetch_retry(`${basePath}/api/storm_names?`, 3)
+    const resource = await fetch(`${basePath}/api/filter_storms?${query}`);
     const storm_data = await resource.json();
     //console.log(storm_data)
     
@@ -136,3 +166,27 @@ const fetch_retry = async (url, n, baseDelay = 100) => {
 
   throw error; // after all retries fail
 };
+
+
+export function formatFilterDate(date) {
+  if (!date) {
+    return ""; // Return an empty string if no date is provided
+  }
+  const formattedDate = date.format("YYYY-MM-DD").trim();
+  return formattedDate;
+}
+
+export function formatStormCategory(category_list = []) {
+  console.log(category_list);
+  const formattedCategoryList = category_list.join("_");
+  return formattedCategoryList;
+}
+
+export function formatStormName(storm_list = []) {
+  //storm_names = storm_names.replace(/\s+/g, ''); // Remove all spaces
+  console.log(storm_list);
+  //const storm_list = storm_names.split(",");
+
+  const formattedStormList = storm_list.join("_");
+  return formattedStormList;
+}
