@@ -308,7 +308,7 @@ export function build_quadrant(storm_center, radius, quadrant) {
 export function build_line_of_travel(storm_data) {
     let line_of_travel = {
         "type": "Feature",
-        "id": "line-of-travel-".concat(storm_data.data[0].properties.NAME, '-', storm_data.data[0].properties.SEASON),
+        "id": "line-of-travel-".concat(storm_data.data[0].properties.NAME, '-', storm_data.data[0].properties.SID),
         "geometry": {
             "type": "LineString",
             "coordinates": [
