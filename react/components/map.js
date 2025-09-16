@@ -178,9 +178,10 @@ export default function Map({ children, station_data, source_type,  setStationPo
             </LayersControl.Overlay>
             <LayersControl.Overlay checked name="Track Line">
               <LayerGroup>
-                {
+                { 
                   state.storm_points?.lin?.features?.length > 0 &&
                   state.storm_points?.lin?.features?.map(line => {
+                    
 
                     return (
                       <LineOfTravel

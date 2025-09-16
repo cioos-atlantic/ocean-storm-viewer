@@ -16,7 +16,7 @@ export function FiltersSelected({startDate, endDate, startCategory, endCategory,
           >Filter(s) Selected: </Box>
         <Box className='view-filters-content'>
        { !isFiltered &&(<Box>
-            No Filters Applied!
+            No Filters Selected!
           </Box>)}
           {filterStormName.length > 0 && (<Box>
             Storm Name(s): {filterStormName.join(", ")}
@@ -67,7 +67,7 @@ export function FiltersSubmitted({filterQuery}){
             Storm Name(s): {filterQuery.stormName.join(", ")}
           </Box>)}
           {isEmpty && (<Box>
-            No Filters!
+            No Filters Applied!
           </Box>)}
           {filterQuery?.startDate && filterQuery?.endDate && (<Box>
             Date Range: {dayjs(filterQuery.startDate).format('DD/MM/YYYY') } - {dayjs(filterQuery.endDate).format('DD/MM/YYYY') }
