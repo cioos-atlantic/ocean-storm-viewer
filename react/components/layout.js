@@ -36,8 +36,10 @@ export default function Layout({ children, home, topNav, logo, querystring }) {
   const spaceKey = 'dbba29d9-e060-4d56-8a09-923ef07e516d'
   // Will need to find some better way to store as secret
 
-  loadSpace(spaceKey).then((api) => {
-    api.init()
+  useEffect(() => {
+    loadSpace(spaceKey).then((api) => {
+      api.init()
+    })
   })
   
 
