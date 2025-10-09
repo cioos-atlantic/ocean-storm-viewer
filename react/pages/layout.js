@@ -1,6 +1,7 @@
 import PageHeader from "./parts/page_header"
 import PageFooter from "./parts/page_footer"
 import { loadSpace } from "@usersnap/browser";
+import { useEffect } from "react";
 
 export default function Layout({ children, page_subtitle, page_description }) {
 
