@@ -1,5 +1,4 @@
 import styles from './drawer.module.css'
-//import { useMap } from "react-leaflet";
 import ActiveStormList from "@/components/active_storm_list";
 import HistoricalStormList from "@/components/historical_storm/historical_storm_list";
 import Leaflet from 'leaflet';
@@ -15,7 +14,7 @@ import { Tooltip, Box, Button } from '@mui/material';
  * `styles.drawer_interior`. Depending on the `source_type`, either the `ActiveStormList`,
  * `HistoricalStormList`, or a placeholder for the Home Page is rendered within the `Drawer` component.
  */
-export default function Drawer({ children, element_id, classes, source_type, setStationPoints, state, dispatch, storm_data }) {
+export default function Drawer({ children, element_id, classes, source_type, setStationPoints, state, dispatch, map, storm_data }) {
   let sideClass = null;
 
   switch (classes) {
@@ -28,8 +27,6 @@ export default function Drawer({ children, element_id, classes, source_type, set
     default:
       break;
   }
-
-  const map = useMap();
 
   if(!state) return(<></>);
 
