@@ -81,6 +81,7 @@ export default function Drawer({ children, element_id, classes, source_type, set
                   polyFilterCoords={state.polyFilterCoords}
                   filterQuery={state.filterQuery}
                   filterStormName={state.filterStormName}
+                                showFilterSelected={state.showFilterSelected}
 
                 />
               ) :

@@ -50,16 +50,21 @@ export default function Map({ children, station_data, storm_data, source_type, s
           open={state.info}
           onClose = {state.info}
         />}
+        
 
+      { 
+        <IconButton
+          className="info-guide"
+          sx={{ display: 'flex'
+            }}
+          onClick={() => {
+            dispatch({ type: "SET_INFO_GUIDE", payload: true});
+          }}
+          ><InfoIcon />
+        </IconButton>
 
-          { <IconButton
-              className="info-guide"
-              sx={{ display: {xs: "block", md: "none" } }}
-              onClick={() => {
-                dispatch({ type: "SET_INFO_GUIDE", payload: true});
-              }}
-              ><InfoIcon />
-            </IconButton>}
+      
+      }
         
         { source_type === "historical" &&
           <RenderFilter

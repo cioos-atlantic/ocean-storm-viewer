@@ -19,11 +19,14 @@ function sleep(duration) {
 }
 
 
-export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, setSelectedOptions, selectedOptions, showFilterOptions, setShowFilterOptions, dispatch, filterStormName, setFilterStormName}){
+export function InputFilter({input_filter, showFilterOptions, setShowFilterOptions, dispatch, filterStormName, setFilterStormName, startDate, endDate, polyCoords, startCategory, endCategory}){
+  //console.log(startDate, endDate, polyCoords, startCategory, endCategory)
   const [inputValue, setInputValue] = useState(""); // Controlled input field
   const [stormNameList, setStormNameList] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  
 
   const validStormList = filterStormName;
   
@@ -77,6 +80,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
 
  function handleIconClick(){
     console.log(showFilterOptions);
+    dispatch({ type: "SHOW_FILTER_SELECTED", payload: true })
     dispatch({ type: "SET_CAT_SELECTION", payload: false});
     dispatch({ type: "SET_DATE_SELECTION", payload: false});
     setShowFilterOptions((prev) => ({
@@ -88,7 +92,8 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
     setOpen(true);
     (async () => {
       setLoading(true);
-      const stormNames = await input_filter.query(); 
+      //console.log(startDate, endDate, polyCoords, startCategory, endCategory)
+      const stormNames = await input_filter.query(startDate, endDate, polyCoords, startCategory, endCategory); 
       console.log(stormNames);
       if (!stormNames || !Array.isArray(stormNames))
         { alert("No storm name data available...")
@@ -134,12 +139,13 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
         className="input-filter"
         sx={{top:{xs: '6px', md: '100%',},
         right:{xs: '100%', md: '0px',},
-        width:{xs: '230px', md: '240px' },
+        width:'210px',
         
         }}>
-          <Stack direction="row" spacing={{xs: 0.5, md: 1 }} sx={{ mt: {xs: 0.2, md: 0.5 }, mb:{xs: 0.8, md: 1 } }}>
+          <Stack direction="row"  spacing={4} sx={{ mt: {xs: 0.2, md: 0.5 }, mb:{xs: 0.8, md: 1 }, justifyContent: 'center' }}>
+                      
         
-            <Button size="small"className="filter-submit-button" onClick={handleSelectAll}>Select All</Button>
+           
             <Button size="small" className="filter-submit-button" onClick={handleClearAll}>Clear</Button>
             <Button size="small" className="filter-submit-button" onClick={() => setShowFilterOptions({ ...showFilterOptions, [input_filter.name]: false })}>
               Close
@@ -150,7 +156,7 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
 
       <Autocomplete
         multiple
-        limitTags={1}
+        //limitTags={1}
         fullWidth
         disableCloseOnSelect
         autoComplete
@@ -169,6 +175,8 @@ export function InputFilter({input_filter, showOptionsArrow, closeOptionsArrow, 
         getOptionLabel={(option) => option}
         renderTags={(value, getTagProps) => {
     if (value.length === 0) return null;
+
+    
 
       return [
         <span key={`tag-${value[0]}`} {...getTagProps({ index: 0 })}>

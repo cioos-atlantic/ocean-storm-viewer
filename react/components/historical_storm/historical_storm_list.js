@@ -17,7 +17,7 @@ import { FiltersSelected, FiltersSubmitted } from '../Filter/viewFilters.js';
  * clickable links, and allows users to search for specific storms by name or year.
  
  */
-export default function HistoricalStormList({ setStationPoints, map, Leaflet, dispatch, returnFilterResult, filterResult, drawerButtonClicked, startDate, endDate, startCategory, endCategory, polyFilterCoords, filterQuery, filterStormName }) {
+export default function HistoricalStormList({ setStationPoints, map, Leaflet, dispatch, returnFilterResult, filterResult, drawerButtonClicked, startDate, endDate, startCategory, endCategory, polyFilterCoords, filterQuery, filterStormName, showFilterSelected}) {
 
   const [loading, setLoading] = useState(false);
 

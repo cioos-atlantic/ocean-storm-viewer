@@ -89,6 +89,7 @@ export function RenderDateFilter({state, dispatch, setShowFilterOptions}){
   };
 
   function handleIconClick(){
+    dispatch({ type: "SHOW_FILTER_SELECTED", payload: true })
     dispatch({ type: "TOGGLE_DATE_SELECTION"});
     dispatch({ type: "SET_CAT_SELECTION", payload: false});
     setShowFilterOptions(prev => ({

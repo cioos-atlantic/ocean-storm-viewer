@@ -24,7 +24,8 @@ export const initialMapState = {
   filterQuery:{},
   filterStormName:[],
   selectedStormNames:[],
-  info:true
+  info:true,
+  showFilterSelected:true
 };
 
 export function mapReducer(state, action) {
@@ -39,7 +40,7 @@ export function mapReducer(state, action) {
       return { ...state, selected_station: action.payload };
     case 'SET_FILTER_RESULT':
       return { ...state, filterResult: action.payload };
-      case 'SET_SET_SELECTED_STORM_NAMES':
+    case 'SET_SELECTED_STORM_NAMES':
       return { ...state, selectedStormNames: action.payload };
     case 'TOGGLE_FILTER_RESULT':
       return { ...state, returnFilterResult: action.payload };
@@ -77,6 +78,8 @@ export function mapReducer(state, action) {
       return { ...state, isDrawerOpen: action.payload };
     case 'SET_INFO_GUIDE':
       return { ...state, info: action.payload };
+    case 'SHOW_FILTER_SELECTED':
+      return { ...state, showFilterSelected: action.payload };
     case 'CANCEL_FILTERS':
       return {
         ...state,

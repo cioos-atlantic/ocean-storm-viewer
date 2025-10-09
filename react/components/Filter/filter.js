@@ -24,6 +24,9 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { RenderCategoryFilter } from "./categorySlider";
 import InfoScreen from "../message_screens/info_screen";
 import { empty_station_obj } from "../point_defaults";
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { formatFilterDate, formatStormCategory, formatStormName } from "./filter_utils";
+
 
 const ITEM_HEIGHT = 35;
 const ITEM_PADDING_TOP = 8;
@@ -90,6 +93,7 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
 
   async function handleFilterSubmit() {
     //setDrawerButtonClicked('');
+    dispatch({ type: "SHOW_FILTER_SELECTED", payload: false });
     dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: '' });
     dispatch({ type: "SET_CAT_SELECTION", payload: false});
     dispatch({ type: "SET_DATE_SELECTION", payload: false});
@@ -134,7 +138,12 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
     dispatch({ type: "TOGGLE_FILTER_RESULT", payload: true});
     dispatch({ type: "CLOSE_STORM_TRACKS" })
     setStationPoints(empty_station_obj)
-
+    dispatch({ type: "SET_START_DATE", payload: null});
+    dispatch({ type: "SET_END_DATE", payload: null});
+    dispatch({ type: "SET_POLY_FILTER_COORDS", payload: ''});
+    dispatch({ type: "SET_START_CATEGORY", payload: ''});
+    dispatch({ type: "SET_END_CATEGORY", payload: ''});
+    dispatch({ type: "SET_FILTER_STORM_NAME", payload: []});
     console.debug("Drawer and Filter results toggled to 'True'.");
   }
 
@@ -157,7 +166,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
                 }
               }
             }}
-            icon={<FilterAltIcon openIcon={<KeyboardDoubleArrowDownIcon />} />}
+            icon={<FilterAltIcon />}
+            
 
             //onClick={handleSpeedDialToggle}
             open={openSpeedDial}
@@ -166,7 +176,8 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
           >
 
             <SpeedDialAction
-              icon={<IconButton className="filters-speed-dial">X</IconButton>}
+            className="filters-speed-dial"
+              icon={<CloseRoundedIcon/>}
               tooltipTitle="Clear Filters"
               onClick={(e) => {
                 e.stopPropagation();
@@ -188,13 +199,16 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
                 <div className="filter-group" key={index}>
                   <InputFilter
                     input_filter={input_filter}
-                    setSelectedOptions={setSelectedOptions}
-                    selectedOptions={selectedOptions}
                     showFilterOptions={showFilterOptions}
                     setShowFilterOptions={setShowFilterOptions}
                     dispatch={dispatch}
                     filterStormName={state.filterStormName}
                     setFilterStormName= {setFilterStormName}
+                    startDate= {state.startDate} 
+                    endDate= {state.endDate}
+                    polyCoords= {state.polyFilterCoords}
+                    startCategory= {state.startCategory}
+                    endCategory={state.endCategory}
                   />
                 </div>
               )
@@ -238,16 +252,18 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
 
                   <div className="filter-group" key={index}>
                     <InputFilter
-                      input_filter={input_filter}
-                      setSelectedOptions={setSelectedOptions}
-                      selectedOptions={selectedOptions}
-                      showFilterOptions={showFilterOptions}
-                      setShowFilterOptions={setShowFilterOptions}
-                      dispatch={dispatch}
-                      filterStormName={state.filterStormName}
-                      setFilterStormName= {setFilterStormName}
-                    
-                    />
+                    input_filter={input_filter}
+                    showFilterOptions={showFilterOptions}
+                    setShowFilterOptions={setShowFilterOptions}
+                    dispatch={dispatch}
+                    filterStormName={state.filterStormName}
+                    setFilterStormName= {setFilterStormName}
+                    startDate= {state.startDate} 
+                    endDate= {state.endDate}
+                    polyCoords= {state.polyFilterCoords}
+                    startCategory= {state.startCategory}
+                    endCategory={state.endCategory}
+                  />
                   </div>
                 )
               })
@@ -282,18 +298,12 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
               onClick={handleClearAllFilters}>
               X
             </Button>
-           { <IconButton
-                sx={{ color:  ' #1E90FF'}}
-                onClick={() => {
-                  dispatch({ type: "SET_INFO_GUIDE", payload: true});
-                }}
-                ><InfoIcon />
-              </IconButton>}
+          
           </Stack>
         
         </>
       )
-      };
+      }
     </>
   )
 }
@@ -359,25 +369,10 @@ export async function processFilterRequest(filterParameters, setLoading) {
   return [uniqueList, stormLines];
 }
 
-export function formatFilterDate(date) {
-  if (!date) {
-    return ""; // Return an empty string if no date is provided
-  }
-  const formattedDate = date.format("YYYY-MM-DD").trim();
-  return formattedDate;
-}
 
-export function formatStormCategory(category_list = []) {
-  console.log(category_list);
-  const formattedCategoryList = category_list.join("_");
-  return formattedCategoryList;
-}
 
-export function formatStormName(storm_list = []) {
-  //storm_names = storm_names.replace(/\s+/g, ''); // Remove all spaces
-  console.log(storm_list);
-  //const storm_list = storm_names.split(",");
 
-  const formattedStormList = storm_list.join("_");
-  return formattedStormList;
-}
+
+
+
+

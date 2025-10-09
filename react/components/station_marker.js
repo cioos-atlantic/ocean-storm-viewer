@@ -35,6 +35,7 @@ export default function StationMarker({ station_data, station_descriptions, time
   const station_values = station_data[1]
   // Change to call from ERDDAP
   const display_name = station_values?.properties?.dataset_title
+  const station = station_values?.properties?.station || ""
 
   const exclude_var = ['time', 'latitude', 'longitude', 'wind_from_direction', 'relative_humidity',
     'sea_surface_wave_from_direction', 'sea_surface_wave_maximum_period'
@@ -67,6 +68,7 @@ export default function StationMarker({ station_data, station_descriptions, time
     >
       <Tooltip>
         <h4>{display_name}</h4>
+        <h6>{station}</h6>
       </Tooltip>
     </Marker>
   )

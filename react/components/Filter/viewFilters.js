@@ -5,7 +5,7 @@ export function FiltersSelected({ startDate, endDate, startCategory, endCategory
   console.log(filterStormName);
   const isFiltered = startDate || endDate || startCategory || endCategory || polyFilterCoords || filterStormName.length;
   console.log(filterStormName)
-  return(
+  return( 
     <Box className='view-filter-space'>
       <Stack>
         <Box className='historical_page_drawer_subheader'
@@ -67,7 +67,7 @@ export function FiltersSubmitted({ filterQuery }) {
             Storm Name(s): {filterQuery.stormName.join(", ")}
           </Box>)}
           {isEmpty && (<Box>
-            No Filters!
+            No Filters Applied!
           </Box>)}
           {filterQuery?.startDate && filterQuery?.endDate && (<Box>
             Date Range: {dayjs(filterQuery.startDate).format('DD/MM/YYYY')} - {dayjs(filterQuery.endDate).format('DD/MM/YYYY')}
