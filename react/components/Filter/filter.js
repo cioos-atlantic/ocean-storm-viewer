@@ -454,8 +454,8 @@ export async function processFilterRequest(filterParameters, setLoading) {
   const endDate = formatFilterDate(filterParameters['endDate']);
   
   const stormPoly = filterParameters['polyCoords'];                       
-  const startCategory= filterParameters['startCategory'];
-  const endCategory = filterParameters['endCategory'];
+  const startCategory= (filterParameters['startCategory']) ? filterParameters['startCategory'] : '';
+  const endCategory = (filterParameters['endCategory']) ? filterParameters['endCategory'] : '';
 
 
   console.log(stormCategory, stormNames, startDate, endDate)
