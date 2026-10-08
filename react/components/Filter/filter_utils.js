@@ -93,8 +93,8 @@ export async function queryStormName(startDate = null, endDate = null, polyCoord
   const end_date = formatFilterDate(updatedParams['endDate']);
   
   const storm_poly = updatedParams['polyCoords'];                       
-  const start_category= updatedParams['startCategory'];
-  const end_category = updatedParams['endCategory'];
+  const start_category= (updatedParams['startCategory']) ? updatedParams['startCategory'] : '';
+  const end_category = (updatedParams['endCategory']) ? updatedParams['endCategory'] : '';
 
   const query = new URLSearchParams({
     start_date: start_date,
@@ -187,6 +187,9 @@ export function formatStormName(storm_list = []) {
   console.log(storm_list);
   //const storm_list = storm_names.split(",");
 
-  const formattedStormList = storm_list.join("_");
+  const formattedStormList = [];
+  if (storm_list.length > 0) {
+    formattedStormList.push(storm_list.join("_"));
+  }
   return formattedStormList;
 }
