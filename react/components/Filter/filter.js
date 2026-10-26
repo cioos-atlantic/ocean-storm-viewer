@@ -2,7 +2,7 @@ import { Alert, Box, Button, IconButton, Tooltip } from "@mui/material";
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Stack from '@mui/material/Stack';
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
 import { useRouter } from 'next/router';
@@ -14,7 +14,7 @@ import { basePath } from "@/next.config";
 import LoadingScreen from "../loading_screen";
 import { RenderCategoryFilter } from "./categorySlider";
 import { empty_station_obj } from "../point_defaults";
-import { formatFilterDate, formatStormCategory, formatStormName, formatCategoryRange, countActiveFilters, getDateRangeError } from "./filter_utils";
+import { formatFilterDate, formatStormCategory, formatStormName, formatCategoryRange, countActiveFilters, getDateRangeError, getDefaultDateRange } from "./filter_utils";
 import { mapActions } from "@/components/mapReducer";
 import { filterActions } from "@/components/Filter/filterReducer";
 import { useFilters, useFilterDispatch } from "@/components/Filter/FilterContext";
@@ -22,10 +22,11 @@ import { useFilters, useFilterDispatch } from "@/components/Filter/FilterContext
 
 export function RenderFilter({ clearShapesRef, dispatch, setStationPoints }) {
   const { startDate, endDate, startCategory, endCategory, polyFilterCoords, filterStormName,
-    filterQuery, returnFilterResult } = useFilters();
+    filterQuery, defaultApplied } = useFilters();
   const filterDispatch = useFilterDispatch();
   const [loading, setLoading] = useState(false);
   const [applyFailed, setApplyFailed] = useState(false);
+  const defaultRequested = useRef(false); // React strict mode runs mount effects twice in development
 
   const setFilterStormName = (state) => filterDispatch(filterActions.setFilterStormName(state));
   // Apply needs a filter value; "Clear all" also has work to do while a submitted query or its results are shown
@@ -33,10 +34,45 @@ export function RenderFilter({ clearShapesRef, dispatch, setStationPoints }) {
   const filtersSelected = activeFilterCount > 0;
   const dateError = getDateRangeError(startDate, endDate); // a mistyped date blocks Apply
   const applyBlockedReason = !filtersSelected ? "Select a filter first" : dateError;
-  const hasSubmittedQuery = returnFilterResult || Object.keys(filterQuery).length > 0;
+  const hasSubmittedQuery = Object.keys(filterQuery).length > 0;
   const canClear = filtersSelected || hasSubmittedQuery;
 
   const router = useRouter(); // Next.js useRouter
+
+
+  // Fetches the storms for `params` and shows them in the results section. On a failed request the
+  // results stay as they were and the error shows under Apply. Returns whether it succeeded.
+  async function runFilterQuery(params, setQueryLoading) {
+    setApplyFailed(false);
+    const { storms, error } = await processFilterRequest(params, setQueryLoading);
+
+    if (error) {
+      setApplyFailed(true);
+      return false;
+    }
+
+    // An empty result still shows ("0 storms" + the query)
+    filterDispatch(filterActions.setFilterQuery(params));
+    filterDispatch(filterActions.setFilterResult(storms));
+    return true;
+  }
+
+
+  // First visit to the historical page in this page load: fill the Date filter with the last 12 months
+  // and list those storms, so there is something to explore right away. Only the query runs here, not
+  // Apply's side effects, so a storm opened from the URL (?name=&season=&sid=) stays open.
+  useEffect(() => {
+    if (defaultApplied || defaultRequested.current) return;
+    defaultRequested.current = true;
+
+    const defaultRange = getDefaultDateRange();
+    filterDispatch(filterActions.applyDefaultDates(defaultRange));
+    runFilterQuery(
+      { ...defaultRange, polyCoords: '', startCategory: null, endCategory: null, stormName: [] },
+      (isLoading) => filterDispatch(filterActions.setResultsLoading(isLoading)));
+    // Runs once on mount; defaultApplied keeps it from running again when the panel remounts
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   function handleClearAllFilters() {
@@ -68,23 +104,14 @@ export function RenderFilter({ clearShapesRef, dispatch, setStationPoints }) {
       stormName: filterStormName
     };
 
-    setApplyFailed(false);
-    const { storms, error } = await processFilterRequest(updatedParams, setLoading);
+    const succeeded = await runFilterQuery(updatedParams, setLoading);
+    if (!succeeded) return;
 
-    // On a failed request keep whatever was showing (including the highlighted storm) and report it under Apply
-    if (error) {
-      setApplyFailed(true);
-      return;
-    }
-
-    // An empty result still shows the results view ("Filter Result: 0 storms" + the query)
+    // Only after a successful query: a failed Apply keeps the highlighted storm (see runFilterQuery)
     dispatch(mapActions.setDrawerButtonClicked(''));
-    filterDispatch(filterActions.setFilterQuery(updatedParams));
-    filterDispatch(filterActions.setFilterResult(storms));
     router.push(`/?page=historical`);
 
     dispatch(mapActions.setDrawerOpen(true));
-    filterDispatch(filterActions.setReturnFilterResult(true));
     dispatch(mapActions.closeStormTracks())
     setStationPoints(empty_station_obj)
     // Filter values are kept after submitting so they can be adjusted and resubmitted;

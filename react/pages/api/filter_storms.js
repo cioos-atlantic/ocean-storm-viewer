@@ -1,7 +1,7 @@
 import { wfs_query } from "./wfs_query"
 
 // Every value below goes straight into the CQL filter, so only accept the formats the filter UI sends
-// formatFilterDate sends YYYY-MM-DD; the recent storms list (getHistoricalStormList) sends YYYY-MM-DDTHH:MM:SSZ
+// formatFilterDate sends YYYY-MM-DD; a full YYYY-MM-DDTHH:MM:SSZ timestamp is also accepted
 const DATE_PATTERN = /^(\d{4}-\d{2}-\d{2})(T\d{2}:\d{2}:\d{2}Z)?$/;
 const INTEGER_PATTERN = /^\d+$/; // wind speeds (knots)
 const NUMBER = "-?\\d+(\\.\\d+)?";

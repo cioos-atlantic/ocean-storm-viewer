@@ -19,6 +19,12 @@ export function getDateRangeError(startDate, endDate) {
   return '';
 }
 
+// Date range the historical page starts with, so storms are listed on first load: the last 12 months
+export function getDefaultDateRange() {
+  const today = dayjs().startOf('day');
+  return { startDate: today.subtract(1, 'year'), endDate: today };
+}
+
 // Short text for a filter's current value, shown on the filter buttons and with the results.
 // Each returns '' when that filter is not set.
 export function formatStormNamesSummary(names = []) {

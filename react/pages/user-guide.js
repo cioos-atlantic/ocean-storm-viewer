@@ -55,7 +55,7 @@ export default function UserGuide() {
         <section className={userStyles.guideCard}>
           <h2>Historical Storms Page</h2>
           <ol>
-            <li>The left side bar lists storms from the past year.</li>
+            <li>When the page opens, the left side panel lists storms from the last 12 months (the Date filter is set to that range; change or clear it to see other storms).</li>
             <li>Clicking a storm from the list will display the storm track available station data on the map.</li>
             <li>Hover over the storm marker to see storm type, category, windspeed and time.</li>
             <li>Clicking on a storm or station marker will open a storm and or station dashboard with panels for more detailed information about that storm or station. Both dashboards can be viewed simultaneously.</li>

@@ -24,6 +24,9 @@
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 4px;
+    /* The site footer is fixed over the bottom of the page; leave room so the last item in the
+       drawer (e.g. "Clear Storm Tracks") can scroll clear of it */
+    padding-bottom: 60px;
 }
 
 

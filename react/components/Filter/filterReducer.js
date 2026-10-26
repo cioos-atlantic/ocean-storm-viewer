@@ -17,7 +17,11 @@ export const initialFilterState = {
   // Submitted query and its results
   filterQuery: {},
   filterResult: [],
-  returnFilterResult: false,
+  resultsLoading: false, // the default query on page load is running (Apply uses its own loading screen)
+
+  // The default date range is applied once per page load (see RenderFilter); Clear all keeps this
+  // so clearing doesn't bring the default back
+  defaultApplied: false,
 };
 
 // Action helpers: build the action objects for filterReducer.
@@ -40,7 +44,9 @@ export const filterActions = {
   // Filter results
   setFilterQuery: (query) => ({ type: 'SET_FILTER_QUERY', payload: query }),
   setFilterResult: (result) => ({ type: 'SET_FILTER_RESULT', payload: result }),
-  setReturnFilterResult: (show) => ({ type: 'TOGGLE_FILTER_RESULT', payload: show }),
+  setResultsLoading: (loading) => ({ type: 'SET_RESULTS_LOADING', payload: loading }),
+  // Sets the date fields to the default range and marks the default as applied
+  applyDefaultDates: ({ startDate, endDate }) => ({ type: 'APPLY_DEFAULT_DATES', payload: { startDate, endDate } }),
 };
 
 export function filterReducer(state, action) {
@@ -65,10 +71,12 @@ export function filterReducer(state, action) {
       return { ...state, filterQuery: action.payload };
     case 'SET_FILTER_RESULT':
       return { ...state, filterResult: action.payload };
-    case 'TOGGLE_FILTER_RESULT':
-      return { ...state, returnFilterResult: action.payload };
+    case 'SET_RESULTS_LOADING':
+      return { ...state, resultsLoading: action.payload };
+    case 'APPLY_DEFAULT_DATES':
+      return { ...state, ...action.payload, defaultApplied: true };
     case 'CLEAR_ALL':
-      return initialFilterState;
+      return { ...initialFilterState, defaultApplied: state.defaultApplied };
     default:
       return state;
   }
