@@ -1462,3 +1462,10 @@ position: absolute !important;
   line-height: 1.4;
   overflow-wrap: anywhere;
 }
+
+/* Date shortcut whose range matches the current dates (dateFilter.js isShortcutSelected) */
+.shortcut-button.shortcut-button--selected{
+  background-color: #e55162 !important;
+  color: white !important;
+  font-weight: bold;
+}

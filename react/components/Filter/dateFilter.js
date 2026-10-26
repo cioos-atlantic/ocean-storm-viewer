@@ -120,11 +120,25 @@ export function DateDisplay({setStartDate, setEndDate, startDate, endDate}){
       },
     },
     }
-  const handleShortcutClick = (getValue) => {
+  // A shortcut's range; "This Week" / "Current Month" end in the future, so keep them within the allowed range
+  const getShortcutRange = (getValue) => {
     const [newStartDate, newEndDate] = getValue();
+    return [newStartDate, newEndDate.isAfter(MAX_DATE) ? MAX_DATE : newEndDate];
+  };
+
+  const handleShortcutClick = (getValue) => {
+    const [newStartDate, newEndDate] = getShortcutRange(getValue);
     setStartDate(newStartDate);
-    // "This Week" / "Current Month" end in the future; keep them within the allowed range
-    setEndDate(newEndDate.isAfter(MAX_DATE) ? MAX_DATE : newEndDate);}
+    setEndDate(newEndDate);
+  };
+
+  // A shortcut shows as selected while the dates match its range (same days), whether they were set
+  // by the shortcut, the pickers, or the default range on page load
+  const isSameDay = (a, b) => Boolean(a?.isValid?.() && b?.isValid?.() && a.isSame(b, 'day'));
+  const isShortcutSelected = (getValue) => {
+    const [shortcutStart, shortcutEnd] = getShortcutRange(getValue);
+    return isSameDay(startDate, shortcutStart) && isSameDay(endDate, shortcutEnd);
+  };
 
   // Each picker is limited by the other date, so end can never be before start
   // (only when the other date is itself usable, so one mistyped date doesn't mark both invalid)
@@ -141,10 +155,12 @@ export function DateDisplay({setStartDate, setEndDate, startDate, endDate}){
       sx={{display: 'block'}}>
       <Box >
             {shortcutsItems.map((shortcut, indx) => {
+              const selected = isShortcutSelected(shortcut.getValue);
               return(
                 <Button
                 key={indx}
-                className='shortcut-button'
+                className={`shortcut-button${selected ? ' shortcut-button--selected' : ''}`}
+                aria-pressed={selected}
                 onClick={()=>{handleShortcutClick(shortcut.getValue)}}>
                   {shortcut.label}
                 </Button>
