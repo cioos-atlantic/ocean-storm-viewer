@@ -12,7 +12,7 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 
-export function InputFilter({input_filter, filterStormName, setFilterStormName, startDate, endDate, polyCoords, startCategory, endCategory}){
+export function InputFilter({input_filter, filterStormName, setFilterStormName}){
   const handleClearAll = () => {
     setFilterStormName([]);
   };
@@ -30,11 +30,6 @@ export function InputFilter({input_filter, filterStormName, setFilterStormName, 
         input_filter={input_filter}
         filterStormName={filterStormName}
         setFilterStormName={setFilterStormName}
-        startDate={startDate}
-        endDate={endDate}
-        polyCoords={polyCoords}
-        startCategory={startCategory}
-        endCategory={endCategory}
       />
     </FilterPanel>
   )
@@ -48,9 +43,9 @@ function InlineOptionList(props) {
 }
 
 
-// Panel body for the Storm Name filter. Mounted only while the panel is open, so the names are
-// loaded each time it opens (for the current date, category and area filters).
-function StormNamePicker({input_filter, filterStormName, setFilterStormName, startDate, endDate, polyCoords, startCategory, endCategory}){
+// Panel body for the Storm Name filter: every historical storm name, whatever the other filters are
+// (input_filter.query fetches the list once per page load and reuses it).
+function StormNamePicker({input_filter, filterStormName, setFilterStormName}){
   const [stormNameList, setStormNameList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadFailed, setLoadFailed] = useState(false);
@@ -59,11 +54,11 @@ function StormNamePicker({input_filter, filterStormName, setFilterStormName, sta
   const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
-    let ignore = false; // a response that arrives after the panel closed or the filters changed is dropped
+    let ignore = false; // a response that arrives after the panel closed is dropped
 
     async function loadStormNames() {
       setLoading(true);
-      const stormNames = await input_filter.query(startDate, endDate, polyCoords, startCategory, endCategory);
+      const stormNames = await input_filter.query();
       if (ignore) return;
 
       // A failed request returns no list; the message shows in the list instead of a pop-up
@@ -75,7 +70,7 @@ function StormNamePicker({input_filter, filterStormName, setFilterStormName, sta
 
     loadStormNames();
     return () => { ignore = true; };
-  }, [input_filter, startDate, endDate, polyCoords, startCategory, endCategory]);
+  }, [input_filter]);
 
   return(
     <div className="storm-name-panel">

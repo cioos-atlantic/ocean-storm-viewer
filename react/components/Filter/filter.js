@@ -128,11 +128,6 @@ export function RenderFilter({ clearShapesRef, dispatch, setStationPoints }) {
                     input_filter={input_filter}
                     filterStormName={filterStormName}
                     setFilterStormName={setFilterStormName}
-                    startDate={startDate}
-                    endDate={endDate}
-                    polyCoords={polyFilterCoords}
-                    startCategory={startCategory}
-                    endCategory={endCategory}
                   />
                 </div>
               )

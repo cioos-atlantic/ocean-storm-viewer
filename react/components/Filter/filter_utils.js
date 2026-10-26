@@ -110,56 +110,34 @@ export function formatCategoryRange(startCategory, endCategory) {
   return { start_category: String(startRange.min), end_category: String(endRange.max) };
 }
 
-export async function queryStormName(startDate = null, endDate = null, polyCoords= '', startCategory = null, endCategory= null) {
+// Every historical storm name, for the Storm Name filter. The list does not depend on the other
+// filters, so it is fetched once per page load (from /api/storm_name, which returns only the names)
+// and reused each time the panel opens. Returns undefined when the request fails, so the next
+// open tries again.
+let stormNamesRequest = null;
 
-  const updatedParams = {
-      startDate: startDate, // Ensure start and end dates are included
-      endDate: endDate,
-      polyCoords: polyCoords,
-      startCategory: startCategory,
-      endCategory:endCategory,
-      
-
-    };
-
-  
-  const start_date = formatFilterDate(updatedParams['startDate']);
-  const end_date = formatFilterDate(updatedParams['endDate']);
-  
-  const storm_poly = updatedParams['polyCoords'];                       
-  const { start_category, end_category } = formatCategoryRange(updatedParams['startCategory'], updatedParams['endCategory']);
-
-  const query = new URLSearchParams({
-    start_date: start_date,
-    end_date: end_date,
-    polygon: storm_poly,
-    start_category: start_category,
-    end_category: end_category,
-
-  }).toString();
-  let uniqueList; // stays undefined when the request fails; an empty list just means no matching storms
-  try {
-    const resource = await fetch(`${basePath}/api/filter_storms?${query}`);
-    if (!resource.ok) throw new Error(`filter_storms returned ${resource.status}`);
-    const storm_data = await resource.json();
-
-    uniqueList = makeStormNameList(storm_data)
-
-  } catch (error) {
-    
-    console.error('Error fetching storm or station data:', error);
-    
+export async function queryStormName() {
+  if (!stormNamesRequest) {
+    stormNamesRequest = (async () => {
+      const resource = await fetch(`${basePath}/api/storm_name`);
+      if (!resource.ok) throw new Error(`storm_name returned ${resource.status}`);
+      return makeStormNameList(await resource.json());
+    })();
   }
 
-  return uniqueList
-  
-
+  try {
+    return await stormNamesRequest;
+  } catch (error) {
+    stormNamesRequest = null;
+    console.error('Error fetching storm names:', error);
+    return undefined;
+  }
 }
 
 
 export function formatFilterDate(date) {
   if (!date?.isValid?.()) {
-    return ""; // No date, or a half-typed one (the storm name list skips it until it is complete)
+    return ""; // No date, or a half-typed one
   }
   const formattedDate = date.format("YYYY-MM-DD").trim();
   return formattedDate;
