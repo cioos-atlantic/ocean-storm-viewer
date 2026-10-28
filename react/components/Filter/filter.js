@@ -256,7 +256,6 @@ export async function processFilterRequest(filterParameters, setLoading) {
     if (!resource.ok) throw new Error(`filter_storms returned ${resource.status}`);
     const storm_data = await resource.json();
 
-    console.debug(`historical Storm Data for ${stormCategory} Between  ${startDate} and ${endDate}: `, storm_data);
     // Create a set to track unique IDs and add objects to the result list
     uniqueList = makeStormList(storm_data)
 
