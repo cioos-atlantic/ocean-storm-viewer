@@ -38,7 +38,7 @@ export default function InfoScreen({setInfo, open, onClose }){
 
             <h5>🌀 Historical Storms Page</h5>
             <ul>
-            <li> <b>Sidebar</b>: Toggleable list of recent storms (last year).</li>
+            <li> <b>Sidebar</b>: Filters and the matching storms; storms from the last 12 months are listed when the page opens.</li>
             <li> <b>Clicking a storm</b>:</li>
             <li> Displays storm track on the map.</li>
             <li> Loads associated station data.</li>

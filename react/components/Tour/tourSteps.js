@@ -22,7 +22,7 @@ export function getTourSteps({ isActive, isHistorical, }) {
   }
    if (isHistorical) {
     steps.push({
-      selector: ".historical_storm_search_result",
+      selector: ".historical-storm-results",
       content:
         "This panel shows historical storms. Click on one to see the storm track and data."
     }, {

@@ -1,206 +1,110 @@
-import { Button, Box,  Paper,  OutlinedInput,  FormControl, InputLabel, Autocomplete, TextField, Checkbox, Stack, Select, MenuItem, ListItemText, Popper  } from "@mui/material"
-import {  useState } from 'react';
-import { smallScreenIconButton } from "./filter_utils";
-import { CloseOptions, ShowOptions } from "./filter";
+import { Autocomplete, TextField, Checkbox, InputAdornment } from "@mui/material"
+import { useEffect, useState } from 'react';
+import { FilterPanel } from "./FilterPanel";
+import { formatStormNamesSummary } from "./filter_utils";
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import React, { forwardRef } from 'react';
+import React from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
-import { filterActions } from "@/components/Filter/filterReducer";
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-function sleep(duration) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, duration);
-  });
-}
 
-
-export function InputFilter({input_filter, showFilterOptions, setShowFilterOptions, filterDispatch, filterStormName, setFilterStormName, startDate, endDate, polyCoords, startCategory, endCategory}){
-  //console.log(startDate, endDate, polyCoords, startCategory, endCategory)
-  const [inputValue, setInputValue] = useState(""); // Controlled input field
-  const [stormNameList, setStormNameList] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  
-
-  const validStormList = filterStormName;
-  
-  const buttonStyle = {
-    backgroundColor: validStormList?.length > 0 ? '#e55162' : 'white',
-    color: validStormList?.length > 0 ? 'white' : '#e55162',
-    '&:hover': {
-      backgroundColor: validStormList?.length > 0 ? '#ffd1dc' : '#82ccdd', 
-      color: validStormList?.length > 0 ? 'black' : 'black',
-    },
-  };
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      sx: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        //overflow: 'hidden',
-        
-        
-      },
-    },
-  };
-  
-
-
-
-  
-  const handleSelectAll = () => {
-    if (filterStormName.length === stormNameList.length) {
-      setFilterStormName([]); // Unselect all
-    } else {
-      setFilterStormName(stormNameList); // Select all
-    }
-  };
-  
-    const handleClearAll = () => {
-      setFilterStormName([]);
-    };
-    const toggleStorm = (name) => {
-    setFilterStormName(prev =>
-      prev.includes(name) ? prev.filter(s => s !== name) : [...prev, name]
-    );
-    };
-    const getDisplayValue = () => {
-    if (filterStormName.length === 0) return '';
-    if (filterStormName.length <= 2) return filterStormName.join(', ');
-    return `${filterStormName.length} selected`;
-  };
-
-
- function handleIconClick(){
-
-    filterDispatch(filterActions.setShowFilterSelected(true))
-    filterDispatch(filterActions.setCatSelection(false));
-    filterDispatch(filterActions.setDateSelection(false));
-    setShowFilterOptions((prev) => ({
-      ...prev,
-      [input_filter.name]: !prev[input_filter.name],
-    }));
-  }
-  const handleOpen = () => {
-    setOpen(true);
-    (async () => {
-      setLoading(true);
-  
-      const stormNames = await input_filter.query(startDate, endDate, polyCoords, startCategory, endCategory); 
-      if (!stormNames || !Array.isArray(stormNames))
-        { alert("No storm name data available...")
-          setLoading(false);
-          setStormNameList(["No storm name data available... "]);
-        }
-      else{
-        setLoading(false);
-        setStormNameList([...stormNames]);
-      }
-      
-    })();
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    //setStormNameList([]);
+export function InputFilter({input_filter, filterStormName, setFilterStormName}){
+  const handleClearAll = () => {
+    setFilterStormName([]);
   };
 
   return(
-    <>
-    <Button
-      className="filter-badge"
-      onClick= {handleIconClick}
-      startIcon={input_filter.Icon ? <input_filter.Icon /> : null}
-      endIcon={ !showFilterOptions[input_filter.name] ? (<ShowOptions/>):(<CloseOptions/>)}
-      sx={{...buttonStyle,
-        display: "inline-flex",}
-      }
-    >{input_filter.display_name}
-
-    </Button>
-
-    
-
-    
-    
-    {/* Filter Input Popup */}
-    {showFilterOptions[input_filter.name] && (
-      <Paper elevation={3} 
-        key={input_filter.name}
-        className="input-filter"
-        sx={{top:'1px',
-        right:'0px',
-        
-        
-        }}>
-          <Stack direction="row"  spacing={4} sx={{ mt: 0.5, mb: 1, justifyContent: 'center' }}>
-                      
-        
-           
-            <Button size="small" className="shortcut-button" onClick={handleClearAll}>Clear</Button>
-            <Button size="small" className="shortcut-button" onClick={() => setShowFilterOptions({ ...showFilterOptions, [input_filter.name]: false })}>
-              Close
-            </Button>
-    
-      </Stack>
+    <FilterPanel
+      name={input_filter.name}
+      label={input_filter.display_name}
+      Icon={input_filter.Icon}
+      isActive={filterStormName?.length > 0}
+      summary={formatStormNamesSummary(filterStormName)}
+      placeholder="Any storm"
+      onClear={handleClearAll}>
+      <StormNamePicker
+        input_filter={input_filter}
+        filterStormName={filterStormName}
+        setFilterStormName={setFilterStormName}
+      />
+    </FilterPanel>
+  )
+}
 
 
+// Renders the Autocomplete's option list in the panel, under the text box, instead of a floating popup
+function InlineOptionList(props) {
+  const { disablePortal, anchorEl, open, ...other } = props;
+  return <div {...other} />;
+}
+
+
+// Panel body for the Storm Name filter: every historical storm name, whatever the other filters are
+// (input_filter.query fetches the list once per page load and reuses it).
+function StormNamePicker({input_filter, filterStormName, setFilterStormName}){
+  const [stormNameList, setStormNameList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
+  // Search text is kept when a name is picked or the box loses focus, so several names sharing a
+  // term can be picked without retyping it; only typing changes it
+  const [searchText, setSearchText] = useState('');
+
+  useEffect(() => {
+    let ignore = false; // a response that arrives after the panel closed is dropped
+
+    async function loadStormNames() {
+      setLoading(true);
+      const stormNames = await input_filter.query();
+      if (ignore) return;
+
+      // A failed request returns no list; the message shows in the list instead of a pop-up
+      const failed = !Array.isArray(stormNames);
+      setLoadFailed(failed);
+      setStormNameList(failed ? [] : [...stormNames]);
+      setLoading(false);
+    }
+
+    loadStormNames();
+    return () => { ignore = true; };
+  }, [input_filter]);
+
+  return(
+    <div className="storm-name-panel">
       <Autocomplete
         multiple
-        //limitTags={1}
         fullWidth
+        open // the list is always shown in the panel (see InlineOptionList)
+        PopperComponent={InlineOptionList}
         disableCloseOnSelect
+        disableClearable // the field's own ✕ clears the names; no second ✕ in the text box
+        forcePopupIcon={false} // no ▲/▼ in the text box: the list is always open
         autoComplete
-        //disablePortal
         options={stormNameList}
         value={filterStormName}
-        disabled={false}
         size='small'
         onChange={(event, newValue) => setFilterStormName(newValue)}
-        open={open}
-        onOpen={handleOpen}
-        onClose={handleClose}
+        inputValue={searchText}
+        onInputChange={(event, newText, reason) => { if (reason === 'input') setSearchText(newText); }}
         loading={loading}
-        
-        //getLimitTagsText={(more) => `+${more} names`}
+        loadingText="Loading storm names…"
+        noOptionsText={loadFailed ? "Couldn't load storm names. Close and reopen to try again." : "No storms match"}
         getOptionLabel={(option) => option}
-        renderTags={(value, getTagProps) => {
-    if (value.length === 0) return null;
-
-    
-
-      return [
-        <span key={`tag-${value[0]}`} {...getTagProps({ index: 0 })}>
-          {value[0]}
-        </span>,
-        value.length > 1 ? (
-          <span key="tag-more" style={{ marginLeft: 4 }}>
-            +{value.length - 1}
-          </span>
-        ) : null
-      ];
-  }}
+        // Picked names are shown on the Storm Name field above, so the search box only holds the search text
+        renderTags={() => null}
         renderOption={(props, option, { selected }) => {
-          const { key, ...rest } = props; // extract key
+          const { key, className, ...rest } = props; // extract key
 
           return(
-          <li key={key} {...rest}>
+          <li key={key} className={`${className} storm-name-option${selected ? ' storm-name-option--selected' : ''}`} {...rest}>
             <Checkbox
               icon={icon}
               checkedIcon={checkedIcon}
-              sx={{ 
-                  marginRight: 1.5,
-                  color: '#e55162', 
-                  padding: '6px', 
-                  alignSelf: 'center' }}
+              size="small"
+              className="storm-name-checkbox"
               checked={selected}
             />
             {option}
@@ -209,55 +113,38 @@ export function InputFilter({input_filter, showFilterOptions, setShowFilterOptio
         renderInput={(params) => (
           <TextField
             {...params}
-            //label={input_filter.display_name}
-            placeholder="Search storms"
+            className="storm-name-search"
+            placeholder="Search storm names"
             slotProps={{
               input: {
                 ...params.InputProps,
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchRoundedIcon fontSize="small" />
+                  </InputAdornment>
+                ),
                 endAdornment: (
                   <React.Fragment>
-                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                    {loading ? <CircularProgress color="inherit" size={18} /> : null}
                     {params.InputProps.endAdornment}
                   </React.Fragment>
                 ),
               },
             }}
-            
-            
           />
         )}
-        
-        
+
         slotProps={{
           paper: {
-            sx: {
-              borderRadius: "0px",
-              boxShadow: "0px 6px 16px #00000026",
-            },
+            // Part of the panel, not a floating popup: no shadow or border of its own
+            sx: { borderRadius: 0, boxShadow: "none", backgroundColor: "transparent", marginTop: "6px" },
           },
           listbox: {
-            sx:{maxHeight:  {xs: '180px', md: '250px',},
-            overflowY: "auto", padding:  0, // remove UL padding
-            }
+            // About 5 names visible; the rest scroll
+            sx: { maxHeight: { xs: '160px', md: '180px' }, overflowY: "auto", padding: 0 },
           },
-          
         }}
-         
-    
-        
       />
-      {/* Action buttons OUTSIDE popper */}
-      
-    </Paper>
-
-    
-)}
-    </>
+    </div>
   )
 }
-
-
- 
-
-
-

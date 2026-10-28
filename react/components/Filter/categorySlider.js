@@ -1,10 +1,8 @@
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
-import { useEffect, useState } from 'react';
-import { Box, Button, Card, CardContent, CardActions, Slider } from "@mui/material";
-//import { storm_categories } from "@/lib/storm_class";
+import { Box, Card, CardContent, Slider } from "@mui/material";
 import {storm_cat} from "@/lib/storm_cat"
-import { ShowOptions, CloseOptions } from './filter';
-import { smallScreenIconButton } from './filter_utils';
+import { FilterPanel } from './FilterPanel';
+import { formatCategorySummary } from './filter_utils';
 import { filterActions } from "@/components/Filter/filterReducer";
 export const storm_category_list = [
   { label: "C5", value: 6 },
@@ -17,60 +15,56 @@ export const storm_category_list = [
 
 ]
 
-export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowCatSelection, startCategory, endCategory }) {
-  const stormCategoryLink = "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html";
-  const defaultText = <>
-  Adjust the slider to filter storms by category, from Tropical Depression (TD)  to Category 5. <br />
-  Learn more about {" "}
-  <a href={stormCategoryLink}
-     target="_blank"
-     rel="noopener noreferrer">
-    storm categories
-  </a>.
-</>;
+const values = storm_category_list.map(item => item.value);
+const minCategory = Math.min(...values);
+const maxCategory = Math.max(...values);
 
-  const [sliderText, setSliderText] = useState(defaultText);
-  
-  const values = storm_category_list.map(item => item.value);
-  const minCategory = Math.min(...values);
-  const maxCategory = Math.max(...values);
- 
-  
-  // Independent state for the slider's range
-  const [value, setValue] = useState([minCategory, maxCategory]);
-  const [startLabel, setStartLabel] = useState("");
-  const [endLabel, setEndLabel] = useState("");
+const labelToValue = (label) => storm_category_list.find(item => item.label === label)?.value;
+const valueToLabel = (value) => storm_category_list.find(item => item.value === value)?.label;
+
+// startCategory / endCategory are category labels ('TD' ... 'C5'), or null when not set
+export function CategoryRangeSlider({ setStartCategory, setEndCategory, startCategory, endCategory }) {
+  const stormCategoryLink = "https://www.canada.ca/en/environment-climate-change/services/archive/hurricanes/extratropical-transition/classification.html";
+  const startLabel = startCategory;
+  const endLabel = endCategory;
+  const hasSelection = startLabel != null && endLabel != null;
+
+  // Slider position comes from the reducer, so it is restored when the panel reopens
+  const value = hasSelection
+    ? [labelToValue(startLabel), labelToValue(endLabel)]
+    : [minCategory, maxCategory];
 
   const handleChange = (_, newValue) => {
     if (!Array.isArray(newValue)) return;
 
     const [start, end] = newValue;
+    const newStartLabel = valueToLabel(start);
+    const newEndLabel = valueToLabel(end);
 
-    setValue(newValue);
-    
-    const newStartLabel = storm_category_list.find(v => v.value === start)?.label;
+    if (!newStartLabel || !newEndLabel) return;
 
-    const newEndLabel = storm_category_list.find(v => v.value === end)?.label;
-
-    setStartLabel(newStartLabel);
-    setEndLabel(newEndLabel);
-
-    const startRange = newStartLabel ? storm_cat[newStartLabel] : null;
-    const endRange = newEndLabel ? storm_cat[newEndLabel] : null;
-
-    if (!startRange || !endRange) return;
-
-    setStartCategory(startRange.min);
-    setEndCategory(endRange.max);
+    setStartCategory(newStartLabel);
+    setEndCategory(newEndLabel);
   };
 
-  useEffect(() => {
-    if (startLabel != "" && endLabel != "") {
-      
-  
-      setSliderText(
+  const sliderText = !hasSelection ? (
+    <>
+      Adjust the slider to filter storms by category, from Tropical Depression (TD)  to Category 5. <br />
+      Learn more about {" "}
+      <a href={stormCategoryLink}
+         target="_blank"
+         rel="noopener noreferrer">
+        storm categories
+      </a>.
+    </>
+  ) : (
         <>
-          You&apos;ve selected storms from <strong>{storm_cat[startLabel]?.name.en}</strong> to <strong>{storm_cat[endLabel]?.name.en}</strong>. <br />
+          {/* Both thumbs on one category: name and describe it once */}
+          {startLabel === endLabel ? (
+            <>You&apos;ve selected <strong>{storm_cat[startLabel]?.name.en}</strong> storms. <br /></>
+          ) : (
+            <>You&apos;ve selected storms from <strong>{storm_cat[startLabel]?.name.en}</strong> to <strong>{storm_cat[endLabel]?.name.en}</strong>. <br /></>
+          )}
           {' '}
 
           <a href={storm_cat[startLabel]?.more_info_link}
@@ -78,14 +72,19 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
              rel="noopener noreferrer">
             <strong>{storm_cat[startLabel]?.name.en}</strong>
           </a>
-            - {storm_cat[startLabel]?.sub_info}. 
+            - {storm_cat[startLabel]?.sub_info}.
             {' '}
 
-          <a href={storm_cat[endLabel]?.more_info_link}
-            target="_blank"
-            rel="noopener noreferrer">
-            <strong>{storm_cat[endLabel]?.name.en}</strong>
-          </a> - {storm_cat[endLabel]?.sub_info}. <br />
+          {startLabel !== endLabel && (
+            <>
+              <a href={storm_cat[endLabel]?.more_info_link}
+                target="_blank"
+                rel="noopener noreferrer">
+                <strong>{storm_cat[endLabel]?.name.en}</strong>
+              </a> - {storm_cat[endLabel]?.sub_info}.
+            </>
+          )}
+          <br />
           [See more details{' '}
           <a href={stormCategoryLink}
              target="_blank"
@@ -93,12 +92,7 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
             here
           </a>.]
         </>
-      );
-    } else {
-      setSliderText(defaultText
-      );
-    }
-  }, [startLabel, endLabel]);
+  );
 
   return (
     <Card
@@ -118,7 +112,6 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
                 getAriaLabel={() => 'Category range'}
                 value={value}
                 onChange={handleChange}
-                //valueLabelDisplay="auto"
                 min={minCategory}
                 max={maxCategory}
                 marks={ [...storm_category_list].sort((a, b) => a.value - b.value) }
@@ -126,99 +119,33 @@ export function CategoryRangeSlider({ setStartCategory, setEndCategory, setShowC
             </Box>
 
         </CardContent>
-        <CardActions
-              className='date-card-content'>
-                <Box 
-                  sx={{ display: 'flex', justifyContent: 'center', gap: '2px', width: '100%' }}>
-                    <Button 
-                      size="small"
-                      className='shortcut-button'
-                      onClick={() => {
-                        setValue([minCategory, maxCategory]); // Reset slider range
-                        setSliderText(defaultText); 
-                        setStartCategory(""); 
-                        setEndCategory(""); 
-                        setStartLabel("");
-                        setEndLabel("");  
-                      }}>Clear</Button>
-                    <Button 
-                      size="small" 
-                      className='shortcut-button' 
-                      onClick={()=> {setShowCatSelection(false)}}>Close</Button>
-        
-        
-                </Box>
-                
-                
-        
-              </CardActions>
 
     </Card>
     
   );
 }
 
-export function RenderCategoryFilter({ filterDispatch, setShowFilterOptions, startCategory, endCategory, showCatSelection }){
-  
-  //const [showCatSelection, setShowCatSelection] = useState(false); 
-  const hasValidCategory = startCategory && endCategory;
-  const buttonStyle = {
-    backgroundColor: hasValidCategory  ? '#e55162' : 'white',
-    color: hasValidCategory ? 'white' : '#e55162',
-    
-    '&:hover': {
-      backgroundColor: hasValidCategory ? '#ffd1dc' : '#82ccdd',
-      color: hasValidCategory ? 'black' : 'black',
-    },
-  };
-
-  function handleIconClick(){
-    //setShowCatSelection(prev => !prev);
-    filterDispatch(filterActions.setShowFilterSelected(true))
-    filterDispatch(filterActions.toggleCatSelection());
-    filterDispatch(filterActions.setDateSelection(false));
-    setShowFilterOptions(prev => ({
-      ...prev,
-      stormName: false, // stormName must be defined here
-    }));
-  }
-  
-
-
+export function RenderCategoryFilter({ filterDispatch, startCategory, endCategory }){
+  const hasValidCategory = startCategory != null && endCategory != null;
 
   return (
-    <>
-    <Button
-    className="filter-badge"
-    onClick= {handleIconClick}
-    startIcon={<CategoryOutlinedIcon />}
-    endIcon={ !showCatSelection ? (<ShowOptions/>):(<CloseOptions/>)}
-    sx={{...buttonStyle,
-      display: "inline-flex",
-       }
-    }>
-      
-      Storm Category
-      
-      
-
-    </Button>
-    
-    
-
-    {showCatSelection && 
-      (<CategoryRangeSlider 
-        setStartCategory = {(category) => filterDispatch(filterActions.setStartCategory(category))}
-        setEndCategory = {(category) => filterDispatch(filterActions.setEndCategory(category))}
-        setShowCatSelection={(status) => filterDispatch(filterActions.setCatSelection(status))}
+    <FilterPanel
+      name="category"
+      label="Storm Category"
+      Icon={CategoryOutlinedIcon}
+      isActive={hasValidCategory}
+      summary={formatCategorySummary(startCategory, endCategory)}
+      placeholder="Any category"
+      onClear={() => {
+        filterDispatch(filterActions.setStartCategory(null));
+        filterDispatch(filterActions.setEndCategory(null));
+      }}>
+      <CategoryRangeSlider
+        setStartCategory={(category) => filterDispatch(filterActions.setStartCategory(category))}
+        setEndCategory={(category) => filterDispatch(filterActions.setEndCategory(category))}
         startCategory={startCategory}
-        endCategory={endCategory}/>)}
-
-
-    </>
-
-
-    
+        endCategory={endCategory} />
+    </FilterPanel>
   );
 };
 
