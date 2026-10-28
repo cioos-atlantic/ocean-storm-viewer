@@ -1,37 +1,56 @@
-import { IconButton, Tooltip } from "@mui/material";
+import dayjs from "dayjs";
 import { basePath } from "@/next.config";
+import { storm_cat } from "@/lib/storm_cat";
 
-export function smallScreenIconButton(toolTipTitle, handleIconClick, buttonStyle, Icon){
-  return (
-    <Tooltip title={toolTipTitle} placement="left">
-    <IconButton
-    //className="filter-badge"
-    onClick={(e) => {
-      e.stopPropagation(); // Prevent closing
-      handleIconClick();
-    }}
-    
-    sx={{...buttonStyle,
-      display: { xs: "flex", md: "none" },
-      textDecoration: 'none',
-      alignItems: 'center',
-      width: '40px',
-      height: '40px',
-      margin: '8px',
-      transition: 'transform 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,opacity 0.8s',
-      opacity: '1',
-      cursor: 'pointer',
-      transitionDelay: '30ms',
-      boxShadow: '0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12)',
-      //border:'solid red 1px',
-    }
-      
+// Earliest and latest dates the date filter allows (pickers and year slider).
+// MIN_DATE is the start of the earliest storm in the historical data (SID 1851175N26270).
+export const MIN_DATE = dayjs('1851-06-23');
+export const MAX_DATE = dayjs().endOf('day');
 
-    }><Icon/>
-    </IconButton> </Tooltip>
-  )
+// The date pickers store whatever was typed, so the field, the summary and the query always agree.
+// Returns why the typed dates can't be applied ('' when they can, or when no date is set):
+// incomplete or impossible, outside MIN_DATE..MAX_DATE, or an end before the start.
+export function getDateRangeError(startDate, endDate) {
+  const isUnusable = (date) => date != null &&
+    (!date.isValid() || date.isBefore(MIN_DATE, 'day') || date.isAfter(MAX_DATE, 'day'));
 
+  if (isUnusable(startDate) || isUnusable(endDate)) return 'Enter dates between 23/06/1851 and today';
+  if (startDate && endDate && endDate.isBefore(startDate, 'day')) return 'End date is before the start date';
+  return '';
 }
+
+// Date range the historical page starts with, so storms are listed on first load: the last 12 months
+export function getDefaultDateRange() {
+  const today = dayjs().startOf('day');
+  return { startDate: today.subtract(1, 'year'), endDate: today };
+}
+
+// Short text for a filter's current value, shown on the filter buttons and with the results.
+// Each returns '' when that filter is not set.
+export function formatStormNamesSummary(names = []) {
+  if (!names?.length) return '';
+  if (names.length <= 2) return names.join(', ');
+  return `${names.slice(0, 2).join(', ')} +${names.length - 2}`;
+}
+
+export function formatDateRangeSummary(startDate, endDate) {
+  const hasStart = Boolean(startDate) && dayjs(startDate).isValid();
+  const hasEnd = Boolean(endDate) && dayjs(endDate).isValid();
+  const format = (date) => dayjs(date).format('DD/MM/YYYY');
+
+  if (hasStart && hasEnd) return `${format(startDate)} – ${format(endDate)}`;
+  if (hasStart) return `From ${format(startDate)}`;
+  if (hasEnd) return `Until ${format(endDate)}`;
+  return '';
+}
+
+export function formatCategorySummary(startCategory, endCategory) {
+  if (startCategory == null || endCategory == null) return '';
+  const startName = storm_cat[startCategory]?.name?.en;
+  const endName = storm_cat[endCategory]?.name?.en;
+  return startCategory === endCategory ? startName : `${startName} – ${endName}`;
+}
+
 export function titleCase(str) {
     if ((str === null) || (str === ''))
         return false;
@@ -74,98 +93,57 @@ export function makeStormNameList(storm_data){
   return editedStormList;
 }
 
-export async function queryStormName(startDate = null, endDate = null, polyCoords= '', startCategory = '', endCategory= '') {
+// Number of filters with a value (0-4): storm names, date (either end; open-ended ranges are
+// allowed; a mistyped date still counts, see getDateRangeError), a full category range, and a drawn polygon
+export function countActiveFilters({ filterStormName, startDate, endDate, startCategory, endCategory, polyFilterCoords }) {
+  return [
+    filterStormName?.length > 0,
+    startDate != null || endDate != null,
+    startCategory != null && endCategory != null,
+    Boolean(polyFilterCoords),
+  ].filter(Boolean).length;
+}
 
-  const updatedParams = {
-      //...selectedOptions, // Spread selected options correctly
-      startDate: startDate, // Ensure start and end dates are included
-      endDate: endDate,
-      polyCoords: polyCoords,
-      startCategory: startCategory,
-      endCategory:endCategory,
-      
+// Converts the category labels kept in filterReducer ('TD' ... 'C5') to the wind-speed range
+// the filter API expects. TD's min is 0, so check for null instead of truthiness.
+export function formatCategoryRange(startCategory, endCategory) {
+  const startRange = startCategory != null ? storm_cat[startCategory] : null;
+  const endRange = endCategory != null ? storm_cat[endCategory] : null;
 
-    };
+  if (!startRange || !endRange) {
+    return { start_category: '', end_category: '' };
+  }
+  return { start_category: String(startRange.min), end_category: String(endRange.max) };
+}
 
-  
-  const start_date = formatFilterDate(updatedParams['startDate']);
-  const end_date = formatFilterDate(updatedParams['endDate']);
-  
-  const storm_poly = updatedParams['polyCoords'];                       
-  const start_category= (updatedParams['startCategory']) ? updatedParams['startCategory'] : '';
-  const end_category = (updatedParams['endCategory']) ? updatedParams['endCategory'] : '';
+// Every historical storm name, for the Storm Name filter. The list does not depend on the other
+// filters, so it is fetched once per page load (from /api/storm_name, which returns only the names)
+// and reused each time the panel opens. Returns undefined when the request fails, so the next
+// open tries again.
+let stormNamesRequest = null;
 
-  const query = new URLSearchParams({
-    start_date: start_date,
-    end_date: end_date,
-    polygon: storm_poly,
-    start_category: start_category,
-    end_category: end_category,
-
-  }).toString();
-  let uniqueList;
-  try {
-    //const resource = await fetch_retry(`${basePath}/api/storm_names?`, 3)
-    const resource = await fetch(`${basePath}/api/filter_storms?${query}`);
-    const storm_data = await resource.json();
-    
-    uniqueList = makeStormNameList(storm_data)
-    // Create a set to track unique IDs and add objects to the result list
-    
-    if (uniqueList.length === 0) {
-      alert("No result found for this search, please try again...")
-    }
-
-    
-
-
-  } catch (error) {
-    
-    console.error('Error fetching storm or station data:', error);
-    
+export async function queryStormName() {
+  if (!stormNamesRequest) {
+    stormNamesRequest = (async () => {
+      const resource = await fetch(`${basePath}/api/storm_name`);
+      if (!resource.ok) throw new Error(`storm_name returned ${resource.status}`);
+      return makeStormNameList(await resource.json());
+    })();
   }
 
-  return uniqueList
-  
-
+  try {
+    return await stormNamesRequest;
+  } catch (error) {
+    stormNamesRequest = null;
+    console.error('Error fetching storm names:', error);
+    return undefined;
+  }
 }
 
 
-const fetch_retry = async (url, n, baseDelay = 100) => {
-  let error;
-  for (let i = 0; i < n; i++) {
-    try {
-      const res = await fetch(url);
-
-      if (res.status === 404) {
-        throw new Error(`Non-retryable error: ${res.status} Not Found`);
-      }
-
-      if (!res.ok) {
-        error = new Error(`HTTP error: ${res.status}`);
-      } else {
-        return res; // ✅ success
-      }
-    } catch (err) {
-      error = err;
-    }
-
-    if (i < n - 1) {
-      const delay = baseDelay * (2 ** i); // exponential backoff
-      console.warn(
-        `Attempt ${i + 1} failed (${error.message}). Retrying in ${delay}ms...`
-      );
-      await new Promise(resolve => setTimeout(resolve, delay));
-    }
-  }
-
-  throw error; // after all retries fail
-};
-
-
 export function formatFilterDate(date) {
-  if (!date) {
-    return ""; // Return an empty string if no date is provided
+  if (!date?.isValid?.()) {
+    return ""; // No date, or a half-typed one
   }
   const formattedDate = date.format("YYYY-MM-DD").trim();
   return formattedDate;
@@ -177,9 +155,6 @@ export function formatStormCategory(category_list = []) {
 }
 
 export function formatStormName(storm_list = []) {
-  //storm_names = storm_names.replace(/\s+/g, ''); // Remove all spaces
-  //const storm_list = storm_names.split(",");
-
   const formattedStormList = [];
   if (storm_list.length > 0) {
     formattedStormList.push(storm_list.join("_"));

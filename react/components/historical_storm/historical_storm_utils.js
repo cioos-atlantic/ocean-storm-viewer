@@ -1,50 +1,7 @@
-import { subYears } from "date-fns";
 import {  build_storm_features } from "@/lib/storm_utils";
 import { flyToPoint } from "../storm_list_item";
 import { empty_station_obj } from "../point_defaults";
 import { basePath } from "@/next.config";
-
-/**
- * This JavaScript function fetches historical storm data from an API based on a specified time range
- * and returns a list of unique storm objects.
- * @returns The `getHistoricalStormList` function is returning a list of unique storm data objects that
- * have been fetched from the API endpoint `/api/historical_storms` based on the query parameters
- * constructed in the function. The function fetches historical storm data from the API, processes the
- * data to extract unique storm objects, and then returns this list of unique storm data objects.
- */
-export async function getHistoricalStormList(){
-  // Construct query parameters
-  
-  const oneYearAgo = subYears(new Date(), 1);
-  const start_date = new Date(oneYearAgo).toISOString().split('T')[0] + "T00:00:00Z"; // get the current year
-  const end_date = new Date().toISOString().split('T')[0] + "T00:00:00Z";
-  
-
-
-  const query = new URLSearchParams({
-    start_date: start_date,
-    end_date: end_date
-  }).toString();
-
-  
-  try {
-    const resource = await fetch(`${basePath}/api/filter_storms?${query}`);
-    const storm_data = await resource.json();
-
-    //const historical_storm_data = parseStormData(storm_data, storm.name);
-
-    const uniqueList= makeStormList(storm_data)
-    // Create a set to track unique IDs and add objects to the result list
-    
-
-    return uniqueList
-
-
-
-  } catch (error) {
-    console.error('Error fetching storm or station data:', error);
-  }
-}
 
 /**
  * The `parseStormData` function parses storm data, organizes it by storm name, and builds storm
@@ -299,11 +256,9 @@ export function addSearchParams(stormName, stormYear, router) {
  * based on the storm details, and sets the retrieved data for display on the map.
 
  */
-export async function handleClick( storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, setIsDashOpen, setIsStormDashOpen,setIsStationDashOpen) {
+export async function handleClick( storm, setStationPoints, setStormPoints, map, Leaflet, router, setSelectedStation, setLoading, closeAllDashboards) {
 
-  setIsDashOpen(false);
-  setIsStationDashOpen(false);
-  setIsStormDashOpen(false);
+  closeAllDashboards();
 
   setSelectedStation(empty_station_obj)
   

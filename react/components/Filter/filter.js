@@ -1,147 +1,122 @@
-import { IconButton, TextField, Box, Typography, Paper, Button, SpeedDial, SpeedDialIcon, SpeedDialAction, Tooltip, Dialog, DialogTitle } from "@mui/material";
-import { useEffect, useState, Fragment } from 'react';
-
+import { Alert, Box, Button, IconButton, Tooltip } from "@mui/material";
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
+import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import { useEffect, useRef, useState } from 'react';
 import Stack from '@mui/material/Stack';
-
-//import Chip from '@mui/material/Chip';
-
-import Checkbox from '@mui/material/Checkbox';
-import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
-import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { RenderDateFilter } from "./dateFilter";
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
-import InfoIcon from '@mui/icons-material/Info';
-import dayjs from 'dayjs';
-import { makeStormList } from "../historical_storm/historical_storm_utils";
-import { filters, input_filters } from "@/components/Filter/filters_list";
 import { useRouter } from 'next/router';
+import { RenderDateFilter } from "./dateFilter";
+import { makeStormList } from "../historical_storm/historical_storm_utils";
+import { input_filters } from "@/components/Filter/filters_list";
 import { InputFilter } from "./inputFilter";
 import { basePath } from "@/next.config";
 import LoadingScreen from "../loading_screen";
-import { smallScreenIconButton } from "./filter_utils";
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { RenderCategoryFilter } from "./categorySlider";
-import InfoScreen from "../message_screens/info_screen";
 import { empty_station_obj } from "../point_defaults";
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import { formatFilterDate, formatStormCategory, formatStormName } from "./filter_utils";
-import { FiltersSelected, FiltersSubmitted } from "./viewFilters";
+import { formatFilterDate, formatStormCategory, formatStormName, formatCategoryRange, countActiveFilters, getDateRangeError, getDefaultDateRange } from "./filter_utils";
+import { mapActions } from "@/components/mapReducer";
+import { filterActions } from "@/components/Filter/filterReducer";
+import { useFilters, useFilterDispatch } from "@/components/Filter/FilterContext";
 
 
-const ITEM_HEIGHT = 35;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 150,
-    },
-  },
-};
-
-
-
-export const ShowOptions = KeyboardDoubleArrowDownIcon;
-export const CloseOptions = KeyboardDoubleArrowUpIcon;
-
-
-export function RenderFilter({  clearShapesRef, dispatch, setStationPoints, startDate, endDate, startCategory, endCategory, polyFilterCoords, isDrawerOpen, filterStormName, showDateSelection, showCatSelection,filterQuery, showFilterSelected }) {
-  const [showFilterIcons, setShowFilterIcons] = useState(false);
-  const [showFilterOptions, setShowFilterOptions] = useState({});
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  const [filterParameters, setFilterParameters] = useState([]);
+export function RenderFilter({ clearShapesRef, dispatch, setStationPoints }) {
+  const { startDate, endDate, startCategory, endCategory, polyFilterCoords, filterStormName,
+    filterQuery, defaultApplied } = useFilters();
+  const filterDispatch = useFilterDispatch();
   const [loading, setLoading] = useState(false);
-  //const [info, setInfo] = useState(true)
-  
-  
+  const [applyFailed, setApplyFailed] = useState(false);
+  const defaultRequested = useRef(false); // React strict mode runs mount effects twice in development
 
-  const [openSpeedDial, setOpenSpeedDial] = useState(false);
-  const setFilterStormName = (state) => dispatch({ type: "SET_FILTER_STORM_NAME", payload: state });
-
-  
-  const handleOpen = () => setOpenSpeedDial(true);
-  const handleClose = (event, reason) => {
-    if (reason !== "toggle") {
-      setOpenSpeedDial(false);
-    }
-  };
-
-
-
-
+  const setFilterStormName = (state) => filterDispatch(filterActions.setFilterStormName(state));
+  // Apply needs a filter value; "Clear all" also has work to do while a submitted query or its results are shown
+  const activeFilterCount = countActiveFilters({ filterStormName, startDate, endDate, startCategory, endCategory, polyFilterCoords });
+  const filtersSelected = activeFilterCount > 0;
+  const dateError = getDateRangeError(startDate, endDate); // a mistyped date blocks Apply
+  const applyBlockedReason = !filtersSelected ? "Select a filter first" : dateError;
+  const hasSubmittedQuery = Object.keys(filterQuery).length > 0;
+  const canClear = filtersSelected || hasSubmittedQuery;
 
   const router = useRouter(); // Next.js useRouter
-  const drawerWidth = 258;
-  const drawerOpen = isDrawerOpen;
+
+
+  // Fetches the storms for `params` and shows them in the results section. On a failed request the
+  // results stay as they were and the error shows under Apply. Returns whether it succeeded.
+  async function runFilterQuery(params, setQueryLoading) {
+    setApplyFailed(false);
+    const { storms, error } = await processFilterRequest(params, setQueryLoading);
+
+    if (error) {
+      setApplyFailed(true);
+      return false;
+    }
+
+    // An empty result still shows ("0 storms" + the query)
+    filterDispatch(filterActions.setFilterQuery(params));
+    filterDispatch(filterActions.setFilterResult(storms));
+    return true;
+  }
+
+
+  // First visit to the historical page in this page load: fill the Date filter with the last 12 months
+  // and list those storms, so there is something to explore right away. Only the query runs here, not
+  // Apply's side effects, so a storm opened from the URL (?name=&season=&sid=) stays open.
+  useEffect(() => {
+    if (defaultApplied || defaultRequested.current) return;
+    defaultRequested.current = true;
+
+    const defaultRange = getDefaultDateRange();
+    filterDispatch(filterActions.applyDefaultDates(defaultRange));
+    runFilterQuery(
+      { ...defaultRange, polyCoords: '', startCategory: null, endCategory: null, stormName: [] },
+      (isLoading) => filterDispatch(filterActions.setResultsLoading(isLoading)));
+    // Runs once on mount; defaultApplied keeps it from running again when the panel remounts
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   function handleClearAllFilters() {
-    setSelectedOptions([]);
-    dispatch({ type: "RESET_FILTERS" })
-
-    const hasClearShapesRef = clearShapesRef && clearShapesRef.current;
-    
+    filterDispatch(filterActions.clearAll())
+    setApplyFailed(false);
 
     // Clear shapes via reference
-    if (hasClearShapesRef) {
+    if (clearShapesRef && clearShapesRef.current) {
       clearShapesRef.current.clearShapes();
     }
+  }
 
+
+  function handleRemoveArea() {
+    clearShapesRef?.current?.clearShapes();
+    filterDispatch(filterActions.setPolyFilterCoords(''));
   }
 
 
   async function handleFilterSubmit() {
-    //setDrawerButtonClicked('');
-    dispatch({ type: "SHOW_FILTER_SELECTED", payload: false });
-    dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: '' });
-    dispatch({ type: "SET_CAT_SELECTION", payload: false});
-    dispatch({ type: "SET_DATE_SELECTION", payload: false});
-    setShowFilterOptions(prev => ({
-      ...prev,
-      stormName: false, // stormName must be defined here
-    }));
+    filterDispatch(filterActions.closePanel());
 
-    
-    
-    
     const updatedParams = {
-      //...selectedOptions, // Spread selected options correctly
       startDate: startDate, // Ensure start and end dates are included
       endDate: endDate,
       polyCoords: polyFilterCoords,
       startCategory: startCategory,
       endCategory: endCategory,
       stormName: filterStormName
-
     };
 
-    dispatch({ type: "SET_FILTER_QUERY", payload: updatedParams});
+    const succeeded = await runFilterQuery(updatedParams, setLoading);
+    if (!succeeded) return;
 
-   
-
-
-
-    const stormResult = await processFilterRequest(updatedParams, setLoading);
-    dispatch({ type: "SET_FILTER_RESULT", payload: stormResult});
+    // Only after a successful query: a failed Apply keeps the highlighted storm (see runFilterQuery)
+    dispatch(mapActions.setDrawerButtonClicked(''));
     router.push(`/?page=historical`);
 
-    //setIsDrawerOpen(true);
-    //setReturnFilterResult(true);
-    dispatch({ type: "TOGGLE_DRAWER", payload: true});
-    dispatch({ type: "TOGGLE_FILTER_RESULT", payload: true});
-    dispatch({ type: "CLOSE_STORM_TRACKS" })
+    dispatch(mapActions.setDrawerOpen(true));
+    dispatch(mapActions.closeStormTracks())
     setStationPoints(empty_station_obj)
-    dispatch({ type: "SET_START_DATE", payload: null});
-    dispatch({ type: "SET_END_DATE", payload: null});
-    dispatch({ type: "SET_POLY_FILTER_COORDS", payload: ''});
-    dispatch({ type: "SET_START_CATEGORY", payload: null});
-    dispatch({ type: "SET_END_CATEGORY", payload: null});
-    dispatch({ type: "SET_FILTER_STORM_NAME", payload: []});
-    
-
+    // Filter values are kept after submitting so they can be adjusted and resubmitted;
+    // "Clear filter query" resets them
   }
-
 
 
   return (
@@ -149,305 +124,121 @@ export function RenderFilter({  clearShapesRef, dispatch, setStationPoints, star
       {loading ? (
         <LoadingScreen />
       ) : (
-        <>
+        <Stack
+          direction="column"
+          spacing={0.4}
+          sx={{ display: 'flex' }}
+          className='filter-icons-list'>
 
-          
-          <Stack
-            direction="column"
-            spacing={0.4}
-            sx={{ display: 'flex'
-              }}
-            className='filter-icons-list'>
-            
-            
-            
-            <Box className='historical_page_drawer_subheader'
-              sx={{
-                fontSize: '14px',
-                
-              }}
-              >Filter Storms</Box>
-            
-            
-            {
-              input_filters.map((input_filter, index) => {
-                return (
+          <Box className="filter-header">
+            <span className="filter-header-title">
+              <FilterAltOutlinedIcon fontSize="small" />
+              Filter storms
+              {activeFilterCount > 0 && (
+                <span className="filter-header-count" aria-label={`${activeFilterCount} active`}>
+                  {activeFilterCount}
+                </span>
+              )}
+            </span>
+            {canClear && (
+              <button type="button" className="filter-header-clear" onClick={handleClearAllFilters}>
+                Clear all
+              </button>
+            )}
+          </Box>
 
-                  <div className="filter-group" key={index}>
-                    <InputFilter
+          {
+            input_filters.map((input_filter, index) => {
+              return (
+                <div className="filter-group" key={index}>
+                  <InputFilter
                     input_filter={input_filter}
-                    showFilterOptions={showFilterOptions}
-                    setShowFilterOptions={setShowFilterOptions}
-                    dispatch={dispatch}
                     filterStormName={filterStormName}
-                    setFilterStormName= {setFilterStormName}
-                    startDate= {startDate} 
-                    endDate= {endDate}
-                    polyCoords= {polyFilterCoords}
-                    startCategory= {startCategory}
-                    endCategory={endCategory}
+                    setFilterStormName={setFilterStormName}
                   />
+                </div>
+              )
+            })
+          }
 
-                    </div>
-                  )
-                })
-              }
+          <div className="filter-group">
+            <RenderDateFilter
+              filterDispatch={filterDispatch}
+              startDate={startDate}
+              endDate={endDate}
+            />
+          </div>
+          <div className="filter-group">
+            <RenderCategoryFilter
+              filterDispatch={filterDispatch}
+              startCategory={startCategory}
+              endCategory={endCategory}
+            />
+          </div>
 
+          {/* The drawn polygon has no filter panel; show it styled like an active filter field,
+              with a way to remove it */}
+          {polyFilterCoords && (
+            <Box className="filter-field-wrap filter-field-wrap--active">
+              <Box className="filter-field">
+                <span className="filter-field-text">
+                  <span className="filter-field-label">
+                    <MapOutlinedIcon fontSize="inherit" />
+                    Map area
+                  </span>
+                  <span className="filter-field-value">Drawn on map</span>
+                </span>
+              </Box>
+              <IconButton
+                className="filter-field-clear"
+                aria-label="Remove drawn area"
+                onClick={handleRemoveArea}>
+                <CloseRoundedIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          )}
 
-            <div className="filter-group">
-              <RenderDateFilter
-                dispatch={dispatch}
-                setShowFilterOptions={setShowFilterOptions}
-                startDate= {startDate} 
-                endDate= {endDate}
-                showDateSelection= {showDateSelection}
-              />
-            </div>
-            <div className="filter-group">
-              <RenderCategoryFilter
-                  dispatch={dispatch}
-                  setShowFilterOptions={setShowFilterOptions}
-                  startCategory={startCategory}
-                  endCategory={endCategory}
-                  showCatSelection={showCatSelection}
-                />
-            </div>
-            
+          {/* Disabled (not hidden) when nothing is selected or a date is invalid, so the tour can
+              still point at Submit. The span lets the tooltip work on a disabled button. */}
+          <Tooltip title={applyBlockedReason}>
+            <span className="filter-group">
+              <Button
+                id="filter-submit-button"
+                className="filter-badge"
+                disabled={Boolean(applyBlockedReason)}
+                onClick={handleFilterSubmit}
+                startIcon={<PublishRoundedIcon />}>
+                Apply filters
+              </Button>
+            </span>
+          </Tooltip>
 
-            
+          {applyFailed && (
+            <Alert severity="error" className="filter-group" onClose={() => setApplyFailed(false)}>
+              Couldn&apos;t load storms. Please try again.
+            </Alert>
+          )}
 
-            {/*
-              filters.map((filter, index) => {
-                return (
-
-                  <div className="filter-group" key={index}>
-                    <Badges
-                      filter={filter}
-                      showFilterOptions={showFilterOptions}
-                      setShowFilterOptions={setShowFilterOptions}
-                      setSelectedOptions={setSelectedOptions}
-                      selectedOptions={selectedOptions}
-                    />
-                  </div>
-                )
-              })
-            */}
-
-            <Button
-              id="filter-submit-button"
-              className="filter-badge"
-              onClick={handleFilterSubmit}
-              startIcon={<PublishRoundedIcon />}>
-              Submit FILTER QUERY
-            </Button>
-            <Button
-              
-              className="filter-badge"
-              onClick={handleClearAllFilters}>
-              CLEAR FILTER QUERY
-            </Button>
-
-            <div className="filter-group">
-              {(showFilterSelected)  ? (
-                <>
-                  <FiltersSelected
-                  startDate={startDate}
-                  endDate={endDate}
-                  startCategory={startCategory}
-                  endCategory={endCategory}
-                  polyFilterCoords={polyFilterCoords}
-                  filterStormName={filterStormName}/>
-                  
-                </>
-                ): (
-                  <>
-                  <FiltersSubmitted 
-                filterQuery={filterQuery}/>
-
-                
-                  </>
-                )}
-            </div>
-          
-          </Stack>
-        
-        </>
-      )
-      }
+        </Stack>
+      )}
     </>
   )
 }
 
-  // Function to clear all filters and shapes
-  export function handleClearAll(setSelectedOptions, setStartDate, setEndDate,  setPolyFilterCoords, clearShapesRef) {
-    setSelectedOptions([]);
-    setStartDate(null); // Reset to empty string
-    setEndDate(null);   // Reset to empty string;
-    //setFilterResult([]);         // Clear filter results
-    //setReturnFilterResult(false); // Reset return state
-    setPolyFilterCoords('');      // Clear polygon filter
-    
 
-    // Clear shapes via reference
-    if (clearShapesRef && clearShapesRef.current) {
-      clearShapesRef.current.clearShapes();
-    }
-
-  }
-
-export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions }) {
-  const buttonStyle = {
-    backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#e55162' : 'white',
-    color: selectedOptions[filter.name]?.length > 0 ? 'white' : '#e55162',
-    '&:hover': {
-      backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#ffd1dc' : '#82ccdd',
-      color: selectedOptions[filter.name]?.length > 0 ? 'black' : 'black',
-    },
-  };
-
-  const handleCheckboxChange = (option) => {
-    setSelectedOptions((prev) => {
-      const currentOptions = prev[filter.name] || []; // Get current options for this filter
-      const isSelected = currentOptions.includes(option.value);
-
-      // Toggle selection
-      const updatedOptions = isSelected
-        ? currentOptions.filter((item) => item !== option.value) // Remove if selected
-        : [...currentOptions, option.value];                    // Add if not selected
-
-      return {
-        ...prev,
-        [filter.name]: updatedOptions // Set as name: options
-      };
-    });
-  };
-
-  function handleClear(name) {
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [name]: [] // Clear the options for the specific filter name
-    }));
- 
-  };
-
-  function handleIconClick() {
-    setShowFilterOptions((prev) => ({
-      ...prev,
-      [filter.name]: !prev[filter.name],
-    }));
-  }
-
-  return (
-    <>
-
-      <Button
-        className="filter-badge"
-        onClick={() => {
-          setShowFilterOptions((prev) => ({
-            ...prev,
-            [filter.name]: !prev[filter.name],
-          }));
-        }}
-        startIcon={filter.icon}
-        endIcon={!showFilterOptions[filter.name] ? (<ShowOptions/>) : (<CloseOptions/>)}
-        sx={{
-          ...buttonStyle,
-          display: { xs: "none", md: "inline-flex" }
-        }
-        }>
-
-        {filter.display_name}
-
-      </Button>
-
-      {smallScreenIconButton(filter.display_name, handleIconClick, buttonStyle, filter.icon)}
-
-
-
-      {showFilterOptions[filter.name] && (
-        <Paper className="filter-dropdown-menu"
-          sx={{
-            top: { xs: '6px', md: '100%', },
-            right: { xs: '100%', md: '0px', },
-            //transform:{xs: 'translateX(-100%)', },
-            width: { xs: '150px', md: '100%' }
-          }}>
-
-          <Stack
-            direction="column"
-            sx={{
-              padding: '5px',
-              height: '200px',
-              overflow: 'scroll',
-              width: '100%',
-
-            }}
-            spacing={1}>
-            {filter.options.map((option, optIndex) => {
-              return (
-                <FormControlLabel
-
-                  key={optIndex}
-                  label={<Typography sx={{ fontSize: '12px' }}>
-                    {option.label}
-                  </Typography>}
-                  control={
-                    <Checkbox
-                      checked={selectedOptions[filter.name]?.includes(option.value) || false}
-                      onChange={() => handleCheckboxChange(option)}
-                      sx={{
-                        color: "#e55162",
-                        '&.Mui-checked': { color: 'grey', }
-
-
-
-
-                      }}
-
-                    />
-                  }
-                />
-              )
-            })}
-
-            <Box
-              sx={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
-              <Button
-                onClick={() => handleClear(filter.name)}
-                className="filter-submit-button"
-              >
-                Clear
-              </Button>
-            </Box>
-
-          </Stack>
-
-        </Paper>
-      )}
-
-    </>
-
-  )
-
-};
-
-
-
+// Returns { storms, error }: `error` is set when the request fails; an empty `storms` just means no matches
 export async function processFilterRequest(filterParameters, setLoading) {
 
-  let uniqueList;
+  let uniqueList = [];
+  let error = null;
   const stormCategory = formatStormCategory(filterParameters['stormCategory']);
   const stormNames = formatStormName(filterParameters['stormName']);
   const startDate = formatFilterDate(filterParameters['startDate']);
   const endDate = formatFilterDate(filterParameters['endDate']);
-  
-  const stormPoly = filterParameters['polyCoords'];                       
-  const startCategory= (filterParameters['startCategory']) ? filterParameters['startCategory'] : '';
-  const endCategory = (filterParameters['endCategory']) ? filterParameters['endCategory'] : '';
 
-
-
-
+  const stormPoly = filterParameters['polyCoords'];
+  const { start_category: startCategory, end_category: endCategory } =
+    formatCategoryRange(filterParameters['startCategory'], filterParameters['endCategory']);
 
   const query = new URLSearchParams({
     storm_category: stormCategory,
@@ -457,41 +248,22 @@ export async function processFilterRequest(filterParameters, setLoading) {
     polygon: stormPoly,
     start_category: startCategory,
     end_category: endCategory,
-
   }).toString();
 
   setLoading(true);
   try {
     const resource = await fetch(`${basePath}/api/filter_storms?${query}`);
+    if (!resource.ok) throw new Error(`filter_storms returned ${resource.status}`);
     const storm_data = await resource.json();
-
-    //const historical_storm_data = parseStormData(storm_data, storm.name);
 
     // Create a set to track unique IDs and add objects to the result list
     uniqueList = makeStormList(storm_data)
-    // Create a set to track unique IDs and add objects to the result list
+
+  } catch (fetchError) {
+    error = fetchError;
+    console.error('Error fetching storm or station data:', fetchError);
+  } finally {
     setLoading(false);
-
-    if (uniqueList.length === 0) {
-      alert("No result found for this search, please try again...")
-    }
-
-
-  } catch (error) {
-    setLoading(false);
-    console.error('Error fetching storm or station data:', error);
   }
-  return uniqueList
-
-
-
-
+  return { storms: uniqueList, error }
 }
-
-
-
-
-
-
-
-

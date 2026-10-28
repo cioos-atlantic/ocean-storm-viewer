@@ -175,6 +175,7 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
         // cioos-atlantic:erddap_cache
         wfs_sources.push("erddap_active_cache_lite");
 
+        // Use the view 'erddap_active_cache_lite' which cuts out the data and only displays identification and position
         let erddap_source = "erddap_active_cache_lite&sortby=station_id,max_time"
         const erddap_features_url = build_wfs_query(workspace + erddap_source, [], source_type)
 
@@ -194,9 +195,9 @@ export async function wfs_query(storm_name, season, source, source_type, storm_i
 
         console.debug("Getting ERDDAP data");
         // cioos-atlantic:erddap_cache
-        wfs_sources.push("erddap_historical_cache");
+        wfs_sources.push("erddap_historical_cache_lite");
 
-        let erddap_source = "erddap_historical_cache&sortby=station_id,max_time"
+        let erddap_source = "erddap_historical_cache_lite&sortby=storm,station_id,max_time"
         const erddap_features_url = build_wfs_query(workspace + erddap_source, erddap_filters, source_type)
 
         console.debug("ERDDAP URL: ", erddap_features_url)
@@ -212,13 +213,14 @@ export async function wfs_data_query(station_id, storm){
     let station_data_source = ""
     let data_filters = []
     let source_type = 'ACTIVE'
-    data_filters.push('station_id=%27' + station_id + '%27')
+    // Plain quotes: build_wfs_query URL-encodes the whole filter
+    data_filters.push("station_id='" + station_id + "'")
     if(storm == "ACTIVE"){
         station_data_source = "erddap_active_cache&sortby=station_id,max_time"
     }
     else{
         station_data_source = "erddap_historical_cache&sortby=station_id,max_time"
-        data_filters.push('storm=%27' + storm + '%27')
+        data_filters.push("storm='" + storm + "'")
     }
     const station_data_url = build_wfs_query(workspace + station_data_source, data_filters, 'station_data')
     responses['station_data'] = await fetch_wfs_data(station_data_url);
@@ -229,7 +231,9 @@ function build_wfs_query(source, filters, source_type, selected_features = "", s
     output_format = "&outputFormat=" + encodeURI(output_format);
     //Filter causes issues for ERDDAP cache
 
-    const final_filter = (source.includes("erddap") && source_type === "ACTIVE") ? ("") : ("&cql_filter=" + filters.join(" AND "))
+    // Encoded so characters in filter values (%, &, #, +) reach GeoServer as part of the filter;
+    // callers pass plain CQL, not pre-encoded text
+    const final_filter = (source.includes("erddap") && source_type === "ACTIVE") ? ("") : ("&cql_filter=" + encodeURIComponent(filters.join(" AND ")))
 
     let url = '';
 

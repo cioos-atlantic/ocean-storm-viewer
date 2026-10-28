@@ -3,13 +3,12 @@ import dayjs from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import {  useState } from 'react';
-import {  Box,  Button,  CardContent, Card, CardActions } from "@mui/material";
+import {  Box,  Button,  CardContent, Card } from "@mui/material";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {Slider} from '@mui/material';
-import { smallScreenIconButton } from './filter_utils';
-import { ShowOptions, CloseOptions } from './filter';
-import Typography from "@mui/material/Typography";
+import { FilterPanel } from './FilterPanel';
+import { MIN_DATE, MAX_DATE, formatDateRangeSummary, getDateRangeError } from './filter_utils';
+import { filterActions } from "@/components/Filter/filterReducer";
 
 
 
@@ -62,103 +61,56 @@ export const shortcutsItems = [
   
 ];
 
-const reset= { label: 'Reset', getValue: () => [null, null] };
-
-
-
-
-export function RenderDateFilter({ dispatch, setShowFilterOptions, startDate, endDate, showDateSelection }) {
-  //const [showDateSelection, setShowDateSelection] = useState(false); 
-  const hasValidDates = startDate?.isValid?.() && endDate?.isValid?.();
-  const buttonStyle = {
-    backgroundColor: hasValidDates ? '#e55162' : 'white',
-    color: hasValidDates ? 'white' : '#e55162',
-    '&:hover': {
-      backgroundColor: hasValidDates ? '#ffd1dc' : '#82ccdd',
-      color: hasValidDates ? 'black' : 'black',
-    },
-  };
-
-  function handleIconClick(){
-    dispatch({ type: "SHOW_FILTER_SELECTED", payload: true })
-    dispatch({ type: "TOGGLE_DATE_SELECTION"});
-    dispatch({ type: "SET_CAT_SELECTION", payload: false});
-    setShowFilterOptions(prev => ({
-      ...prev,
-      stormName: false, // stormName must be defined here
-    }));
-  }
-  
-
-
+export function RenderDateFilter({ filterDispatch, startDate, endDate }) {
+  // Either date on its own is a filter (open-ended range). A mistyped date shows as invalid here
+  // instead of the last valid one, and Apply stays disabled until it is fixed or cleared.
+  const hasDates = startDate != null || endDate != null;
+  const dateError = getDateRangeError(startDate, endDate);
 
   return (
-    <>
-    <Button
-    className="filter-badge"
-    aria-label="filter button for date selection"
-    onClick= {handleIconClick}
-    startIcon={<CalendarMonthOutlinedIcon/>}
-    endIcon={ !showDateSelection ? (<ShowOptions/>):(<CloseOptions/>)}
-    sx={{...buttonStyle,
-      display: "inline-flex" }
-    }>
-      
-      Filter by Date
-      
-      
-
-    </Button>
-    
-    
-
-    {showDateSelection && 
-      (<DateDisplay 
+    <FilterPanel
+      name="date"
+      label="Filter by Date"
+      Icon={CalendarMonthOutlinedIcon}
+      isActive={hasDates}
+      summary={dateError ? 'Invalid date' : formatDateRangeSummary(startDate, endDate)}
+      placeholder="Any date"
+      ariaLabel="filter button for date selection"
+      onClear={() => {
+        filterDispatch(filterActions.setStartDate(null));
+        filterDispatch(filterActions.setEndDate(null));
+      }}>
+      <DateDisplay
         startDate={startDate}
         endDate={endDate}
-        setStartDate = {(date) => dispatch({ type: "SET_START_DATE", payload: date })}
-        setEndDate = {(date) => dispatch({ type: "SET_END_DATE", payload: date })}
-        setShowDateSelection = {(date) => dispatch({ type: "SET_DATE_SELECTION", payload: date })}
-         />)}
-
-    
-    </>
-
-
-    
+        setStartDate={(date) => filterDispatch(filterActions.setStartDate(date))}
+        setEndDate={(date) => filterDispatch(filterActions.setEndDate(date))}
+      />
+    </FilterPanel>
   );
 };
 
 
 
 
-export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, startDate, endDate}){
+export function DateDisplay({setStartDate, setEndDate, startDate, endDate}){
    
 
   const slotProps={
     popper:{ sx: { zIndex: 9999 },},
     
     textField: {
-      sx: { 
+      // MUI's small size is 40px tall with the label and calendar icon centred
+      size: 'small',
+      sx: {
         color: '#e55162', // Change text color
         '& label': { color: '#e55162' }, // Change label color
-        //'& input': { color: '#e55162' }, // Change input text color
         '& .MuiOutlinedInput-root': {
-          height:'40px !important',
           fontSize:'14px !important',
           '& fieldset': { borderColor: '#e55162' }, // Default border color
           '&:hover fieldset': { borderColor: '#d43b50' }, // Hover effect
           '&.Mui-focused fieldset': { borderColor: 'red' }, // Focused border color
         },
-        '& .MuiOutlinedInput-notchedOutline': {
-          height:'inherit !important',
-        },
-        '& .MuiInputLabel-root': {
-          fontSize:'16px !important',
-          left: '-3px !important',
-          
-          
-        }
       },
     },
     openPickerIcon: {
@@ -168,10 +120,32 @@ export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, sta
       },
     },
     }
+  // A shortcut's range; "This Week" / "Current Month" end in the future, so keep them within the allowed range
+  const getShortcutRange = (getValue) => {
+    const [newStartDate, newEndDate] = getValue();
+    return [newStartDate, newEndDate.isAfter(MAX_DATE) ? MAX_DATE : newEndDate];
+  };
+
   const handleShortcutClick = (getValue) => {
-    const [newStartDate, newEndDate] = getValue();    
+    const [newStartDate, newEndDate] = getShortcutRange(getValue);
     setStartDate(newStartDate);
-    setEndDate(newEndDate);}
+    setEndDate(newEndDate);
+  };
+
+  // A shortcut shows as selected while the dates match its range (same days), whether they were set
+  // by the shortcut, the pickers, or the default range on page load
+  const isSameDay = (a, b) => Boolean(a?.isValid?.() && b?.isValid?.() && a.isSame(b, 'day'));
+  const isShortcutSelected = (getValue) => {
+    const [shortcutStart, shortcutEnd] = getShortcutRange(getValue);
+    return isSameDay(startDate, shortcutStart) && isSameDay(endDate, shortcutEnd);
+  };
+
+  // Each picker is limited by the other date, so end can never be before start
+  // (only when the other date is itself usable, so one mistyped date doesn't mark both invalid)
+  const isUsableDate = (date) => date?.isValid?.() && !getDateRangeError(date, null);
+  const startMaxDate = isUsableDate(endDate) ? endDate : MAX_DATE;
+  const endMinDate = isUsableDate(startDate) ? startDate : MIN_DATE;
+
   return(
     <Card
      className='input-filter'
@@ -181,10 +155,12 @@ export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, sta
       sx={{display: 'block'}}>
       <Box >
             {shortcutsItems.map((shortcut, indx) => {
+              const selected = isShortcutSelected(shortcut.getValue);
               return(
                 <Button
                 key={indx}
-                className='shortcut-button'
+                className={`shortcut-button${selected ? ' shortcut-button--selected' : ''}`}
+                aria-pressed={selected}
                 onClick={()=>{handleShortcutClick(shortcut.getValue)}}>
                   {shortcut.label}
                 </Button>
@@ -205,25 +181,26 @@ export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, sta
           sx={{ paddingTop: '6px' }} // Allows wrapping on smaller screens
           >
 
-          <DatePicker 
-            defaultValue={dayjs()} 
-            label='Start Date' 
+          <DatePicker
+            label='Start Date'
             className='filter-time-input'
             value={startDate}
-            onChange={setStartDate}
+            onChange={setStartDate} // stores incomplete/out-of-range dates too (see getDateRangeError)
+            format='DD/MM/YYYY' // same order as the summaries
+            minDate={MIN_DATE}
+            maxDate={startMaxDate}
+            referenceDate={MIN_DATE} // an empty start picker opens at the earliest date, not today
             slotProps={slotProps}
-            
             />
-          <DatePicker 
-            defaultValue={dayjs()} 
-            label='End Date' 
+          <DatePicker
+            label='End Date'
             className='filter-time-input'
             value={endDate}
             onChange={setEndDate}
+            format='DD/MM/YYYY'
+            minDate={endMinDate}
+            maxDate={MAX_DATE}
             slotProps={slotProps}
-            
-            
-            
              />
             </Box>
         </LocalizationProvider>
@@ -239,28 +216,6 @@ export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, sta
           setEndDate={setEndDate}/>
       </CardContent>
 
-      <CardActions
-      className='date-card-content'>
-        <Box 
-          sx={{ display: 'flex', justifyContent: 'center', gap: '2px', width: '100%' }}>
-            <Button 
-              size="small"
-              className='shortcut-button'
-              onClick={() => {
-                setStartDate(null); // Reset to empty string
-                setEndDate(null);   // Reset to empty string
-              }}>Clear</Button>
-            <Button 
-              size="small" 
-              className='shortcut-button' 
-              onClick={()=> {setShowDateSelection(false)}}>Close</Button>
-
-
-        </Box>
-        
-        
-
-      </CardActions>
 
       
 
@@ -279,16 +234,34 @@ export function DateDisplay({setStartDate, setEndDate, setShowDateSelection, sta
   
 
 
+// Moves `date` (or `fallback` when no valid date is set) to `year`, keeping its month and day,
+// and keeps the result inside MIN_DATE..MAX_DATE
+function withYear(date, fallback, year) {
+  const base = date?.isValid?.() ? date : fallback;
+  const moved = base.year(year);
+  if (moved.isBefore(MIN_DATE)) return MIN_DATE;
+  if (moved.isAfter(MAX_DATE)) return MAX_DATE;
+  return moved;
+}
+
+// Year range slider. Its position comes from startDate/endDate, so it follows the pickers and
+// shortcuts; dragging a thumb only changes the year of that date.
 export function RangeSlider({ startDate, endDate, setStartDate, setEndDate }) {
-  const currentYear = dayjs().year();
-  
-  // Independent state for the slider's range
-  const [value, setValue] = useState([1860, currentYear]);
+  const startYear = startDate?.isValid?.() ? startDate.year() : MIN_DATE.year();
+  const endYear = endDate?.isValid?.() ? endDate.year() : MAX_DATE.year();
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
-    setStartDate(dayjs().year(newValue[0]));
-    setEndDate(dayjs().year(newValue[1]));
+    const [newStartYear, newEndYear] = newValue;
+    const newStartDate = newStartYear !== startYear ? withYear(startDate, MIN_DATE, newStartYear) : startDate;
+    let newEndDate = newEndYear !== endYear ? withYear(endDate, MAX_DATE, newEndYear) : endDate;
+
+    // Both thumbs in the same year can put end before start (e.g. 10 Dec -> 5 Jan); clamp end to start
+    if (newStartDate?.isValid?.() && newEndDate?.isValid?.() && newEndDate.isBefore(newStartDate)) {
+      newEndDate = newStartDate;
+    }
+
+    if (newStartDate !== startDate) setStartDate(newStartDate);
+    if (newEndDate !== endDate) setEndDate(newEndDate);
   };
 
   return (
@@ -301,14 +274,12 @@ export function RangeSlider({ startDate, endDate, setStartDate, setEndDate }) {
         
       }}
         getAriaLabel={() => 'Year range'}
-        value={value}
+        value={[startYear, endYear]}
         onChange={handleChange}
-        //valueLabelDisplay="auto"
-        min={1860}
-        max={currentYear}
+        min={MIN_DATE.year()}
+        max={MAX_DATE.year()}
         marks={[
           { value: 1880, label: '1880' },
-          //{ value: 1900, label: '1900' },
           { value: 1950, label: '1950' },
           { value: 2020, label: '2020' },
           
