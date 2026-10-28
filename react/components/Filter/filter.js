@@ -1,149 +1,122 @@
-import { IconButton, TextField, Box, Typography, Paper, Button, SpeedDial, SpeedDialIcon, SpeedDialAction, Tooltip, Dialog, DialogTitle } from "@mui/material";
-import { useEffect, useState, Fragment } from 'react';
-
+import { Alert, Box, Button, IconButton, Tooltip } from "@mui/material";
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
+import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import { useEffect, useRef, useState } from 'react';
 import Stack from '@mui/material/Stack';
-
-//import Chip from '@mui/material/Chip';
-
-import Checkbox from '@mui/material/Checkbox';
-import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
-import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { RenderDateFilter } from "./dateFilter";
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
-import InfoIcon from '@mui/icons-material/Info';
-import dayjs from 'dayjs';
-import { makeStormList } from "../historical_storm/historical_storm_utils";
-import { filters, input_filters } from "@/components/Filter/filters_list";
 import { useRouter } from 'next/router';
+import { RenderDateFilter } from "./dateFilter";
+import { makeStormList } from "../historical_storm/historical_storm_utils";
+import { input_filters } from "@/components/Filter/filters_list";
 import { InputFilter } from "./inputFilter";
 import { basePath } from "@/next.config";
 import LoadingScreen from "../loading_screen";
-import { smallScreenIconButton } from "./filter_utils";
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { RenderCategoryFilter } from "./categorySlider";
-import InfoScreen from "../message_screens/info_screen";
 import { empty_station_obj } from "../point_defaults";
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import { formatFilterDate, formatStormCategory, formatStormName } from "./filter_utils";
+import { formatFilterDate, formatStormCategory, formatStormName, formatCategoryRange, countActiveFilters, getDateRangeError, getDefaultDateRange } from "./filter_utils";
+import { mapActions } from "@/components/mapReducer";
+import { filterActions } from "@/components/Filter/filterReducer";
+import { useFilters, useFilterDispatch } from "@/components/Filter/FilterContext";
 
 
-const ITEM_HEIGHT = 35;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 150,
-    },
-  },
-};
-
-
-
-export const ShowOptions = KeyboardDoubleArrowDownIcon;
-export const CloseOptions = KeyboardDoubleArrowUpIcon;
-
-
-export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoints }) {
-  const [showFilterIcons, setShowFilterIcons] = useState(false);
-  const [showFilterOptions, setShowFilterOptions] = useState({});
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  const [filterParameters, setFilterParameters] = useState([]);
+export function RenderFilter({ clearShapesRef, dispatch, setStationPoints }) {
+  const { startDate, endDate, startCategory, endCategory, polyFilterCoords, filterStormName,
+    filterQuery, defaultApplied } = useFilters();
+  const filterDispatch = useFilterDispatch();
   const [loading, setLoading] = useState(false);
-  //const [info, setInfo] = useState(true)
-  
-  
+  const [applyFailed, setApplyFailed] = useState(false);
+  const defaultRequested = useRef(false); // React strict mode runs mount effects twice in development
 
-  const [openSpeedDial, setOpenSpeedDial] = useState(false);
-  const setFilterStormName = (state) => dispatch({ type: "SET_FILTER_STORM_NAME", payload: state });
-
-  
-  const handleOpen = () => setOpenSpeedDial(true);
-  const handleClose = (event, reason) => {
-    if (reason !== "toggle") {
-      setOpenSpeedDial(false);
-    }
-  };
-
-
-
-
+  const setFilterStormName = (state) => filterDispatch(filterActions.setFilterStormName(state));
+  // Apply needs a filter value; "Clear all" also has work to do while a submitted query or its results are shown
+  const activeFilterCount = countActiveFilters({ filterStormName, startDate, endDate, startCategory, endCategory, polyFilterCoords });
+  const filtersSelected = activeFilterCount > 0;
+  const dateError = getDateRangeError(startDate, endDate); // a mistyped date blocks Apply
+  const applyBlockedReason = !filtersSelected ? "Select a filter first" : dateError;
+  const hasSubmittedQuery = Object.keys(filterQuery).length > 0;
+  const canClear = filtersSelected || hasSubmittedQuery;
 
   const router = useRouter(); // Next.js useRouter
-  const drawerWidth = 258;
-  const drawerOpen = state.isDrawerOpen;
+
+
+  // Fetches the storms for `params` and shows them in the results section. On a failed request the
+  // results stay as they were and the error shows under Apply. Returns whether it succeeded.
+  async function runFilterQuery(params, setQueryLoading) {
+    setApplyFailed(false);
+    const { storms, error } = await processFilterRequest(params, setQueryLoading);
+
+    if (error) {
+      setApplyFailed(true);
+      return false;
+    }
+
+    // An empty result still shows ("0 storms" + the query)
+    filterDispatch(filterActions.setFilterQuery(params));
+    filterDispatch(filterActions.setFilterResult(storms));
+    return true;
+  }
+
+
+  // First visit to the historical page in this page load: fill the Date filter with the last 12 months
+  // and list those storms, so there is something to explore right away. Only the query runs here, not
+  // Apply's side effects, so a storm opened from the URL (?name=&season=&sid=) stays open.
+  useEffect(() => {
+    if (defaultApplied || defaultRequested.current) return;
+    defaultRequested.current = true;
+
+    const defaultRange = getDefaultDateRange();
+    filterDispatch(filterActions.applyDefaultDates(defaultRange));
+    runFilterQuery(
+      { ...defaultRange, polyCoords: '', startCategory: null, endCategory: null, stormName: [] },
+      (isLoading) => filterDispatch(filterActions.setResultsLoading(isLoading)));
+    // Runs once on mount; defaultApplied keeps it from running again when the panel remounts
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   function handleClearAllFilters() {
-    setSelectedOptions([]);
-    dispatch({ type: "RESET_FILTERS" })
-
-    const hasClearShapesRef = clearShapesRef && clearShapesRef.current;
-    
+    filterDispatch(filterActions.clearAll())
+    setApplyFailed(false);
 
     // Clear shapes via reference
-    if (hasClearShapesRef) {
+    if (clearShapesRef && clearShapesRef.current) {
       clearShapesRef.current.clearShapes();
     }
+  }
 
-    console.log("All filters and shapes cleared!");
+
+  function handleRemoveArea() {
+    clearShapesRef?.current?.clearShapes();
+    filterDispatch(filterActions.setPolyFilterCoords(''));
   }
 
 
   async function handleFilterSubmit() {
-    //setDrawerButtonClicked('');
-    dispatch({ type: "SHOW_FILTER_SELECTED", payload: false });
-    dispatch({ type: "SET_DRAWER_BUTTON_CLICKED", payload: '' });
-    dispatch({ type: "SET_CAT_SELECTION", payload: false});
-    dispatch({ type: "SET_DATE_SELECTION", payload: false});
-    setShowFilterOptions(prev => ({
-      ...prev,
-      stormName: false, // stormName must be defined here
-    }));
+    filterDispatch(filterActions.closePanel());
 
-    
-    
-    
     const updatedParams = {
-      //...selectedOptions, // Spread selected options correctly
-      startDate: state.startDate, // Ensure start and end dates are included
-      endDate: state.endDate,
-      polyCoords: state.polyFilterCoords,
-      startCategory: state.startCategory,
-      endCategory:state.endCategory,
-      stormName:state.filterStormName
-
+      startDate: startDate, // Ensure start and end dates are included
+      endDate: endDate,
+      polyCoords: polyFilterCoords,
+      startCategory: startCategory,
+      endCategory: endCategory,
+      stormName: filterStormName
     };
 
-    console.log(updatedParams); // 
-    dispatch({ type: "SET_FILTER_QUERY", payload: updatedParams});
+    const succeeded = await runFilterQuery(updatedParams, setLoading);
+    if (!succeeded) return;
 
-   
+    // Only after a successful query: a failed Apply keeps the highlighted storm (see runFilterQuery)
+    dispatch(mapActions.setDrawerButtonClicked(''));
+    router.push(`/?page=historical`);
 
-
-
-    const stormResult = await processFilterRequest(updatedParams, setLoading);
-    console.log(stormResult);
-    dispatch({ type: "SET_FILTER_RESULT", payload: stormResult});
-    router.push(`/?storms=historical`);
-
-    //setIsDrawerOpen(true);
-    //setReturnFilterResult(true);
-    dispatch({ type: "TOGGLE_DRAWER", payload: true});
-    dispatch({ type: "TOGGLE_FILTER_RESULT", payload: true});
-    dispatch({ type: "CLOSE_STORM_TRACKS" })
+    dispatch(mapActions.setDrawerOpen(true));
+    dispatch(mapActions.closeStormTracks())
     setStationPoints(empty_station_obj)
-    dispatch({ type: "SET_START_DATE", payload: null});
-    dispatch({ type: "SET_END_DATE", payload: null});
-    dispatch({ type: "SET_POLY_FILTER_COORDS", payload: ''});
-    dispatch({ type: "SET_START_CATEGORY", payload: ''});
-    dispatch({ type: "SET_END_CATEGORY", payload: ''});
-    dispatch({ type: "SET_FILTER_STORM_NAME", payload: []});
-    
-
+    // Filter values are kept after submitting so they can be adjusted and resubmitted;
+    // "Clear filter query" resets them
   }
-
 
 
   return (
@@ -151,380 +124,121 @@ export function RenderFilter({  clearShapesRef, state, dispatch, setStationPoint
       {loading ? (
         <LoadingScreen />
       ) : (
-        <>
-          <SpeedDial
-            ariaLabel="Filter Options"
-            sx={{
-              position: 'absolute', bottom: 65, right: 7,
-              display: { xs: "block", md: "none" }, '& .MuiSpeedDial-fab': {
-                backgroundColor: '#e55162',  // Change SpeedDial button background color
-                '&:hover': {
-                  backgroundColor: '#b9acac', // Change SpeedDial button hover color
-                }
-              }
-            }}
-            icon={<FilterAltIcon />}
-            
+        <Stack
+          direction="column"
+          spacing={0.4}
+          sx={{ display: 'flex' }}
+          className='filter-icons-list'>
 
-            //onClick={handleSpeedDialToggle}
-            open={openSpeedDial}
-            onOpen={handleOpen}
-            onClose={handleClose}
-          >
+          <Box className="filter-header">
+            <span className="filter-header-title">
+              <FilterAltOutlinedIcon fontSize="small" />
+              Filter storms
+              {activeFilterCount > 0 && (
+                <span className="filter-header-count" aria-label={`${activeFilterCount} active`}>
+                  {activeFilterCount}
+                </span>
+              )}
+            </span>
+            {canClear && (
+              <button type="button" className="filter-header-clear" onClick={handleClearAllFilters}>
+                Clear all
+              </button>
+            )}
+          </Box>
 
-            <SpeedDialAction
-            className="filters-speed-dial"
-              icon={<CloseRoundedIcon/>}
-              tooltipTitle="Clear Filters"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleClearAllFilters()
-              }}
-            />
-            <SpeedDialAction
-              className="filters-speed-dial"
-              icon={<PublishRoundedIcon />}
-              tooltipTitle="Submit"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleFilterSubmit()
-              }}
-            />
-          
-             {openSpeedDial && (input_filters.map((input_filter, index) => {
+          {
+            input_filters.map((input_filter, index) => {
               return (
                 <div className="filter-group" key={index}>
                   <InputFilter
                     input_filter={input_filter}
-                    showFilterOptions={showFilterOptions}
-                    setShowFilterOptions={setShowFilterOptions}
-                    dispatch={dispatch}
-                    filterStormName={state.filterStormName}
-                    setFilterStormName= {setFilterStormName}
-                    startDate= {state.startDate} 
-                    endDate= {state.endDate}
-                    polyCoords= {state.polyFilterCoords}
-                    startCategory= {state.startCategory}
-                    endCategory={state.endCategory}
+                    filterStormName={filterStormName}
+                    setFilterStormName={setFilterStormName}
                   />
                 </div>
               )
-            }))
+            })
+          }
 
-            }
-            {openSpeedDial && (<div className="filter-group">
-              <RenderDateFilter
-                state={state}
-                dispatch={dispatch}
-                setShowFilterOptions={setShowFilterOptions}
+          <div className="filter-group">
+            <RenderDateFilter
+              filterDispatch={filterDispatch}
+              startDate={startDate}
+              endDate={endDate}
+            />
+          </div>
+          <div className="filter-group">
+            <RenderCategoryFilter
+              filterDispatch={filterDispatch}
+              startCategory={startCategory}
+              endCategory={endCategory}
+            />
+          </div>
 
-              />
+          {/* The drawn polygon has no filter panel; show it styled like an active filter field,
+              with a way to remove it */}
+          {polyFilterCoords && (
+            <Box className="filter-field-wrap filter-field-wrap--active">
+              <Box className="filter-field">
+                <span className="filter-field-text">
+                  <span className="filter-field-label">
+                    <MapOutlinedIcon fontSize="inherit" />
+                    Map area
+                  </span>
+                  <span className="filter-field-value">Drawn on map</span>
+                </span>
+              </Box>
+              <IconButton
+                className="filter-field-clear"
+                aria-label="Remove drawn area"
+                onClick={handleRemoveArea}>
+                <CloseRoundedIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          )}
 
-            </div>
-            )
+          {/* Disabled (not hidden) when nothing is selected or a date is invalid, so the tour can
+              still point at Submit. The span lets the tooltip work on a disabled button. */}
+          <Tooltip title={applyBlockedReason}>
+            <span className="filter-group">
+              <Button
+                id="filter-submit-button"
+                className="filter-badge"
+                disabled={Boolean(applyBlockedReason)}
+                onClick={handleFilterSubmit}
+                startIcon={<PublishRoundedIcon />}>
+                Apply filters
+              </Button>
+            </span>
+          </Tooltip>
 
-            }
-            {openSpeedDial && (<div className="filter-group">
-              <RenderCategoryFilter
-                  state={state}
-                  dispatch={dispatch}
-                  setShowFilterOptions={setShowFilterOptions}
-                />
+          {applyFailed && (
+            <Alert severity="error" className="filter-group" onClose={() => setApplyFailed(false)}>
+              Couldn&apos;t load storms. Please try again.
+            </Alert>
+          )}
 
-            </div>
-            )
-
-            }
-            {/*openSpeedDial && (filters.map((filter, index) => {
-              return (
-
-                <div className="filter-group" key={index}>
-
-
-                  <Badges
-                    filter={filter}
-                    showFilterOptions={showFilterOptions}
-                    setShowFilterOptions={setShowFilterOptions}
-                    setSelectedOptions={setSelectedOptions}
-                    selectedOptions={selectedOptions}
-                  />
-
-                </div>
-
-
-              )
-            }))
-
-            */}
-
-          </SpeedDial>
-
-          <Stack
-            direction="row"
-            spacing={0.1}
-            sx={{ display: { xs: "none", md: "flex" },  left: drawerOpen ? `${drawerWidth}px` : 0,
-            width: drawerOpen ? `calc(100% - ${drawerWidth}px)` : '100%',   }}
-            className='filter-icons-list'>
-            {
-              input_filters.map((input_filter, index) => {
-                return (
-
-                  <div className="filter-group" key={index}>
-                    <InputFilter
-                    input_filter={input_filter}
-                    showFilterOptions={showFilterOptions}
-                    setShowFilterOptions={setShowFilterOptions}
-                    dispatch={dispatch}
-                    filterStormName={state.filterStormName}
-                    setFilterStormName= {setFilterStormName}
-                    startDate= {state.startDate} 
-                    endDate= {state.endDate}
-                    polyCoords= {state.polyFilterCoords}
-                    startCategory= {state.startCategory}
-                    endCategory={state.endCategory}
-                  />
-
-                  </div>
-                )
-              })
-            }
-
-
-            <div className="filter-group">
-              <RenderDateFilter
-                state={state}
-                dispatch={dispatch}
-                setShowFilterOptions={setShowFilterOptions}
-              />
-            </div>
-            <div className="filter-group">
-              <RenderCategoryFilter
-                  state={state}
-                  dispatch={dispatch}
-                  setShowFilterOptions={setShowFilterOptions}
-                />
-            </div>
-            
-
-            {/*
-              filters.map((filter, index) => {
-                return (
-
-                  <div className="filter-group" key={index}>
-                    <Badges
-                      filter={filter}
-                      showFilterOptions={showFilterOptions}
-                      setShowFilterOptions={setShowFilterOptions}
-                      setSelectedOptions={setSelectedOptions}
-                      selectedOptions={selectedOptions}
-                    />
-                  </div>
-                )
-              })
-            */}
-
-            <Button
-              className="filter-submit-button"
-              onClick={handleFilterSubmit}
-              startIcon={<PublishRoundedIcon />}>
-              Submit
-            </Button>
-            <Button
-              id="cancel-filter-icon"
-              className="filter-icons"
-              onClick={handleClearAllFilters}>
-              X
-            </Button>
-          
-          </Stack>
-        
-        </>
-      )
-      }
+        </Stack>
+      )}
     </>
   )
 }
 
-  // Function to clear all filters and shapes
-  export function handleClearAll(setSelectedOptions, setStartDate, setEndDate,  setPolyFilterCoords, clearShapesRef) {
-    setSelectedOptions([]);
-    setStartDate(null); // Reset to empty string
-    setEndDate(null);   // Reset to empty string;
-    //setFilterResult([]);         // Clear filter results
-    //setReturnFilterResult(false); // Reset return state
-    setPolyFilterCoords('');      // Clear polygon filter
-    
 
-    // Clear shapes via reference
-    if (clearShapesRef && clearShapesRef.current) {
-      clearShapesRef.current.clearShapes();
-    }
-
-    console.log("All filters and shapes cleared!");
-  }
-
-export function Badges({ filter, showFilterOptions, setShowFilterOptions, setSelectedOptions, selectedOptions }) {
-  const buttonStyle = {
-    backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#e55162' : 'white',
-    color: selectedOptions[filter.name]?.length > 0 ? 'white' : '#e55162',
-    '&:hover': {
-      backgroundColor: selectedOptions[filter.name]?.length > 0 ? '#ffd1dc' : '#82ccdd',
-      color: selectedOptions[filter.name]?.length > 0 ? 'black' : 'black',
-    },
-  };
-
-  const handleCheckboxChange = (option) => {
-    setSelectedOptions((prev) => {
-      const currentOptions = prev[filter.name] || []; // Get current options for this filter
-      const isSelected = currentOptions.includes(option.value);
-
-      // Toggle selection
-      const updatedOptions = isSelected
-        ? currentOptions.filter((item) => item !== option.value) // Remove if selected
-        : [...currentOptions, option.value];                    // Add if not selected
-
-      return {
-        ...prev,
-        [filter.name]: updatedOptions // Set as name: options
-      };
-    });
-  };
-
-  function handleClear(name) {
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [name]: [] // Clear the options for the specific filter name
-    }));
-    console.log({ [name]: [] }); // Log the cleared options
-  };
-
-  function handleIconClick() {
-    setShowFilterOptions((prev) => ({
-      ...prev,
-      [filter.name]: !prev[filter.name],
-    }));
-  }
-
-  return (
-    <>
-
-      <Button
-        className="filter-badge"
-        onClick={() => {
-          setShowFilterOptions((prev) => ({
-            ...prev,
-            [filter.name]: !prev[filter.name],
-          }));
-        }}
-        startIcon={filter.icon}
-        endIcon={!showFilterOptions[filter.name] ? (<ShowOptions/>) : (<CloseOptions/>)}
-        sx={{
-          ...buttonStyle,
-          display: { xs: "none", md: "inline-flex" }
-        }
-        }>
-
-        {filter.display_name}
-
-        {console.log(showFilterOptions)}
-
-      </Button>
-
-      {smallScreenIconButton(filter.display_name, handleIconClick, buttonStyle, filter.icon)}
-
-
-
-      {showFilterOptions[filter.name] && (
-        <Paper className="filter-dropdown-menu"
-          sx={{
-            top: { xs: '6px', md: '100%', },
-            right: { xs: '100%', md: '0px', },
-            //transform:{xs: 'translateX(-100%)', },
-            width: { xs: '150px', md: '100%' }
-          }}>
-
-          <Stack
-            direction="column"
-            sx={{
-              padding: '5px',
-              height: '200px',
-              overflow: 'scroll',
-              width: '100%',
-
-            }}
-            spacing={1}>
-            {filter.options.map((option, optIndex) => {
-              return (
-                <FormControlLabel
-
-                  key={optIndex}
-                  label={<Typography sx={{ fontSize: '12px' }}>
-                    {option.label}
-                  </Typography>}
-                  control={
-                    <Checkbox
-                      checked={selectedOptions[filter.name]?.includes(option.value) || false}
-                      onChange={() => handleCheckboxChange(option)}
-                      sx={{
-                        color: "#e55162",
-                        '&.Mui-checked': { color: 'grey', }
-
-
-
-
-                      }}
-
-                    />
-                  }
-                />
-              )
-            })}
-
-            <Box
-              sx={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
-              <Button
-                onClick={() => handleClear(filter.name)}
-                className="filter-submit-button"
-              >
-                Clear
-              </Button>
-            </Box>
-
-          </Stack>
-
-
-
-          {console.log(selectedOptions)}
-          {console.log(filter.options)}
-
-        </Paper>
-      )}
-
-    </>
-
-  )
-
-};
-
-
-
+// Returns { storms, error }: `error` is set when the request fails; an empty `storms` just means no matches
 export async function processFilterRequest(filterParameters, setLoading) {
 
-  console.log(filterParameters);
-  let uniqueList;
+  let uniqueList = [];
+  let error = null;
   const stormCategory = formatStormCategory(filterParameters['stormCategory']);
   const stormNames = formatStormName(filterParameters['stormName']);
   const startDate = formatFilterDate(filterParameters['startDate']);
   const endDate = formatFilterDate(filterParameters['endDate']);
-  
-  const stormPoly = filterParameters['polyCoords'];                       
-  const startCategory= filterParameters['startCategory'];
-  const endCategory = filterParameters['endCategory'];
 
-
-  console.log(stormCategory, stormNames, startDate, endDate)
-
-
+  const stormPoly = filterParameters['polyCoords'];
+  const { start_category: startCategory, end_category: endCategory } =
+    formatCategoryRange(filterParameters['startCategory'], filterParameters['endCategory']);
 
   const query = new URLSearchParams({
     storm_category: stormCategory,
@@ -534,46 +248,22 @@ export async function processFilterRequest(filterParameters, setLoading) {
     polygon: stormPoly,
     start_category: startCategory,
     end_category: endCategory,
-
   }).toString();
 
-  console.log(query)
   setLoading(true);
   try {
     const resource = await fetch(`${basePath}/api/filter_storms?${query}`);
+    if (!resource.ok) throw new Error(`filter_storms returned ${resource.status}`);
     const storm_data = await resource.json();
-    //console.log(storm_data);
 
-    //const historical_storm_data = parseStormData(storm_data, storm.name);
-    // console.log(historical_station_data);
-
-    console.debug(`historical Storm Data for ${stormCategory} Between  ${startDate} and ${endDate}: `, storm_data);
     // Create a set to track unique IDs and add objects to the result list
     uniqueList = makeStormList(storm_data)
-    // Create a set to track unique IDs and add objects to the result list
+
+  } catch (fetchError) {
+    error = fetchError;
+    console.error('Error fetching storm or station data:', fetchError);
+  } finally {
     setLoading(false);
-
-    console.log(uniqueList);
-    if (uniqueList.length === 0) {
-      alert("No result found for this search, please try again...")
-    }
-
-
-  } catch (error) {
-    setLoading(false);
-    console.error('Error fetching storm or station data:', error);
   }
-  return uniqueList
-
-
-
-
+  return { storms: uniqueList, error }
 }
-
-
-
-
-
-
-
-

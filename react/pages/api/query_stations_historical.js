@@ -1,5 +1,6 @@
 import { wfs_query } from "./wfs_query";
 import station_data_format from "@/components/utils/station_data_format";
+import station_data_init from "@/components/utils/station_data_init";
 
 export default async function handler(req, res) {
   const station = req.query["station"]
@@ -7,7 +8,8 @@ export default async function handler(req, res) {
   const source_type = "HISTORICAL"
   const storm_name = (req.query["name"]) ? req.query["name"] : "";
   const season = (req.query["season"]) ? req.query["season"] : "";
-  /*const time =  (req.query["time"]) ? req.query["time"] : "";
+  /*Commented out as these are being filtered by data ingest instead of during API call
+  const time =  (req.query["time"]) ? req.query["time"] : "";
   const lat =  (req.query["lat"]) ? req.query["lat"] : ""; // can set max atlantic region lat
   const lon =  (req.query["lon"]) ? req.query["lon"] : ""; // can set max atlantic region lat*/
   //const filters= [`min_lon>=${req.query["min_lon"]}`, `min_lat>=${req.query["min_lat"]}`, `max_lon<=${req.query["max_lon"]}`, `max_lat<=${req.query["max_lat"]}`, `min_time>=${req.query["min_time"]}`, `max_time<=${req.query["max_time"]}`]
@@ -17,36 +19,35 @@ export default async function handler(req, res) {
   console.debug("query_stations_historical.js -> filters: ", filters);
 
   try {
-    console.debug("query_stations_historical.js -> source & type", source, source_type);
+    //console.debug("query_stations_historical.js -> source & type", source, source_type);
     /*
     const result = await wfs_query(storm_name, season, source, source_type)
     res.status(200).json({ "storm_name": storm_name, "season": season, "source": source, "source_type": source_type, ...result })
     */
     const result = await wfs_query("", "", source, source_type, "", filters)
-    console.log('getting features...')
-    const station_recent = station_data_format(result['erddap_data']['features'], station)//parseStationData(result, station)
+    const features = result['erddap_data']['features']
+    const station_data = station_data_init(features, station)
+
+    //const station_recent = station_data_format(result['erddap_data']['features'], station)//parseStationData(result, station)
     //console.log('HR')
-    res.status(200).json(station_recent)
+    res.status(200).json(station_data)
   } catch (err) {
     res.status(500).json({ error: err.message}) //
   }
 }
 
-
+// Unused
 function parseStationData(result, station) {
-  console.log(result);
   if (Object.keys(result).length === 0) {
     return {}
   };
   let station_data = {};
   const features = result['erddap_data']['features'];
-  console.log(features);
   
 
   const re_match = /(?<var_name>.*)\s\((?<standard_name>.*)\|(?<units>.*)\|(?<long_name>.*)\)/g;
   for (let feature in features) {
     const station_name = features[feature]['properties']['station'];
-    //console.log(station_name)
 
     // Can change the WFS query to only get one station, but for now easier to filter out here
     const parsed_data = (!station || station === station_name) && JSON.parse(features[feature]['properties']['station_data']);
@@ -57,8 +58,6 @@ function parseStationData(result, station) {
       //const parsed_data = JSON.parse(features[feature]['properties']['station_data']);
 
       //if (parsed_data.length !== 0){
-        //console.log("Station data available")
-        //console.log(parsed_data)
         if (station_data[station_name]) {
           station_data[station_name]['properties']['max_time'] = features[feature]['properties']['max_time']
         }
@@ -101,7 +100,6 @@ function parseStationData(result, station) {
     
     //};
   };
-  console.log(station_data);
   return station_data
 }
 

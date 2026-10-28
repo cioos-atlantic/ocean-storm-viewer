@@ -5,13 +5,13 @@ import { fetch_value } from "@/lib/storm_utils";
 
 
 
-function createWindDirVarPresence(stationValues, variablePresence){
+function createWindDirVarPresence(stationData, variablePresence){
 	let WindDirIndx = ''
-	const standardNames = stationValues?.properties?.station_data?.column_std_names || [];
+	const standardNames = stationData?.column_std_names || [];
 	standardNames.forEach((std_name, indx) => {
 		if (std_name === "wind_from_direction") { WindDirIndx =indx}
 	})
-	const rowData = stationValues?.properties?.station_data?.rows;
+	const rowData = stationData?.rows;
 
 	variablePresence.wind_from_direction = rowData.some(
 		d => d[WindDirIndx] != null && !Number.isNaN(d[WindDirIndx])
@@ -20,8 +20,9 @@ function createWindDirVarPresence(stationValues, variablePresence){
 	
 }
 
-export function createVarPresenceDict(mergedData, stormCategory, stormType, stationValues){
+export function createVarPresenceDict(mergedData, stormCategory, stormType, stationData){
 	const variablePresence={};
+
 	
   Object.keys(mergedData).forEach((key) => {
     variablePresence[key]= false;
@@ -38,7 +39,7 @@ export function createVarPresenceDict(mergedData, stormCategory, stormType, stat
 		stormCategory['data'].length > 0 && 
 		stormCategory['data'].some(item => item !== undefined);
 
-	createWindDirVarPresence(stationValues, variablePresence);
+	createWindDirVarPresence(stationData, variablePresence);
 
 
 	Object.entries(mergedData).forEach(([key, value]) => {
@@ -52,7 +53,6 @@ export function createVarPresenceDict(mergedData, stormCategory, stormType, stat
 		}
   });
 
-	console.log(variablePresence);
 	return variablePresence;
 }
 
@@ -62,43 +62,48 @@ export function alignMergedData(merged_data, stormTimes, stationTimes) {
   const alignedMergedData = {};
 
   for (const category in merged_data) {
-    alignedMergedData[category] = merged_data[category].map(varObj => {
-      const varKey = Object.keys(varObj)[0];
-      const variable = varObj[varKey];
-      
-      // figure out whether it is storm or station data
-      const times = varKey.startsWith('storm') ? stormTimes : stationTimes;
+	// Try/catch to avoid issues with merging categories that don't actually have data
+	try{
+		alignedMergedData[category] = merged_data[category].map(varObj => {
+		const varKey = Object.keys(varObj)[0];
+		const variable = varObj[varKey];
+		
+		// figure out whether it is storm or station data
+		const times = varKey.startsWith('storm') ? stormTimes : stationTimes;
+		const timeToValue = new Map(times.map((time, idx) => [time, variable.data[idx]]));
+		const alignedData = unifiedTimes.map(time => timeToValue.get(time) ?? null);
 
-      const timeToValue = new Map(times.map((time, idx) => [time, variable.data[idx]]));
-
-      const alignedData = unifiedTimes.map(time => timeToValue.get(time) ?? null);
-
-      return {
-        [varKey]: {
-          name: variable.name,
-          data: alignedData
-        }
-      };
-    });
+		return {
+			[varKey]: {
+			name: variable.name,
+			data: alignedData
+			}
+		};
+		});
+	}
+	catch(error){
+		console.error(error)
+	}
   }
 
   return { unifiedTimes, alignedMergedData };
 }
 
 export function mergeData(station_data, storm_data){
+	// TODO: Can turn into a function to avoid duplication
 	const merged_data = JSON.parse(JSON.stringify(storm_data)); // deepclone storm_data
 	station_data.forEach((varObj)=>{
 	const variable = Object.values(varObj)[0];
-	console.log(variable);
-
-
 		// sea height
-		if (variable.standardName.includes('wave') && variable.standardName.includes('height'))
-			{merged_data['Wave Height'].push(
+		if (variable.standardName.includes('wave') && variable.standardName.includes('height')){
+			//Check if wave height exists in the storm data before pushing. If not, create empty array
+			if(!('Wave Height' in merged_data)){
+				merged_data['Wave Height'] = []}
+			merged_data['Wave Height'].push(
 				{[`station${variable.name}`]:{
 					data: variable.data, 
 					name: variable.displayName }}
-			)}
+		)}
 			// wind speed and gust
 		if (variable.standardName.includes('wind') && variable.standardName.includes('speed'))
 			{merged_data['Wind Speed'].push(
@@ -129,9 +134,6 @@ export function mergeData(station_data, storm_data){
 
 export function parseStormData(storm_points){
 	const stormPoints = storm_points.pts.features;
-	console.log(stormPoints)
-	
-
 	const stormNameList = [];
 	const stormTime = [];
 	const stormType={
@@ -154,8 +156,6 @@ export function parseStormData(storm_points){
 
 
 	stormPoints.forEach((storm_point)=> {
-	
-	//console.log(storm_point);
 	stormNameList.push(fetch_value(storm_point, ["STORMNAME", "NAME"]));
 	stormTime.push(fetch_value(storm_point, ["TIMESTAMP", "ISO_TIME"]));
 	storm_data_dict.Direction[0].stormDir.data.push(storm_point.properties.STORM_DIR);
@@ -187,14 +187,12 @@ export function parseStormData(storm_points){
 	})
 	const stormNameUniqueValues= [...new Set(stormNameList)];
 	const stormName = stormNameUniqueValues[0];
-	
-	console.log(stormName);
 
 	return [stormName, stormTime, stormType, storm_data_dict, stormCategory]
 }
 
 
-export function parseStationData(stationValues){
+export function parseStationData(stationValues, stationData){
 	const excludeVars = [
     "time",
     "latitude",
@@ -205,13 +203,11 @@ export function parseStationData(stationValues){
 		'wind_from_direction'
   ];
 
-	const standardNames = stationValues?.properties?.station_data?.column_std_names || [];
-	const stationData = stationValues?.properties?.station_data || [];
+	const standardNames = stationData?.column_std_names || [];
+	//const stationData = stationValues?.properties?.station_data || [];
 
 	const dataIndx= [];
 	const data_dict=[]
-
-
 	standardNames.forEach((varName, index) => {
 			if (!excludeVars.includes(varName)) {
 				dataIndx.push(index)
@@ -219,8 +215,6 @@ export function parseStationData(stationValues){
 
 
 			}})
-
-	console.log(dataIndx);
 
 	dataIndx.forEach((indx)=>{
 		const column_name= stationData?.['column_names']?.[indx];
@@ -244,8 +238,6 @@ export function parseStationData(stationValues){
 			}
 		})
 	})
-
-	console.log(data_dict);
 	return data_dict;
 	
 }
@@ -254,7 +246,6 @@ export function getStationInfo(stationValues, station_descriptions, stationName,
 	// Determine if active or historic
 		const isHistorical = source_type == "historical" ? true : false
 		const dataText = getStationDataText(stationValues, time, isHistorical);
-		console.log(dataText);
 	
 		if (!dataText) return null;
 	
